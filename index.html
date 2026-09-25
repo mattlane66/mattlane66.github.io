@@ -4,121 +4,78 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#ffffff">
-<title>Matt Lane — Projects & Thinking Tools</title>
+<meta name="theme-color" content="#f5f4ef">
+<title>Matt Lane — Product Strategy, Systems & Thinking Tools</title>
 <meta name="author" content="Matt Lane">
-<meta name="description" content="Selected product work, thinking tools, and writing by Matt Lane.">
+<meta name="description" content="Selected product work, thinking tools, and writing by Matt Lane — product strategist and AI-native design engineer.">
 <link rel="canonical" href="https://mattlane66.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://mattlane66.github.io/">
-<meta property="og:title" content="Matt Lane — Projects & Thinking Tools">
+<meta property="og:title" content="Matt Lane — Product Strategy, Systems & Thinking Tools">
 <meta property="og:description" content="Selected product work, thinking tools, and writing by Matt Lane.">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Matt Lane — Projects & Thinking Tools">
-<meta name="twitter:description" content="Selected product work, thinking tools, and writing by Matt Lane.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23173dff'/%3E%3Ctext x='32' y='40' font-family='Arial,sans-serif' font-size='25' font-weight='700' text-anchor='middle' fill='white'%3EML%3C/text%3E%3C/svg%3E">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Person","name":"Matt Lane","url":"https://mattlane66.github.io/","sameAs":["https://github.com/mattlane66"]}
-</script>
 <style>
-  :root{--paper:#fff;--ink:#0a0a0a;--muted:#606060;--faint:#f5f5f2;--line:#dcdcd8;--blue:#173dff;--pad:clamp(22px,5vw,72px);--max:1360px}
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  html,body{margin:0}
-  body{background:var(--paper);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-  a{color:inherit;text-decoration:none}
-  a:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
-  .shell{width:min(100%,var(--max));margin:0 auto;padding:0 var(--pad)}
-  header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 0;border-bottom:1px solid var(--line)}
-  .name{font-weight:650;letter-spacing:-.025em}
-  nav{display:flex;gap:22px;font-size:14px;color:var(--muted)}
-  nav a:hover{color:var(--blue)}
-  main{padding:clamp(68px,10vw,138px) 0 86px}
-  .eyebrow{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
-  h1{font-size:clamp(50px,8.2vw,116px);line-height:.89;letter-spacing:-.065em;margin:0;max-width:11ch;font-weight:650}
-  .intro{font-size:clamp(18px,2vw,27px);line-height:1.3;letter-spacing:-.022em;max-width:42ch;margin:32px 0 0;color:#292929}
-  .intro strong{font-weight:600}
-  .rule{border:0;border-top:1px solid var(--line);margin:clamp(68px,10vw,122px) 0 0}
-  .section-head{display:flex;justify-content:space-between;gap:28px;align-items:baseline;padding:22px 0 18px}
-  .section-head h2{font-size:12px;letter-spacing:.09em;text-transform:uppercase;margin:0}
-  .section-head p{font-size:13px;color:var(--muted);margin:0}
-  .project{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:clamp(34px,7vw,104px);padding:clamp(38px,5vw,72px) 0;border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
-  .project-kicker{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:14px}
-  .project h3{font-size:clamp(36px,5.2vw,76px);line-height:.94;letter-spacing:-.052em;margin:0 0 20px;max-width:12ch}
-  .project .dek{font-size:clamp(17px,1.55vw,22px);line-height:1.38;max-width:43ch;margin:0;color:#292929}
-  .meta{display:grid;gap:22px;align-content:start}
-  .meta-row{border-top:1px solid var(--line);padding-top:10px}
-  .meta-row strong{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
-  .meta-row span{font-size:15px;line-height:1.42}
-  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:24px;color:var(--blue);font-weight:650;font-size:16px}
-  .cta:hover{text-decoration:underline;text-underline-offset:4px}
-  .cta .arrow{font-size:21px;line-height:1}
-  .future{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:clamp(32px,7vw,100px);padding:34px 0 0}
-  .future-label{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
-  .future p{font-size:16px;line-height:1.5;max-width:54ch;margin:0;color:#3b3b3b}
-  footer{margin-top:94px;padding:26px 0 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-  footer .links{display:flex;gap:20px;flex-wrap:wrap}
-  footer a:hover{color:var(--blue)}
-  @media(max-width:720px){
-    header{padding:20px 0} nav{gap:14px}
-    main{padding-top:58px}
-    .project,.future{grid-template-columns:1fr}
-    .section-head{align-items:flex-start;flex-direction:column;gap:6px}
-  }
+:root{--paper:#f5f4ef;--panel:#fff;--ink:#0b0b0b;--muted:#62625e;--line:#d8d7d0;--blue:#173dff;--orange:#e8431a;--lime:#d7ff4d;--max:1480px;--pad:clamp(18px,4vw,64px)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}html,body{margin:0}body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}a:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+.page{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+.top{position:sticky;top:0;z-index:40;background:rgba(245,244,239,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(11,11,11,.12)}
+.top-in{max-width:var(--max);margin:0 auto;padding:15px var(--pad);display:flex;justify-content:space-between;align-items:center;gap:24px}
+.mark{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.02em}.mark-dot{width:10px;height:10px;background:var(--blue);border-radius:50%;box-shadow:16px 0 0 var(--orange),32px 0 0 var(--lime);margin-right:32px}
+nav{display:flex;gap:24px;color:var(--muted);font-size:13px}nav a:hover{color:var(--blue)}
+.hero{min-height:88vh;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(380px,.85fr);gap:clamp(34px,6vw,92px);align-items:center;padding:clamp(68px,8vw,120px) 0 70px}
+.kicker{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:24px}
+h1{font-size:clamp(58px,8.4vw,132px);line-height:.84;letter-spacing:-.073em;margin:0;max-width:7.6ch;font-weight:690}
+.hero-copy{font-size:clamp(19px,2vw,29px);line-height:1.26;letter-spacing:-.025em;max-width:40ch;margin:30px 0 0;color:#2f2f2c}.hero-copy strong{font-weight:650;color:var(--ink)}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 17px;border:1px solid var(--ink);background:var(--ink);color:#fff;font-size:14px;font-weight:650;transition:.2s transform,.2s box-shadow}.btn:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--blue)}.btn.ghost{background:transparent;color:var(--ink)}
+.system{position:relative;aspect-ratio:1/1;border:1px solid var(--line);background:linear-gradient(135deg,#fff 0 58%,#efeee8 58%);overflow:hidden;box-shadow:12px 12px 0 rgba(23,61,255,.13)}.system:before{content:"";position:absolute;inset:12%;border:1px solid #c9c8c1;border-radius:50%}.system:after{content:"";position:absolute;inset:27%;border:1px dashed #b8b7b0;border-radius:50%}
+.core{position:absolute;inset:39%;display:grid;place-items:center;background:var(--ink);color:#fff;border-radius:50%;font-size:10px;font-weight:750;letter-spacing:.1em;text-align:center;z-index:2}.node{position:absolute;padding:10px 12px;background:#fff;border:1px solid var(--ink);font-size:11px;font-weight:700;letter-spacing:.04em;box-shadow:4px 4px 0 rgba(0,0,0,.08)}.n1{left:7%;top:18%;transform:rotate(-3deg)}.n2{right:5%;top:25%;transform:rotate(3deg)}.n3{left:19%;bottom:8%;transform:rotate(2deg)}
+.line{position:absolute;height:2px;background:var(--blue);transform-origin:left center;opacity:.9}.l1{left:30%;top:30%;width:32%;transform:rotate(22deg)}.l2{left:52%;top:47%;width:31%;transform:rotate(-29deg)}.l3{left:31%;top:65%;width:30%;transform:rotate(-53deg)}.system-label{position:absolute;right:14px;bottom:12px;font-size:10px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase}
+.tape{margin:0 calc(var(--pad)*-1);border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);overflow:hidden;background:var(--lime)}.tape-track{display:flex;width:max-content;animation:marquee 28s linear infinite}.tape span{padding:11px 18px;font-size:12px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}@keyframes marquee{to{transform:translateX(-50%)}}
+.section{padding:clamp(76px,9vw,130px) 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:28px}.section-k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.section h2{font-size:clamp(38px,5.2vw,78px);line-height:.94;letter-spacing:-.055em;margin:8px 0 0;max-width:10ch}.section-note{max-width:36ch;font-size:15px;line-height:1.45;color:var(--muted);margin:0}
+.feature{position:relative;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);background:#0a0a0a;color:#fff;overflow:hidden;min-height:650px;box-shadow:16px 16px 0 rgba(23,61,255,.16)}
+.feature-visual{position:relative;min-height:500px;padding:34px 0 34px 34px;display:flex;align-items:center;background:radial-gradient(circle at 10% 10%,rgba(23,61,255,.48),transparent 36%),linear-gradient(145deg,#171717,#090909);overflow:hidden}
+.preview-wrap{position:relative;width:780px;height:490px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.45);transform:rotate(-1.4deg);transition:.35s transform}
+.preview-wrap:before{content:"";position:absolute;z-index:3;top:0;left:0;right:0;height:28px;background:#efefeb;border-bottom:1px solid #d4d4cf}
+.preview-wrap:after{content:"●  ●  ●";position:absolute;z-index:4;top:7px;left:10px;color:#b5b5b0;font-size:9px;letter-spacing:3px}
+.preview-frame{position:absolute;top:28px;left:0;width:1440px;height:900px;border:0;transform:scale(.542);transform-origin:top left;pointer-events:none;background:#fff}
+.feature:hover .preview-wrap{transform:rotate(0) translateX(-8px) scale(1.015)}
+.feature-copy{padding:clamp(34px,4vw,62px);display:flex;flex-direction:column;justify-content:space-between;position:relative;z-index:2}.tag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#bcbcb6}.feature h3{font-size:clamp(38px,4.5vw,70px);line-height:.94;letter-spacing:-.055em;margin:16px 0 20px}.feature p{font-size:17px;line-height:1.45;color:#d8d8d2;margin:0;max-width:31ch}.feature-meta{display:grid;gap:16px;margin-top:38px}.mrow{border-top:1px solid #3b3b37;padding-top:9px;font-size:13px;line-height:1.4;color:#ddd}.mrow b{display:block;color:#888;font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}.open{display:inline-flex;align-items:center;gap:11px;margin-top:28px;color:#fff;font-size:15px;font-weight:700}.open .arr{font-size:26px;transition:.2s transform}.feature:hover .open .arr{transform:translateX(6px)}
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.tool{min-height:430px;background:var(--panel);border:1px solid var(--ink);padding:26px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;transition:.2s transform,.2s box-shadow}.tool:hover{transform:translateY(-5px);box-shadow:7px 7px 0 var(--ink)}.tool h3{font-size:clamp(27px,2.6vw,42px);line-height:1;letter-spacing:-.04em;margin:14px 0 12px;max-width:11ch}.tool p{font-size:14px;line-height:1.46;color:var(--muted);margin:0;max-width:33ch}.tool-bottom{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-top:28px;font-size:12px;font-weight:650}.tool-bottom span:last-child{font-size:22px}.tool-visual{height:156px;border:1px solid var(--line);background:#f6f6f2;position:relative;overflow:hidden}
+.pipe{position:absolute;left:15px;right:15px;top:54px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.pipe i{height:45px;border:1px solid #111;background:#fff;display:grid;place-items:center;font-style:normal;font-size:9px;font-weight:700}.pipe i:nth-child(2){background:#eef1ff;border-color:var(--blue)}.pipe-line{position:absolute;left:24px;right:24px;top:76px;height:2px;background:var(--blue)}
+.quad{position:absolute;inset:20px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;border:1px solid #111}.quad span{display:grid;place-items:center;font-size:10px;font-weight:800;letter-spacing:.07em}.quad span:nth-child(1){background:#eaffb3}.quad span:nth-child(2){background:#fff1cb}.quad span:nth-child(3){background:#eef1ff}.quad span:nth-child(4){background:#f6d9d2}.quad:before,.quad:after{content:"";position:absolute;background:#111}.quad:before{left:50%;top:0;bottom:0;width:1px}.quad:after{top:50%;left:0;right:0;height:1px}
+.matrix{position:absolute;inset:18px;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(4,1fr);gap:5px}.matrix i{background:#fff;border:1px solid #c5c5be}.matrix i:nth-child(3n){background:#eef1ff;border-color:#9aa8ff}.matrix i:nth-child(7),.matrix i:nth-child(13){background:#ffe8e2;border-color:#f0957d}.matrix i:nth-child(9),.matrix i:nth-child(14),.matrix i:nth-child(19){background:#e3f7ec;border-color:#7fbea0}
+.callout{margin-top:18px;display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.manifesto{background:var(--blue);color:#fff;padding:clamp(30px,4vw,60px);min-height:320px;display:flex;flex-direction:column;justify-content:space-between}.manifesto p{font-size:clamp(30px,4.2vw,64px);line-height:.95;letter-spacing:-.05em;margin:0;max-width:12ch}.manifesto small{font-size:11px;text-transform:uppercase;letter-spacing:.1em;opacity:.75}.connect{background:#fff;border:1px solid var(--ink);padding:clamp(30px,4vw,50px);display:flex;flex-direction:column;justify-content:space-between}.connect h3{font-size:clamp(32px,3.4vw,50px);line-height:.98;letter-spacing:-.045em;margin:0}.connect p{font-size:15px;line-height:1.5;color:var(--muted);max-width:28ch}.connect-links{display:flex;flex-wrap:wrap;gap:10px}.pill{border:1px solid var(--ink);padding:10px 12px;font-size:13px}.pill:hover{background:var(--ink);color:#fff}
+footer{padding:30px 0 48px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+@media(max-width:1120px){.preview-wrap{width:680px;height:427px}.preview-frame{transform:scale(.472)}}
+@media(max-width:980px){.hero{grid-template-columns:1fr;min-height:auto}.system{max-width:620px}.feature{grid-template-columns:1fr}.feature-visual{min-height:430px;padding:24px 0 24px 24px}.feature-copy{min-height:430px}.tools{grid-template-columns:1fr 1fr}.preview-wrap{width:720px;height:452px}.preview-frame{transform:scale(.5)}.callout{grid-template-columns:1fr}}
+@media(max-width:650px){nav a:nth-child(2){display:none}.hero{padding-top:54px}h1{font-size:58px}.system{aspect-ratio:1.1/1}.section-head{align-items:start;flex-direction:column}.feature{min-height:0}.feature-visual{min-height:245px;padding:16px 0 16px 16px}.feature-copy{min-height:auto}.preview-wrap{width:380px;height:239px}.preview-frame{transform:scale(.264)}.tools{grid-template-columns:1fr}.tool{min-height:380px}.callout{margin-top:10px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="shell">
-  <header>
-    <a class="name" href="./">Matt Lane</a>
-    <nav aria-label="Primary">
-      <a href="#work">Work</a>
-      <a href="https://github.com/mattlane66">GitHub</a>
-      <a href="mailto:mattlane66@me.com">Email</a>
-    </nav>
-  </header>
+<header class="top"><div class="top-in"><a class="mark" href="#top"><span class="mark-dot" aria-hidden="true"></span>Matt Lane</a><nav><a href="#work">Work</a><a href="#tools">Thinking tools</a><a href="#connect">Connect</a></nav></div></header>
+<main id="top" class="page">
+<section class="hero">
+<div><div class="kicker">Product Strategist · AI-Native Design Engineer</div><h1>I make the hard parts visible.</h1><p class="hero-copy"><strong>Judgment about the whole — experience, economics, and distribution — turned into working form.</strong> This is where I keep the products, systems, and thinking tools that show how.</p><div class="hero-actions"><a class="btn" href="#work">Explore the work <span>↓</span></a><a class="btn ghost" href="mailto:mattlane66@me.com">Email me ↗</a></div></div>
+<div class="system" aria-label="Experience, economics and distribution connected through working form"><div class="line l1"></div><div class="line l2"></div><div class="line l3"></div><div class="core">WORKING<br>FORM</div><div class="node n1">EXPERIENCE</div><div class="node n2">ECONOMICS</div><div class="node n3">DISTRIBUTION</div><div class="system-label">Capabilities · interactions · structure</div></div>
+</section>
+<div class="tape" aria-hidden="true"><div class="tape-track"><span>0→1 product strategy</span><span>AI-native systems</span><span>shaping & scope</span><span>interaction design</span><span>opportunity underwriting</span><span>working software</span><span>0→1 product strategy</span><span>AI-native systems</span><span>shaping & scope</span><span>interaction design</span><span>opportunity underwriting</span><span>working software</span></div></div>
 
-  <main>
-    <div class="eyebrow">Projects & thinking tools</div>
-    <h1>Judgment about the whole. Made concrete.</h1>
-    <p class="intro">I work on products where the hard part is deciding <strong>what the thing should be, how it should work, and how experience, economics, and distribution fit together.</strong> This is a collection of work, tools, and writing.</p>
+<section class="section" id="work"><div class="section-head"><div><div class="section-k">Selected work</div><h2>See the decisions.</h2></div><p class="section-note">The artifacts are the point. Open them and experience the work in the format it was designed for.</p></div>
+<a class="feature" href="./splice/" aria-label="Open the interactive Splice Create / Stacks case study">
+  <div class="feature-visual"><div class="preview-wrap"><iframe class="preview-frame" src="./splice/#opening" title="Preview of the Splice case study" loading="lazy" tabindex="-1"></iframe></div></div>
+  <div class="feature-copy"><div><div class="tag">Featured case · Splice</div><h3>Create / Stacks</h3><p>How a deliberately narrow song starter changed the product strategy — moving Splice from finding sounds to helping creators reach a promising musical idea.</p><div class="open">Open the interactive case <span class="arr">→</span></div></div><div class="feature-meta"><div class="mrow"><b>Role</b>Head of Creator Product</div><div class="mrow"><b>Focus</b>0→1 strategy · AI-assisted creation · shaping · scope</div><div class="mrow"><b>The bet</b>Own the start of the workflow. Hand the rest back.</div></div></div>
+</a>
+</section>
 
-    <hr class="rule">
+<section class="section" id="tools"><div class="section-head"><div><div class="section-k">Thinking tools</div><h2>Methods you can use.</h2></div><p class="section-note">Not decks about process. Working systems for deciding what to pursue, what to make, and how to keep intent intact.</p></div><div class="tools">
+<a class="tool" href="https://github.com/mattlane66/planning-skills-for-agents-and-humans" target="_blank" rel="noreferrer"><div><div class="tag">Open-source system</div><h3>Planning Skills</h3><p>Turn a fuzzy feature into a selected, testable, vertically sliced implementation packet — without letting the agent invent scope.</p></div><div><div class="tool-visual"><div class="pipe-line"></div><div class="pipe"><i>FRAME</i><i>SHAPE</i><i>SLICE</i><i>BUILD</i></div></div><div class="tool-bottom"><span>Agents + humans</span><span>↗</span></div></div></a>
+<a class="tool" href="https://github.com/mattlane66/opportunity-underwriting-for-agents-and-humans" target="_blank" rel="noreferrer"><div><div class="tag">Decision system</div><h3>Opportunity Underwriting</h3><p>Turn a business idea or market hypothesis into an evidence-backed pursue / test / hold / reject decision — without manufactured certainty.</p></div><div><div class="tool-visual"><div class="quad"><span>PURSUE</span><span>TEST</span><span>HOLD</span><span>REJECT</span></div></div><div class="tool-bottom"><span>Evidence before conviction</span><span>↗</span></div></div></a>
+<a class="tool" href="https://github.com/mattlane66/fit-check-prioritizer" target="_blank" rel="noreferrer"><div><div class="tag">Decision tool</div><h3>Fit Check</h3><p>A structured judgment system for comparing options, surfacing must-have failures, and making trade-offs visible before commitment.</p></div><div><div class="tool-visual"><div class="matrix"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="tool-bottom"><span>Fit before rank</span><span>↗</span></div></div></a>
+</div></section>
 
-    <section id="work" aria-labelledby="work-title">
-      <div class="section-head">
-        <h2 id="work-title">Selected work</h2>
-        <p>Cases where the decisions matter as much as the output.</p>
-      </div>
-
-      <article class="project">
-        <div>
-          <div class="project-kicker">Product leadership case · Splice</div>
-          <h3>Create / Stacks</h3>
-          <p class="dek">How a deliberately narrow song starter changed the product strategy — moving Splice one step later, from helping creators find sounds to helping them reach a promising musical idea.</p>
-          <a class="cta" href="./splice/">Open the interactive case <span class="arrow" aria-hidden="true">→</span></a>
-        </div>
-        <div class="meta" aria-label="Case details">
-          <div class="meta-row"><strong>Role</strong><span>Head of Creator Product</span></div>
-          <div class="meta-row"><strong>Work</strong><span>0→1 product strategy · AI-assisted creation · shaping · scope</span></div>
-          <div class="meta-row"><strong>The bet</strong><span>Own the start of the creative workflow, then hand the rest back to the creator's DAW.</span></div>
-        </div>
-      </article>
-
-      <div class="future">
-        <div class="future-label">What comes next</div>
-        <p>More product work, working software, thinking tools, and writing. The site will stay intentionally small: only things useful enough to show how I think or how I make.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <span>© 2026 Matt Lane</span>
-    <div class="links">
-      <a href="https://github.com/mattlane66">GitHub</a>
-      <a href="mailto:mattlane66@me.com">mattlane66@me.com</a>
-    </div>
-  </footer>
-</div>
-</body>
-</html>
+<section class="section"><div class="callout"><div class="manifesto"><small>Operating principle</small><p>Build forward. Diagnose backward. Reality gets the final say.</p></div><div class="connect" id="connect"><div><div class="section-k">Connect</div><h3>Want to build something hard?</h3><p>I’m interested in products where the difficult work is framing the system correctly before everyone starts building.</p></div><div class="connect-links"><a class="pill" href="mailto:mattlane66@me.com">Email ↗</a><a class="pill" href="https://github.com/mattlane66" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></div></section>
+<footer><span>© 2026 Matt Lane</span><span>Projects · systems · thinking tools</span></footer>
+</main>
+</body></html>
