@@ -4,54 +4,65 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
 <title>Matt Lane — Projects & Thinking Tools</title>
 <meta name="author" content="Matt Lane">
-<meta name="description" content="Projects, product strategy case studies, thinking tools, and writing by Matt Lane.">
+<meta name="description" content="Selected product work, thinking tools, and writing by Matt Lane.">
+<link rel="canonical" href="https://mattlane66.github.io/">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://mattlane66.github.io/">
 <meta property="og:title" content="Matt Lane — Projects & Thinking Tools">
-<meta property="og:description" content="Projects, product strategy case studies, thinking tools, and writing by Matt Lane.">
+<meta property="og:description" content="Selected product work, thinking tools, and writing by Matt Lane.">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Matt Lane — Projects & Thinking Tools">
+<meta name="twitter:description" content="Selected product work, thinking tools, and writing by Matt Lane.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23173dff'/%3E%3Ctext x='32' y='40' font-family='Arial,sans-serif' font-size='25' font-weight='700' text-anchor='middle' fill='white'%3EML%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Matt Lane","url":"https://mattlane66.github.io/","sameAs":["https://github.com/mattlane66"]}
+</script>
 <style>
-  :root{
-    --paper:#fff;--ink:#0a0a0a;--muted:#5f5f5f;--faint:#f4f4f2;--line:#dcdcd8;
-    --blue:#173dff;--orange:#e8431a;--pad:clamp(22px,5vw,72px);--max:1280px;
-  }
+  :root{--paper:#fff;--ink:#0a0a0a;--muted:#606060;--faint:#f5f5f2;--line:#dcdcd8;--blue:#173dff;--pad:clamp(22px,5vw,72px);--max:1360px}
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   html,body{margin:0}
   body{background:var(--paper);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
   a{color:inherit;text-decoration:none}
   a:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
   .shell{width:min(100%,var(--max));margin:0 auto;padding:0 var(--pad)}
-  header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:28px 0;border-bottom:1px solid var(--line)}
-  .name{font-weight:650;letter-spacing:-.02em}
+  header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 0;border-bottom:1px solid var(--line)}
+  .name{font-weight:650;letter-spacing:-.025em}
   nav{display:flex;gap:22px;font-size:14px;color:var(--muted)}
   nav a:hover{color:var(--blue)}
-  main{padding:clamp(64px,10vw,130px) 0 80px}
-  .eyebrow{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
-  h1{font-size:clamp(48px,8vw,112px);line-height:.88;letter-spacing:-.065em;margin:0;max-width:10.5ch;font-weight:650}
-  .intro{font-size:clamp(18px,2vw,28px);line-height:1.28;letter-spacing:-.025em;max-width:39ch;margin:30px 0 0;color:#292929}
-  .rule{border:0;border-top:1px solid var(--line);margin:clamp(66px,10vw,120px) 0 0}
+  main{padding:clamp(68px,10vw,138px) 0 86px}
+  .eyebrow{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+  h1{font-size:clamp(50px,8.2vw,116px);line-height:.89;letter-spacing:-.065em;margin:0;max-width:11ch;font-weight:650}
+  .intro{font-size:clamp(18px,2vw,27px);line-height:1.3;letter-spacing:-.022em;max-width:42ch;margin:32px 0 0;color:#292929}
+  .intro strong{font-weight:600}
+  .rule{border:0;border-top:1px solid var(--line);margin:clamp(68px,10vw,122px) 0 0}
   .section-head{display:flex;justify-content:space-between;gap:28px;align-items:baseline;padding:22px 0 18px}
-  .section-head h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0}
+  .section-head h2{font-size:12px;letter-spacing:.09em;text-transform:uppercase;margin:0}
   .section-head p{font-size:13px;color:var(--muted);margin:0}
-  .project{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:clamp(32px,6vw,92px);padding:clamp(32px,5vw,66px) 0;border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
-  .project h3{font-size:clamp(34px,5vw,72px);line-height:.95;letter-spacing:-.05em;margin:0 0 18px;max-width:12ch}
-  .project .dek{font-size:clamp(17px,1.6vw,22px);line-height:1.35;max-width:42ch;margin:0;color:#2a2a2a}
+  .project{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:clamp(34px,7vw,104px);padding:clamp(38px,5vw,72px) 0;border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+  .project-kicker{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:14px}
+  .project h3{font-size:clamp(36px,5.2vw,76px);line-height:.94;letter-spacing:-.052em;margin:0 0 20px;max-width:12ch}
+  .project .dek{font-size:clamp(17px,1.55vw,22px);line-height:1.38;max-width:43ch;margin:0;color:#292929}
   .meta{display:grid;gap:22px;align-content:start}
   .meta-row{border-top:1px solid var(--line);padding-top:10px}
-  .meta-row strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:5px}
-  .meta-row span{font-size:15px;line-height:1.4}
-  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:10px;color:var(--blue);font-weight:650;font-size:16px}
+  .meta-row strong{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+  .meta-row span{font-size:15px;line-height:1.42}
+  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:24px;color:var(--blue);font-weight:650;font-size:16px}
   .cta:hover{text-decoration:underline;text-underline-offset:4px}
   .cta .arrow{font-size:21px;line-height:1}
-  .soon{padding:34px 0 0;color:var(--muted);font-size:14px;line-height:1.5;max-width:56ch}
-  footer{margin-top:90px;padding:26px 0 38px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+  .future{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:clamp(32px,7vw,100px);padding:34px 0 0}
+  .future-label{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .future p{font-size:16px;line-height:1.5;max-width:54ch;margin:0;color:#3b3b3b}
+  footer{margin-top:94px;padding:26px 0 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
   footer .links{display:flex;gap:20px;flex-wrap:wrap}
   footer a:hover{color:var(--blue)}
   @media(max-width:720px){
     header{padding:20px 0} nav{gap:14px}
     main{padding-top:58px}
-    .project{grid-template-columns:1fr}
+    .project,.future{grid-template-columns:1fr}
     .section-head{align-items:flex-start;flex-direction:column;gap:6px}
   }
 </style>
@@ -62,37 +73,42 @@
     <a class="name" href="./">Matt Lane</a>
     <nav aria-label="Primary">
       <a href="#work">Work</a>
+      <a href="https://github.com/mattlane66">GitHub</a>
       <a href="mailto:mattlane66@me.com">Email</a>
     </nav>
   </header>
 
   <main>
     <div class="eyebrow">Projects & thinking tools</div>
-    <h1>Judgment, made visible.</h1>
-    <p class="intro">Product strategy, systems, and things I've made — especially the work of deciding what a product should be, how it should work, and how the pieces fit together.</p>
+    <h1>Judgment about the whole. Made concrete.</h1>
+    <p class="intro">I work on products where the hard part is deciding <strong>what the thing should be, how it should work, and how experience, economics, and distribution fit together.</strong> This is a collection of work, tools, and writing.</p>
 
     <hr class="rule">
 
     <section id="work" aria-labelledby="work-title">
       <div class="section-head">
         <h2 id="work-title">Selected work</h2>
-        <p>Case studies, products, and working artifacts.</p>
+        <p>Cases where the decisions matter as much as the output.</p>
       </div>
 
       <article class="project">
         <div>
-          <h3>Splice Create / Stacks</h3>
-          <p class="dek">How a deliberately narrow song starter changed the product strategy at Splice — moving the product one step later, from finding sounds to helping creators reach a promising idea.</p>
-          <a class="cta" href="./splice/">View the interactive case <span class="arrow" aria-hidden="true">→</span></a>
+          <div class="project-kicker">Product leadership case · Splice</div>
+          <h3>Create / Stacks</h3>
+          <p class="dek">How a deliberately narrow song starter changed the product strategy — moving Splice one step later, from helping creators find sounds to helping them reach a promising musical idea.</p>
+          <a class="cta" href="./splice/">Open the interactive case <span class="arrow" aria-hidden="true">→</span></a>
         </div>
         <div class="meta" aria-label="Case details">
-          <div class="meta-row"><strong>Type</strong><span>Product leadership case</span></div>
           <div class="meta-row"><strong>Role</strong><span>Head of Creator Product</span></div>
-          <div class="meta-row"><strong>Focus</strong><span>0→1 product strategy · AI-assisted creation · shaping · scope</span></div>
+          <div class="meta-row"><strong>Work</strong><span>0→1 product strategy · AI-assisted creation · shaping · scope</span></div>
+          <div class="meta-row"><strong>The bet</strong><span>Own the start of the creative workflow, then hand the rest back to the creator's DAW.</span></div>
         </div>
       </article>
 
-      <p class="soon">More projects, thinking tools, and writing will be added over time.</p>
+      <div class="future">
+        <div class="future-label">What comes next</div>
+        <p>More product work, working software, thinking tools, and writing. The site will stay intentionally small: only things useful enough to show how I think or how I make.</p>
+      </div>
     </section>
   </main>
 
