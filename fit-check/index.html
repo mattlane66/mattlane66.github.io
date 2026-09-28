@@ -1,0 +1,2009 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="author" content="Matt Lane">
+<meta name="description" content="An interactive visual guide to the Fit Check Error Model: framing, conformance, effect, Fit Checks, Reverse Fit, and backward diagnosis.">
+<link rel="canonical" href="https://mattlane66.github.io/fit-check/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Fit Check Error Model">
+<meta property="og:description" content="A design can pass every test we give it and still fail to produce the change we wanted. Learn to build forward, verify locally, and diagnose backward.">
+<meta property="og:url" content="https://mattlane66.github.io/fit-check/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Fit Check Error Model">
+<meta name="twitter:description" content="Build forward. Verify locally. Diagnose backward. Correct against reality.">
+<title>The Fit Check Error Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+:root{
+  --serif:"IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sym:"Segoe UI Symbol", "Apple Symbols", "DejaVu Sans", "Noto Sans Symbols 2", sans-serif;
+  --gut:max(16px, 3.5vw);
+  --ground:#EEF2EF; --paper:#FFFFFF; --paper-2:#F4F7F5; --ink:#15201C; --ink-2:#34423C; --muted:#5F6D67;
+  --line:#CFD9D3; --line-2:#E2E9E5;
+  --x:#15201C; --x-soft:#ECF0ED;
+  --f:#1E6B53; --f-soft:#DCEEE5;
+  --y:#2451C0; --y-soft:#E5ECFB;
+  --m:#7A5A1E; --m-soft:#F5ECDA;
+  --ok:#2C7853; --ok-soft:#DCEEE3; --no:#B0432F; --no-soft:#F7E3DD; --maybe:#9A6A08; --maybe-soft:#F7EDD6;
+  --on-f:#FFFFFF;
+  --shadow:0 1px 0 rgba(21,32,28,.04), 0 18px 40px -26px rgba(21,32,28,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0E1512; --paper:#161F1B; --paper-2:#1C2722; --ink:#E4ECE7; --ink-2:#C4D0CA; --muted:#97A8A0;
+    --line:#34443C; --line-2:#27342E;
+    --x:#E4ECE7; --x-soft:#1F2A25;
+    --f:#7CC6A6; --f-soft:#1C3A2E;
+    --y:#97B4FF; --y-soft:#1C2745;
+    --m:#E0BD72; --m-soft:#352A14;
+    --ok:#74CF9D; --ok-soft:#173425; --no:#F0907A; --no-soft:#3B201A; --maybe:#E2B55B; --maybe-soft:#352910;
+    --on-f:#0E1512;
+    --shadow:0 1px 0 rgba(0,0,0,.35), 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E1512; --paper:#161F1B; --paper-2:#1C2722; --ink:#E4ECE7; --ink-2:#C4D0CA; --muted:#97A8A0;
+  --line:#34443C; --line-2:#27342E;
+  --x:#E4ECE7; --x-soft:#1F2A25;
+  --f:#7CC6A6; --f-soft:#1C3A2E;
+  --y:#97B4FF; --y-soft:#1C2745;
+  --m:#E0BD72; --m-soft:#352A14;
+  --ok:#74CF9D; --ok-soft:#173425; --no:#F0907A; --no-soft:#3B201A; --maybe:#E2B55B; --maybe-soft:#352910;
+  --on-f:#0E1512;
+  --shadow:0 1px 0 rgba(0,0,0,.35), 0 18px 40px -24px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding-inline:var(--gut);padding-block:0 calc(48px + env(safe-area-inset-bottom, 0px));-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+a{color:var(--y)}
+sup{font-size:.66em;line-height:0}
+.sym{font-family:var(--sym)}
+.cx,.cf,.cy,.cr,.cm{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.cx{color:var(--x)} .cf{color:var(--f)} .cy{color:var(--y)} .cr{color:var(--ink)} .cm{color:var(--m)}
+.ok{color:var(--ok)} .no{color:var(--no)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------------- hero ---------------- */
+.hero{max-width:1120px;margin:0 auto;min-height:92vh;min-height:92svh;display:grid;align-content:center;gap:20px;padding-block:40px}
+.eyebrow{font:600 12.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--f);margin:0}
+.formula{font:600 clamp(44px,12.5vw,128px)/.95 var(--mono);letter-spacing:-.04em;margin:0;white-space:nowrap}
+.formula .fx{color:var(--x)} .formula .ff{color:var(--f)} .formula .fy{color:var(--y)} .formula .ar{color:var(--muted);font-weight:400}
+.hero h1{font:600 clamp(29px,4.6vw,54px)/1.08 var(--serif);letter-spacing:-.015em;margin:0;max-width:19ch;text-wrap:balance}
+.hero .lede{margin:0;font-size:clamp(17px,1.7vw,19px);color:var(--ink-2);max-width:46ch}
+.hero .by{margin:0;font-size:14px;color:var(--muted)}
+.hero .by a{color:inherit;text-underline-offset:3px;text-decoration-color:var(--line)}
+.hero .by a:hover{text-decoration-color:currentColor}
+.start{justify-self:start;display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:12px 22px;border-radius:999px;border:0;background:var(--f);color:var(--on-f);font-weight:600;font-size:16px}
+.start small{font-weight:400;opacity:.85}
+
+/* ---------------- story + pinned player ---------------- */
+.story{position:relative;margin-inline:calc(-1 * var(--gut))}
+.player{position:sticky;top:env(safe-area-inset-top, 0px);height:100vh;height:100svh;
+  padding:10px var(--gut) calc(10px + env(safe-area-inset-bottom, 0px));
+  display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;gap:10px;
+  max-width:1240px;margin:0 auto}
+.topbar{display:grid;gap:7px}
+.segs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.seg{position:relative;height:18px;border:0;padding:0;background:none}
+.seg::before{content:"";position:absolute;left:0;right:0;top:7px;height:4px;border-radius:3px;background:var(--line)}
+.seg i{position:absolute;left:0;top:7px;height:4px;border-radius:3px;background:var(--f);width:calc(var(--p,0) * 100%);transition:width .35s ease}
+.meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.meta b{color:var(--f);font-weight:600}
+.meta .count{letter-spacing:0;font-variant-numeric:tabular-nums}
+
+.stagebox{position:relative;min-height:0;background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.art{position:absolute;left:0;top:0;width:400px;height:400px;transform-origin:0 0;font-size:14px;line-height:1.3;color:var(--ink)}
+
+.textpanel{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:10px;min-height:0;
+  height:clamp(190px, 36svh, 300px);background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px 16px 12px}
+.tp-body{min-height:0;overflow:auto;overscroll-behavior:contain;cursor:pointer}
+.tp-in{animation:rise .38s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tp-part{font:600 11.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--f);margin:0 0 6px}
+.tp-text{margin:0;font-size:clamp(16px, 2.35svh, 19px);line-height:1.5;color:var(--ink)}
+.tp-text b{font-weight:600}
+.tp-aside{margin:8px 0 0;font:500 12.5px/1.45 var(--mono);color:var(--muted)}
+.tp-hint{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.nav{display:flex;align-items:center;gap:10px}
+.nav .back{min-height:44px;min-width:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-weight:500;font-size:15px;color:var(--ink-2)}
+.nav .next{margin-left:auto;min-height:44px;padding:0 20px;border-radius:12px;border:0;background:var(--f);color:var(--on-f);font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:8px}
+.nav button:disabled{opacity:.4;cursor:default}
+.nav .keys{font:500 12px var(--mono);color:var(--muted);display:none}
+
+/* wide screens: text left, scene right */
+@media (min-width:560px) and (min-aspect-ratio:6/5){
+  .player{grid-template-columns:minmax(280px,.78fr) minmax(0,1.22fr);grid-template-rows:auto minmax(0,1fr);gap:14px 34px;padding-block:14px 18px}
+  .topbar{grid-column:1 / -1}
+  .textpanel{grid-column:1;grid-row:2;height:auto;align-self:center;background:none;border:0;padding:0;grid-template-rows:auto auto;gap:22px}
+  .tp-body{overflow:visible;cursor:default}
+  .tp-text{font-size:clamp(18px, 1.55vw, 23px);line-height:1.55;max-width:34ch}
+  .tp-part{font-size:12px;margin-bottom:12px}
+  .stagebox{grid-column:2;grid-row:2}
+  .nav .keys{display:inline}
+}
+/* short portrait phones */
+@media (max-height:640px) and (max-aspect-ratio:6/5){
+  .textpanel{height:clamp(165px, 33svh, 230px);padding:10px 12px 10px}
+  .tp-text{font-size:15.5px}
+  .player{gap:8px;padding-top:8px}
+  .nav .back,.nav .next{min-height:40px}
+}
+/* short landscape phones */
+@media (max-height:520px) and (min-aspect-ratio:6/5){
+  .player{padding-block:6px 8px;gap:6px 20px}
+  .tp-text{font-size:15px}
+  .meta{font-size:11px}
+  .textpanel{gap:10px}
+}
+
+/* ---------------- scene (artboard, 400 x 440 units) ---------------- */
+.fade{opacity:0;transition:opacity .45s ease, transform .45s ease;pointer-events:none}
+.fade.on{opacity:1;pointer-events:auto}
+.a-top{position:absolute;left:0;top:0;width:400px;height:110px}
+.a-detail{position:absolute;left:0;top:114px;width:400px;height:286px}
+.clock{position:absolute;left:0;top:0;width:400px;height:110px;display:grid;place-content:center;justify-items:center;gap:2px;
+  transition:transform .8s cubic-bezier(.4,.1,.2,1), opacity .6s}
+.clock b{font:600 54px/1 var(--mono);color:var(--x)}
+.clock span{font:500 13px var(--mono);color:var(--muted)}
+.clock.away{opacity:0;transform:translate(var(--cdx,0px),var(--cdy,0px)) scale(.3)}
+.bracket{position:absolute;left:59px;width:282px;top:9px;height:13px;border:1.5px dashed var(--f);border-bottom:0;border-radius:8px 8px 0 0}
+.bracket span{position:absolute;left:50%;top:-10px;transform:translateX(-50%);background:var(--paper);padding:0 8px;font:600 12px var(--mono);color:var(--f);white-space:nowrap}
+.node{position:absolute;top:26px;width:118px;height:58px;border:1.5px solid var(--line);border-radius:13px;background:var(--paper);
+  display:grid;justify-items:center;align-content:center;gap:3px;text-align:center;padding:4px 6px;
+  transition:opacity .45s, transform .45s, border-color .3s, background .3s}
+.node b{font:600 22px/1 var(--mono)}
+.node small{font-size:12px;line-height:1.15;color:var(--muted);max-width:108px}
+.nx{left:0} .nf{left:141px} .ny{left:282px}
+.nx b{color:var(--x)} .nf b{color:var(--f)} .ny b{color:var(--y)}
+.nx.hl{border-color:var(--x);background:var(--x-soft)}
+.nf.hl{border-color:var(--f);background:var(--f-soft)}
+.ny.hl{border-color:var(--y);background:var(--y-soft)}
+.node.hl{transform:translateY(-2px)}
+.node.hl small{color:var(--ink-2)}
+.arrow{position:absolute;top:54px;width:16px;height:2px;background:var(--muted);transition:opacity .45s}
+.arrow::after{content:"";position:absolute;right:-2px;top:-4px;border:5px solid transparent;border-left:7px solid var(--muted);border-right:0}
+.a1{left:121px} .a2{left:262px}
+.badge{position:absolute;top:89px;transform:translate(-50%,-4px);font:600 11.5px var(--mono);padding:4px 9px;border-radius:999px;white-space:nowrap}
+.badge.on{transform:translate(-50%,0)}
+.fitb{left:200px;background:var(--ok-soft);color:var(--ok)}
+.effb{left:auto;right:0;transform:translate(0,-4px);background:var(--maybe-soft);color:var(--maybe)}
+.effb.on{transform:none}
+.badge.rerun{background:var(--y-soft);color:var(--y)}
+
+.pnl{position:absolute;left:0;top:0;width:400px;height:286px;display:flex;flex-direction:column;justify-content:center;transform:translateY(8px)}
+.pnl.on{transform:none}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(20,16px);gap:3px;justify-content:center}
+.tile{width:16px;height:16px;border-radius:3px;background:var(--x);opacity:.8;
+  transition:transform .9s cubic-bezier(.4,.1,.2,1) var(--d,0s), opacity .7s ease var(--d,0s)}
+.tiles.away .tile{transform:translate(var(--dx,0px),var(--dy,0px)) scale(.15);opacity:0}
+.cap{font:500 12.5px var(--mono);color:var(--muted);margin:12px 0 0;text-align:center;transition:opacity .4s}
+#p-tiles.gone .cap{opacity:0}
+
+/* requirements + side */
+#p-rm{gap:8px}
+.box{border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--paper-2);display:grid;gap:5px;align-content:start}
+.box h4{margin:0 0 1px;font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+/* requirement rows: text | source | design check | built check */
+.rc{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:9px;
+  padding:0 9px;height:28px;font-size:14px;transition:opacity .4s, height .4s, border-color .3s, background .3s, margin .4s}
+.rc > span:first-child{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc .src{font:600 10.5px var(--mono);color:var(--muted);background:var(--paper-2);border-radius:5px;white-space:nowrap;overflow:hidden;
+  max-width:0;padding:2px 0;margin-left:0;opacity:0;transition:opacity .4s, max-width .4s, padding .4s, margin .4s}
+.rbox.src .rc .src{max-width:130px;padding:2px 6px;margin-left:8px;opacity:1}
+.rc .ck{display:block;width:0;overflow:hidden;text-align:center;font:700 15px var(--sym);color:var(--ok);opacity:0;transform:scale(.4);transition:opacity .3s, transform .3s, width .35s}
+.rbox.checks1 .rc .ck.c1,.rbox.checks2 .rc .ck.c2{width:46px;opacity:1;transform:none}
+.rbox.checks1 .rc:nth-of-type(2) .ck.c1,.rbox.checks2 .rc:nth-of-type(2) .ck.c2{transition-delay:.25s}
+.rbox.checks1 .rc:nth-of-type(3) .ck.c1,.rbox.checks2 .rc:nth-of-type(3) .ck.c2{transition-delay:.5s}
+.rbox h4 .ckh{margin-left:auto;margin-right:10px;display:flex;opacity:0;transition:opacity .3s}
+.rbox h4 .ckh i{font-style:normal;width:46px;text-align:center;overflow:hidden;white-space:nowrap;letter-spacing:.02em;text-transform:none;transition:width .35s, opacity .3s}
+.rbox h4 .ckh i + i{width:0;opacity:0}
+.rbox.checks1 h4 .ckh{opacity:1}
+.rbox.checks2 h4 .ckh i + i{width:46px;opacity:1}
+.rbox h4 .ckh i:first-child{color:var(--f)}
+.rbox h4 .ckh i + i{color:var(--ok)}
+/* a new version of R, with the old one kept behind it */
+.rbox{position:relative;transition:margin .45s}
+.rbox::before{content:"R · v1, kept on record";position:absolute;left:14px;right:-14px;top:-19px;bottom:19px;z-index:-1;border:1px dashed var(--muted);border-radius:12px;
+  background:var(--paper-2);font:600 10px/1 var(--mono);color:var(--muted);text-align:right;padding:4px 10px;opacity:0;transform:translate(-10px,10px);transition:opacity .45s .25s, transform .45s .25s}
+.rbox.ver{margin-top:19px;margin-right:14px}
+.rbox.ver::before{opacity:1;transform:none}
+.rbox .vtag{display:none;margin-left:auto;font:600 10.5px var(--mono);letter-spacing:.02em;text-transform:none;color:var(--on-f);background:var(--f);border-radius:5px;padding:1px 7px}
+.rbox.ver .vtag{display:inline-block}
+.rbox.ver .ckh{display:none}
+.rc.hide{opacity:0;height:0;border-width:0;margin-top:-5px;overflow:hidden}
+.rc.slot{border-style:dashed;color:var(--muted)}
+.rc.slot .q{font:600 14px var(--mono);color:var(--maybe);margin-right:6px}
+.rc.slot.filled{border-style:solid;border-color:var(--ok);background:var(--ok-soft);color:var(--ink)}
+.rc.slot.filled .src{color:var(--m);background:var(--m-soft)}
+.newtag{font:600 10px var(--mono);color:var(--paper);background:var(--ok);border-radius:4px;padding:1px 5px;margin-left:6px}
+.side{position:relative;height:108px;transition:height .45s}
+#p-rm.noside .side{height:0}
+.side > .box{position:absolute;left:0;right:0;top:0}
+.meter{position:relative;height:48px;margin:4px 6px 0}
+.meter .trk{position:absolute;left:0;right:0;top:24px;height:9px;border-radius:6px;background:linear-gradient(90deg,var(--no-soft),var(--ok-soft));border:1px solid var(--line)}
+.meter .goal{position:absolute;right:-1px;top:16px;width:3px;height:26px;border-radius:2px;background:var(--y)}
+.meter .mkr{position:absolute;left:0;top:14px;width:3px;height:30px;margin-left:-1px;border-radius:2px;background:var(--ink);transition:left 1.3s cubic-bezier(.2,.7,.2,1) .15s}
+.meter .mkr span{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font:600 12.5px var(--mono);white-space:nowrap}
+.meter.moved .mkr{left:40%}
+.ends{display:flex;justify-content:space-between;font:500 11.5px var(--mono);color:var(--muted)}
+.ends span:last-child{color:var(--y)}
+.srclist{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.srclist li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px;align-items:center;font-size:12.5px;line-height:1.2;color:var(--ink-2)}
+.srclist li b{font:600 10.5px/1.3 var(--mono);color:var(--f);border:1px solid var(--f);border-radius:5px;padding:0 6px;justify-self:start;white-space:nowrap}
+.srclist li.m b{color:var(--m);border-color:var(--m)}
+.mbox{border-color:var(--m);background:var(--m-soft)}
+.mbox h4{color:var(--m)}
+.belief{margin:0;font:500 15.5px/1.3 var(--serif)}
+.mnote{margin:2px 0 0;font-size:12.5px;color:var(--ink-2)}
+.mnote.later{color:var(--ok);font-weight:500}
+
+/* framing */
+#p-frame{flex-direction:row;align-items:center;gap:10px}
+.fc{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:13px;padding:12px;display:grid;gap:9px;align-content:start;background:var(--paper);height:230px}
+.fc .lab{font:600 11px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);min-height:28px}
+.fc.good.judged{border-color:var(--x)} .fc.good.judged .lab{color:var(--ok)}
+.fc.bad.judged{border-color:var(--no)} .fc.bad.judged .lab{color:var(--no)}
+.fc q{font:500 16.5px/1.3 var(--serif);quotes:"“" "”"}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:11.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--f);color:var(--f);background:var(--f-soft)}
+.chip.x{border-color:var(--line);color:var(--muted);background:var(--paper-2);text-decoration:line-through}
+.fc .note{font-size:11.5px;line-height:1.3;color:var(--muted);margin:0}
+
+/* options grid */
+.grid{display:grid;grid-template-columns:124px repeat(5,55px);font-size:13px}
+.grid > div{height:33px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;text-align:center;transition:opacity .4s, background .4s}
+.grid .rl{justify-content:flex-start;text-align:left;gap:5px;padding-left:2px}
+.grid .rl .id{font:600 10.5px var(--mono);color:var(--muted)}
+.grid .hd{height:46px;flex-direction:column;gap:1px;border-bottom:1.5px solid var(--line)}
+.grid .hd b{font:600 12px var(--mono)}
+.grid .hd small{font-size:10.5px;color:var(--muted);line-height:1.1}
+.grid .tot{height:26px;font:600 11.5px var(--mono);color:var(--muted);border-bottom:0;opacity:0}
+.mk{font:700 15px var(--sym);opacity:0;transform:scale(.5);transition:opacity .35s, transform .35s;display:inline-flex;align-items:center;justify-content:center}
+.og.marks .mk{opacity:1;transform:none}
+.og.marks .mk.c2{transition-delay:.12s} .og.marks .mk.c3{transition-delay:.24s} .og.marks .mk.c4{transition-delay:.36s}
+.mk.y{color:var(--ok)} .mk.n{color:var(--no)} .mk.q{color:var(--maybe);font-family:var(--mono)}
+.mk .yy,.mk .tested{display:none}
+.mk .qq{color:var(--no);font-family:var(--sym);white-space:nowrap}
+.mk .qq sup{color:var(--maybe);font:700 10px var(--mono);margin-left:1px}
+.og.resolved .mk.qb .qq{display:none}
+.og.resolved .mk.qb .yy{display:inline;font-family:var(--sym);color:var(--ok)}
+.og.resolved .mk.qb .tested{display:inline;font:600 8.5px var(--mono);color:var(--ok);margin-left:2px}
+.og.totals .tot{opacity:1}
+.grid .tot .tv-must{display:none}
+.og.judged .tot .tv-count{display:none}
+.og.judged .tot .tv-must{display:inline}
+.grid div.tot:not(.rl) .tv-must{font:700 15px var(--sym)}
+.tv-must.y{color:var(--ok)} .tv-must.n{color:var(--no)}
+.og.judged .rl.tot{color:var(--ink-2)}
+.og.judged .col-cur,.og.judged .col-a,.og.judged .col-c{opacity:.35}
+.og.judged .col-b{background:var(--f-soft)}
+.og.judged .mk.must.n{width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 1.5px var(--no)}
+/* your call: which would you build? */
+.og.pick-a .col-cur,.og.pick-a .col-b,.og.pick-a .col-c,
+.og.pick-b .col-cur,.og.pick-b .col-a,.og.pick-b .col-c,
+.og.pick-c .col-cur,.og.pick-c .col-a,.og.pick-c .col-b{opacity:.35}
+.og.pick-a .col-a,.og.pick-c .col-c{background:var(--no-soft)}
+.og.pick-b .col-b{background:var(--f-soft)}
+.og.pick-a .mk.c2.must.n,.og.pick-c .mk.c4.must.n{width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 1.5px var(--no)}
+.grid .gh{opacity:0;color:var(--muted)}
+.og.ghost .gh{opacity:1}
+.og.ghost .gh.hd{border:1.5px dashed var(--muted);border-radius:9px 9px 0 0}
+.og.ghost .gh.cell{border-left:1.5px dashed var(--muted);border-right:1.5px dashed var(--muted)}
+.og.ghost .gh.last{border-bottom:1.5px dashed var(--muted);border-radius:0 0 9px 9px}
+.note2{margin:8px 0 0;font-size:11.5px;color:var(--muted);text-align:center}
+.og,.rot-wrap{position:absolute;left:0;top:0;width:400px;height:286px;display:flex;flex-direction:column;justify-content:center}
+.rot-title{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;display:flex;gap:6px;align-items:center}
+.rot-title .turn{font:600 15px var(--sym);color:var(--f)}
+.rot{position:relative;display:grid;grid-template-columns:136px repeat(3,88px);font-size:13px}
+.rot > div{height:34px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;text-align:center;transition:background .3s, color .3s}
+.rot .rl{justify-content:flex-start;text-align:left;flex-direction:column;align-items:flex-start;justify-content:center;gap:0}
+.rot .hd{height:44px;flex-direction:column;gap:1px;border-bottom:1.5px solid var(--line)}
+.rot .hd.rl{justify-content:flex-end;padding-bottom:6px}
+.rot .hd b{font:600 12px var(--mono)} .rot .hd small{font-size:10.5px;color:var(--muted);line-height:1.1}
+.rot .dotc{width:12px;height:12px;border-radius:50%;background:var(--f);transition:outline-color .3s}
+.rot .dash{color:var(--muted);transition:opacity .3s}
+.rot small.tag,.rot em.tag{display:none;font:600 10px/1.2 var(--mono);font-style:normal;white-space:nowrap}
+/* your call: the empty row */
+.rot.ask .sh{background:var(--maybe-soft)}
+.rot.ask .rl.sh{color:var(--maybe)}
+.rot.pick-use .rl.sh .nm{text-decoration:line-through;color:var(--no)}
+.rot.pick-why .rl.sh .why{display:block;color:var(--maybe)}
+/* the missing reason: three honest moves */
+.rot.resolve .sh{background:var(--no-soft)}
+.rot.resolve .rl.sh{color:var(--no)}
+.rot.resolve .rl.sh .nm{text-decoration:line-through}
+.rot.resolve:not(.cover) .sh .dash{opacity:0}
+.rchips{position:absolute;left:136px;top:146px;width:264px;height:34px;display:flex;align-items:center;justify-content:center;gap:5px;opacity:0;transition:opacity .35s}
+.rot.resolve:not(.cover) .rchips{opacity:1}
+.rchips > span{font:600 10.5px var(--mono);padding:3px 7px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--muted);white-space:nowrap}
+.rchips > span.on{border-color:var(--no);color:var(--no)}
+.rchips b{font-weight:700}
+.rot.cover .rl.sh .cuttag{display:block;color:var(--no)}
+/* coverage isn't proof */
+.rot.cover .hd .enough{display:block;color:var(--maybe)}
+.rot.cover .dotc.r3{outline:1.5px dashed var(--maybe);outline-offset:3px}
+.rot.cover .rl .needs{display:block;color:var(--maybe)}
+.rot.cover .cu .dash{display:none}
+.rot.cover .cu .under{display:inline;color:var(--no)}
+
+/* chart */
+#p-chart svg{display:block;width:400px;height:280px;font-family:var(--sans)}
+#p-chart text{fill:var(--muted);font-size:12.5px}
+#p-chart .gl{stroke:var(--line-2);stroke-width:1}
+#p-chart .ax{stroke:var(--line);stroke-width:1.2}
+#p-chart .ln{fill:none;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.2s ease}
+#p-chart .lb{stroke:var(--f)} #p-chart .lc{stroke:var(--muted);stroke-width:2.3}
+#p-chart .on .ln{stroke-dashoffset:0}
+#p-chart .dt{fill:var(--f)} #p-chart .dtc{fill:var(--muted)}
+#p-chart .launch{stroke:var(--ink-2);stroke-width:1.3;stroke-dasharray:4 4}
+#p-chart .brk{fill:none;stroke-width:2.2}
+#p-chart .b-tot{stroke:var(--ink)} #p-chart .b-cmp{stroke:var(--muted)} #p-chart .b-f{stroke:var(--f)}
+#p-chart .t-ink{fill:var(--ink);font-weight:600} #p-chart .t-f{fill:var(--f);font-weight:600} #p-chart .t-m{fill:var(--muted);font-weight:600}
+#p-chart .ann rect{fill:var(--y-soft);stroke:var(--y);stroke-width:1.2}
+#p-chart .ann text{fill:var(--y);font-weight:600;font-size:12.5px}
+#p-chart .ann line{stroke:var(--y);stroke-width:1.3}
+#p-chart .ghostl{stroke:var(--f);stroke-width:2;stroke-dasharray:5 5;fill:none}
+#p-chart .qband{fill:var(--paper-2);stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4}
+#p-chart .t-q{fill:var(--ink-2);font-weight:600}
+
+/* diagnose backward */
+.qs{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.qs li{display:grid;grid-template-columns:20px 110px minmax(0,1fr);gap:8px;align-items:center;height:26px;padding:0 9px;border-radius:8px;font-size:13.5px;color:var(--muted);
+  transition:background .3s, color .3s}
+.qs li b{font:600 11.5px var(--mono)}
+.qs li strong{font-weight:600;color:var(--ink-2)}
+.qs li.sus{background:var(--no-soft);color:var(--no)} .qs li.sus strong{color:var(--no)}
+.qs.sweep li{background:var(--y-soft);color:var(--ink-2)} .qs.sweep li strong{color:var(--y)}
+.qs.sweep li:nth-child(2){transition-delay:.25s} .qs.sweep li:nth-child(3){transition-delay:.5s}
+.qs.sweep li:nth-child(4){transition-delay:.75s} .qs.sweep li:nth-child(5){transition-delay:1s}
+.qs.sweep li:nth-child(6){transition-delay:1.25s} .qs.sweep li:nth-child(7){transition-delay:1.5s}
+.qs.sweep li:nth-child(8){transition-delay:1.75s} .qs.sweep li:nth-child(9){transition-delay:2s}
+.qs-head{display:flex;justify-content:space-between;font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;padding:0 9px}
+.qs-head span:last-child{color:var(--y)}
+.qs.pick-build li.bld{background:var(--no-soft);color:var(--no)} .qs.pick-build li.bld strong{color:var(--no)}
+.qs.pick-req li.req{background:var(--maybe-soft);color:var(--maybe)} .qs.pick-req li.req strong{color:var(--maybe)}
+.qs.pick-end li.ver{background:var(--y-soft);color:var(--ink-2)} .qs.pick-end li.ver strong{color:var(--y)}
+
+/* choosing is its own call */
+#p-choose{flex-direction:row;align-items:center;gap:8px}
+.cc{flex:1;min-width:0;height:206px;border:1.5px solid var(--line);border-radius:13px;padding:14px 12px 12px;background:var(--paper);display:grid;align-content:start;gap:10px;position:relative;
+  transition:border-color .35s, opacity .35s, background .35s}
+.cc-lab{font:600 17px/1.2 var(--serif)}
+.cc ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.cc li{display:grid;grid-template-columns:15px minmax(0,1fr);gap:6px;font-size:12.5px;line-height:1.3;color:var(--ink-2)}
+.cc .i{font:700 13px/1.25 var(--sym);text-align:center}
+.cc .i.ok{color:var(--ok)} .cc .i.q{color:var(--maybe);font-family:var(--mono)} .cc .i.m{color:var(--muted);font-family:var(--mono)}
+.cc-pick{position:absolute;right:10px;top:-11px;font:600 10.5px var(--mono);background:var(--f);color:var(--on-f);border-radius:999px;padding:3px 9px;opacity:0;transform:translateY(4px);transition:opacity .3s, transform .3s}
+.vs{font:600 11px var(--mono);color:var(--muted)}
+#p-choose.decided .cc.b{border-color:var(--f);background:var(--f-soft);transition-delay:.9s}
+#p-choose.decided .cc.b .cc-pick{opacity:1;transform:none;transition-delay:.9s}
+#p-choose.decided .cc.n{opacity:.5;transition-delay:.9s}
+
+/* your call, in the text panel */
+.pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.opt{min-height:40px;min-width:48px;padding:0 13px;border-radius:10px;border:1.5px solid var(--f);background:var(--paper);color:var(--f);font-weight:600;font-size:14.5px;line-height:1.2}
+.opt:hover{background:var(--f-soft)}
+.fb{margin:10px 0 0;padding:1px 0 1px 11px;border-left:3px solid var(--ok);font-size:15px;line-height:1.45;color:var(--ink);animation:rise .3s ease both}
+.fb.meh{border-left-color:var(--maybe)}
+.fb b{font-weight:600}
+.nav .next.nudge{animation:nudge 1.5s ease 2}
+@keyframes nudge{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 0 6px var(--f-soft)}}
+
+/* ---------------- find the fault ---------------- */
+.fault{max-width:760px;margin:0 auto;padding-block:64px 8px;display:grid;gap:18px;scroll-margin-top:12px}
+.f-side{display:grid;gap:14px;align-content:start}
+.fault h2{font:600 clamp(28px,3.6vw,40px)/1.1 var(--serif);margin:0}
+.f-lede{margin:0;font-size:17px;line-height:1.5;color:var(--ink-2);max-width:48ch}
+.f-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:5px}
+.f-tab{min-height:50px;border:0;border-radius:10px;background:none;padding:6px 10px;text-align:left;display:grid;gap:1px;align-content:center;color:var(--muted)}
+.f-tab span{font-weight:600;font-size:15px;line-height:1.2}
+.f-tab small{font:500 11.5px var(--mono);line-height:1.2}
+.f-tab[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(21,32,28,.12)}
+.f-tab[aria-selected="true"] small{color:var(--f)}
+#tab-find[aria-selected="true"] small{color:var(--y)}
+.f-board{display:grid;gap:8px;align-content:start;min-width:0}
+.f-ctl{position:sticky;top:env(safe-area-inset-top, 0px);z-index:3;display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:60px;
+  padding:8px 0;background:var(--ground);box-shadow:0 10px 12px -12px rgba(21,32,28,.35)}
+.f-chip{min-height:42px;padding:0 15px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);font-weight:600;font-size:14.5px;color:var(--ink-2)}
+.f-chip[aria-pressed="true"]{border-color:var(--no);background:var(--no-soft);color:var(--no)}
+@media (max-width:560px){
+  .f-ctl.chips{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;
+    margin-inline:calc(-1 * var(--gut));padding-inline:var(--gut);scroll-padding-inline:var(--gut)}
+  .f-ctl.chips::-webkit-scrollbar{display:none}
+  .f-chip{flex:none;scroll-snap-align:start}
+}
+.f-btn{min-height:44px;padding:0 18px;border-radius:12px;border:0;background:var(--y);color:var(--paper);font-weight:600;font-size:15px}
+.f-link{min-height:44px;padding:0 6px;border:0;background:none;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:14.5px}
+.f-status{font:600 12.5px var(--mono);color:var(--muted);letter-spacing:.02em}
+.f-cap{margin:0;min-height:3em;font-size:16px;line-height:1.5;color:var(--ink)}
+.f-cap b{font-weight:600}
+.f-note{margin:0;font-size:13.5px;color:var(--muted)}
+.chain-wrap{position:relative;padding:2px 0}
+.chain{list-style:none;margin:0;padding:0;display:grid;gap:3px}
+.rail,.walk,.flow{position:absolute;left:21px;top:0;height:0;width:2px;border-radius:2px;pointer-events:none;transition:opacity .3s}
+.rail{background:var(--line)}
+.chain-wrap.back .rail{background:var(--y-soft)}
+.walk{left:20px;width:4px;background:var(--y);opacity:0;transition:height .45s ease, opacity .3s}
+.walk.on{opacity:.75}
+.flow{left:20px;width:4px;background:var(--no);transform:scaleY(0);transform-origin:top;transition:transform .9s cubic-bezier(.4,.1,.2,1)}
+.flow.on{transform:scaleY(1)}
+.chain-wrap.flipping .rail,.chain-wrap.flipping .walk,.chain-wrap.flipping .flow{opacity:0;transition:none}
+.stop{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;column-gap:6px;align-items:center;min-height:42px;padding:4px 10px 4px 0;
+  border-radius:12px;border:1.5px solid transparent;transition:background .3s var(--d,0s), border-color .3s var(--d,0s), opacity .3s}
+.stop .dot{justify-self:center;width:24px;height:24px;border-radius:50%;background:var(--paper);border:2px solid var(--line);display:grid;place-items:center;
+  font:600 11px/1 var(--mono);color:var(--muted);position:relative;z-index:1;transition:background .3s var(--d,0s), border-color .3s var(--d,0s), color .3s var(--d,0s), transform .3s var(--d,0s)}
+.chain-wrap:not(.back) .stop:not(.symp) .dot{font-size:0}
+.stop{scroll-margin-top:84px;scroll-margin-bottom:16px}
+.st-name{font-weight:600;font-size:15.5px;line-height:1.25;color:var(--ink)}
+.st-tag{font:600 11.5px var(--mono);color:var(--muted);white-space:nowrap;text-align:right;transition:color .3s var(--d,0s)}
+.st-det{grid-column:2 / -1;min-width:0}
+.st-det:empty{display:none}
+.st-det p{margin:4px 0 2px}
+.stop.symp{background:var(--maybe-soft)}
+.stop.symp .dot{border-radius:7px;border-color:var(--maybe);background:var(--maybe);color:var(--paper);font-size:13px}
+.stop.symp .st-name{color:var(--maybe)}
+.stop.symp .st-tag{color:var(--maybe)}
+/* watch mode */
+.stop.up{opacity:.45}
+.stop.origin{background:var(--no-soft);border-color:var(--no)}
+.stop.origin .dot{background:var(--no);border-color:var(--no);transform:scale(1.15)}
+.stop.origin .st-tag{color:var(--no)}
+.stop.shows .dot{border-color:var(--maybe);background:var(--maybe-soft);transform:scale(1.1)}
+.stop.shows .st-tag{color:var(--maybe)}
+.stop.carry .dot{border-color:var(--no)}
+.stop.symp.hit{animation:hit .7s ease .85s 1 both}
+@keyframes hit{0%{transform:none}35%{transform:scale(1.025)}100%{transform:none}}
+.st-what{font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.st-what b{font-weight:600;color:var(--ink)}
+.st-win{font-weight:600;font-size:14.5px;color:var(--no)}
+/* find mode */
+.stop.todo{opacity:.4}
+.stop.active{background:var(--y-soft);border-color:var(--y)}
+.stop.active .dot{background:var(--y);border-color:var(--y);color:var(--paper)}
+.stop.ok .dot{border-color:var(--ok);color:var(--ok)}
+.stop.ok .st-tag{color:var(--ok);font:700 15px var(--sym)}
+.stop.off .dot{border-color:var(--maybe);background:var(--maybe-soft);color:var(--maybe)}
+.stop.found{background:var(--no-soft);border-color:var(--no)}
+.stop.found .dot{background:var(--no);border-color:var(--no);color:var(--paper)}
+.stop.found .st-tag{color:var(--no)}
+.st-q{font-size:14px;color:var(--ink-2);font-style:italic}
+.st-clue{font-size:15px;line-height:1.45;color:var(--ink);display:grid;grid-template-columns:18px minmax(0,1fr);gap:4px}
+.st-clue .sym{font-size:14px;line-height:1.5}
+.st-clue.ok .sym{color:var(--ok)} .st-clue.off .sym{color:var(--maybe)}
+.stop.found .st-clue .sym{color:var(--no)}
+.st-fb{font-size:13.5px;line-height:1.4;color:var(--maybe);font-weight:500}
+.st-act{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.st-act .claim{min-height:40px;padding:0 14px;border-radius:10px;border:1.5px solid var(--no);background:var(--paper);color:var(--no);font-weight:600;font-size:14.5px}
+.st-act .walk-on{min-height:40px;padding:0 14px;border-radius:10px;border:0;background:var(--y);color:var(--paper);font-weight:600;font-size:14.5px}
+.st-end{align-self:center;font:500 12.5px var(--mono);color:var(--muted)}
+.st-tag .claim.sm{min-height:34px;padding:0 10px;border-radius:9px;border:1.5px solid var(--no);background:var(--paper);color:var(--no);font:600 13px var(--sans)}
+@media (min-width:900px){
+  .fault{max-width:1120px;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);column-gap:56px;align-items:start}
+  .f-side{position:sticky;top:24px}
+}
+
+/* ---------------- recap ---------------- */
+.recap{max-width:760px;margin:0 auto;padding-block:48px 16px;display:grid;gap:24px;scroll-margin-top:16px}
+.recap h2{font:600 clamp(28px,3.6vw,40px)/1.1 var(--serif);margin:0}
+.rlist{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.rlist li{display:grid;grid-template-columns:126px minmax(0,1fr);gap:16px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:17px;line-height:1.45}
+.rlist li b{font-weight:600}
+.glyph{font:600 12.5px/1 var(--mono);color:var(--f);background:var(--f-soft);border-radius:10px;min-width:126px;height:46px;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;overflow:visible}
+.glyph sup{font-size:.68em;line-height:1;position:relative;top:-.34em}
+.loop{font:500 clamp(22px,2.6vw,30px)/1.3 var(--serif);margin:0;text-wrap:balance}
+.loop span{color:var(--f)}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links a{display:inline-flex;align-items:center;min-height:48px;padding:12px 18px;border-radius:12px;border:1px solid var(--line);background:var(--paper);text-decoration:none;color:var(--ink);font-weight:500}
+.links a.primary{background:var(--f);border-color:var(--f);color:var(--on-f)}
+.again-row{display:flex;flex-wrap:wrap;gap:4px 24px}
+.again{border:0;background:none;padding:10px 0;min-height:44px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:15px;justify-self:start}
+.fine{font-size:13px;color:var(--muted);margin:0}
+@media (max-width:560px){
+  .rlist li{grid-template-columns:minmax(0,1fr);gap:10px;font-size:16px}
+  .glyph{justify-self:start;min-width:0;width:auto;padding-inline:12px;height:36px}
+}
+@media (hover: none), (pointer: coarse){
+  .nav .keys{display:none!important}
+}
+@media (min-width:700px) and (max-aspect-ratio:6/5){
+  .textpanel{height:clamp(200px, 25svh, 270px);padding:18px 22px 14px}
+  .tp-text{font-size:20px}
+}
+@media (min-width:560px) and (min-aspect-ratio:6/5){
+  .fb{font-size:17px;max-width:34ch}
+  .opt{font-size:16px;min-height:44px;padding:0 16px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+
+
+/* ---------------- run a fit check ---------------- */
+.wb{max-width:1120px;margin:0 auto;padding-block:72px 16px;display:grid;gap:20px;scroll-margin-top:12px}
+.wb-head{display:grid;gap:12px;max-width:62ch}
+.wb h2{font:600 clamp(28px,3.6vw,40px)/1.1 var(--serif);margin:0;text-wrap:balance}
+.wb-lede{margin:0;font-size:17px;line-height:1.5;color:var(--ink-2)}
+.wb-grid{display:grid;gap:14px;align-items:start;min-width:0}
+.wb-in{background:var(--paper);border:1px solid var(--line);border-radius:16px;min-width:0}
+.wb-in > summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:1px 12px;min-height:58px;padding:10px 16px}
+.wb-in > summary::-webkit-details-marker{display:none}
+.wb-in > summary b{font-weight:600;font-size:15.5px}
+.wb-in > summary small{grid-column:1;font:500 12px var(--mono);color:var(--muted)}
+.wb-in > summary small.draft{color:var(--f)}
+.wb-in > summary i{grid-column:2;grid-row:1 / span 2;font:600 20px/1 var(--mono);font-style:normal;color:var(--muted)}
+.wb-in[open] > summary i::before{content:"–"}
+.wb-in:not([open]) > summary i::before{content:"+"}
+.wb-fields{display:grid;gap:14px;padding:2px 16px 16px}
+.wb-f{display:grid;gap:6px;margin:0}
+.wb-f > span{font:600 11.5px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.wb-f > span b{font-size:13px;letter-spacing:0;text-transform:none;color:var(--f);margin-right:7px}
+.wb-f small{font-size:12.5px;line-height:1.4;color:var(--muted)}
+.wb input,.wb textarea,.wb select{width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;background:var(--paper-2);color:var(--ink);font:400 15px/1.4 var(--sans);padding:9px 11px}
+.wb textarea{resize:vertical;min-height:100px}
+.wb textarea.short{min-height:0;resize:none}
+.wb input:focus-visible,.wb textarea:focus-visible,.wb select:focus-visible{outline:2px solid var(--y);outline-offset:1px}
+.wb-card{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);min-width:0}
+.wb-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:6px;background:var(--paper-2);border-bottom:1px solid var(--line);border-radius:16px 16px 0 0}
+.wb-tab{min-height:52px;border:0;border-radius:10px;background:none;padding:6px 10px;text-align:left;display:grid;gap:1px;align-content:center;color:var(--muted)}
+.wb-tab b{font-size:15px;line-height:1.2;font-weight:600}
+.wb-tab small{font:500 11.5px var(--mono)}
+.wb-tab[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(21,32,28,.12)}
+.wb-tab[aria-selected="true"] small{color:var(--f)}
+.wb-body{padding:14px;display:grid;gap:12px;min-width:0}
+.wb-legend{margin:0;font-size:13px;line-height:1.55;color:var(--muted)}
+.wb-scroll{overflow-x:auto;overscroll-behavior-x:contain;min-width:0}
+.wb-t{border-collapse:separate;border-spacing:0;width:100%;font-size:14px}
+.wb-t th,.wb-t td{padding:0;border-bottom:1px solid var(--line-2);text-align:center;vertical-align:middle}
+.wb-t thead th{padding:6px 3px 8px;border-bottom:1.5px solid var(--line);font:600 12.5px var(--mono);vertical-align:bottom;color:var(--ink)}
+.wb-t thead th small{display:block;margin-top:2px;font:400 11px/1.2 var(--sans);color:var(--muted);overflow-wrap:anywhere}
+.wb-t .rq{position:sticky;left:0;z-index:1;background:var(--paper);text-align:left;padding:8px 8px 8px 0;font:400 14px/1.3 var(--sans);min-width:104px;max-width:210px}
+.wb-t thead .rq{font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.rid{display:block;font:600 10.5px var(--mono);color:var(--muted);margin-bottom:1px}
+.stc{display:inline-flex;align-items:center;margin-top:6px;min-height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--paper-2);font:600 10.5px var(--mono);letter-spacing:.03em;color:var(--muted)}
+.stc.must{border-color:var(--f);background:var(--f-soft);color:var(--f)}
+.cb,.rb{width:100%;min-width:44px;min-height:48px;border:0;background:none;display:grid;place-items:center;border-radius:8px}
+.cb:hover,.rb:hover{background:var(--paper-2)}
+.m{font:700 17px/1 var(--sym);white-space:nowrap}
+.m.y,.m.a{color:var(--ok)} .m.n,.m.q{color:var(--no)}
+.m sup{font:700 10px var(--mono);color:var(--maybe);margin-left:1px}
+.m.rz{font:500 15px var(--mono);color:var(--muted)}
+.m.dot{color:var(--f)}
+.wb-legend .m{font-size:14px}
+.wb-t td.el,.wb-t thead th.el{background:var(--f-soft)}
+.wb-t thead th.el{color:var(--f)}
+.wb-t tfoot th,.wb-t tfoot td{border-bottom:0;padding:10px 2px}
+.wb-t tfoot .rq{font:600 12.5px/1.3 var(--sans);color:var(--ink-2)}
+.vd{font:700 18px/1 var(--sym)} .vd.y{color:var(--ok)} .vd.n,.vd.q{color:var(--no)}
+.wb-t tfoot small{display:block;margin-top:3px;font:600 10px var(--mono);color:var(--maybe)}
+.wb-gate{display:grid;gap:10px;padding:12px 14px;border-radius:12px;background:var(--paper-2);border:1px solid var(--line)}
+.wb-gate p{margin:0;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.wb-gate p b{color:var(--ink);font-weight:600}
+.wb-gate .wb-miss{font-size:13.5px;color:var(--muted)}
+.wb-go{justify-self:start;min-height:44px;padding:0 16px;border-radius:11px;border:0;background:var(--f);color:var(--on-f);font-weight:600;font-size:15px}
+.wb-t2 tr.orph > *{background:var(--no-soft)}
+.wb-t2 .rq em{display:block;font:600 10.5px var(--mono);font-style:normal;color:var(--no);margin-top:2px}
+.wb-t2 thead th.gap{color:var(--no);box-shadow:inset 0 2px 0 var(--no)}
+.wb-key{margin:0;font-size:12.5px;line-height:1.55;color:var(--muted)}
+.wb-key b{font:600 11px var(--mono);color:var(--ink-2)}
+.wb-diag{display:grid;gap:8px}
+.dg{border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:var(--paper-2);font-size:14px;line-height:1.45;color:var(--ink-2)}
+.dg b{display:block;font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;color:var(--muted)}
+.dg.bad{border-color:var(--no);background:var(--no-soft)} .dg.bad b{color:var(--no)}
+.dg.warn{border-color:var(--maybe);background:var(--maybe-soft)} .dg.warn b{color:var(--maybe)}
+.dg.good b{color:var(--ok)}
+.dg.note{background:none}
+.wb-exrow{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.wb-exrow label{font:600 11.5px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.wb-exrow select{width:auto;flex:1 1 180px;max-width:100%;min-height:44px}
+.wb-pd > summary{cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:14.5px;color:var(--y);font-weight:500}
+.wb-pd textarea{margin-top:6px}
+.wb-foot{border-top:1px solid var(--line);padding:12px 14px 14px;display:grid;gap:10px}
+.wb-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.wb-actions button,.wb-confirm button{min-height:44px;padding:0 15px;border-radius:11px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-weight:600;font-size:14.5px}
+.wb-actions .pri{background:var(--f);border-color:var(--f);color:var(--on-f)}
+.wb-confirm .danger{border-color:var(--no);color:var(--no)}
+.wb-flash{font:500 13px var(--mono);color:var(--f)}
+.wb-confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border:1px solid var(--no);border-radius:11px;background:var(--no-soft);font-size:14.5px;color:var(--ink)}
+.wb-confirm > span{flex:1 1 200px}
+.wb-save{margin:0;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.wb-md > summary{cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:14px;color:var(--muted)}
+.wb-md textarea{min-height:240px;font:400 12.5px/1.45 var(--mono);white-space:pre}
+/* judging a cell */
+.wb-pop{position:absolute;z-index:6;width:min(300px, calc(100% - 20px));background:var(--paper);border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 18px 40px -16px rgba(21,32,28,.5);padding:10px;display:grid;gap:6px}
+.wb-pop-h{margin:0 2px 2px;font:600 12px/1.35 var(--mono);color:var(--muted)}
+.wb-pop button{min-height:46px;border:1px solid var(--line);border-radius:10px;background:var(--paper);display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;
+  column-gap:4px;text-align:left;padding:5px 10px;font-size:15px;color:var(--ink)}
+.wb-pop button .m{grid-row:1 / span 2;justify-self:center}
+.wb-pop button small{grid-column:2;font-size:12px;line-height:1.3;color:var(--muted)}
+.wb-pop button[aria-pressed="true"]{border-color:var(--f);background:var(--f-soft)}
+@media (max-width:560px){
+  .wb-pop{position:fixed;left:0!important;right:0;bottom:0;top:auto!important;width:auto;border-radius:18px 18px 0 0;
+    padding:14px 16px calc(16px + env(safe-area-inset-bottom, 0px));box-shadow:0 -14px 36px -12px rgba(21,32,28,.45)}
+}
+@media (min-width:900px){
+  .wb-grid{grid-template-columns:minmax(260px,.6fr) minmax(0,1.4fr)}
+  .wb-in{position:sticky;top:16px}
+}
+/* phones: option names only in the header, with a key under the table */
+.wb-key1{display:none}
+@media (max-width:560px){
+  .wb-t thead th small{display:none}
+  .wb-key1{display:block}
+}
+/* repair lines in the game */
+.st-fix{font-size:14px;line-height:1.45;color:var(--ink-2)}
+.st-fix b{color:var(--f);font-weight:600}
+
+/* Readable small-screen scenes, navigation, and workbench review states. */
+.skip-link{position:fixed;top:8px;left:8px;transform:translateY(-160%);z-index:30;background:var(--paper);color:var(--ink);padding:12px 18px;border:2px solid var(--y);border-radius:10px}
+.skip-link:focus{transform:none}
+.hero-links{display:flex;flex-wrap:wrap;gap:4px 18px;align-items:center}
+.hero-links a{display:inline-flex;align-items:center;min-height:44px;font-size:15px;text-underline-offset:4px}
+.fiction{margin:0;max-width:58ch;color:var(--muted);font-size:13.5px}
+.no-js{padding:16px;border:1px solid var(--line);background:var(--paper)}
+.site-footer{max-width:1120px;margin:48px auto 0;display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;font-size:14px;color:var(--muted)}
+.site-footer a{min-height:44px;display:inline-flex;align-items:center}
+.site-footer span{align-self:center}
+.seg{height:30px}
+.seg::before,.seg i{top:13px}
+.player{height:calc(100svh - env(safe-area-inset-top,0px))}
+.story-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px}
+.story-tools button{border:1px solid var(--line);background:var(--paper);border-radius:8px;min-height:32px;padding:4px 10px;color:var(--ink-2)}
+.story-tools a{min-height:32px;display:inline-flex;align-items:center;text-underline-offset:3px}
+.tp-body{cursor:default}
+.scene-readable{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.story.reader .art{display:none}
+.story.reader .stagebox{overflow:auto;overscroll-behavior:contain}
+.story.reader .scene-readable{position:relative;width:auto;height:auto;overflow:visible;clip:auto;clip-path:none;white-space:normal;padding:18px;font-size:15px;line-height:1.5}
+.sc-title{font:600 21px/1.2 var(--serif);margin:0 0 14px;text-wrap:balance}
+.sc-spine{display:grid;gap:10px}
+.sc-card{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);margin:0 0 10px}
+.sc-card b{font-size:14px;color:var(--f)}
+.sc-card p{margin:5px 0 0}
+.sc-list{padding-left:24px;margin:0 0 14px}.sc-list li{padding:4px 0}
+.sc-scroll{overflow:auto;max-width:100%;margin:0 0 14px;overscroll-behavior-x:contain;border:1px solid var(--line);border-radius:10px}
+.sc-scroll table{border-collapse:separate;border-spacing:0;min-width:450px;width:100%;font-size:14px}
+.sc-scroll caption{text-align:left;padding:10px;font-size:13px;color:var(--muted)}
+.sc-scroll th,.sc-scroll td{padding:10px;border-top:1px solid var(--line);text-align:center;vertical-align:top}
+.sc-scroll th{background:var(--paper-2);font-weight:600}.sc-scroll tbody th{min-width:150px;max-width:190px;text-align:left}
+.sc-scroll th small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:4px}
+.sc-scroll-hint,.table-hint{font-size:12.5px;line-height:1.45;color:var(--muted);margin:0 0 8px}
+.wb input,.wb textarea,.wb select{font-size:16px}
+.row-controls{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.stc{margin-top:0;min-height:36px;letter-spacing:0;padding-inline:8px}
+.kindc{font-size:11.5px;min-height:32px;border:0;border-bottom:1px dashed var(--line);padding:3px 4px;background:none;color:var(--y)}
+.wb-t{min-width:390px}.wb-t .rq{min-width:135px}.wb-t2{min-width:430px}
+.wb-t .rq small{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:4px}
+.wb-shade{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:20}
+.wb-pop{position:fixed;z-index:21;width:min(340px,calc(100vw - 16px));max-height:calc(100dvh - 16px);overflow-y:auto;overscroll-behavior:contain}
+.pop-heading{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.wb-pop #wb-pop-close{display:block;flex:none;min-width:36px;min-height:36px;padding:0;font-size:24px;text-align:center}
+.note-label{font-size:13px;color:var(--ink-2);font-weight:600}
+.wb-pop textarea{min-height:90px;resize:vertical;font-size:16px}
+#wb-pop-status{margin:0;font-size:13px;color:var(--no)}
+.save-error{color:var(--no);font-weight:500}
+#print-story{display:none}
+@media (max-width:699px), (max-height:520px){
+  .story .art{display:none}
+  .story .stagebox{overflow:auto;overscroll-behavior:contain}
+  .story .scene-readable{position:relative;width:auto;height:auto;overflow:visible;clip:auto;clip-path:none;white-space:normal;padding:16px;font-size:15px;line-height:1.5}
+  #view-readable{display:none}
+  .story-tools{justify-content:flex-end}
+  .story-tools a{min-height:28px}
+  .textpanel{height:clamp(205px,34svh,300px)}
+  .tp-text{font-size:16px}
+  .nav .back,.nav .next,.opt{min-height:44px}
+}
+@media (min-width:560px) and (min-aspect-ratio:6/5){.textpanel{height:auto}}
+@media (max-width:560px){
+  .wb-pop{width:auto;left:0!important;right:0;bottom:0;top:auto!important;border-radius:18px 18px 0 0;max-height:calc(100dvh - 12px)}
+  .sc-title{font-size:20px}.hero{min-height:92svh;padding-block:32px}
+  .wb-tab{padding:8px 6px}.wb-tab small{font-size:11px}.wb-body{padding:12px}
+}
+@media (max-height:520px) and (min-aspect-ratio:6/5){
+  .player{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 16px}
+  .textpanel{align-self:stretch;min-height:0;grid-template-rows:minmax(0,1fr) auto}
+  .tp-body{overflow:auto;overscroll-behavior:contain}.tp-text{font-size:16px}
+  .topbar{gap:2px}.story-tools{display:none}.seg{height:26px}.seg::before,.seg i{top:11px}
+}
+@media print{
+  :root{--ground:white;--paper:white;--paper-2:#f5f5f5;--ink:#111;--ink-2:#222;--muted:#444;--line:#bbb;--line-2:#ddd;--f:#18513d;--y:#234b80}
+  body{padding:0;background:white;color:#111;font-size:11pt}
+  .hero{display:block;min-height:0;padding:0 0 20px}.hero h1{font-size:28pt;max-width:none}.formula{font-size:40pt;margin-bottom:16px}.hero p{margin-block:8px}
+  .story,.fault,.wb,.start,.hero-links,.again-row,.links,.site-footer,.skip-link,.fiction{display:none!important}
+  .recap{padding:20px 0;max-width:none}.rlist li{break-inside:avoid;font-size:11pt;display:block;padding:8px}.glyph{display:none}
+  #print-story{display:block}.print-step{margin:14px 0;break-inside:avoid}.print-step h3{font-size:12pt;margin:0 0 6px}.print-step p{margin:5px 0}
+  .sc-scroll{overflow:visible}.sc-scroll table{min-width:0;font-size:10pt}.sc-scroll-hint{display:none}
+}
+
+
+
+/* ---------------- final synthesis: visual-first responsive story ---------------- */
+@media (max-width:699px){
+  .player{grid-template-rows:auto minmax(138px,1fr) auto;gap:8px;padding-top:8px}
+  .story .art{display:block}
+  .story .stagebox{overflow:hidden;min-height:138px}
+  .story:not(.reader) .scene-readable{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;padding:0}
+  .story.reader .stagebox{overflow:auto;overscroll-behavior:contain}
+  .story.reader .scene-readable{position:relative;width:auto;height:auto;overflow:visible;clip:auto;clip-path:none;white-space:normal;padding:16px;font-size:15px;line-height:1.45}
+  #view-readable{display:inline-flex}
+  .story-tools{justify-content:space-between;gap:8px}
+  .story-tools button,.story-tools a{font-size:12px;min-height:30px}
+  .textpanel{height:auto;max-height:none;padding:11px 13px 10px;gap:8px}
+  .tp-body{overflow:visible;min-height:auto}
+  .tp-text{font-size:clamp(14px,4vw,16px);line-height:1.42}
+  .tp-aside{font-size:11.5px;line-height:1.35;margin-top:6px}
+  .tp-part{font-size:10.5px;margin-bottom:4px}
+  .tp-hint{font-size:12px;margin-top:5px}
+  .nav{gap:8px}
+  .nav .back,.nav .next,.opt{min-height:42px}
+  .nav .next{padding-inline:16px}
+}
+@media (max-width:390px){
+  .story-tools a{display:none}
+  .tp-text{font-size:clamp(13.75px,4.05vw,15.5px);line-height:1.38}
+  .textpanel{padding:9px 11px 8px}
+  .stagebox{border-radius:14px}.textpanel{border-radius:14px}
+}
+@media (max-height:590px) and (max-aspect-ratio:6/5){
+  .player{grid-template-rows:auto minmax(118px,1fr) auto;gap:6px;padding-top:5px}
+  .story .stagebox{min-height:118px}
+  .tp-text{font-size:13.75px;line-height:1.34}
+  .tp-aside{font-size:10.75px}
+  .nav .back,.nav .next,.opt{min-height:38px}
+  .seg{height:24px}.seg::before,.seg i{top:10px}
+}
+@media (max-height:520px) and (min-aspect-ratio:6/5){
+  .story .art{display:block}
+  .story:not(.reader) .scene-readable{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;padding:0}
+  #view-readable{display:none}
+  .tp-body{overflow:auto}
+  .tp-text{font-size:14px;line-height:1.35}
+}
+
+/* Fixed artboard labels should accommodate real text instead of clipping it. */
+.rot > div{min-height:34px;height:auto;padding-block:3px}
+.rot .hd{min-height:48px;height:auto;padding-block:4px}
+.rot .hd small{white-space:normal;overflow:visible}
+.rc{min-height:28px;height:auto;padding-block:3px;line-height:1.15}
+.rc.hide{min-height:0;padding-block:0}
+.rchips{top:150px}
+
+</style>
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the guide</a>
+<noscript><div class="no-js">The interactive story and workbench need JavaScript. You can still read the recap below and the linked article.</div><style>.story,.fault,.wb,.start,.story-tools,.hero-links a:not([href="#recap"]),.recap .links,.again-row{display:none!important}</style></noscript>
+
+<header class="hero" id="top">
+  <p class="eyebrow">A visual introduction</p>
+  <p class="formula" aria-label="x, f of, y"><span class="fx">x</span><span class="ar"> → </span><span class="ff">f()</span><span class="ar"> → </span><span class="fy">y</span></p>
+  <h1>A design can pass every test we give it and still fail to produce the change we wanted.</h1>
+  <p class="lede">The Fit Check Error Model makes the chain from framing to outcome inspectable, one idea at a time, with one example all the way through. Scroll, or tap Next.</p>
+  <p class="by">By Matt Lane · <a href="https://prodsense.substack.com/p/design-as-funtions" target="_blank" rel="noopener noreferrer">Read the full article ↗</a></p>
+  <button type="button" class="start" id="start">Start <small id="start-n">32 short steps</small></button>
+  <nav class="hero-links" aria-label="Explore the guide"><a href="../">← Matt Lane</a><a href="#recap">Read the recap</a><a href="#fault">Try the diagnosis exercise</a><a href="#workbench">Use the workbench</a></nav>
+  <p class="fiction">The catalog team and all numbers in this guide are fictional teaching examples.</p>
+</header>
+
+<main id="main" tabindex="-1">
+<section class="story" id="story" aria-label="The Fit Check, step by step">
+  <div class="player" id="player">
+    <div class="topbar">
+      <div class="segs" id="segs" role="group" aria-label="Jump to a part"></div>
+      <div class="meta"><span id="meta-part"><b>Part 1</b> · The claim</span><span class="count" id="meta-count">1 / 32</span></div>
+      <div class="story-tools"><button type="button" id="view-readable" aria-pressed="false">Readable view</button><a href="#recap">Skip to recap ↓</a></div>
+    </div>
+
+    <div class="stagebox" id="stagebox" tabindex="0" role="region" aria-label="Explanation of this step">
+      <div class="scene-readable" id="scene-readable"></div>
+      <div class="art" id="art" aria-hidden="true">
+        <div class="a-top">
+          <div class="clock fade" id="clock"><b>45 min</b><span>per batch, today</span></div>
+          <div class="bracket fade" id="bracket"><span>a claim to test</span></div>
+          <div class="node nx fade" id="nx"><b>x</b><small id="sub-x">45 min a batch</small></div>
+          <i class="arrow a1 fade" id="ar1"></i>
+          <div class="node nf fade" id="nf"><b>f()</b><small id="sub-f">what they’ll build</small></div>
+          <i class="arrow a2 fade" id="ar2"></i>
+          <div class="node ny fade" id="ny"><b>y</b><small id="sub-y">right, with less work</small></div>
+          <span class="badge fitb fade" id="fitb">fit <span class="sym">✓</span> design</span>
+          <span class="badge effb fade" id="effb">effect: partly</span>
+        </div>
+
+        <div class="a-detail">
+          <div class="pnl fade" id="p-tiles">
+            <div class="tiles" id="tiles"></div>
+            <p class="cap">the same change, 200 times</p>
+          </div>
+
+          <div class="pnl fade" id="p-rm">
+            <div class="box rbox" id="rbox">
+              <h4><span>R · requirements</span><span class="ckh"><i>design</i><i>built</i></span><span class="vtag">v2</span></h4>
+              <div class="rc"><span>Change the right items</span><span class="src">from y</span><span class="ck c1">✓</span><span class="ck c2">✓</span></div>
+              <div class="rc"><span>Leave the rest alone</span><span class="src">from x</span><span class="ck c1">✓</span><span class="ck c2">✓</span></div>
+              <div class="rc"><span>When used: 200 items ≤ 10 min</span><span class="src">from the gap</span><span class="ck c1">✓</span><span class="ck c2">✓</span></div>
+              <div class="rc hide" id="r4"><span>Keep the import format</span><span class="src">imposed</span><span class="ck c1"></span><span class="ck c2"></span></div>
+              <div class="rc slot hide" id="slot"><span id="slot-t"><span class="q">?</span>nothing yet</span><span class="src">from M</span><span class="ck c1"></span><span class="ck c2"></span></div>
+            </div>
+            <div class="side">
+              <div class="box fade" id="meterbox">
+                <h4><span>Effect</span><span>did reality move?</span></h4>
+                <div class="meter" id="meter"><div class="trk"></div><div class="goal"></div><div class="mkr"><span id="mk-t">45 min</span></div></div>
+                <div class="ends"><span>45 min today</span><span>goal: 10 min</span></div>
+              </div>
+              <div class="box fade" id="srcbox">
+                <ul class="srclist" aria-label="Where requirements come from">
+                  <li><b>from x</b>the situation</li>
+                  <li><b>from y</b>the outcome</li>
+                  <li><b>from the gap</b>what the change needs</li>
+                  <li><b>imposed</b>a contract or policy</li>
+                  <li class="m"><b>from M</b>how the world works</li>
+                </ul>
+              </div>
+              <div class="box mbox fade" id="mbox">
+                <h4><span>M · how the world works</span></h4>
+                <p class="belief">Editors avoid bulk changes they can’t undo.</p>
+                <p class="mnote" id="mnote">This never made it into R.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pnl fade" id="p-frame">
+            <div class="fc good" id="fc-good">
+              <span class="lab" id="lab-good">One way to write it</span>
+              <q>The same edit across 200 items takes 45 minutes.</q>
+              <div class="chips fade" id="chips-good"><span class="chip">multi-select</span><span class="chip">rule</span><span class="chip">import</span><span class="chip">fix upstream</span></div>
+              <p class="note fade" id="note-good">The reason is kept. Every option is still open.</p>
+            </div>
+            <div class="fc bad" id="fc-bad">
+              <span class="lab" id="lab-bad">Another way</span>
+              <q>We need bulk editing.</q>
+              <div class="chips fade" id="chips-bad"><span class="chip">multi-select</span><span class="chip">rule</span><span class="chip">import</span><span class="chip x">fix upstream</span></div>
+              <p class="note fade" id="note-bad">The reason is gone. Fixes that aren’t bulk edits are ruled out unseen.</p>
+            </div>
+          </div>
+
+          <div class="pnl fade" id="p-grid">
+            <div class="og fade" id="og"><div class="grid" id="grid"></div><p class="note2">R1 to R4 are must-haves · R5 is a nice-to-have</p></div>
+            <div class="rot-wrap fade" id="rot">
+              <p class="rot-title"><span class="turn">↻</span>B’s parts × R1–R3 · teaching excerpt</p>
+              <div class="rot" id="rotgrid"></div>
+              <p class="note2">R4: separate compatibility check · R5: nice-to-have. Every part needs a reason.</p>
+            </div>
+          </div>
+
+          <div class="pnl fade" id="p-choose">
+            <div class="cc b">
+              <span class="cc-pick">chosen</span>
+              <span class="cc-lab">Build B</span>
+              <ul>
+                <li><span class="i ok">✓</span>clears every must-have</li>
+                <li><span class="i ok">✓</span>fits the 6 weeks they’ll give it</li>
+                <li><span class="i q">~</span>some risk they accept</li>
+              </ul>
+            </div>
+            <span class="vs">or</span>
+            <div class="cc n">
+              <span class="cc-lab">Build nothing</span>
+              <ul>
+                <li><span class="i m">–</span>batches likely stay near 45 min</li>
+                <li><span class="i m">–</span>no new build investment</li>
+                <li><span class="i m">–</span>current costs and risks remain</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="pnl fade" id="p-chart">
+            <svg id="chart" viewBox="0 0 400 290" width="400" height="290"></svg>
+          </div>
+
+          <div class="pnl fade" id="p-diag">
+            <p class="qs-head"><span>Walk backward</span><span>start at 1</span></p>
+            <ol class="qs" id="qs">
+              <li class="ver"><b>1</b><strong>Verdict</strong><span>Was the conclusion sound?</span></li>
+              <li><b>2</b><strong>Evidence</strong><span>Did we measure the right things?</span></li>
+              <li><b>3</b><strong>Realized fit</strong><span>Did the built thing meet R?</span></li>
+              <li class="bld"><b>4</b><strong>Build</strong><span>Was it built as designed?</span></li>
+              <li><b>5</b><strong>Choice</strong><span>Was picking B justified?</span></li>
+              <li><b>6</b><strong>Design fit</strong><span>Was it accepted too easily?</span></li>
+              <li><b>7</b><strong>Options</strong><span>What never got considered?</span></li>
+              <li class="req"><b>8</b><strong>Requirements</strong><span>Anything missing or wrong?</span></li>
+              <li><b>9</b><strong>Frame</strong><span>Are x, y and M still right?</span></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="textpanel">
+      <div class="tp-body" id="tp-body" aria-live="polite"></div>
+      <div class="nav">
+        <button type="button" class="back" id="back" aria-label="Previous step">←</button>
+        <span class="keys">or use ← → keys</span>
+        <button type="button" class="next" id="next">Next <span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="fault" id="fault" aria-labelledby="fault-h">
+  <div class="f-side">
+    <p class="eyebrow">Your turn</p>
+    <h2 id="fault-h">Find the fault</h2>
+    <p class="f-lede">In the story, a missing requirement caused the miss. But the same visible symptom—<b>effect only partly</b>—can begin at different points in the chain. Watch examples travel forward, then hide one and diagnose backward.</p>
+    <div class="f-tabs" role="tablist" aria-label="Mode">
+      <button type="button" role="tab" class="f-tab" id="tab-watch" aria-selected="true" aria-controls="f-board"><span>Watch them travel</span><small>built forward</small></button>
+      <button type="button" role="tab" class="f-tab" id="tab-find" aria-selected="false" aria-controls="f-board" tabindex="-1"><span>Find a hidden one</span><small>walked backward</small></button>
+    </div>
+    <p class="f-cap" id="f-cap" aria-live="polite"></p>
+  </div>
+  <div class="f-board" id="f-board" role="tabpanel" aria-labelledby="tab-watch">
+    <div class="f-ctl" id="f-ctl"></div>
+    <div class="chain-wrap" id="chain-wrap">
+      <i class="rail" aria-hidden="true"></i><i class="walk" aria-hidden="true"></i><i class="flow" aria-hidden="true"></i>
+      <ol class="chain" id="chain" aria-label="The chain, from frame to verdict"></ol>
+    </div>
+    <p class="f-note">Real failures can have more than one cause, and later checks can miss a break. Each case here starts from one.</p>
+  </div>
+</section>
+
+<section class="recap" id="recap">
+  <h2>What to remember</h2>
+  <ol class="rlist">
+    <li><span class="glyph">x→f()→y</span><span><b>It’s a claim.</b> Test it; don’t assume it.</span></li>
+    <li><span class="glyph">Eᶜ · Eᵉ</span><span><b>Two different judgments.</b> Conformance asks whether the design—and later the built thing—meets R under M. Effect asks whether reality moved toward y and what supports attribution. They can disagree.</span></li>
+    <li><span class="glyph">x · y · M → R</span><span><b>Frame without the answer.</b> Keep the reason, model the operating world explicitly, and give every requirement a source.</span></li>
+    <li><span class="glyph"><span class="sym">✓ ✗ ?</span></span><span><b>Compare real options.</b> An unknown isn’t a pass, and a missed must-have can’t be averaged away. Passing makes an option eligible, not chosen, and building nothing is always an option.</span></li>
+    <li><span class="glyph">parts × R</span><span><b>Turn the table.</b> Every part needs a reason; an empty row exposes a missing justification. Account for each requirement through a mechanism or a separate constraint check. A full table still isn’t proof.</span></li>
+    <li><span class="glyph">vs.</span><span><b>Judge effect against a comparison</b>, and check who got measured.</span></li>
+    <li><span class="glyph">← ← ←</span><span><b>Diagnose backward</b> before you blame the build. Then version what changed, and rerun what depended on it.</span></li>
+  </ol>
+  <p class="loop"><span>Build forward.</span> Verify locally. <span>Diagnose backward.</span> Correct against reality.</p>
+  <div class="links">
+    <a class="primary" href="#workbench">Run a Fit Check <span aria-hidden="true">↓</span></a>
+    <a href="https://github.com/mattlane66/planning-skills-for-agents-and-humans/blob/main/shaping/SKILL.md#fit-and-reverse-fit-checks" target="_blank" rel="noopener">Use the full shaping skill</a>
+    <a href="https://claude.ai/artifact/AYYMNzdbwNNw7jaPTpByVb" target="_blank" rel="noopener">Practice with the flash cards</a>
+  </div>
+  <div class="again-row">
+    <button type="button" class="again" id="again">Start the story again</button>
+    <button type="button" class="again" id="again-game">Play Find the fault again</button>
+  </div>
+  <p class="fine">The catalog example and its numbers are made up to illustrate the model.</p>
+</section>
+
+<section class="wb" id="workbench" aria-labelledby="wb-h">
+  <div class="wb-head">
+    <p class="eyebrow">Use it</p>
+    <h2 id="wb-h">Run a Fit Check</h2>
+    <p class="wb-lede"><b>Phase 1 · Fit Check:</b> hold x, y, M, and R fixed. Requirements run down the rows; candidate paths in S run across the columns. Judge each whole path against the same requirements. <b>Phase 2 · Reverse Fit:</b> rotate the selected path. Put its meaningful parts down the rows and R across the columns to see what covers each requirement—and what justifies each part. It opens on the catalog example, so change anything. Meaningful edits flag affected judgments for review.</p>
+  </div>
+  <div class="wb-grid">
+    <details class="wb-in" id="wb-in" open>
+      <summary><b>Your problem</b><small id="wb-in-sum">Example: the catalog editors</small><i aria-hidden="true"></i></summary>
+      <div class="wb-fields">
+        <label class="wb-f" for="wb-x"><span><b>x</b>Situation today</span><textarea class="short" id="wb-x" rows="2" autocomplete="off"></textarea></label>
+        <label class="wb-f" for="wb-y"><span><b>y</b>Outcome you want</span><textarea class="short" id="wb-y" rows="2" autocomplete="off"></textarea></label>
+        <label class="wb-f" for="wb-m"><span><b>M</b>How the world works</span><textarea class="short" id="wb-m" rows="2" autocomplete="off"></textarea><small>General beliefs about the setting, never “our option will work.”</small></label>
+        <label class="wb-f" for="wb-r"><span><b>R</b>Requirements, one per line</span><textarea id="wb-r" rows="5" autocomplete="off"></textarea><small>Describe needs, not mechanisms. Use the row controls to set priority. Choose “Separate check” for a constraint satisfied by absence, compatibility, or an external condition.</small></label>
+        <label class="wb-f" for="wb-s"><span><b>S</b>Candidate paths, one per line</span><textarea id="wb-s" rows="4" autocomplete="off"></textarea><small>Start each with a short name, like “B · reusable rule”. Keep today’s way as CURRENT.</small></label>
+      </div>
+    </details>
+    <div class="wb-card" id="wb-card">
+      <div class="wb-tabs" role="tablist" aria-label="Fit Check steps">
+        <button type="button" role="tab" class="wb-tab" id="wb-tab1" aria-selected="true" aria-controls="wb-p1"><b>1 · Fit Check</b><small>requirements × candidate paths · R × S</small></button>
+        <button type="button" role="tab" class="wb-tab" id="wb-tab2" aria-selected="false" aria-controls="wb-p2" tabindex="-1"><b>2 · Reverse Fit</b><small>parts × requirements</small></button>
+      </div>
+      <div class="wb-body" id="wb-p1" role="tabpanel" aria-labelledby="wb-tab1">
+        <p class="wb-legend"><b>Read across a requirement row to compare paths; read down a candidate column to check its whole fit.</b> A path must clear every must-have to remain eligible. Tap a cell to judge it: <span class="m y">✓</span> meets it, <span class="m n">✗</span> misses it, <span class="m q">✗<sup>?</sup></span> not known yet (counts as <span class="m n">✗</span>), <span class="m a">✓<sup>!</sup></span> risk accepted (counts as <span class="m y">✓</span>).</p>
+        <p class="table-hint">↻ means a previous judgment needs review. Scroll wider tables sideways.</p><div class="wb-scroll" id="wb-t1" role="region" aria-label="Candidate fit table" tabindex="0"></div>
+        <p class="wb-key wb-key1" id="wb-key1"></p>
+        <div class="wb-gate" id="wb-g1" aria-live="polite"></div>
+      </div>
+      <div class="wb-body" id="wb-p2" role="tabpanel" aria-labelledby="wb-tab2" hidden>
+        <div class="wb-exrow"><label for="wb-ex">Rotate selected path</label><select id="wb-ex"></select></div>
+        <details class="wb-pd" id="wb-pd"><summary><span>Edit the parts of <span id="wb-pd-of">B</span></span></summary><textarea id="wb-p" rows="5" aria-label="Parts, one per line" autocomplete="off"></textarea></details>
+        <p class="wb-legend"><b>Now the matrix is rotated: selected-path parts are rows, requirements are columns.</b> Read across a row to ask why a part exists; read down a column to ask what accounts for a requirement. Tap a cell to cycle: <span class="m rz">—</span> no claim, <span class="m dot">●<sup>?</sup></span> unchecked contribution, <span class="m dot">●</span> contribution accepted for this decision. For constraints, use “Separate check” in Phase 1; a verified absence may satisfy a requirement without a positive mechanism.</p>
+        <p class="table-hint">Scroll wider tables sideways. ↻ preserves a claim that needs review.</p><div class="wb-scroll" id="wb-t2" role="region" aria-label="Selected candidate contribution table" tabindex="0"></div>
+        <p class="wb-key" id="wb-key"></p>
+        <div class="wb-diag" id="wb-g2" aria-live="polite"></div>
+      </div>
+      <div class="wb-foot">
+        <div class="wb-actions">
+          <button type="button" class="pri" id="wb-copy">Copy as Markdown</button>
+          <button type="button" id="wb-dl">Download .md</button>
+          <button type="button" id="wb-reset">Start over</button>
+          <span class="wb-flash" id="wb-flash" role="status"></span>
+        </div>
+        <div class="wb-confirm" id="wb-confirm" hidden><span>Clear your draft and load the example again?</span><button type="button" class="danger" id="wb-reset-yes">Clear draft</button><button type="button" id="wb-reset-no">Keep it</button></div>
+        <p class="wb-save"><span id="wb-save-state" role="status">Draft saved in this browser.</span> It is not synced to another device. Download or copy Markdown to keep a separate record.</p>
+        <details class="wb-md" id="wb-md"><summary>Show the Markdown</summary><textarea id="wb-md-text" readonly rows="12" aria-label="Fit Check as Markdown"></textarea></details>
+      </div>
+      <div class="wb-shade" id="wb-shade" aria-hidden="true" hidden></div>
+      <div class="wb-pop" id="wb-pop" role="dialog" aria-modal="true" aria-labelledby="wb-pop-h" hidden>
+        <div class="pop-heading"><p class="wb-pop-h" id="wb-pop-h"></p><button type="button" id="wb-pop-close" aria-label="Close judgment editor">×</button></div>
+        <label class="note-label" for="wb-note">Evidence or rationale</label>
+        <textarea id="wb-note" rows="3" placeholder="Record the basis. For accepted uncertainty: who accepts it, and what would reopen it?"></textarea>
+        <p id="wb-pop-status" role="status"></p>
+        <button type="button" data-v="y"><span class="m y">✓</span><span>Meets it</span></button>
+        <button type="button" data-v="n"><span class="m n">✗</span><span>Misses it</span></button>
+        <button type="button" data-v="q"><span class="m q">✗<sup>?</sup></span><span>Not known yet</span><small>Counts as ✗ until it’s resolved.</small></button>
+        <button type="button" data-v="a"><span class="m a">✓<sup>!</sup></span><span>Accept the risk</span><small>Requires a recorded decision. Does not prove the claim or waive a binding constraint.</small></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer"><a href="../">← Matt Lane</a><a href="#top">Back to top ↑</a><span>The Fit Check Error Model · Matt Lane</span></footer>
+<section id="print-story" aria-label="Story transcript"></section>
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const NS = 'http://www.w3.org/2000/svg';
+const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+const wideMQ = window.matchMedia('(min-width:560px) and (min-aspect-ratio:6/5)');
+const WARN = '⚠︎';
+
+/* ---------------- content ---------------- */
+const PARTS = [
+  { t:'The claim', a:1, b:5 }, { t:'Two tests', a:6, b:10 }, { t:'Framing', a:11, b:14 }, { t:'Comparing', a:15, b:20 },
+  { t:'Choosing', a:21, b:25 }, { t:'After launch', a:26, b:28 }, { t:'Learning', a:29, b:32 }
+];
+const X_ = '<span class="cx">x</span>', F_ = '<span class="cf">f()</span>', Y_ = '<span class="cy">y</span>', R_ = '<span class="cr">R</span>', M_ = '<span class="cm">M</span>';
+const STEPS = [
+  /* 1 */ { t:'Meet a team of catalog editors. They often make <b>the same change to 200 products</b>, one at a time. It takes about <b>45 minutes</b>.', hint:true },
+  /* 2 */ { t:'That’s their picture of the situation today. We’ll call it ' + X_ + '.' },
+  /* 3 */ { t:'They want those updates done right, with far less repetitive work. That’s the outcome they want: ' + Y_ + '.' },
+  /* 4 */ { t:'In between sits whatever they’ll build: ' + F_ + '. Together, ' + X_ + ' → ' + F_ + ' → ' + Y_ + ' says: <i>this will move us from x toward y.</i>' },
+  /* 5 */ { t:'Notice the word <i>will</i>. It’s a claim, not a fact. Everything that follows is about testing it.' },
+  /* 6 */ { t:'Before building anything, the team writes down what any good answer must do. These are the requirements: ' + R_ + '.' },
+  /* 7 */ { t:'The first judgment is <b>conformance</b>, E<sup>c</sup>: does the solution meet ' + R_ + ' under ' + M_ + '—the team’s model of how the relevant world works? Before building, <b>design conformance</b> asks whether the proposed design plausibly should. Theirs passes all three.' },
+  /* 8 */ { t:'After building, <b>realized conformance</b> asks whether the thing actually built and operated still meets ' + R_ + ' under ' + M_ + '. What gets built can drift from the design. Here, the built rule still passes—including the 10-minute requirement <i>when it is used</i>.' },
+  /* 9 */ { t:'The second judgment is <b>effect</b>, E<sup>e</sup>: <b>did reality actually move toward ' + Y_ + '?</b> After launch, the average batch still takes 31 minutes.' },
+  /* 10 */ { t:'So the judgments disagree. Conformance passes, but effect falls short. <b>Passing the tests that govern acceptance doesn’t guarantee the change you wanted.</b>' },
+  /* 11 */ { t:'Rewind to the brief. How does that happen? Often the trouble starts before anything is built, in how the problem gets written down. Compare these two.' },
+  /* 12 */ { t:'The second sounds efficient, but it’s an answer in disguise. It drops the reason, and it rules out other solutions before anyone compares them.' },
+  /* 13 */ { t:'Good requirements say where they came from: the situation, the outcome, the gap between them, or a limit someone imposed, like a contract.' },
+  /* 14 */ { t:'Some requirements come from ' + M_ + ', the operating model introduced earlier. Here, M says editors avoid bulk changes they can’t undo. That never became a requirement. <b>Remember that.</b>', a:'M can hold general operating hypotheses. It cannot assume that a particular candidate will work.' },
+  /* 15 */ { t:'Now the options. Come up with a few that work in different ways, and keep today’s way, CURRENT, as a baseline. Together, the alternatives actually considered are the candidate set <b>S</b>.' },
+  /* 16 */ { t:'Mark every option against every requirement: <span class="ok sym">✓</span> meets it, <span class="no sym">✗</span> doesn’t. The last row is only a nice-to-have.' },
+  /* 17 */ { t:'B has an open question, marked <span class="no sym">✗</span>?. <b>An unknown isn’t a pass</b>, so it counts as <span class="no sym">✗</span> until the team tests it. It holds up.' },
+  /* 18 */ { t:'Count the checks: A, B and C tie at 4 of 5. <b>Which one is still in the running?</b>',
+           ask:{ opts:[['a','A'],['b','B'],['c','C']], good:'b', fb:{
+             a:'Misses R3, a must-have. No score can make up for that.',
+             b:'Yes. It’s the only one that clears every must-have.',
+             c:'Misses R2, a must-have. No score can make up for that.' } } },
+  /* 19 */ { t:'A and C each miss a must-have, and <b>no score can make up for that</b>. Only B clears them all. That makes B <i>eligible</i>, not chosen.' },
+  /* 20 */ { t:'One thing the table can’t show: the better option nobody thought of. <b>It never fails a test. It’s just missing.</b> So ask what’s missing before you choose.' },
+  /* 21 */ { t:'Before choosing, <b>rotate B</b>: its parts down the rows, requirements across the columns. This excerpt shows R1–R3; R4 is a separate compatibility check and R5 a nice-to-have. Every requirement needs an account; every part needs a reason.' },
+  /* 22 */ { t:'“Share rules” serves none of the requirements. <b>What does that tell you?</b>',
+           ask:{ opts:[['use','It’s useless'],['why','Its reason is missing']], good:'why', fb:{
+             use:'Maybe. But the table only shows that nothing in R justifies it.',
+             why:'Right. No accepted requirement justifies it. Don’t invent one to save it.' } } },
+  /* 23 */ { t:'An empty row is a <b>missing reason</b>, not proof a part is useless. Cut it, move it outside this bet, or get a real need accepted into R and rerun the fit check. Here, they cut it.' },
+  /* 24 */ { t:'<b>A full table isn’t proof, either.</b> A part can claim a requirement without doing enough of it, and parts can depend on, or undercut, each other.' },
+  /* 25 */ { t:'Choosing is its own call. <b>Conformance does not select the winner.</b> Selection also weighs appetite—the time and resources they’re willing to spend—uncertainty, preferences, maintenance, and other tradeoffs. <b>Building nothing is always an option.</b> They pick B.' },
+  /* 26 */ { t:'Launch day. B ships, and batch time drops from 45 to 31 minutes. <b>How much of that was B?</b>',
+           ask:{ opts:[['all','All 14 minutes'],['cant','Can’t tell yet']], good:'cant', fb:{
+             all:'Tempting, but that assumes nothing else changed.',
+             cant:'Right. First you need a fair comparison: similar editors without B.' } } },
+  /* 27 */ { t:'Editors without B sped up too, to 39 minutes. If they are a credible counterfactual, B contributed about <b>8 of the 14 minutes</b>.' },
+  /* 28 */ { t:'Judging effect can go wrong in two places: measuring the wrong things (<b>observation</b>), and drawing the wrong conclusion from what you measured (<b>inference</b>).' },
+  /* 29 */ { t:'Design fit: yes. Realized fit: yes. Effect: only partly. <b>Where do you look first?</b>',
+           ask:{ opts:[['build','Build'],['req','Requirements'],['end','Verdict']], good:'end', fb:{
+             build:'A possible cause. First check whether the verdict and evidence warrant that suspicion.',
+             req:'A strong suspect, given M. Check the verdict and evidence before committing to that diagnosis.',
+             end:'A useful starting point: check the conclusion, then trace the relevant dependencies.' } } },
+  /* 30 */ { t:'Start with the verdict and evidence, then trace the relevant dependencies backward. <b>It’s a route, not a ritual:</b> follow the evidence and expect more than one break.' },
+  /* 31 */ { t:'Here, one break was upstream. Editors used the rule on only a third of batches, because there was no way to undo one. M said so, but it never became a requirement.' },
+  /* 32 */ { t:'Add undo to R as version 2; keep version 1 as the record of the earlier decision. Rerun affected comparisons, contribution claims, selection, and implementation checks. <b>Build forward. Diagnose backward. Reality gets the final say.</b>' }
+];
+const N = STEPS.length;
+const partOf = n => PARTS.findIndex(p => n >= p.a && n <= p.b);
+
+/* ---------------- build scene pieces ---------------- */
+// tiles
+let th = '';
+for (let i = 0; i < 200; i++) th += '<span class="tile" style="--d:' + ((i % 20) * 0.012 + Math.floor(i / 20) * 0.03).toFixed(3) + 's"></span>';
+$('#tiles').innerHTML = th;
+const tiles = Array.from($('#tiles').children);
+
+// options grid
+const COLS = [['CURRENT','by hand','col-cur'],['A','multi-select','col-a'],['B','reusable rule','col-b'],['C','import','col-c']];
+const ROWS = [['R1','Right items',1,['n','y','y','y']],['R2','Rest untouched',1,['y','y','q','n']],['R3','when used ≤10 min',1,['n','n','y','y']],['R4','Import format kept',1,['y','y','y','y']],['R5','No mouse needed',0,['y','y','n','y']]];
+const MUST = ['n','n','y','n'];
+let g = '<div class="hd rl"></div>';
+COLS.forEach(c => { g += '<div class="hd ' + c[2] + '"><b>' + c[0] + '</b><small>' + c[1] + '</small></div>'; });
+g += '<div class="hd gh"><b>D?</b><small>missing</small></div>';
+ROWS.forEach(r => {
+  g += '<div class="rl"><span class="id">' + r[0] + '</span>' + r[1] + '</div>';
+  r[3].forEach((m, j) => {
+    const k = 'mk c' + (j + 1) + (r[2] ? ' must' : '');
+    const inner = m === 'y' ? '<span class="' + k + ' y">✓</span>' : m === 'n' ? '<span class="' + k + ' n">✗</span>'
+      : '<span class="' + k + ' q qb"><span class="qq">✗<sup>?</sup></span><span class="yy">✓</span><span class="tested">tested</span></span>';
+    g += '<div class="' + COLS[j][2] + '">' + inner + '</div>';
+  });
+  g += '<div class="gh cell">–</div>';
+});
+g += '<div class="rl tot"><span class="tv-count">Checks</span><span class="tv-must">Must-haves</span></div>';
+['3/5','4/5','4/5','4/5'].forEach((t, j) => { g += '<div class="tot ' + COLS[j][2] + '"><span class="tv-count">' + t + '</span><span class="tv-must ' + MUST[j] + '">' + (MUST[j] === 'y' ? '✓' : '✗') + '</span></div>'; });
+g += '<div class="gh cell last tot"></div>';
+$('#grid').innerHTML = g;
+
+// rotated grid
+const RC = [['R1','right items'],['R2','rest untouched'],['R3','when used ≤10 min']];
+const PT = [['Rule builder',[0,0,1]],['Preview of matches',[1,1,0]],['One-step apply',[0,0,1]],['Share rules',[0,0,0]]];
+let r = '<div class="hd rl"><b>B’s parts</b></div>';
+RC.forEach((c, j) => { r += '<div class="hd"><b>' + c[0] + '</b><small>' + c[1] + '</small>' + (j === 2 ? '<em class="tag enough">enough?</em>' : '') + '</div>'; });
+PT.forEach((p, i) => {
+  const sh = i === 3 ? ' sh' : '';
+  let lab = '<span class="nm">' + p[0] + '</span>';
+  if (i === 2) lab += '<small class="tag needs">needs the preview</small>';
+  if (i === 3) lab += '<small class="tag why">reason: ?</small><small class="tag cuttag">cut from this bet</small>';
+  r += '<div class="rl' + sh + '">' + lab + '</div>';
+  p[1].forEach((v, j) => {
+    const cu = i === 2 && j === 1;
+    r += '<div class="' + (sh + (cu ? ' cu' : '')).trim() + '">' + (v ? '<span class="dotc' + (j === 2 ? ' r3' : '') + '"></span>' : '<span class="dash">—</span>') +
+      (cu ? '<em class="tag under">' + WARN + ' undercut?</em>' : '') + '</div>';
+  });
+});
+r += '<div class="rchips"><span class="on">cut it <b class="sym">✓</b></span><span>move it out</span><span>justify it</span></div>';
+$('#rotgrid').innerHTML = r;
+
+// chart
+const svg = $('#chart');
+const X = w => 44 + (w - 1) / 11 * 244;
+const Y = m => 20 + (50 - m) / 25 * 192;
+function el(tag, at, parent){ const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); parent.appendChild(e); return e; }
+function tx(x, y, s, cls, anchor, parent){ const t = el('text', { x, y, class: cls || '', 'text-anchor': anchor || 'start' }, parent); t.textContent = s; return t; }
+const base = el('g', {}, svg);
+[30,35,40,45,50].forEach(v => { el('line', { class:'gl', x1:44, x2:288, y1:Y(v), y2:Y(v) }, base); tx(36, Y(v) + 4, String(v), '', 'end', base); });
+el('line', { class:'ax', x1:44, x2:288, y1:212, y2:212 }, base);
+[[1,'week 1'],[6,'week 6'],[12,'week 12']].forEach(([w, s]) => tx(X(w), 230, s, '', 'middle', base));
+tx(44, 12, 'minutes per 200-item batch', '', 'start', base);
+el('line', { class:'launch', x1:X(6.5), x2:X(6.5), y1:20, y2:212 }, base);
+tx(X(6.5) + 5, 36, 'launch', 't-ink', 'start', base);
+const midX = (X(6.5) + X(12)) / 2 + 2;
+const gQ = el('g', { class:'fade', id:'g-q' }, svg);
+el('rect', { class:'qband', x:X(6.5) + 4, y:Y(45), width:X(12) - X(6.5) - 4, height:Y(31) - Y(45), rx:6 }, gQ);
+tx(midX, Y(45) + 17, 'without B: ?', 't-q', 'middle', gQ);
+const gAll = el('g', { class:'fade', id:'g-all' }, svg);
+el('line', { class:'ghostl', x1:X(6.5), x2:X(12), y1:Y(45), y2:Y(45) }, gAll);
+tx(midX, Y(45) + 17, 'assumed without B', 't-f', 'middle', gAll);
+const WITH = [45,46,45,45,44,45,40,36,34,32,31,31];
+const WITHOUT = [45,43,42,41,40,39,39];
+const gW = el('g', { class:'fade', id:'g-with' }, svg);
+el('polyline', { class:'ln lb', pathLength:1, points: WITH.map((v, i) => X(i + 1) + ',' + Y(v)).join(' ') }, gW);
+WITH.forEach((v, i) => el('circle', { class:'dt', cx:X(i + 1), cy:Y(v), r:3.3 }, gW));
+tx(294, Y(31) + 4, '31', 't-f', 'start', gW);
+tx(44, 254, '— editors with B', 't-f', 'start', gW);
+const gT = el('g', { class:'fade', id:'g-tot' }, svg);
+el('path', { class:'brk b-tot', d:'M312 ' + Y(45) + 'H320V' + Y(31) + 'H312' }, gT);
+tx(326, (Y(45) + Y(31)) / 2 + 4, '−14 min', 't-ink', 'start', gT);
+const gWo = el('g', { class:'fade', id:'g-without' }, svg);
+el('polyline', { class:'ln lc', pathLength:1, points: WITHOUT.map((v, i) => X(i + 6) + ',' + Y(v)).join(' ') }, gWo);
+WITHOUT.forEach((v, i) => { if (i) el('circle', { class:'dtc', cx:X(i + 6), cy:Y(v), r:2.8 }, gWo); });
+tx(294, Y(39) + 4, '39', 't-m', 'start', gWo);
+tx(44, 273, '— editors without B', 't-m', 'start', gWo);
+const gS = el('g', { class:'fade', id:'g-split' }, svg);
+el('path', { class:'brk b-cmp', d:'M312 ' + Y(45) + 'H320V' + (Y(39) - 2) + 'H312' }, gS);
+el('path', { class:'brk b-f', d:'M312 ' + (Y(39) + 2) + 'H320V' + Y(31) + 'H312' }, gS);
+tx(326, (Y(45) + Y(39)) / 2 + 4, '−6 anyway', 't-m', 'start', gS);
+tx(326, (Y(39) + Y(31)) / 2 + 4, '≈ −8 from B', 't-f', 'start', gS);
+const gA = el('g', { class:'fade ann', id:'g-ann' }, svg);
+el('line', { x1:X(5), y1:Y(44) + 5, x2:X(5), y2:96 }, gA);
+el('rect', { x:X(5) - 48, y:96, width:96, height:24, rx:12 }, gA);
+tx(X(5), 112.5, 'observation', '', 'middle', gA);
+el('line', { x1:350, y1:50, x2:320, y2:(Y(45) + Y(39)) / 2 }, gA);
+el('rect', { x:310, y:26, width:80, height:24, rx:12 }, gA);
+tx(350, 42.5, 'inference', '', 'middle', gA);
+
+// part segments
+const segs = $('#segs');
+segs.style.gridTemplateColumns = 'repeat(' + PARTS.length + ', minmax(0,1fr))';
+segs.innerHTML = PARTS.map((p, i) => '<button type="button" class="seg" data-i="' + i + '" aria-label="Part ' + (i + 1) + ': ' + p.t + '"><i></i></button>').join('');
+$('#start-n').textContent = N + ' short steps';
+
+/* ---------------- layout ---------------- */
+const story = $('#story'), player = $('#player'), stagebox = $('#stagebox'), art = $('#art');
+let S = 1, stepH = 400, storyTop = 0;
+function fitArt(){
+  const w = stagebox.clientWidth - 16, h = stagebox.clientHeight - 16;
+  if (w <= 0 || h <= 0) return;
+  S = Math.min(w / 400, h / 400, 1.4);
+  const ox = (stagebox.clientWidth - 400 * S) / 2, oy = (stagebox.clientHeight - 400 * S) / 2;
+  art.style.transform = 'translate(' + ox.toFixed(1) + 'px,' + oy.toFixed(1) + 'px) scale(' + S.toFixed(4) + ')';
+}
+function measureTiles(){
+  const nx = $('#nx'), det = $('.a-detail');
+  const cx = nx.offsetLeft + nx.offsetWidth / 2, cy = nx.offsetTop + nx.offsetHeight / 2;
+  tiles.forEach(t => {
+    t.style.setProperty('--dx', (cx - (t.offsetLeft + t.offsetWidth / 2)).toFixed(1) + 'px');
+    t.style.setProperty('--dy', (cy - (det.offsetTop + t.offsetTop + t.offsetHeight / 2)).toFixed(1) + 'px');
+  });
+  const b = $('#clock b');
+  $('#clock').style.setProperty('--cdx', (cx - (b.offsetLeft + b.offsetWidth / 2)).toFixed(1) + 'px');
+  $('#clock').style.setProperty('--cdy', (cy - (b.offsetTop + b.offsetHeight / 2)).toFixed(1) + 'px');
+}
+function layout(){
+  const ph = player.getBoundingClientRect().height;
+  stepH = Math.max(260, Math.round(ph * 0.62));
+  story.style.height = (N * stepH + ph) + 'px';
+  storyTop = story.getBoundingClientRect().top + window.scrollY;
+  fitArt();
+  measureTiles();
+}
+
+/* ---------------- state ---------------- */
+const on = (s, c) => { const e = $(s); if (e) e.classList.toggle('on', !!c); };
+const cls = (s, k, c) => { const e = $(s); if (e) e.classList.toggle(k, !!c); };
+const setText = (s, v) => { const e = $(s); if (e && e.textContent !== v) e.textContent = v; };
+const setHTML = (s, v) => { const e = $(s); if (e && e.dataset.h !== v) { e.innerHTML = v; e.dataset.h = v; } };
+const answers = {};
+let cur = 0;
+function scene(n){
+  const A = answers[n];
+  // s1–2: the clock and 200 tiles fold into x
+  on('#clock', n <= 2); cls('#clock', 'away', n >= 2);
+  on('#p-tiles', n <= 2); cls('#tiles', 'away', n >= 2); cls('#p-tiles', 'gone', n >= 2);
+  // the spine
+  on('#nx', n >= 2); on('#ny', n >= 3); on('#nf', n >= 4); on('#ar1', n >= 4); on('#ar2', n >= 4);
+  on('#bracket', n >= 5 && n <= 10);
+  const HL = { 2:'x', 3:'y', 4:'f', 5:'xfy', 6:'f', 7:'f', 8:'f', 9:'y', 10:'fy', 11:'x', 12:'x' };
+  const h = HL[n] || (n >= 15 && n <= 25 ? 'f' : n >= 26 && n <= 28 ? 'y' : '');
+  cls('#nx', 'hl', h.includes('x')); cls('#nf', 'hl', h.includes('f')); cls('#ny', 'hl', h.includes('y'));
+  setText('#sub-f', n < 15 ? 'what they’ll build' : n <= 20 ? 'which option?' : n <= 24 ? 'B’s parts' : n === 25 ? 'B, chosen' : 'B, shipped');
+  setText('#sub-y', n >= 26 ? 'did it move?' : 'right, with less work');
+  // the two tests, as badges
+  const CK = '<span class="sym">✓</span>';
+  on('#fitb', (n >= 7 && n <= 10) || n >= 29);
+  setHTML('#fitb', n === 7 ? 'fit ' + CK + ' design' : n === 8 ? 'fit ' + CK + ' design · built' : n === 32 ? 'fit <span class="sym">↻</span> rerun' : 'fit ' + CK + ' both');
+  cls('#fitb', 'rerun', n === 32);
+  on('#effb', (n >= 9 && n <= 10) || (n >= 26 && n <= 31));
+  setHTML('#effb', n === 26 ? 'effect: 45 → 31 min' : (n === 27 || n === 28) ? 'effect: ≈ 8 of 14 min' : 'effect: partly');
+  // requirements and the side box
+  const rm = (n >= 6 && n <= 10) || n === 13 || n === 14 || n === 31 || n === 32;
+  on('#p-rm', rm);
+  cls('#p-rm', 'noside', n <= 8 || n === 32);
+  cls('#rbox', 'checks1', n >= 7 && n <= 10);
+  cls('#rbox', 'checks2', n >= 8 && n <= 10);
+  cls('#rbox', 'src', n === 13 || n === 14 || n === 31 || n === 32);
+  cls('#rbox', 'ver', n === 32);
+  cls('#r4', 'hide', n !== 13);
+  cls('#slot', 'hide', !(n === 14 || n === 31 || n === 32));
+  cls('#slot', 'filled', n === 32);
+  setHTML('#slot-t', n === 32 ? 'A batch can be undone<span class="newtag">new</span>' : '<span class="q">?</span>nothing yet');
+  on('#meterbox', n === 9 || n === 10);
+  cls('#meter', 'moved', n === 9 || n === 10);
+  setText('#mk-t', n === 9 || n === 10 ? '31 min' : '45 min');
+  on('#srcbox', n === 13);
+  on('#mbox', n === 14 || n === 31);
+  // framing
+  on('#p-frame', n === 11 || n === 12);
+  const judged = n >= 12;
+  cls('#fc-good', 'judged', judged); cls('#fc-bad', 'judged', judged);
+  setHTML('#lab-good', judged ? '<span class="sym">✓</span> Describes the situation' : 'One way to write it');
+  setHTML('#lab-bad', judged ? '<span class="sym">✗</span> An answer in disguise' : 'Another way');
+  ['#chips-good','#chips-bad','#note-good','#note-bad'].forEach(s => on(s, judged));
+  // options
+  on('#p-grid', n >= 15 && n <= 24);
+  on('#og', n >= 15 && n <= 20); on('#rot', n >= 21 && n <= 24);
+  cls('#og', 'marks', n >= 16); cls('#og', 'resolved', n >= 17); cls('#og', 'totals', n >= 18); cls('#og', 'judged', n >= 19); cls('#og', 'ghost', n >= 20);
+  ['a','b','c'].forEach(k => cls('#og', 'pick-' + k, n === 18 && A === k));
+  // choosing is its own call
+  on('#p-choose', n === 25); cls('#p-choose', 'decided', n === 25);
+  // turn the table
+  cls('#rotgrid', 'ask', n === 22);
+  cls('#rotgrid', 'pick-use', n === 22 && A === 'use'); cls('#rotgrid', 'pick-why', n === 22 && A === 'why');
+  cls('#rotgrid', 'resolve', n >= 23); cls('#rotgrid', 'cover', n === 24);
+  // chart
+  on('#p-chart', n >= 26 && n <= 28);
+  on('#g-with', n >= 26); on('#g-tot', n === 26); on('#g-without', n >= 27); on('#g-split', n >= 27); on('#g-ann', n === 28);
+  on('#g-q', n === 26 && A === 'cant'); on('#g-all', n === 26 && A === 'all');
+  // diagnose backward
+  on('#p-diag', n === 29 || n === 30);
+  ['build','req','end'].forEach(k => cls('#qs', 'pick-' + k, n === 29 && A === k));
+  cls('#qs', 'sweep', n === 30);
+}
+function fbHTML(n){
+  const st = STEPS[n - 1], a = answers[n];
+  const lab = st.ask.opts.find(o => o[0] === a)[1];
+  return '<p class="fb ' + (a === st.ask.good ? 'good' : 'meh') + '"><b>' + lab + '.</b> ' + st.ask.fb[a] + '</p>';
+}
+function textHTML(n){
+  const pi = partOf(n), p = PARTS[pi], st = STEPS[n - 1];
+  let t = '<div class="tp-in">';
+  if (n === p.a) t += '<p class="tp-part">Part ' + (pi + 1) + ' · ' + p.t + '</p>';
+  t += '<p class="tp-text">' + st.t + '</p>';
+  if (st.ask) t += answers[n] ? fbHTML(n) : '<div class="pick" role="group" aria-label="Your answer">' +
+    st.ask.opts.map(o => '<button type="button" class="opt" data-v="' + o[0] + '">' + o[1] + '</button>').join('') + '</div>';
+  if (st.a) t += '<p class="tp-aside">' + st.a + '</p>';
+  if (st.hint) t += '<p class="tp-hint">Scroll or tap Next.</p>';
+  return t + '</div>';
+}
+function chrome(n){
+  const pi = partOf(n), p = PARTS[pi];
+  $('#meta-part').innerHTML = '<b>Part ' + (pi + 1) + '</b> · ' + p.t;
+  setText('#meta-count', n + ' / ' + N);
+  $$('.seg').forEach((s, i) => {
+    const q = PARTS[i];
+    const v = n > q.b ? 1 : n < q.a ? 0 : (n - q.a + 1) / (q.b - q.a + 1);
+    s.style.setProperty('--p', v);
+    s.setAttribute('aria-current', i === pi ? 'step' : 'false');
+  });
+  $('#tp-body').innerHTML = textHTML(n);
+  $('#tp-body').scrollTop = 0;
+  $('#back').disabled = n === 1;
+  $('#next').classList.remove('nudge');
+  $('#next').innerHTML = n === N ? 'Your turn <span aria-hidden="true">↓</span>' : 'Next <span aria-hidden="true">→</span>';
+}
+function setStep(n){
+  if (n === cur) return;
+  cur = n;
+  scene(n);
+  chrome(n);
+  updateReadable(n);
+}
+function answer(v){
+  if (!STEPS[cur - 1].ask) return;
+  answers[cur] = v;
+  const pick = $('#tp-body .pick');
+  if (pick) pick.outerHTML = fbHTML(cur);
+  scene(cur);
+  const nx = $('#next');
+  nx.classList.remove('nudge'); void nx.offsetWidth; nx.classList.add('nudge');
+  nx.focus({ preventScroll: true });
+}
+
+/* ---------------- scroll + navigation ---------------- */
+let lock = 0, lockTimer = null;
+function stepFromScroll(){
+  const y = window.scrollY - storyTop;
+  return Math.max(1, Math.min(N, Math.floor(y / stepH) + 1));
+}
+function onScroll(){
+  const n = stepFromScroll();
+  if (lock) { if (n === lock) { lock = 0; clearTimeout(lockTimer); } else return; }
+  setStep(n);
+}
+let ticking = false;
+window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; onScroll(); }); } }, { passive: true });
+function go(n){
+  n = Math.max(1, Math.min(N, n));
+  lock = n; clearTimeout(lockTimer);
+  lockTimer = setTimeout(() => { lock = 0; }, 1400);
+  setStep(n);
+  window.scrollTo({ top: storyTop + (n - 1) * stepH + Math.round(stepH * 0.3), behavior: reduce ? 'auto' : 'smooth' });
+}
+function toSection(id){ lock = 0; $(id).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); }
+const forward = () => { if (cur >= N) toSection('#fault'); else go(cur + 1); };
+$('#next').addEventListener('click', forward);
+$('#back').addEventListener('click', () => go(cur - 1));
+$('#tp-body').addEventListener('click', e => {
+  const o = e.target.closest('.opt');
+  if (o) { answer(o.dataset.v); return; }
+  // Navigation uses explicit controls; selecting or tapping prose never skips a step.
+});
+$('#segs').addEventListener('click', e => { const s = e.target.closest('.seg'); if (s) go(PARTS[+s.dataset.i].a); });
+$('#start').addEventListener('click', () => go(1));
+$('#again').addEventListener('click', () => go(1));
+$('#again-game').addEventListener('click', () => toSection('#fault'));
+document.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey || !$('#wb-pop').hidden) return;
+  if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable], #stagebox')) return;
+  const y = window.scrollY;
+  if (y < storyTop - 40 || y > storyTop + N * stepH) return;
+  const onButton = e.target.closest && e.target.closest('button, a, input, textarea, select');
+  const fwd = e.key === 'ArrowRight' || e.key === 'ArrowDown' || (e.key === ' ' && !e.shiftKey && !onButton);
+  const bwd = e.key === 'ArrowLeft' || e.key === 'ArrowUp' || (e.key === ' ' && e.shiftKey && !onButton);
+  if (fwd) { e.preventDefault(); forward(); }
+  else if (bwd) { e.preventDefault(); go(cur - 1); }
+});
+
+/* ---------------- find the fault ---------------- */
+// Stops in build order (0 = frame … 8 = verdict); diagnosis numbers them backward, 1 = verdict.
+const STOPS = [
+  ['Frame', 'Are x, y and M still right?'], ['Requirements', 'Anything missing or wrong?'], ['Options', 'What never got considered?'],
+  ['Design fit', 'Was it accepted too easily?'], ['Choice', 'Was picking B justified?'], ['Build', 'Was it built as designed?'],
+  ['Realized fit', 'Did the built thing meet R?'], ['Evidence', 'Did we measure the right things?'], ['Verdict', 'Was the conclusion sound?']
+];
+// clue status: 1 checks out · 2 shows a problem · 3 where it started
+const OK = {
+  8:'The conclusion follows from the comparison.', 7:'Every editor was timed, with and without B.', 6:'The built rule meets every must-have.',
+  5:'What shipped matches the design.', 4:'Only B cleared the must-haves, and it fit the time they had.', 3:'Every mark was tested, even the unknown.',
+  2:'A deliberate search for other kinds of fix turned up nothing stronger.', 1:'Each requirement has a sound source, and nothing in x, y or M was left out.', 0:'x, y and M hold up.'
+};
+const FAULTS = [
+  { chip:'Wrong y', origin:0, shows:[1],
+    what:'The team made speed the outcome, but editors cared more about confidence that a bulk change could be safely reversed.',
+    cap:'Started in y, in the frame. The rest of the chain can be internally coherent and still optimize the wrong priority.',
+    clue:{ 1:[2,'Every requirement traces cleanly to the chosen frame. None asks whether editors feel safe using the change.'],
+           0:[3,'The team chose speed as y, but editor confidence was the higher-priority outcome.'] } },
+  { chip:'Wrong M', origin:0, shows:[1],
+    what:'M assumed batches would stay one kind of change each. Since launch, most mix several kinds.',
+    cap:'Started in M, in the frame. R inherited it, and every stop after passed it along.',
+    clue:{ 6:[1,'The built rule meets every must-have as written.'], 3:[1,'Every mark was tested against R as written.'],
+           1:[2,'No requirement covers batches that mix kinds of change. Where did that come from?'] } },
+  { chip:'Missing R', origin:1, shows:[],
+    what:'M says editors avoid changes they can’t undo. No requirement asked for undo.',
+    cap:'Started in R. Nothing looked wrong on the way. This is the story’s case.',
+    clue:{ 7:[1,'Measured well. One oddity: editors used the rule on only a third of batches.'], 0:[1,'x, y and M hold up. M was right; it just never reached R.'] } },
+  { chip:'Missing option', origin:2, shows:[],
+    what:'Nobody asked why the same change hits 200 items. Fixing the supplier feed would remove most batches.',
+    cap:'Started in the options. A missing option never fails a test. It’s just missing.',
+    clue:{} },
+  { chip:'Weak test', origin:3, shows:[6],
+    what:'The ✓ for “10 min or less” came from a 20-item demo. Nobody tried 200.',
+    cap:'Started at design fit. It shows up at realized fit, right after the build, so the build gets the blame.',
+    clue:{ 6:[2,'Re-checked at 200 items, the rule takes 25 minutes. The launch check reused the 20-item demo.'], 5:[1,'Built exactly as designed. The design is what’s slow.'],
+           4:[1,'Given its marks, B was the right pick.'] } },
+  { chip:'Build drift', origin:5, shows:[6],
+    what:'The design previewed all 200 matches. The build cut the preview to 20 to ship sooner.',
+    cap:'Started in the build. It shows up at realized fit.',
+    clue:{ 6:[2,'Re-checked at full size, the preview stops at 20 matches. Editors check the rest by hand: R3 fails.'] } },
+  { chip:'Bad observation', origin:7, shows:[],
+    what:'Only Monday batches were timed, and Mondays bring the hardest ones.',
+    cap:'Started in the evidence. The product itself may be fine.',
+    clue:{ 8:[1,'The conclusion follows from the numbers it was given.'] } },
+  { chip:'Bad inference', origin:8, shows:[],
+    what:'Editors without B had simpler catalogs, so the groups weren’t alike. The 8-minute credit doesn’t hold.',
+    cap:'Started at the verdict. The evidence was fine; the conclusion wasn’t.',
+    clue:{} }
+];
+const REPAIRS = [
+  'Reframe y around the higher-priority outcome, then rederive the affected requirements and rerun downstream checks.',
+  'Update M to reflect mixed batches, rederive what that changes in R, then rerun the affected fit judgments.',
+  'Add undoability to R, version the change, and rerun the comparisons and decisions that depended on the old R.',
+  'Expand S to include the upstream fix, then compare it under the same frame and requirements.',
+  'Retest design conformance at the real scale—200 items—before relying on the mark.',
+  'Restore the designed behavior or explicitly revise the design, then rerun realized conformance before judging effect.',
+  'Measure a representative population and window, then redo the effect judgment from the corrected evidence.',
+  'Use a credible comparison as the counterfactual and separate total change from the change attributable to B.'
+];
+FAULTS.forEach((f,i) => { f.fix = REPAIRS[i]; });
+FAULTS.forEach(f => { f.clue[f.origin] = [3, f.what]; for (let i = 0; i < 9; i++) if (!f.clue[i]) f.clue[i] = [1, OK[i]]; });
+
+const chainWrap = $('#chain-wrap'), chain = $('#chain'), fctl = $('#f-ctl'), fcap = $('#f-cap');
+const rail = $('.rail'), walkEl = $('.walk'), flow = $('.flow');
+const rows = STOPS.map((s, i) => {
+  const li = document.createElement('li'); li.className = 'stop';
+  li.innerHTML = '<span class="dot">' + (9 - i) + '</span><span class="st-name">' + s[0] + '</span><span class="st-tag"></span><div class="st-det"></div>';
+  return li;
+});
+const symRow = document.createElement('li'); symRow.className = 'stop symp';
+symRow.innerHTML = '<span class="dot">!</span><span class="st-name">Effect: only partly</span><span class="st-tag">31 min</span><div class="st-det"></div>';
+rows.push(symRow);
+rows.forEach(li => chain.appendChild(li));
+
+let mode = 'watch', sel = -1, game = null, deck = [], dealt = 0;
+function row(i, klass, tag, det, d){
+  const li = rows[i];
+  li.className = 'stop' + (i === 9 ? ' symp' : '') + (klass ? ' ' + klass : '');
+  li.style.setProperty('--d', (d || 0) + 's');
+  const t = li.querySelector('.st-tag'), dd = li.querySelector('.st-det');
+  if (t.dataset.h !== tag) { t.innerHTML = tag; t.dataset.h = tag; }
+  if (dd.dataset.h !== det) { dd.innerHTML = det; dd.dataset.h = det; }
+}
+function dotY(i){ const li = rows[i], d = li.querySelector('.dot'); return li.offsetTop + d.offsetTop + d.offsetHeight / 2; }
+function rails(){
+  const first = chain.firstElementChild, last = chain.lastElementChild;
+  const y0 = dotY(rows.indexOf(first)), y1 = dotY(rows.indexOf(last));
+  rail.style.top = y0 + 'px'; rail.style.height = (y1 - y0) + 'px';
+  let o = -1;
+  if (mode === 'watch' && sel >= 0) o = FAULTS[sel].origin;
+  if (mode === 'find' && game && game.solved) o = FAULTS[game.f].origin;
+  if (o >= 0) {
+    const a = dotY(o), b = dotY(9);
+    flow.style.top = Math.min(a, b) + 'px'; flow.style.height = Math.abs(b - a) + 'px';
+    flow.style.transformOrigin = a < b ? 'top' : 'bottom';
+  }
+  if (mode === 'find' && game && !game.solved) {
+    const a = dotY(9), b = dotY(game.at);
+    walkEl.style.top = a + 'px'; walkEl.style.height = Math.max(0, b - a) + 'px'; walkEl.classList.add('on');
+  } else walkEl.classList.remove('on');
+}
+function playFlow(show){
+  flow.classList.remove('on');
+  if (!show) return;
+  flow.style.transition = 'none'; void flow.offsetHeight; flow.style.transition = '';
+  requestAnimationFrame(() => { rails(); requestAnimationFrame(() => flow.classList.add('on')); });
+}
+function renderWatch(){
+  const f = FAULTS[sel];
+  if (f) { symRow.classList.remove('hit'); void symRow.offsetWidth; }
+  for (let i = 0; i < 10; i++) {
+    if (!f) { row(i, '', i === 9 ? '31 min' : '', ''); continue; }
+    const d = i > f.origin ? ((i === 9 ? 9 : i) - f.origin) * 0.09 : 0;
+    if (i === 9) row(i, 'hit', '31 min', '<p class="st-what"><b>Same symptom.</b> ' + f.cap + '</p>', d);
+    else if (i === f.origin) row(i, 'origin', 'starts here', '<p class="st-what">' + f.what + '</p><p class="st-fix"><b>Repair:</b> ' + f.fix + '</p>');
+    else if (f.shows.includes(i)) row(i, 'shows', 'shows here', '', d);
+    else row(i, i > f.origin ? 'carry' : 'up', '', '', d);
+  }
+  fctl.classList.add('chips');
+  if (!fctl.querySelector('.f-chip')) fctl.innerHTML = FAULTS.map((x, i) => '<button type="button" class="f-chip" data-i="' + i + '" aria-pressed="false">' + x.chip + '</button>').join('');
+  $$('#f-ctl .f-chip').forEach((c, i) => c.setAttribute('aria-pressed', i === sel));
+  fcap.innerHTML = FAULTS.length + ' different examples, one visible symptom. Tap a fault to see where the break enters the chain, where a later check may expose it, and what reaches the verdict.';
+}
+function renderFind(){
+  const F = game && FAULTS[game.f];
+  for (let i = 0; i < 9; i++) {
+    if (!game) { row(i, 'todo', '', ''); continue; }
+    const c = F.clue[i], msg = game.msg[i] ? '<p class="st-fb">' + game.msg[i] + '</p>' : '';
+    const clue = (k) => '<p class="st-clue ' + k + '"><span class="sym">' + (k === 'ok' ? '✓' : WARN) + '</span><span>' + c[1] + '</span></p>';
+    if (game.solved && i === F.origin) row(i, 'found', 'started here', clue('off') +
+      '<p class="st-win">' + (game.gaveUp ? 'This is where it started.' : game.tries === 1 ? 'Found it, first try.' : 'Found it.') + '</p>' +
+      '<p class="st-fix"><b>Repair:</b> ' + F.fix + '</p>' +
+      '<div class="st-act"><button type="button" class="walk-on" data-act="deal">Deal another</button></div>');
+    else if (!game.solved && i === game.at) {
+      row(i, 'active', '', '<p class="st-q">' + STOPS[i][1] + '</p>' + clue(c[0] === 1 ? 'ok' : 'off') + msg +
+        '<div class="st-act"><button type="button" class="claim" data-i="' + i + '">It started here</button>' +
+        (i > 0 ? '<button type="button" class="walk-on">Keep walking <span aria-hidden="true">↓</span></button>' : '<span class="st-end">That’s the whole chain.</span>') + '</div>');
+    }
+    else if (game.seen[i]) {
+      if (c[0] === 1) row(i, 'ok', '<span class="sym">✓</span>', '');
+      else row(i, 'off', game.solved ? '<span class="sym">' + WARN + '</span>' : '<button type="button" class="claim sm" data-i="' + i + '">Started here?</button>', clue('off') + msg);
+    }
+    else row(i, 'todo', '', '');
+  }
+  row(9, '', '31 min', '');
+  fctl.classList.remove('chips');
+  if (!game) {
+    fctl.innerHTML = '<button type="button" class="f-btn" data-act="deal">Deal a hidden fault</button>';
+    fcap.innerHTML = 'Start at the symptom and test each dependency backward, one stop at a time.';
+  } else if (game.solved) {
+    fctl.innerHTML = '<button type="button" class="f-btn" data-act="deal">Deal another</button><span class="f-status">Case ' + dealt + ' of ' + FAULTS.length + '</span>';
+    const sh = F.shows.length ? ' It showed up first at ' + STOPS[F.shows[0]][0].toLowerCase() + '.' : ' Nothing looked wrong on the way.';
+    fcap.innerHTML = (game.gaveUp ? 'It started at <b>' + STOPS[F.origin][0].toLowerCase() + '</b>.' : '<b>Found it' + (game.tries === 1 ? ', first try.' : '.') + '</b>') + sh;
+  } else {
+    fctl.innerHTML = '<span class="f-status">Case ' + dealt + ' of ' + FAULTS.length + '</span><button type="button" class="f-link" data-act="show">Show me</button>';
+    fcap.innerHTML = game.at === 0 && F.origin !== 0 ? 'End of the chain. It started at one of the <span class="sym">' + WARN + '</span> stops. Which?'
+      : 'Re-check each stop, starting at the verdict. Where did it start?';
+  }
+}
+function render(){ if (mode === 'watch') renderWatch(); else renderFind(); requestAnimationFrame(rails); }
+function shuffle(){ deck = FAULTS.map((_, i) => i); for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; } dealt = 0; }
+function deal(){
+  if (dealt >= deck.length) shuffle();
+  game = { f: deck[dealt++], at: 8, seen: { 8: true }, solved: false, tries: 0, msg: {} };
+  playFlow(false); render();
+}
+function claim(i){
+  const F = FAULTS[game.f];
+  game.tries++;
+  if (i === F.origin) { game.solved = true; render(); playFlow(true); return; }
+  game.msg[i] = F.clue[i][0] === 2 ? 'It shows up here, but something earlier caused it. Keep walking.' : 'This stop checks out.' + (i > 0 ? ' Keep walking.' : '');
+  render();
+}
+function walk(){
+  if (game.at <= 0) return;
+  game.at--; game.seen[game.at] = true;
+  render();
+  const b = rows[game.at].querySelector('.claim');
+  if (b) b.focus({ preventScroll: true });
+  rows[game.at].scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+}
+function setMode(m){
+  if (m === mode) return;
+  const before = new Map(rows.map(li => [li, li.getBoundingClientRect().top]));
+  mode = m;
+  $('#tab-watch').setAttribute('aria-selected', m === 'watch'); $('#tab-find').setAttribute('aria-selected', m === 'find');
+  $('#tab-watch').tabIndex = m === 'watch' ? 0 : -1; $('#tab-find').tabIndex = m === 'find' ? 0 : -1;
+  $('#f-board').setAttribute('aria-labelledby', m === 'watch' ? 'tab-watch' : 'tab-find');
+  chain.setAttribute('aria-label', m === 'watch' ? 'The chain, from frame to verdict' : 'The chain, walked back from the symptom');
+  chainWrap.classList.toggle('back', m === 'find');
+  (m === 'find' ? [9, 8, 7, 6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).forEach(i => chain.appendChild(rows[i]));
+  flow.classList.remove('on');
+  if (m === 'find') { if (!deck.length) shuffle(); deal(); } else render();
+  if (sel >= 0 && m === 'watch') playFlow(true);
+  // Reorder immediately. The earlier FLIP animation could make expanded diagnosis rows
+  // cross one another while the chain reversed, which looked like text overlap.
+  chainWrap.classList.remove('flipping');
+  requestAnimationFrame(rails);
+}
+// on phones the chain sits below the controls: bring it into view when the reader acts on it
+function revealBoard(){
+  const b = $('#f-board').getBoundingClientRect();
+  if (b.top > innerHeight * 0.45) $('#f-board').scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+}
+fctl.addEventListener('click', e => {
+  const c = e.target.closest('.f-chip');
+  if (c) { const i = +c.dataset.i; sel = sel === i ? -1 : i; render(); playFlow(sel >= 0); if (sel >= 0) revealBoard(); return; }
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  if (b.dataset.act === 'deal') deal();
+  if (b.dataset.act === 'show' && game) { game.solved = true; game.gaveUp = true; render(); playFlow(true); }
+});
+chain.addEventListener('click', e => {
+  if (e.target.closest('[data-act="deal"]')) { deal(); const a = rows[8]; a.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' }); return; }
+  const c = e.target.closest('.claim');
+  if (c && game && !game.solved) { claim(+c.dataset.i); return; }
+  if (e.target.closest('.walk-on') && game && !game.solved) walk();
+});
+$('#tab-watch').addEventListener('click', () => { setMode('watch'); revealBoard(); });
+$('#tab-find').addEventListener('click', () => { setMode('find'); revealBoard(); });
+$('.f-tabs').addEventListener('keydown', e => {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  e.preventDefault();
+  const m = mode === 'watch' ? 'find' : 'watch';
+  setMode(m); $(m === 'watch' ? '#tab-watch' : '#tab-find').focus();
+});
+render();
+
+/* A semantic counterpart to the animated art. It is the mobile presentation
+   and remains available to assistive technology at every viewport size. */
+function readableScene(n){
+  const card=(label,text)=>'<div class="sc-card"><b>'+label+'</b><p>'+text+'</p></div>';
+  const title=t=>'<h3 class="sc-title">'+t+'</h3>';
+  const wrapTable=(caption,head,rows)=>'<p class="sc-scroll-hint">Scroll the table sideways if needed.</p><div class="sc-scroll" tabindex="0" role="region" aria-label="'+caption+'"><table><caption>'+caption+'</caption><thead><tr>'+head.map((v,i)=>'<th scope="col">'+v+'</th>').join('')+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map((v,i)=>'<'+(i?'td':'th scope="row"')+'>'+v+'</'+(i?'td':'th')+'>').join('')+'</tr>').join('')+'</tbody></table></div>';
+  const requirements=['Change the right items.','Leave the rest alone.','When used, update 200 items in 10 minutes or less.'];
+  const spine='<div class="sc-spine">'+card('x · Situation','200 edits take 45 minutes.')+card('f() · Candidate','A way to make those updates.')+card('y · Outcome','Accurate updates with less repetitive work.')+'</div>';
+  if(n<=2)return title(n===1?'Today: 45 minutes per batch':'x · A picture of the current situation')+card('200 products','The same edit is repeated one item at a time. The measured batch takes about 45 minutes. This is the incumbent path.');
+  if(n<=5)return title(n===3?'The change they want':n===4?'A proposed route':'A claim that needs testing')+spine+(n===5?card('Claim, not guarantee','A candidate must earn acceptance through evidence. Naming x, f(), and y does not establish that the change will happen.'):'');
+  if((n>=6&&n<=10)||n===13||n===14||n>=31){
+    let out=title(n===32?'Requirements · version 2':'R · Recorded requirements')+'<ol class="sc-list">'+requirements.map(v=>'<li>'+v+'</li>').join('')+(n===13?'<li>Keep the existing import format: an imposed constraint.</li>':'')+(n===32?'<li><b>New:</b> a batch change can be undone.</li>':'')+'</ol>';
+    if(n===7||n===8)out+=card(n===7?'Design conformance accepted':'Realized conformance accepted','The '+(n===7?'proposed design':'built rule')+' passes these three checks. The time check applies when the rule is used.');
+    if(n===9||n===10)out+=card('Fit accepted; effect falls short','The rule meets the listed requirements when used. Across all batches, average time falls from 45 to 31 minutes, short of the 10-minute goal.');
+    if(n===13)out+=card('Keep the source','Requirements may come from x, y, the gap, imposed boundaries, and M. One requirement can have several sources.');
+    if(n===14||n===31)out+=card('M · Operating hypothesis','Editors avoid bulk changes they cannot undo. '+(n===31?'In this fictional case, they used the rule for only a third of batches.':'That hypothesis never reached R.'));
+    if(n===32)out+=card('Preserve and reassess','Keep version 1 as the record of the previous decision. Review the changed requirement, the candidate comparisons, contribution claims, selection, implementation, and affected checks.');
+    return out;
+  }
+  if(n===11||n===12)return title('What the brief keeps—or loses')+card('Observed situation','“The same edit across 200 items takes 45 minutes.” Keeps the evidence and allows multi-select, rules, imports, or an upstream fix.')+card('An answer in disguise','“We need bulk editing.” Names a solution category and loses the reason. An upstream fix disappears from consideration.');
+  if(n>=15&&n<=20){
+    if(n===15)return title('S · Candidate paths')+card('CURRENT','Edit items one by one.')+card('A · Multi-select','Select items, then apply a batch action.')+card('B · Reusable rule','Define a rule, preview matches, apply it.')+card('C · Validated import','Prepare and import a set of changes.');
+    const labels=['Right items','Rest untouched','When used: ≤10 min','Import format kept','No mouse needed'];
+    const marks=[['Miss','Meet','Meet','Meet'],['Meet','Meet',n===16?'Unknown':'Meet','Miss'],['Miss','Miss','Meet','Meet'],['Meet','Meet','Meet','Meet'],['Meet','Meet','Miss','Meet']];
+    const rows=labels.map((v,i)=>['R'+(i+1)+' · '+v+'<small>'+(i===4?'Nice-to-have':'Must-have')+'</small>',...marks[i]]);
+    if(n>=18)rows.push(['Checks','3/5','4/5','4/5','4/5']);
+    if(n>=19)rows.push(['Every must-have?','No','No','Yes','No']);
+    return title('Compare whole paths under the same R')+wrapTable('Fit Check for the catalog team',['Requirement','CURRENT','A','B','C'],rows)+card(n===16?'Uncertainty is visible':'The open question',n===16?'B’s effect on untouched items is not yet known.':'The team tested B’s open R2 claim. In this example it held up.')+(n>=19?card('Eligibility','A misses R3. C misses R2. B clears every must-have; the total score does not decide.'):'' )+(n===20?card('What is missing?','A better mechanism absent from S creates no failing cell. Deliberate search is a separate responsibility.'):'');
+  }
+  if(n>=21&&n<=24){
+    const rows=[['Rule builder','—','—','Accepted'],['Preview of matches','Accepted','Accepted','—'],['One-step apply','—','—','Accepted'],['Share rules','—','—','—']];
+    return title('Reverse Fit · parts of B')+'<p>This teaching view shows R1–R3. R4 (import compatibility) needs a separate check; R5 remains a nice-to-have. The workbench below retains all five.</p>'+wrapTable('Claimed contributions, not proof',['Part','R1 · Right items','R2 · Rest untouched','R3 · ≤10 min'],rows)+card(n>=23?'Share rules is cut':'An empty row','No recorded requirement justifies sharing rules. That does not establish that sharing is useless.')+(n===24?card('Inspect the whole configuration','Does each part do enough? Does apply depend on a reliable preview? Could it undermine untouched items? Constraints may be met through absence or a verified external condition.'):'');
+  }
+  if(n===25)return title('Selection is a separate judgment')+card('Choose B','The team accepts its fit, considers the uncertainty, and judges it feasible within a six-week appetite.')+card('Or decline this investment','The current editing burden remains. The decision must consider the cost and risk of leaving the situation as it is.');
+  if(n>=26&&n<=28){
+    const rows=[['Editors with B','45 min','31 min','14 min faster']];if(n>=27)rows.push(['Comparable editors without B','45 min','39 min','6 min faster']);
+    return title('Observed change and attribution')+wrapTable('Illustrative batch times',['Group','Before','After','Change'],rows)+card(n===26?'What would have happened without B?':'Estimated difference',n===26?'The 14-minute before/after improvement alone does not establish B’s contribution.':'(45 − 31) − (45 − 39) = 8 minutes. Attribution depends on a credible comparison and assumptions about how the groups would otherwise have changed.')+(n===28?card('Two possible errors','Observation: whom, what, and when did we measure? Inference: does the comparison warrant the causal conclusion?'):'');
+  }
+  if(n===29||n===30)return title('A route for backward diagnosis')+'<ol class="sc-list">'+['Verdict: was the conclusion warranted?','Evidence: did observation represent what happened?','Realized fit: does the operating solution meet R?','Build: did implementation realize the design?','Choice: were appetite and tradeoffs considered?','Design fit: was acceptance justified?','Options: which candidate paths were never considered?','Requirements: what is missing or wrongly specified?','Frame: do x, y, M, intent, and boundaries still hold?'].map(v=>'<li>'+v+'</li>').join('')+card('Follow the evidence','Begin by checking the verdict, then trace the relevant dependencies. More than one break may be involved; this is a guide, not a compulsory sequence.');
+  return spine;
+}
+function updateReadable(n){$('#scene-readable').innerHTML=readableScene(n);$('#stagebox').scrollTop=0;}
+
+/* Workbench records use stable IDs; text is editable, never a storage key. */
+const WB_KEY = 'fit-check-workbench-v2';
+const WB_LEGACY_KEY = 'fit-check-workbench-v1';
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const linesOf = s => s.split('\n').map(v => v.trim()).filter(Boolean);
+const MARK = {
+  y: { html:'<span class="m y">✓</span>', say:'meets it' },
+  n: { html:'<span class="m n">✗</span>', say:'misses it' },
+  q: { html:'<span class="m q">✗<sup>?</sup></span>', say:'not known yet' },
+  a: { html:'<span class="m a">✓<sup>!</sup></span>', say:'uncertainty explicitly accepted' },
+  s: { html:'<span class="m q">↻</span>', say:'needs review after a change' }
+};
+const CLAIM = {
+  '': { html:'<span class="m rz">—</span>', say:'no claim' },
+  q: { html:'<span class="m dot">●<sup>?</sup></span>', say:'claimed, not checked' },
+  y: { html:'<span class="m dot">●</span>', say:'contribution accepted for this decision' },
+  s: { html:'<span class="m q">↻</span>', say:'contribution needs review' }
+};
+function cell(v='q', note='', revision=1){ return {v, note, revision, stale:false}; }
+function wbExample(){
+  const r = ['Change the right items','Leave the rest alone','When used: 200 items in 10 min or less','Keep the import format','No mouse needed'].map((text,i)=>({id:'r'+(i+1),text,status:i===4?'nice':'must',kind:i===3?'check':'mechanism'}));
+  const s = ['CURRENT · edit one by one','A · multi-select','B · reusable rule','C · validated import'].map((text,i)=>({id:'s'+(i+1),text}));
+  const marks = [['n','y','y','y'],['y','y','q','n'],['n','n','y','y'],['y','y','y','y'],['y','y','n','y']];
+  const fit={}; r.forEach((r,i)=>{ fit[r.id]={}; s.forEach((s,j)=>{fit[r.id][s.id]=cell(marks[i][j]);}); });
+  return {v:2,revision:1,next:{r:6,s:5,p:5},example:true,
+    x:'The same edit across 200 items takes 45 minutes.',y:'Updates done right, with far less repetitive work.',m:'Editors avoid bulk changes they can’t undo.',r,s,fit,
+    parts:{s3:['Rule builder','Preview of matches','One-step apply','Share rules'].map((text,i)=>({id:'p'+(i+1),text}))},
+    rot:{s3:{p1:{r3:cell('y')},p2:{r1:cell('y'),r2:cell('q')},p3:{r3:cell('y')}}},ex:'s3',phase:1,changes:[]};
+}
+function normalizeCell(c, contribution=false){
+  if(typeof c==='string') c={v:c};
+  const valid=contribution?['q','y']:['y','n','q','a'];
+  const v=valid.includes(c?.v)?c.v:'q';
+  return {v,note:typeof c?.note==='string'?c.note:'',revision:Number.isInteger(c?.revision)?c.revision:1,stale:!!c?.stale};
+}
+function wbRestore(o){
+  if(!o || ![1,2].includes(o.v) || !Array.isArray(o.r) || !Array.isArray(o.s)) return null;
+  if(o.v===1){
+    const w=wbExample(); w.example=!!o.example; w.x=String(o.x||'');w.y=String(o.y||'');w.m=String(o.m||'');
+    w.r=o.r.map((text,i)=>({id:'r'+(i+1),text:String(text),status:o.status?.[text]==='nice'?'nice':'must',kind:'mechanism'}));
+    w.s=o.s.map((text,i)=>({id:'s'+(i+1),text:String(text)})); w.fit={};w.parts={};w.rot={};
+    w.next={r:w.r.length+1,s:w.s.length+1,p:1};
+    w.r.forEach(r=>{w.fit[r.id]={};w.s.forEach(s=>{const c=normalizeCell(o.fit?.[r.text]?.[s.text]);c.stale=true;w.fit[r.id][s.id]=c;});});
+    w.s.forEach(s=>{
+      w.parts[s.id]=(Array.isArray(o.parts?.[s.text])?o.parts[s.text]:[]).map(text=>({id:'p'+w.next.p++,text:String(text)}));
+      w.rot[s.id]={};w.parts[s.id].forEach(p=>{w.rot[s.id][p.id]={};w.r.forEach(r=>{const v=o.rot?.[s.text]?.[p.text]?.[r.text];if(v){const c=normalizeCell(v,true);c.stale=true;w.rot[s.id][p.id][r.id]=c;}});});
+    });
+    w.ex=w.s.find(s=>s.text===o.ex)?.id||w.s[0]?.id||'';w.phase=o.phase===2?2:1;
+    w.changes=[{revision:1,reason:'Previous draft migrated. Its judgments need review; the earlier saved draft is retained.'}];
+    return w;
+  }
+  const unique=arr=>new Set(arr.map(x=>x.id)).size===arr.length;
+  if(!o.r.every(r=>/^r\d+$/.test(r?.id)&&typeof r.text==='string') || !o.s.every(s=>/^s\d+$/.test(s?.id)&&typeof s.text==='string') || !unique(o.r)||!unique(o.s))return null;
+  const w={v:2,revision:Number.isInteger(o.revision)?o.revision:1,example:!!o.example,x:String(o.x||''),y:String(o.y||''),m:String(o.m||''),r:[],s:[],fit:{},parts:{},rot:{},ex:o.ex,phase:o.phase===2?2:1,changes:Array.isArray(o.changes)?o.changes.filter(c=>typeof c?.reason==='string').slice(-20):[]};
+  w.r=o.r.map(r=>({id:r.id,text:r.text,status:r.status==='nice'?'nice':'must',kind:r.kind==='check'?'check':'mechanism'}));
+  w.s=o.s.map(s=>({id:s.id,text:s.text}));
+  w.r.forEach(r=>{w.fit[r.id]={};w.s.forEach(s=>{if(o.fit?.[r.id]?.[s.id])w.fit[r.id][s.id]=normalizeCell(o.fit[r.id][s.id]);});});
+  w.s.forEach(s=>{
+    const ps=Array.isArray(o.parts?.[s.id])?o.parts[s.id]:[];
+    if(!ps.every(p=>/^p\d+$/.test(p?.id)&&typeof p.text==='string')||!unique(ps))throw new Error('Invalid saved parts');
+    w.parts[s.id]=ps.map(p=>({id:p.id,text:p.text}));w.rot[s.id]={};
+    ps.forEach(p=>{w.rot[s.id][p.id]={};w.r.forEach(r=>{const c=o.rot?.[s.id]?.[p.id]?.[r.id];if(c)w.rot[s.id][p.id][r.id]=normalizeCell(c,true);});});
+  });
+  const next=(a,k)=>Math.max(0,...a.map(v=>Number(v.id.slice(1))),Number(o.next?.[k]||1)-1)+1;
+  w.next={r:next(w.r,'r'),s:next(w.s,'s'),p:next(Object.values(w.parts).flat(),'p')};
+  if(!w.s.some(s=>s.id===w.ex))w.ex=w.s[0]?.id||'';
+  return w;
+}
+function optName(s,j=0){
+  const text=typeof s==='string'?s:s?.text||'';
+  const m=text.match(/^(\S{1,12})\s+[·:–—-]\s+(.+)$/)||text.match(/^(\S{1,12})[·:]\s*(.+)$/);
+  return m?{id:m[1],desc:m[2]}:{id:'Option '+(j+1),desc:text};
+}
+const rid = r=>r.id.toUpperCase();
+const isMust = r=>r.status!=='nice';
+const fitCell = (r,s)=>(W.fit[r.id]||{})[s.id]||cell();
+const displayMark = c=>c.stale?'s':c.v;
+const fitOf = (r,s)=>displayMark(fitCell(r,s));
+const accepted = c=>!c.stale && (c.v==='y'||c.v==='a');
+function verdictOf(s){
+  let miss=0,open=0;const must=W.r.filter(isMust);
+  must.forEach(r=>{const v=fitOf(r,s);if(v==='n')miss++;else if(v==='q'||v==='s')open++;});
+  return {k:!must.length?'q':miss?'n':open?'q':'y',miss,open,empty:!must.length};
+}
+function changed(reason){
+  W.revision++;W.example=false;W.changes.push({revision:W.revision,reason});W.changes=W.changes.slice(-20);
+}
+function invalidateFits(rid=null,sid=null){
+  W.r.forEach(r=>{if(rid&&r.id!==rid)return;W.s.forEach(s=>{if(sid&&s.id!==sid)return;const c=W.fit[r.id]?.[s.id];if(c)c.stale=true;});});
+}
+function invalidateClaims(rid=null,sid=null,pid=null){
+  Object.entries(W.rot).forEach(([s,parts])=>{if(sid&&s!==sid)return;Object.entries(parts).forEach(([p,rs])=>{if(pid&&p!==pid)return;Object.entries(rs).forEach(([r,c])=>{if(!rid||r===rid)c.stale=true;});});});
+}
+function wbFrame(k,text){
+  if(W[k]===text)return;changed(k+' changed; reassess fit and contribution claims.');W[k]=text;invalidateFits();invalidateClaims();
+}
+/* Match unchanged lines first, including moved lines; then reconcile edits.
+   Duplicates receive separate IDs. A semantic edit never inherits a fresh pass. */
+function wbLines(kind,texts){
+  const old=kind==='p'?(W.parts[W.ex]||[]):W[kind];
+  const used=new Set(), matched=texts.map(text=>{const item=old.find(v=>v.text===text&&!used.has(v.id));if(item)used.add(item.id);return item||null;});
+  const remaining=old.filter(v=>!used.has(v.id));const missing=matched.filter(v=>!v).length;
+  let cursor=0,material=false;
+  const edited=[],added=[];
+  const next=texts.map((text,i)=>{
+    if(matched[i])return matched[i];
+    if(remaining.length===missing){const item={...remaining[cursor++],text};edited.push(item);material=true;return item;}
+    material=true;const item=kind==='r'?{id:'r'+W.next.r++,text,status:'must',kind:'mechanism'}:{id:kind+W.next[kind]++,text};added.push(item);return item;
+  });
+  const deleted=old.filter(v=>!next.some(n=>n.id===v.id));if(deleted.length)material=true;
+  if(kind==='p')W.parts[W.ex]=next;else W[kind]=next;
+  if(material){
+    changed((kind==='r'?'Requirements':kind==='s'?'Candidate paths':'Parts')+' changed. Only affected judgments need review.');
+    edited.forEach(v=>{
+      if(kind==='r'){invalidateFits(v.id);invalidateClaims(v.id);}
+      if(kind==='s'){invalidateFits(null,v.id);invalidateClaims(null,v.id);}
+      if(kind==='p')invalidateClaims(null,W.ex,v.id);
+    });
+    // A changed candidate decomposition can change whole-path fit; a new requirement or
+    // candidate should not erase confidence in unrelated rows/columns.
+    if(kind==='p')invalidateFits(null,W.ex);
+    deleted.forEach(v=>{
+      if(kind==='r'){
+        delete W.fit[v.id];
+        Object.values(W.rot).forEach(parts=>Object.values(parts).forEach(rs=>delete rs[v.id]));
+      } else if(kind==='s'){
+        W.r.forEach(r=>{if(W.fit[r.id])delete W.fit[r.id][v.id];});
+        delete W.rot[v.id];delete W.parts[v.id];
+      } else if(kind==='p'){
+        if(W.rot[W.ex])delete W.rot[W.ex][v.id];
+      }
+    });
+  }
+  if(kind==='s'&&!next.some(s=>s.id===W.ex))W.ex=next[0]?.id||'';
+  W.example=false;
+}
+function claimCell(p,r){if(r.kind==='check')return null;return W.rot[W.ex]?.[p.id]?.[r.id]||null;}
+function claimValue(p,r){const c=claimCell(p,r);return c?displayMark(c):'';}
+function rotateVerdict(p){
+  const claims=W.r.map(r=>claimCell(p,r)).filter(Boolean);
+  return !claims.length?'No recorded reason':claims.some(c=>c.stale)?'Needs review':claims.some(c=>c.v==='q')?'Unchecked contribution':'Contribution accepted';
+}
+const mdc = s=>String(s??'').replace(/\|/g,'\\|').replace(/[\r\n]+/g,' ');
+function wbMarkdown(){
+  const R=W.r,S=W.s, names=s=>optName(s,S.indexOf(s)).id;
+  const fitText=c=>c.stale?'↻ Needs review':({y:'✅ Meets it',n:'❌ Misses it',q:'❌ Unknown',a:'✅ Risk accepted'})[c.v];
+  let md='# Fit Check\n\nDraft revision: '+W.revision+' · Authority: Working · Altitude: Design conformance\n\n## Frame\n\n- x: '+mdc(W.x)+'\n- y: '+mdc(W.y)+'\n- M: '+mdc(W.m)+'\n\n';
+  md+='## Candidate paths (S)\n\n'+S.map(s=>'- '+mdc(names(s))+': '+mdc(optName(s,S.indexOf(s)).desc)).join('\n')+'\n\n';
+  md+='## Fit check\n\n| Req | Requirement | Status | Account | '+S.map(s=>mdc(names(s))).join(' | ')+' |\n|---|---|---|---|'+S.map(()=>':---:').join('|')+'|\n';
+  R.forEach(r=>{md+='| '+rid(r)+' | '+mdc(r.text)+' | '+(isMust(r)?'Must-have':'Nice-to-have')+' | '+(r.kind==='check'?'Separate check':'Mechanism')+' | '+S.map(s=>fitText(fitCell(r,s))).join(' | ')+' |\n';});
+  const notes=[];R.forEach(r=>S.forEach(s=>{const c=fitCell(r,s);if(c.note||c.stale||c.v==='q'||c.v==='a')notes.push('- '+mdc(names(s))+' × '+rid(r)+': '+fitText(c)+(c.stale?' (previously '+MARK[c.v].say+', revision '+c.revision+')':'')+(c.note?'. '+mdc(c.note):''));}));
+  if(notes.length)md+='\n### Evidence, uncertainty and review\n\n'+notes.join('\n')+'\n';
+  const eligible=S.filter(s=>verdictOf(s).k==='y');
+  md+='\nClears every must-have: '+(eligible.length?eligible.map(s=>mdc(names(s))).join(', '):'none yet')+'. Eligible is not chosen.\n\n';
+  const selected=S.find(s=>s.id===W.ex),P=W.parts[W.ex]||[];
+  if(selected&&P.length){
+    md+='## Reverse Fit check ('+mdc(names(selected))+')\n\n| Part | Mechanism | Requirements served | Justification state |\n|---|---|---|---|\n';
+    P.forEach(p=>{const served=R.filter(r=>claimCell(p,r)).map(r=>rid(r)+(claimValue(p,r)==='s'?' (needs review)':claimValue(p,r)==='q'?' (unchecked)':' (accepted contribution)'));md+='| '+p.id.toUpperCase()+' | '+mdc(p.text)+' | '+(served.join(', ')||'—')+' | '+rotateVerdict(p)+' |\n';});
+    md+='\n## Requirement accounts\n\n| Req | Supporting parts or separate check | State |\n|---|---|---|\n';
+    R.forEach(r=>{
+      if(r.kind==='check'){const c=fitCell(r,selected);md+='| '+rid(r)+' | Separate check'+(c.note?': '+mdc(c.note):'')+' | '+fitText(c)+' |\n';}
+      else {const ps=P.filter(p=>claimCell(p,r));const state=!ps.length?'No contribution claimed':ps.some(p=>claimValue(p,r)==='s')?'Needs review':ps.some(p=>claimValue(p,r)==='q')?'Unchecked contribution':'Contribution accepted; sufficiency still requires judgment';md+='| '+rid(r)+' | '+(ps.map(p=>p.id.toUpperCase()).join(', ')||'—')+' | '+state+' |\n';}
+    });
+    md+='\nContribution claims are not proof of conformance or effect. Constraints can be satisfied by a verified absence or external condition, without a positive mechanism.\n\n';
+  }
+  if(W.changes.length)md+='## Recent changes\n\n'+W.changes.map(c=>'- Revision '+c.revision+': '+mdc(c.reason)).join('\n')+'\n\n';
+  md+='## Selection gate\n\nSelect, iterate, investigate, change the bet explicitly, or stop. Weigh appetite, accepted uncertainty and tradeoffs. Accepted uncertainty does not prove a claim or waive a binding constraint.\n';
+  return md;
+}
+
+let W=null, storageOK=true, saved=true, saveTimer=null, restoreMessage='';
+try {
+  const raw=localStorage.getItem(WB_KEY)||localStorage.getItem(WB_LEGACY_KEY);
+  if(raw){W=wbRestore(JSON.parse(raw));if(!W)restoreMessage='The saved draft could not be read. The example is shown; the saved data has not been overwritten.';}
+} catch(e){storageOK=false;restoreMessage='Browser storage is unavailable or the saved draft could not be read. Download your work before leaving.';}
+if(!W)W=wbExample();
+function wbStatus(){
+  const sum=$('#wb-in-sum');sum.textContent=W.example?'Example: the catalog editors':'Your draft · revision '+W.revision;sum.classList.toggle('draft',!W.example);
+  $('#wb-save-state').textContent=restoreMessage||(!storageOK?'Could not save in this browser. Download your work before leaving.':saved?(W.example?'Example loaded. Changes save in this browser.':'Draft saved in this browser.'):'Saving draft…');
+  $('#wb-save-state').classList.toggle('save-error',!storageOK||!!restoreMessage);
+}
+function wbFlush(){clearTimeout(saveTimer);try{localStorage.setItem(WB_KEY,JSON.stringify(W));storageOK=true;saved=true;restoreMessage='';}catch(e){storageOK=false;saved=false;}wbStatus();}
+function wbSave(){saved=false;wbStatus();clearTimeout(saveTimer);saveTimer=setTimeout(wbFlush,250);}
+function wbTouched(){W.example=false;wbSave();}
+function wbTable1(){
+  const R=W.r,S=W.s,t=$('#wb-t1'),g=$('#wb-g1');
+  if(!R.length||!S.length){t.innerHTML='<p class="wb-legend">Add at least one requirement and one candidate path to start.</p>';g.innerHTML='';$('#wb-key1').textContent='';return;}
+  const verdicts=S.map(verdictOf),el=j=>verdicts[j].k==='y'?' class="el"':'';
+  let h='<table class="wb-t"><caption class="sr">Whole candidate paths against the same requirements</caption><thead><tr><th class="rq" scope="col">Requirement</th>';
+  S.forEach((s,j)=>{const n=optName(s,j);h+='<th scope="col"'+el(j)+'>'+esc(n.id)+'<small>'+esc(n.desc)+'</small></th>';});h+='</tr></thead><tbody>';
+  R.forEach(r=>{
+    h+='<tr><th class="rq" scope="row"><span class="rid">'+rid(r)+'</span>'+esc(r.text)+'<div class="row-controls"><button type="button" class="stc'+(isMust(r)?' must':'')+'" data-st="'+r.id+'" aria-label="'+rid(r)+': '+(isMust(r)?'must-have':'nice-to-have')+'. Change priority">'+(isMust(r)?'must-have':'nice-to-have')+'</button><button type="button" class="kindc" data-kind="'+r.id+'" aria-label="'+rid(r)+': '+(r.kind==='check'?'separate check':'mechanism account')+'. Change account type">'+(r.kind==='check'?'Separate check':'Mechanism')+'</button></div></th>';
+    S.forEach((s,j)=>{const v=fitOf(r,s);h+='<td'+el(j)+'><button type="button" class="cb" data-r="'+r.id+'" data-s="'+s.id+'" aria-haspopup="dialog" aria-label="'+esc(optName(s,j).id+' against '+rid(r)+': '+MARK[v].say+'. Edit judgment')+'">'+MARK[v].html+'</button></td>';});h+='</tr>';
+  });
+  h+='</tbody><tfoot><tr><th class="rq" scope="row">Clears every must-have?</th>';
+  verdicts.forEach((v,j)=>{h+='<td'+el(j)+'><span class="vd '+v.k+'">'+(v.k==='y'?'✓':'✗')+'</span>'+(v.k==='q'?'<small>'+(v.empty?'set criteria':v.open+' to review')+'</small>':'')+'</td>';});t.innerHTML=h+'</tr></tfoot></table>';
+  $('#wb-key1').innerHTML=S.map((s,j)=>{const n=optName(s,j);return '<b>'+esc(n.id)+'</b> '+esc(n.desc);}).join(' · ');
+  const eligible=S.filter((s,j)=>verdicts[j].k==='y'),waiting=S.filter((s,j)=>verdicts[j].k==='q'),names=ss=>ss.map(s=>esc(optName(s,S.indexOf(s)).id)).join(', ');
+  let gh='';
+  if(!R.some(isMust))gh='<p><b>Set the governing criteria.</b> At least one must-have is needed before the tool can judge eligibility.</p>';
+  else if(eligible.length)gh='<p><b>Eligible after Fit Check: '+names(eligible)+'.</b> Eligible isn’t chosen. Inspect the parts, then weigh appetite, uncertainty and tradeoffs.</p><button type="button" class="wb-go" data-turn="'+eligible[0].id+'">Inspect '+names([eligible[0]])+'’s parts →</button>';
+  else if(waiting.length)gh='<p><b>Nothing is eligible yet.</b> '+names(waiting)+' may qualify after the outstanding judgments are resolved. A ↻ mark preserves an earlier judgment but requires a fresh decision after a change.</p>';
+  else gh='<p><b>No option clears every must-have.</b> Improve an option, find another, change the bet explicitly, or stop. Don’t loosen a must-have just to make one pass.</p>';
+  gh+='<p class="wb-miss">Ask which candidate path may be missing from S. A missing option never fails a test. Building nothing remains an investment decision.</p>';g.innerHTML=gh;
+}
+function wbTable2(){
+  const R=W.r,S=W.s,t=$('#wb-t2'),g=$('#wb-g2');
+  const select=$('#wb-ex');select.innerHTML=S.map((s,j)=>'<option value="'+s.id+'">'+esc(s.text)+'</option>').join('');
+  if(!S.length){t.innerHTML='<p class="wb-legend">Add a candidate path first.</p>';g.innerHTML='';$('#wb-key').textContent='';$('#wb-p').value='';return;}
+  if(!S.some(s=>s.id===W.ex))W.ex=S[0].id;select.value=W.ex;
+  const chosen=S.find(s=>s.id===W.ex),name=optName(chosen,S.indexOf(chosen)).id,P=W.parts[W.ex]||[];
+  $('#wb-pd-of').textContent=name;if(document.activeElement!==$('#wb-p'))$('#wb-p').value=P.map(p=>p.text).join('\n');
+  if(!R.length){t.innerHTML='<p class="wb-legend">Add requirements before checking the parts.</p>';g.innerHTML='';$('#wb-key').textContent='';return;}
+  if(!P.length){$('#wb-pd').open=true;t.innerHTML='<p class="wb-legend">List the meaningful parts of '+esc(name)+', one per line. Constraints may also have a separate check.</p>';}
+  const gaps=R.filter(r=>isMust(r)&&r.kind!=='check'&&!P.some(p=>claimCell(p,r)));
+  const orphans=P.filter(p=>!R.some(r=>claimCell(p,r)));
+  let h='<table class="wb-t wb-t2"><caption class="sr">Parts of '+esc(name)+' and their claimed contributions</caption><thead><tr><th class="rq" scope="col">Parts of '+esc(name)+'</th>';
+  R.forEach(r=>{h+='<th scope="col"'+(gaps.includes(r)?' class="gap"':'')+' title="'+esc(r.text)+'">'+rid(r)+'<small>'+(r.kind==='check'?'separate check':isMust(r)?'must':'nice')+'</small></th>';});h+='</tr></thead><tbody>';
+  P.forEach(p=>{
+    h+='<tr'+(orphans.includes(p)?' class="orph"':'')+'><th class="rq" scope="row"><span class="rid">'+p.id.toUpperCase()+'</span>'+esc(p.text)+(orphans.includes(p)?'<em>no recorded reason</em>':'')+'</th>';
+    R.forEach(r=>{if(r.kind==='check'){h+='<td><span class="m rz" aria-hidden="true">—</span><span class="sr">checked separately</span></td>';}else{const v=claimValue(p,r);h+='<td><button type="button" class="rb" data-p="'+p.id+'" data-r="'+r.id+'" aria-label="'+esc(p.text+' toward '+rid(r)+': '+CLAIM[v].say+'. Change claim')+'">'+CLAIM[v].html+'</button></td>';}});h+='</tr>';
+  });
+  if(R.some(r=>r.kind==='check')){h+='<tr><th class="rq" scope="row">Separate checks<small>Uses the whole-path judgment</small></th>';R.forEach(r=>{h+=r.kind==='check'?'<td><button type="button" class="cb" data-r="'+r.id+'" data-s="'+W.ex+'" aria-haspopup="dialog" aria-label="'+esc(rid(r)+' separate check: '+MARK[fitOf(r,chosen)].say+'. Edit judgment')+'">'+MARK[fitOf(r,chosen)].html+'</button></td>':'<td>—</td>';});h+='</tr>';}
+  if(P.length||R.some(r=>r.kind==='check'))t.innerHTML=h+'</tbody></table>';
+  $('#wb-key').innerHTML=R.map(r=>'<b>'+rid(r)+'</b> '+esc(r.text)+(r.kind==='check'?' (separate check)':'')).join(' · ');
+  const open=[],shared=[],heavy=[];
+  P.forEach(p=>{const claims=R.filter(r=>claimCell(p,r));if(claims.length>=3)heavy.push(esc(p.text));claims.forEach(r=>{if(['q','s'].includes(claimValue(p,r)))open.push(esc(p.text)+' → '+rid(r));});});
+  R.forEach(r=>{if(P.filter(p=>claimCell(p,r)).length>=2)shared.push(rid(r));});
+  const separate=R.filter(r=>isMust(r)&&r.kind==='check'&&!accepted(fitCell(r,chosen)));
+  let d=gaps.length?'<div class="dg bad"><b>Missing account</b>'+gaps.map(rid).join(', ')+' have no contribution claimed. Explain the mechanism, or use a separate check where a constraint is satisfied by absence or an external condition.</div>':'<div class="dg good"><b>Accounts</b>Every must-have has a claimed contribution or a separate-check route. This is coverage, not proof.</div>';
+  if(separate.length)d+='<div class="dg warn"><b>Separate checks outstanding</b>'+separate.map(rid).join(', ')+'. Record evidence of conformance; no positive mechanism needs to be invented.</div>';
+  if(orphans.length)d+='<div class="dg bad"><b>Missing reason</b>'+orphans.map(p=>esc(p.text)).join(', ')+'. No accepted requirement currently justifies these parts. Cut, defer, or independently justify the need.</div>';
+  if(open.length)d+='<div class="dg warn"><b>Claims to review</b>'+open.join(', ')+'. An unchecked contribution is not an accepted one.</div>';
+  if(heavy.length)d+='<div class="dg note"><b>Inspect decomposition</b>'+heavy.join(', ')+'. Check whether each label explains a mechanism or hides several different responsibilities.</div>';
+  if(shared.length)d+='<div class="dg note"><b>Inspect relationships</b>'+shared.join(', ')+': several parts contribute. They may work together, duplicate effort, or depend on each other.</div>';
+  d+='<div class="dg note"><b>Coverage isn’t proof</b>Check sufficiency, dependencies and conflicts. Accepting a contribution does not establish whole-path conformance.</div><div class="dg note"><b>Then decide</b>Weigh appetite, evidence, uncertainty and the option not to invest. Acceptance does not waive binding constraints.</div>';g.innerHTML=d;
+}
+function wbPhase(p,focus=false){W.phase=p===2?2:1;const one=W.phase===1;$('#wb-p1').hidden=!one;$('#wb-p2').hidden=one;['1','2'].forEach(n=>{const active=Number(n)===W.phase;$('#wb-tab'+n).setAttribute('aria-selected',String(active));$('#wb-tab'+n).tabIndex=active?0:-1;});if(focus)$('#wb-tab'+W.phase).focus();}
+function wbRender(){wbPhase(W.phase);if(W.phase===2)wbTable2();else wbTable1();if($('#wb-md').open)$('#wb-md-text').value=wbMarkdown();wbStatus();}
+function wbFill(){['x','y','m'].forEach(k=>$('#wb-'+k).value=W[k]);$('#wb-r').value=W.r.map(r=>r.text).join('\n');$('#wb-s').value=W.s.map(s=>s.text).join('\n');wbStatus();}
+const pop=$('#wb-pop');let popAt=null,popTrigger=null;
+function wbOpenPop(btn){
+  const r=W.r.find(r=>r.id===btn.dataset.r),s=W.s.find(s=>s.id===btn.dataset.s);if(!r||!s)return;
+  const c=fitCell(r,s);popAt={r:r.id,s:s.id};popTrigger=btn;
+  $('#wb-pop-h').textContent=optName(s,W.s.indexOf(s)).id+' against '+rid(r)+': '+r.text;
+  $('#wb-note').value=c.note;$('#wb-pop-status').textContent=c.stale?'Needs review. Previous judgment: '+MARK[c.v].say+'.':'';
+  $$('#wb-pop [data-v]').forEach(b=>b.setAttribute('aria-pressed',String(!c.stale&&b.dataset.v===c.v)));
+  $('#wb-shade').hidden=false;pop.hidden=false;
+  if(!window.matchMedia('(max-width:560px)').matches){const rect=btn.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(innerWidth-pop.offsetWidth-8,rect.left+rect.width/2-pop.offsetWidth/2))+'px';pop.style.top=Math.max(8,Math.min(innerHeight-pop.offsetHeight-8,rect.bottom+8))+'px';}
+  (pop.querySelector('[aria-pressed="true"]')||$('#wb-note')).focus({preventScroll:true});
+}
+function wbClosePop(refocus=true){pop.hidden=true;$('#wb-shade').hidden=true;const at=popAt;popAt=null;if(refocus&&at){const target=$('#wb-p'+W.phase+' .cb[data-r="'+at.r+'"][data-s="'+at.s+'"]');(target||popTrigger)?.focus({preventScroll:true});}}
+pop.addEventListener('click',e=>{
+  if(e.target.closest('#wb-pop-close')){wbClosePop();return;}
+  const b=e.target.closest('[data-v]');if(!b||!popAt)return;const note=$('#wb-note').value.trim();
+  if(b.dataset.v==='a'&&!note){$('#wb-pop-status').textContent='Record the uncertainty, who accepts it, and what would reopen it.';$('#wb-note').focus();return;}
+  (W.fit[popAt.r]=W.fit[popAt.r]||{})[popAt.s]=cell(b.dataset.v,note,W.revision);wbTouched();wbRender();wbClosePop();
+});
+$('#wb-shade').addEventListener('click',()=>wbClosePop());
+document.addEventListener('keydown',e=>{
+  if(pop.hidden)return;
+  if(e.key==='Escape'){e.preventDefault();wbClosePop();}
+  if(e.key==='Tab'){const focusables=Array.from(pop.querySelectorAll('button,textarea')).filter(el=>!el.disabled);const first=focusables[0],last=focusables[focusables.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+});
+$('#wb-card').addEventListener('click',e=>{
+  const cb=e.target.closest('.cb');if(cb){wbOpenPop(cb);return;}
+  const priority=e.target.closest('[data-st]');if(priority){const r=W.r.find(r=>r.id===priority.dataset.st);r.status=isMust(r)?'nice':'must';changed(rid(r)+' priority changed to '+r.status+'.');wbTouched();wbRender();$('[data-st="'+r.id+'"]').focus({preventScroll:true});return;}
+  const kind=e.target.closest('[data-kind]');if(kind){const r=W.r.find(r=>r.id===kind.dataset.kind);r.kind=r.kind==='check'?'mechanism':'check';changed(rid(r)+' account changed to '+r.kind+'.');invalidateFits(r.id);invalidateClaims(r.id);wbTouched();wbRender();$('[data-kind="'+r.id+'"]').focus({preventScroll:true});return;}
+  const rb=e.target.closest('.rb');if(rb){const p=rb.dataset.p,r=rb.dataset.r,pr=(W.rot[W.ex]=W.rot[W.ex]||{});const row=pr[p]=pr[p]||{};const old=row[r],v=old?displayMark(old):'';const next={'':'q',q:'y',y:'',s:'q'}[v];if(next)row[r]=cell(next,'',W.revision);else delete row[r];wbTouched();wbRender();$('#wb-t2 .rb[data-p="'+p+'"][data-r="'+r+'"]').focus({preventScroll:true});return;}
+  const turn=e.target.closest('[data-turn]');if(turn){W.ex=turn.dataset.turn;wbPhase(2);wbSave();wbRender();$('#wb-tab2').focus();return;}
+  const tab=e.target.closest('.wb-tab');if(tab){wbPhase(tab.id==='wb-tab2'?2:1);wbSave();wbRender();}
+});
+$('.wb-tabs').addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();wbPhase(e.key==='Home'?1:e.key==='End'?2:W.phase===1?2:1);wbSave();wbRender();$('#wb-tab'+W.phase).focus();});
+$('#wb-ex').addEventListener('change',e=>{W.ex=e.target.value;wbSave();wbRender();});
+['x','y','m'].forEach(k=>$('#wb-'+k).addEventListener('change',e=>{wbFrame(k,e.target.value);wbTouched();wbRender();}));
+['r','s'].forEach(k=>$('#wb-'+k).addEventListener('change',e=>{wbLines(k,linesOf(e.target.value));wbTouched();wbRender();}));
+$('#wb-p').addEventListener('change',e=>{if(!W.ex)return;wbLines('p',linesOf(e.target.value));wbTouched();wbTable2();if($('#wb-md').open)$('#wb-md-text').value=wbMarkdown();});
+let flashTimer=null;function wbFlash(s){$('#wb-flash').textContent=s;clearTimeout(flashTimer);flashTimer=setTimeout(()=>$('#wb-flash').textContent='',4000);}
+$('#wb-copy').addEventListener('click',()=>{const md=wbMarkdown();$('#wb-md-text').value=md;const fallback=()=>{$('#wb-md').open=true;$('#wb-md-text').focus();$('#wb-md-text').select();wbFlash('Selected below. Copy the selected text.');};try{if(!navigator.clipboard?.writeText){fallback();return;}navigator.clipboard.writeText(md).then(()=>wbFlash('Copied'),fallback);}catch(e){fallback();}});
+$('#wb-md').addEventListener('toggle',()=>{if($('#wb-md').open)$('#wb-md-text').value=wbMarkdown();});
+$('#wb-dl').addEventListener('click',()=>{const blob=new Blob([wbMarkdown()],{type:'text/markdown;charset=utf-8'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='fit-check.md';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);wbFlash('Download requested');});
+$('#wb-reset').addEventListener('click',()=>{$('#wb-confirm').hidden=false;$('#wb-reset-no').focus();});
+$('#wb-reset-no').addEventListener('click',()=>{$('#wb-confirm').hidden=true;$('#wb-reset').focus();});
+$('#wb-reset-yes').addEventListener('click',()=>{W=wbExample();wbClosePop(false);$('#wb-confirm').hidden=true;wbFill();wbRender();wbFlush();wbFlash('Example loaded');$('#wb-reset').focus();});
+window.addEventListener('pagehide',()=>{if(!saved)wbFlush();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&!saved)wbFlush();});
+if(!window.matchMedia('(min-width:900px)').matches)$('#wb-in').open=false;
+wbFill();wbRender();
+
+$('#view-readable').addEventListener('click',()=>{const active=story.classList.toggle('reader');$('#view-readable').setAttribute('aria-pressed',String(active));$('#view-readable').textContent=active?'Animated view':'Readable view';fitArt();});
+$('#print-story').innerHTML='<h2>The story</h2>'+STEPS.map((st,i)=>'<article class="print-step"><h3>Step '+(i+1)+'</h3><p>'+st.t+'</p>'+(st.a?'<p>'+st.a+'</p>':'')+(st.ask?'<p><b>Answer:</b> '+st.ask.fb[st.ask.good]+'</p>':'')+([17,20,26,29].includes(i)?readableScene(i+1):'')+'</article>').join('');
+
+/* ---------------- resize ---------------- */
+let rt = null;
+function relayout(){ clearTimeout(rt); rt = setTimeout(() => {
+  const oldTop=storyTop,oldHeight=story.offsetHeight,oldY=window.scrollY,n=cur;
+  const inside=oldY>=oldTop&&oldY<oldTop+oldHeight-player.offsetHeight;
+  const below=oldY>=oldTop+oldHeight;
+  layout();
+  if(inside){lock=0;window.scrollTo({top:storyTop+(n-1)*stepH+Math.round(stepH*.3),behavior:'instant'});setStep(n);}
+  else if(below)window.scrollBy({top:story.offsetHeight-oldHeight,behavior:'instant'});
+  rails();
+},120); }
+window.addEventListener('resize', relayout);
+window.addEventListener('orientationchange', relayout);
+if (window.ResizeObserver) {
+  new ResizeObserver(() => { fitArt(); }).observe(stagebox);
+  new ResizeObserver(() => { rails(); }).observe(chain);
+}
+
+layout();
+setStep(1);
+onScroll();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+})();
+</script>
+</body>
+</html>
