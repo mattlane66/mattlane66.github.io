@@ -12,7 +12,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Upscale and sharpen hero
         run: |
-          ffmpeg -y -i assets/working-form-flow.jpg             -vf "scale=iw*2:ih*2:flags=lanczos,unsharp=5:5:1.15:5:5:0.0"             -q:v 2 assets/working-form-flow-upscaled.jpg
+          if command -v magick >/dev/null 2>&1; then
+            magick assets/working-form-flow.jpg -filter Lanczos -resize 200% -unsharp 0x1.1+1.2+0.02 -quality 96 assets/working-form-flow-upscaled.jpg
+          elif command -v convert >/dev/null 2>&1; then
+            convert assets/working-form-flow.jpg -filter Lanczos -resize 200% -unsharp 0x1.1+1.2+0.02 -quality 96 assets/working-form-flow-upscaled.jpg
+          else
+            echo "ImageMagick is unavailable" >&2
+            exit 1
+          fi
           file assets/working-form-flow-upscaled.jpg
           ls -lh assets/working-form-flow-upscaled.jpg
       - name: Point homepage at upscaled asset
