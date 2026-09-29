@@ -10,16 +10,13 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
       - name: Upscale and sharpen hero
         run: |
-          if command -v magick >/dev/null 2>&1; then
-            magick assets/working-form-flow.jpg -filter Lanczos -resize 200% -unsharp 0x1.1+1.2+0.02 -quality 96 assets/working-form-flow-upscaled.jpg
-          elif command -v convert >/dev/null 2>&1; then
-            convert assets/working-form-flow.jpg -filter Lanczos -resize 200% -unsharp 0x1.1+1.2+0.02 -quality 96 assets/working-form-flow-upscaled.jpg
-          else
-            echo "ImageMagick is unavailable" >&2
-            exit 1
-          fi
+          convert assets/working-form-flow.jpg -filter Lanczos -resize 200% -unsharp 0x1.1+1.2+0.02 -quality 96 assets/working-form-flow-upscaled.jpg
           file assets/working-form-flow-upscaled.jpg
           ls -lh assets/working-form-flow-upscaled.jpg
       - name: Point homepage at upscaled asset
