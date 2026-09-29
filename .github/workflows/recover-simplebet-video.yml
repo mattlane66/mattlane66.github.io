@@ -15,10 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Install latest yt-dlp
+      - name: Install media tools
         run: |
-          python -m pip install --upgrade yt-dlp curl_cffi
-          yt-dlp --version
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version | head -n1
 
       - name: Recover highest-quality public MP4 stream
         env:
