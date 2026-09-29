@@ -1,0 +1,41 @@
+name: Probe SimpleBet video
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/simplebet-probe.yml"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe public player
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright-core >/dev/null 2>&1
+          cat > probe.cjs <<'NODE'
+          const { chromium } = require('playwright-core');
+          (async()=>{
+            const browser=await chromium.launch({headless:true,executablePath:'/usr/bin/google-chrome',args:['--no-sandbox','--disable-dev-shm-usage','--autoplay-policy=no-user-gesture-required']});
+            const page=await browser.newPage({viewport:{width:1920,height:1200}});
+            await page.goto('https://mattlane66.github.io/?probe-simplebet=1',{waitUntil:'domcontentloaded',timeout:60000});
+            await page.waitForTimeout(7000);
+            const info=await page.evaluate(async()=>{
+              const iframe=document.getElementById('simplebet-player');
+              if(!iframe||!window.Vimeo) throw new Error('player missing');
+              const p=new Vimeo.Player(iframe);
+              await p.ready();
+              const duration=await p.getDuration();
+              const width=await p.getVideoWidth();
+              const height=await p.getVideoHeight();
+              let qualities=[]; try{qualities=await p.getQualities()}catch(e){qualities=[{error:String(e)}]}
+              return {duration,width,height,qualities};
+            });
+            console.log('SIMPLEBET_INFO',JSON.stringify(info));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+          node probe.cjs
