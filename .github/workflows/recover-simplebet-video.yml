@@ -17,18 +17,23 @@ jobs:
     steps:
       - name: Install latest yt-dlp
         run: |
-          python -m pip install --upgrade yt-dlp
+          python -m pip install --upgrade yt-dlp curl_cffi
           yt-dlp --version
 
       - name: Recover highest-quality public MP4 stream
         run: |
           set -euxo pipefail
-          yt-dlp \
-            --referer "https://vimeo.com/410327242" \
-            --merge-output-format mp4 \
-            -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" \
-            -o "simplebet-410327242.%(ext)s" \
-            "https://vimeo.com/410327242"
+          download_video() {
+            yt-dlp \
+              --impersonate chrome \
+              --referer "https://vimeo.com/410327242" \
+              --merge-output-format mp4 \
+              -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" \
+              -o "simplebet-410327242.%(ext)s" \
+              "$1"
+          }
+          download_video "https://player.vimeo.com/video/410327242" || \
+          download_video "https://vimeo.com/410327242"
           FILE="$(ls -S simplebet-410327242.* | head -n1)"
           mv "$FILE" simplebet-410327242.mp4
           ls -lh simplebet-410327242.mp4
