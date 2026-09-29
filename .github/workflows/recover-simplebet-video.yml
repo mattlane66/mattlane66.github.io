@@ -23,146 +23,132 @@ jobs:
       - name: Recover highest-quality public MP4 stream
         run: |
           set -euxo pipefail
-          rm -f simplebet-410327242.* media-urls.txt
+          npm init -y >/dev/null 2>&1
+          npm install playwright-core >/dev/null 2>&1
 
-          direct_download() {
-            yt-dlp \
-              --impersonate chrome \
-              --referer "https://mattlane66.github.io/" \
-              --merge-output-format mp4 \
-              -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" \
-              -o "simplebet-410327242.%(ext)s" \
-              "$1"
-          }
-
-          if ! direct_download "https://player.vimeo.com/video/410327242"; then
-            echo "Direct extraction blocked; recovering the public media request from the working portfolio embed."
-            npm init -y >/dev/null 2>&1
-            npm install playwright-core >/dev/null 2>&1
-
-            cat > capture-vimeo.cjs <<'NODE'
+          cat > capture-public-stream.cjs <<'NODE'
           const { chromium } = require('playwright-core');
           const fs = require('fs');
-          (async () => {
-            const chrome = process.env.CHROME || '/usr/bin/google-chrome';
-            const browser = await chromium.launch({
-              headless: true,
-              executablePath: chrome,
-              args: ['--no-sandbox','--disable-dev-shm-usage','--autoplay-policy=no-user-gesture-required']
-            });
-            const context = await browser.newContext({
-              viewport: { width: 1440, height: 1000 },
-              userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'
-            });
-            const page = await context.newPage();
-            const urls = new Set();
-            page.on('request', req => {
-              const u = req.url();
-              if (/\.m3u8(?:\?|$)|\.mpd(?:\?|$)|\.mp4(?:\?|$)/i.test(u)) urls.add(u);
-            });
-            page.on('response', res => {
-              const u = res.url();
-              const ct = (res.headers()['content-type'] || '').toLowerCase();
-              if (/\.m3u8(?:\?|$)|\.mpd(?:\?|$)|\.mp4(?:\?|$)/i.test(u) ||
-                  ct.includes('mpegurl') || ct.includes('dash+xml') || ct.includes('video/mp4')) {
-                urls.add(u);
-              }
-            });
-            await page.goto('https://mattlane66.github.io/?recover-simplebet=1', { waitUntil: 'domcontentloaded', timeout: 60000 });
-            await page.waitForTimeout(18000);
-            for (const frame of page.frames()) {
-              try {
-                await frame.evaluate(() => {
-                  const v = document.querySelector('video');
-                  if (v) { v.muted = true; v.play().catch(() => {}); }
-                });
-              } catch {}
-            }
-            await page.waitForTimeout(12000);
-            fs.writeFileSync('media-urls.txt', [...urls].join('\n') + '\n');
-            console.log([...urls].join('\n'));
-            await browser.close();
-          })().catch(err => { console.error(err); process.exit(1); });
-          NODE
 
-            node capture-vimeo.cjs
-            test -s media-urls.txt
-
-            cat > capture-config.cjs <<'NODE'
-          const { chromium } = require('playwright-core');
-          const fs = require('fs');
+          const sleep = ms => new Promise(r => setTimeout(r, ms));
           (async () => {
             const browser = await chromium.launch({
               headless: true,
               executablePath: process.env.CHROME || '/usr/bin/google-chrome',
-              args: ['--no-sandbox','--disable-dev-shm-usage','--autoplay-policy=no-user-gesture-required']
+              args: [
+                '--no-sandbox',
+                '--disable-dev-shm-usage',
+                '--autoplay-policy=no-user-gesture-required'
+              ]
             });
             const context = await browser.newContext({
-              viewport: { width: 1440, height: 1000 },
+              viewport: { width: 1920, height: 1200 },
               userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'
             });
             const page = await context.newPage();
-            await page.goto('https://mattlane66.github.io/?recover-simplebet=config', { waitUntil: 'domcontentloaded', timeout: 60000 });
-            await page.waitForTimeout(8000);
-            const frame = page.frames().find(f => f.url().includes('player.vimeo.com/video/410327242'));
-            if (!frame) throw new Error('Vimeo player frame not found');
-            const data = await frame.evaluate(async () => {
-              const u = new URL(location.href);
-              const cfg = u.origin + u.pathname.replace(/\/$/, '') + '/config';
-              const r = await fetch(cfg, { credentials: 'include' });
-              return { status: r.status, url: r.url, text: await r.text() };
+            const saved = new Set();
+            const urls = [];
+
+            page.on('response', async res => {
+              const u = res.url();
+              if (!u.includes('vimeocdn.com') || !u.includes('/segment.m4s')) return;
+              const mSid = u.match(/[?&]sid=(\d+)/);
+              const mSt = u.match(/[?&]st=(video|audio)/);
+              if (!mSid || !mSt) return;
+              const key = `${mSt[1]}-${mSid[1]}`;
+              urls.push({ key, url: u });
+              if (saved.has(key)) return;
+              try {
+                const buf = await res.body();
+                if (!buf || !buf.length) return;
+                fs.writeFileSync(`seg-${key}.m4s`, buf);
+                saved.add(key);
+                console.log('SAVED', key, buf.length);
+              } catch (e) {
+                console.log('BODY_FAIL', key, String(e));
+              }
             });
-            fs.writeFileSync('vimeo-config.txt', data.text);
-            console.log('config status', data.status, data.url);
-            let j;
-            try { j = JSON.parse(data.text); } catch { throw new Error('Config was not JSON: ' + data.text.slice(0,300)); }
-            const files = (((j || {}).request || {}).files || {});
-            const progressive = Array.isArray(files.progressive) ? files.progressive : [];
-            progressive.sort((a,b) => ((b.height||0)*(b.width||0))-((a.height||0)*(a.width||0)) || ((b.bitrate||0)-(a.bitrate||0)));
-            if (progressive[0] && progressive[0].url) {
-              fs.writeFileSync('best-url.txt', progressive[0].url + '\n');
-              console.log('BEST_PROGRESSIVE', JSON.stringify({
-                quality: progressive[0].quality,
-                width: progressive[0].width,
-                height: progressive[0].height,
-                fps: progressive[0].fps,
-                bitrate: progressive[0].bitrate
-              }));
-            } else {
-              const findUrl = obj => {
-                if (!obj || typeof obj !== 'object') return null;
-                if (typeof obj.url === 'string' && (/m3u8|mpd|vimeocdn/i.test(obj.url))) return obj.url;
-                for (const v of Object.values(obj)) { const x = findUrl(v); if (x) return x; }
-                return null;
-              };
-              const fallback = findUrl(files.hls) || findUrl(files.dash) || findUrl(files);
-              if (fallback) fs.writeFileSync('best-url.txt', fallback + '\n');
+
+            await page.goto('https://mattlane66.github.io/?recover-simplebet=segments', {
+              waitUntil: 'domcontentloaded',
+              timeout: 60000
+            });
+            await page.waitForTimeout(8000);
+
+            const info = await page.evaluate(async () => {
+              const modal = document.getElementById('simplebet-modal');
+              if (modal) modal.classList.add('open');
+              const iframe = document.getElementById('simplebet-player');
+              if (!iframe || !window.Vimeo) throw new Error('Portfolio Vimeo player was not available');
+              const p = new Vimeo.Player(iframe);
+              await p.ready();
+              let qualities = [];
+              try { qualities = await p.getQualities(); } catch {}
+              const numeric = qualities
+                .filter(q => /^\d+p$/.test(q.id || ''))
+                .sort((a,b) => parseInt(b.id)-parseInt(a.id));
+              if (numeric[0]) {
+                try { await p.setQuality(numeric[0].id); } catch {}
+              }
+              try { await p.setMuted(true); } catch {}
+              const duration = await p.getDuration();
+              const width = await p.getVideoWidth();
+              const height = await p.getVideoHeight();
+              try { await p.play(); } catch {}
+              return { duration, width, height, qualities, selected: numeric[0]?.id || 'auto' };
+            });
+            console.log('PLAYER_INFO', JSON.stringify(info));
+            fs.writeFileSync('player-info.json', JSON.stringify(info,null,2));
+
+            const step = 3.5;
+            for (let t = 0; t < info.duration; t += step) {
+              await page.evaluate(async t => {
+                const iframe = document.getElementById('simplebet-player');
+                const p = new Vimeo.Player(iframe);
+                try { await p.setCurrentTime(t); } catch {}
+                try { await p.play(); } catch {}
+              }, t);
+              await sleep(700);
             }
+            await sleep(5000);
+
+            fs.writeFileSync('segment-urls.json', JSON.stringify(urls,null,2));
+            console.log('SEGMENTS_SAVED', saved.size);
             await browser.close();
           })().catch(err => { console.error(err); process.exit(1); });
           NODE
 
-            node capture-config.cjs || true
+          node capture-public-stream.cjs
+          cat player-info.json
+          ls -lh seg-*.m4s | head -40
 
-            URL=""
-            if [ -s best-url.txt ]; then URL="$(head -n1 best-url.txt)"; fi
-            if [ -z "$URL" ]; then URL="$(grep -Ei '\.m3u8([?]|$)' media-urls.txt | head -n1 || true)"; fi
-            if [ -z "$URL" ]; then URL="$(grep -Ei '\.mpd([?]|$)' media-urls.txt | head -n1 || true)"; fi
-            if [ -z "$URL" ]; then URL="$(grep -Ei '\.mp4([?]|$)' media-urls.txt | head -n1 || true)"; fi
-            test -n "$URL"
-            echo "Recovered public media URL: $URL"
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          for kind in ("video","audio"):
+              files=[]
+              for p in Path(".").glob(f"seg-{kind}-*.m4s"):
+                  m=re.search(r"-(\d+)\.m4s$",p.name)
+                  if m: files.append((int(m.group(1)),p))
+              files.sort()
+              print(kind, "segments", [n for n,_ in files])
+              if files:
+                  out=Path(f"{kind}-joined.m4s")
+                  with out.open("wb") as f:
+                      for _,p in files:
+                          f.write(p.read_bytes())
+                  print(out, out.stat().st_size)
+          PY
 
-            yt-dlp \
-              --impersonate chrome \
-              --referer "https://mattlane66.github.io/" \
-              --merge-output-format mp4 \
-              -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" \
-              -o "simplebet-410327242.%(ext)s" \
-              "$URL"
-          fi
+          echo "First video fragment:"
+          xxd -l 96 "$(ls seg-video-*.m4s | sort -V | head -n1)" || true
+          echo "First audio fragment:"
+          xxd -l 96 "$(ls seg-audio-*.m4s | sort -V | head -n1)" || true
 
-          FILE="$(ls -S simplebet-410327242.* | grep -Ev '\.(part|ytdl)$' | head -n1)"
-          if [ "$FILE" != "simplebet-410327242.mp4" ]; then mv "$FILE" simplebet-410327242.mp4; fi
+          ffprobe -v error -show_entries format=duration,size,bit_rate -show_entries stream=index,codec_name,codec_type,width,height,r_frame_rate -of json video-joined.m4s || true
+          ffprobe -v error -show_entries format=duration,size,bit_rate -show_entries stream=index,codec_name,codec_type,width,height,r_frame_rate -of json audio-joined.m4s || true
+
+          ffmpeg -y -i video-joined.m4s -i audio-joined.m4s -c copy -movflags +faststart simplebet-410327242.mp4
           ls -lh simplebet-410327242.mp4
           ffprobe -v error -show_entries format=duration,size,bit_rate -show_entries stream=index,codec_name,codec_type,width,height,r_frame_rate,bit_rate -of json simplebet-410327242.mp4
 
