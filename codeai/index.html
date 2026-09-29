@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CodeAI — AI Tutor in Web Lab · Matt Lane</title>
+<meta name="description" content="A product case study about leading AI Tutor and Teaching Assistant at Code.org, now CodeAI, with a focus on AI Tutor inside Web Lab.">
+<link rel="canonical" href="https://mattlane66.github.io/codeai/">
+<meta property="og:title" content="CodeAI — AI Tutor in Web Lab · Matt Lane">
+<meta property="og:description" content="How curriculum became context an AI tutor could act on inside the coding environment.">
+<meta property="og:url" content="https://mattlane66.github.io/codeai/">
+<meta name="theme-color" content="#121126">
+<style>
+:root{
+  --ink:#111226;--ink2:#1a1b37;--purple:#6c4cff;--violet:#9b7cff;--cyan:#76e7ff;
+  --lime:#d7ff69;--paper:#f8f7ff;--white:#fff;--muted:#66677b;--line:#deddf0;
+  --max:1320px;--pad:clamp(18px,4vw,56px)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}a{color:inherit}img{display:block;max-width:100%}.wrap{width:min(var(--max),calc(100% - 2*var(--pad)));margin:auto}.top{position:sticky;top:0;z-index:30;background:rgba(248,247,255,.88);backdrop-filter:blur(15px);border-bottom:1px solid var(--line)}.topin{height:60px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-weight:850;letter-spacing:-.03em;text-decoration:none}.meta{font-size:12px;color:var(--muted)}.hero{padding:clamp(68px,9vw,132px) 0 52px}.kicker{font-size:11px;font-weight:850;letter-spacing:.13em;text-transform:uppercase;color:var(--purple)}h1{font-size:clamp(54px,8.5vw,112px);line-height:.88;letter-spacing:-.07em;margin:16px 0 0;max-width:11.5ch}.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.95fr);gap:clamp(32px,6vw,84px);align-items:end;margin-top:36px}.lede{font-size:clamp(20px,2.2vw,30px);line-height:1.32;letter-spacing:-.02em;max-width:42ch;margin:0}.role{border-top:1px solid var(--line);padding-top:16px;color:var(--muted);display:grid;gap:5px;font-size:14px}.role strong{color:var(--ink);font-size:16px}.hero-visual{margin-top:48px;position:relative;border:1px solid #27284e;background:linear-gradient(135deg,#17182f,#24204b 62%,#2b255f);border-radius:24px;overflow:hidden;box-shadow:0 34px 90px rgba(28,20,90,.2)}.hero-visual img{width:100%;aspect-ratio:16/8.2;object-fit:cover;object-position:center}.hero-badge{position:absolute;left:22px;bottom:22px;padding:11px 14px;border:1px solid rgba(255,255,255,.28);background:rgba(17,18,38,.82);backdrop-filter:blur(10px);color:#fff;border-radius:999px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:800}.source{font-size:11px;line-height:1.45;color:#7a7b90;margin-top:10px}.section{padding:clamp(72px,9vw,128px) 0;border-top:1px solid var(--line)}.head{display:grid;grid-template-columns:minmax(0,.82fr) minmax(300px,1.18fr);gap:52px;align-items:start;margin-bottom:42px}.ey{font-size:11px;font-weight:850;letter-spacing:.13em;text-transform:uppercase;color:var(--purple)}h2{font-size:clamp(38px,5.5vw,72px);line-height:.94;letter-spacing:-.055em;margin:10px 0 0;max-width:13ch}.head p{font-size:clamp(18px,1.7vw,23px);line-height:1.5;color:#414359;margin:2px 0 0;max-width:53ch}.contrast{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{border:1px solid var(--line);background:#fff;border-radius:18px;padding:28px;min-height:300px}.panel.dark{background:var(--ink);color:#fff;border-color:var(--ink)}.panel .label{font-size:10px;text-transform:uppercase;letter-spacing:.11em;font-weight:850;color:#9697a7}.panel.dark .label{color:#a9a9c7}.panel h3{font-size:clamp(28px,3vw,42px);line-height:1;letter-spacing:-.04em;margin:12px 0 22px}.flow{display:grid;gap:10px}.node{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fbfbff;font-size:14px;line-height:1.4}.dark .node{background:#1e1f3d;border-color:#33355d}.arrow{text-align:center;color:var(--purple);font-weight:900}.lab{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(300px,.78fr);gap:24px;align-items:stretch}.lab-shot{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#191a33;box-shadow:0 22px 60px rgba(31,26,81,.12)}.lab-shot img{width:100%;height:100%;min-height:440px;object-fit:cover}.lab-copy{border:1px solid var(--line);background:#fff;border-radius:20px;padding:30px;display:flex;flex-direction:column;justify-content:space-between}.lab-copy h3{font-size:clamp(30px,3.3vw,48px);line-height:.98;letter-spacing:-.045em;margin:0}.lab-copy p{font-size:16px;line-height:1.55;color:#4b4d62}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 15px;border-radius:999px;border:1px solid var(--ink);font-size:12px;font-weight:850;text-decoration:none}.btn.primary{background:var(--ink);color:#fff}.system{background:var(--ink);color:#fff}.system .head p{color:#c7c8dd}.system .ey{color:var(--cyan)}.system h2{color:#fff}.system-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:stretch}.sys{border:1px solid #34365d;border-radius:14px;background:#1a1b37;padding:18px;min-height:170px;display:flex;flex-direction:column;justify-content:space-between}.sys b{font-size:15px}.sys span{font-size:12px;line-height:1.4;color:#b8bad0}.sys.out{background:linear-gradient(160deg,#332771,#1a1b37);border-color:#6558aa}.system-note{margin-top:18px;color:#aeb0c7;font-size:12px;line-height:1.5}.loop{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.step{position:relative;border:1px solid var(--line);background:#fff;border-radius:14px;padding:18px;min-height:190px}.step b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--purple);margin-bottom:14px}.step strong{display:block;font-size:20px;line-height:1.08;letter-spacing:-.03em}.step span{display:block;font-size:13px;line-height:1.45;color:var(--muted);margin-top:10px}.step:not(:last-child):after{content:"→";position:absolute;right:-11px;top:48%;z-index:3;width:22px;height:22px;border-radius:50%;background:var(--purple);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:900}.work{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.work-card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:28px}.work-card.accent{background:linear-gradient(145deg,#5a43e8,#7a59ff);color:#fff;border-color:transparent}.work-card h3{font-size:30px;line-height:1.02;letter-spacing:-.04em;margin:0 0 16px}.work-card p{font-size:16px;line-height:1.55;color:#505267;margin:0}.work-card.accent p{color:#eeeaff}.facts{display:grid;gap:0;border-top:1px solid var(--line)}.fact{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}.fact b{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--purple)}.fact span{font-size:15px;line-height:1.45}.close{padding:90px 0 110px}.close-box{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:end}.close p{font-size:18px;line-height:1.55;color:var(--muted);margin:0}.back{display:inline-flex;margin-top:22px;font-weight:850;color:var(--purple);text-decoration:none}.footer{border-top:1px solid var(--line);padding:26px 0 38px;color:#818295;font-size:12px}
+@media(max-width:980px){.hero-grid,.head,.lab,.work,.close-box{grid-template-columns:1fr}.system-grid{grid-template-columns:1fr 1fr}.loop{grid-template-columns:1fr 1fr 1fr}.step:nth-child(3):after{display:none}.lab-shot img{min-height:0}}
+@media(max-width:620px){.meta{display:none}.contrast,.system-grid,.loop{grid-template-columns:1fr}.step:not(:last-child):after{display:none}.fact{grid-template-columns:1fr;gap:5px}h1{font-size:clamp(50px,16vw,72px)}.hero-visual{border-radius:14px}.panel,.lab-copy,.work-card{padding:22px}.wrap{width:min(var(--max),calc(100% - 28px))}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap topin"><a class="brand" href="../">← Matt Lane</a><div class="meta">CodeAI · Director, Product Management · 2025–2026</div></div></header>
+<main>
+<section class="hero"><div class="wrap">
+  <div class="kicker">CodeAI · formerly Code.org · AI Tutor</div>
+  <h1>The tutor had to know the lesson—not just the code.</h1>
+  <div class="hero-grid">
+    <p class="lede">I led product strategy for AI Tutor and Teaching Assistant. The hard part was not putting a chatbot beside an editor. It was turning curriculum into context an LLM could act on, so help arrived at the right level without removing the student’s thinking.</p>
+    <div class="role"><strong>Director, Product Management</strong><span>February 2025 – April 2026</span><span>AI Tutor · Teaching Assistant · adaptive K–12 learning</span></div>
+  </div>
+  <div class="hero-visual">
+    <img src="https://contentful-images.code.org/90t6bu6vlf76/6Al8HATiw8iWZqlMdROuM6/d55211bae0b051d6a479fa85906f9e1a/ai-tutor-hero-banner.png?fm=avif" alt="Current CodeAI AI Tutor product imagery">
+    <div class="hero-badge">AI Tutor · embedded learning support</div>
+  </div>
+  <div class="source">Current CodeAI imagery is used as product context. The product has continued to evolve after my April 2026 tenure.</div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="head">
+    <div><div class="ey">The constraint</div><h2>An answer can be correct and still be bad tutoring.</h2></div>
+    <p>A generic assistant optimizes for completing the request. A learning product has another job: keep the student moving while preserving the reasoning they are supposed to learn. CodeAI’s current AI Tutor describes that explicitly through Socratic guidance, debugging support, and task-level scaffolding.</p>
+  </div>
+  <div class="contrast">
+    <div class="panel">
+      <div class="label">Generic coding assistant</div>
+      <h3>Question → answer → done.</h3>
+      <div class="flow">
+        <div class="node">Student asks for help</div><div class="arrow">↓</div>
+        <div class="node">Model produces the solution</div><div class="arrow">↓</div>
+        <div class="node">Work advances. Learning may not.</div>
+      </div>
+    </div>
+    <div class="panel dark">
+      <div class="label">Tutor inside a learning system</div>
+      <h3>Context → guidance → student judgment → iteration.</h3>
+      <div class="flow">
+        <div class="node">Lesson goal + current code + task state</div><div class="arrow">↓</div>
+        <div class="node">Guide, debug, explain—or generate when the activity calls for it</div><div class="arrow">↓</div>
+        <div class="node">Student inspects, accepts, rejects, revises, and keeps going</div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="head">
+    <div><div class="ey">The product move</div><h2>Put the tutor where the thinking happens.</h2></div>
+    <p>AI Tutor lives inside supported CodeAI labs rather than as a separate destination. In Web Lab, students can ask questions, generate code, request changes, debug, and explore ideas while the website they are building remains in front of them.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-shot"><img src="https://contentful-images.code.org/90t6bu6vlf76/7heh8fq88cPVr9oDIaj3dI/4e1f4c49feaa6c9e8f54ed6c1b8a6168/AI_Body_Section_Image.avif" alt="Current CodeAI Web Lab with AI Tutor"></div>
+    <div class="lab-copy">
+      <div>
+        <div class="ey">Web Lab + AI Tutor</div>
+        <h3>The editor, output, lesson, and tutor become one learning surface.</h3>
+        <p>That matters because the assistant can respond to the actual artifact and task instead of forcing the student to copy context into a generic chat window. The current Web Lab experience supports HTML, CSS, and JavaScript, with AI Tutor built into the workflow.</p>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="https://studio.code.org/projects/weblab2/5d0801a7-18f8-4ce2-960b-bfb0854046c5/edit" target="_blank" rel="noopener">Open the Web Lab example ↗</a>
+        <a class="btn" href="https://code.org/en-US/tools/ai-tutor" target="_blank" rel="noopener">See AI Tutor today ↗</a>
+      </div>
+    </div>
+  </div>
+  <div class="source">The Web Lab screenshot and current feature description are from CodeAI’s public 2026 product experience and are shown to make the product context concrete.</div>
+</div></section>
+
+<section class="section system"><div class="wrap">
+  <div class="head">
+    <div><div class="ey">What I shaped</div><h2>Curriculum became an action space the model could read.</h2></div>
+    <p>I translated modular curriculum into an LLM-interpretable action space. The product problem was to make instructional intent legible to the model: what the student is working on, what the lesson is trying to teach, and what kind of intervention is appropriate now.</p>
+  </div>
+  <div class="system-grid">
+    <div class="sys"><b>Lesson objective</b><span>What the student should understand—not merely produce.</span></div>
+    <div class="sys"><b>Task state</b><span>Where the learner is in the activity and what they are trying to do.</span></div>
+    <div class="sys"><b>Student artifact</b><span>The actual code or project state the tutor can respond to.</span></div>
+    <div class="sys"><b>Instructional boundary</b><span>How much help is appropriate for this task and learner.</span></div>
+    <div class="sys out"><b>Tutoring action</b><span>Question, hint, explanation, debugging help, reflection, or code support.</span></div>
+  </div>
+  <div class="system-note">The point was not to make the model “know CodeAI” in the abstract. It was to give it enough structured instructional state to choose a useful next move.</div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="head">
+    <div><div class="ey">The learning loop</div><h2>The loop mattered more than the answer.</h2></div>
+    <p>The current Intro to Web Lab lesson makes the intended behavior visible: students start with a vision, let AI produce a first draft, notice the mismatch, investigate HTML/CSS concepts, debug and refine, then return to the original page with better judgment.</p>
+  </div>
+  <div class="loop">
+    <div class="step"><b>01</b><strong>Set a vision</strong><span>Start from something the student wants to make.</span></div>
+    <div class="step"><b>02</b><strong>Generate</strong><span>Use AI to turn the idea into a first working version.</span></div>
+    <div class="step"><b>03</b><strong>Notice the gap</strong><span>Compare what appeared with what the student imagined.</span></div>
+    <div class="step"><b>04</b><strong>Investigate</strong><span>Ask, debug, prompt, and learn the concepts that explain the mismatch.</span></div>
+    <div class="step"><b>05</b><strong>Judge</strong><span>Accept, reject, revert, or change the suggestion.</span></div>
+    <div class="step"><b>06</b><strong>Iterate</strong><span>Return to the artifact with more understanding than before.</span></div>
+  </div>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <div class="head">
+    <div><div class="ey">What I led</div><h2>Product strategy across the student and teacher sides.</h2></div>
+    <p>My role covered the broader AI learning system, not only a chat interface. I led cross-functional strategy and launch work across AI Tutor and Teaching Assistant while the organization was adapting its curriculum and tools to an AI-native learning model.</p>
+  </div>
+  <div class="work">
+    <div class="work-card accent">
+      <h3>AI Tutor + Teaching Assistant</h3>
+      <p>Led cross-functional product strategy and launch to 100K+ teachers, supporting adaptive K–12 curriculum.</p>
+    </div>
+    <div class="work-card">
+      <div class="facts">
+        <div class="fact"><b>Role</b><span>Director, Product Management</span></div>
+        <div class="fact"><b>Tenure</b><span>February 2025 – April 2026</span></div>
+        <div class="fact"><b>Core product problem</b><span>Turn modular curriculum into context and actions an LLM could interpret.</span></div>
+        <div class="fact"><b>Focus here</b><span>AI Tutor inside Web Lab—the student-side expression of that system.</span></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="close"><div class="wrap close-box">
+  <div><div class="ey">What stayed with me</div><h2>AI should tighten the feedback loop without making the learner disappear.</h2></div>
+  <div><p>The useful question is not “can the model do this?” It is “what should the person understand or decide after the model does its part?” In learning products, that distinction is the product.</p><a class="back" href="../">← Back to portfolio</a></div>
+</div></section>
+</main>
+<footer class="footer"><div class="wrap">Matt Lane · CodeAI / Code.org · Director, Product Management · 2025–2026</div></footer>
+</body>
+</html>
