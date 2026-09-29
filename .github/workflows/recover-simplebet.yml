@@ -10,24 +10,90 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Install yt-dlp and ffmpeg
+      - name: Install tools
         run: |
-          python -m pip install --upgrade yt-dlp
+          python -m pip install --upgrade requests
           sudo apt-get update
           sudo apt-get install -y ffmpeg
-      - name: Download highest-quality public stream
+      - name: Recover highest public rendition from Vimeo player
         run: |
           mkdir -p recovered
-          yt-dlp             --no-playlist             --merge-output-format mp4             -f "bv*+ba/b"             -o "recovered/simplebet-410327242.%(ext)s"             "https://vimeo.com/410327242"
-          ls -lh recovered
+          python - <<'PY'
+          import json, re, requests, sys
+          from pathlib import Path
+
+          video_id="410327242"
+          url=f"https://player.vimeo.com/video/{video_id}"
+          headers={"User-Agent":"Mozilla/5.0"}
+          r=requests.get(url,headers=headers,timeout=30)
+          print("player status",r.status_code,"bytes",len(r.content))
+          r.raise_for_status()
+          html=r.text
+          Path("recovered/player.html").write_text(html,encoding="utf-8")
+
+          # Vimeo player pages typically expose a JSON config object.
+          patterns=[
+              r'window\.playerConfig\s*=\s*({.*?})\s*;\s*</script>',
+              r'var\s+config\s*=\s*({.*?})\s*;\s*</script>',
+              r'"config_url"\s*:\s*"([^"]+)"',
+          ]
+          config=None
+          for i,p in enumerate(patterns):
+              m=re.search(p,html,re.S)
+              if not m: continue
+              if i<2:
+                  try:
+                      config=json.loads(m.group(1))
+                      break
+                  except Exception as e:
+                      print("json parse failed",e)
+              else:
+                  config_url=m.group(1).replace("\\/","/")
+                  cr=requests.get(config_url,headers=headers,timeout=30)
+                  print("config status",cr.status_code,"bytes",len(cr.content))
+                  cr.raise_for_status()
+                  config=cr.json()
+                  break
+          if config is None:
+              # Fallback: locate a JSON blob containing request.files
+              idx=html.find('"progressive"')
+              print("progressive index",idx)
+              if idx!=-1:
+                  print(html[max(0,idx-2000):idx+5000])
+              raise SystemExit("Could not locate Vimeo player config")
+
+          Path("recovered/config.json").write_text(json.dumps(config,indent=2),encoding="utf-8")
+          files=((config.get("request") or {}).get("files") or {})
+          progressive=files.get("progressive") or []
+          print("progressive renditions:")
+          for f in progressive:
+              print(f.get("quality"),f.get("width"),f.get("height"),f.get("fps"),f.get("mime"),str(f.get("url"))[:120])
+          if not progressive:
+              raise SystemExit("No public progressive renditions in config")
+
+          def score(f):
+              return ((f.get("height") or 0)*(f.get("width") or 0), f.get("bitrate") or 0)
+          best=max(progressive,key=score)
+          print("selected",best.get("quality"),best.get("width"),best.get("height"),best.get("fps"))
+          media=requests.get(best["url"],headers=headers,stream=True,timeout=60)
+          print("media status",media.status_code,media.headers.get("content-length"),media.headers.get("content-type"))
+          media.raise_for_status()
+          out=Path("recovered/simplebet-410327242-public.mp4")
+          with out.open("wb") as fh:
+              for chunk in media.iter_content(1024*1024):
+                  if chunk: fh.write(chunk)
+          print("saved",out,out.stat().st_size)
+          PY
       - name: Record media details
         run: |
-          FILE="$(find recovered -maxdepth 1 -type f | head -n 1)"
-          ffprobe -v error             -show_entries format=filename,format_name,duration,size,bit_rate             -show_entries stream=index,codec_name,codec_type,width,height,r_frame_rate,bit_rate             -of json "$FILE" | tee recovered/ffprobe.json
+          ffprobe -v error             -show_entries format=filename,format_name,duration,size,bit_rate             -show_entries stream=index,codec_name,codec_type,width,height,r_frame_rate,bit_rate             -of json recovered/simplebet-410327242-public.mp4 | tee recovered/ffprobe.json
       - name: Upload recovered video
         uses: actions/upload-artifact@v4
         with:
           name: simplebet-vimeo-410327242-recovered
-          path: recovered/
+          path: |
+            recovered/simplebet-410327242-public.mp4
+            recovered/ffprobe.json
+            recovered/config.json
           if-no-files-found: error
           retention-days: 90
