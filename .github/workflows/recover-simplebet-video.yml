@@ -69,71 +69,107 @@ jobs:
               }
             });
 
-            await page.goto('https://mattlane66.github.io/?recover-simplebet=direct-frame', {
+            await page.goto('https://mattlane66.github.io/?recover-simplebet=existing-player', {
               waitUntil: 'domcontentloaded',
               timeout: 60000
             });
 
-            // Inject a large public embed so Vimeo's adaptive player is asked for its highest practical rendition.
+            // Make the already-working modal player occupy a 1920x1080 stage.
             await page.evaluate(() => {
-              document.querySelectorAll('iframe[src*="player.vimeo.com/video/410327242"]').forEach(x => x.remove());
-              const iframe=document.createElement('iframe');
-              iframe.id='recovery-player';
-              iframe.width='1920';
-              iframe.height='1080';
-              iframe.style.cssText='position:fixed;inset:0;width:1920px;height:1080px;z-index:99999;border:0;background:#000';
-              iframe.allow='autoplay; fullscreen; picture-in-picture';
-              iframe.src='https://player.vimeo.com/video/410327242?autoplay=1&muted=1&controls=0&title=0&byline=0&portrait=0&dnt=1';
-              document.body.appendChild(iframe);
+              const modal=document.getElementById('simplebet-modal');
+              const dialog=modal?.querySelector('.simplebet-dialog');
+              const stage=modal?.querySelector('.simplebet-stage');
+              const iframe=document.getElementById('simplebet-player');
+              if(modal) {
+                modal.classList.add('open');
+                modal.style.display='grid';
+                modal.style.padding='0';
+              }
+              if(dialog) {
+                dialog.style.width='1920px';
+                dialog.style.maxWidth='1920px';
+                dialog.style.maxHeight='1200px';
+              }
+              if(stage) {
+                stage.style.width='1920px';
+                stage.style.height='1080px';
+                stage.style.aspectRatio='auto';
+              }
+              if(iframe) {
+                iframe.style.width='1920px';
+                iframe.style.height='1080px';
+              }
             });
 
-            let frame=null;
-            for(let i=0;i<60;i++){
-              frame=page.frames().find(f=>f.url().includes('player.vimeo.com/video/410327242'));
-              if(frame) {
-                const ok=await frame.evaluate(() => !!document.querySelector('video')).catch(()=>false);
-                if(ok) break;
+            async function playableFrames() {
+              const out=[];
+              for (const f of page.frames()) {
+                if (!f.url().includes('player.vimeo.com/video/410327242')) continue;
+                const info=await f.evaluate(() => {
+                  const v=document.querySelector('video');
+                  if(!v) return null;
+                  return {
+                    duration:v.duration,
+                    width:v.videoWidth,
+                    height:v.videoHeight,
+                    readyState:v.readyState,
+                    currentSrc:v.currentSrc
+                  };
+                }).catch(()=>null);
+                if(info && Number.isFinite(info.duration) && info.duration>0) out.push({f,info});
               }
+              out.sort((a,b)=>(b.info.width*b.info.height)-(a.info.width*a.info.height));
+              return out;
+            }
+
+            let candidates=[];
+            for(let i=0;i<80;i++){
+              candidates=await playableFrames();
+              if(candidates.length) break;
               await sleep(500);
             }
-            if(!frame) throw new Error('Vimeo player frame not available');
+            if(!candidates.length) throw new Error('No playable Vimeo frame found');
 
-            const info = await frame.evaluate(async () => {
-              const v=document.querySelector('video');
-              if(!v) throw new Error('video element missing');
-              if(!Number.isFinite(v.duration) || !v.duration) {
-                await new Promise((resolve,reject)=>{
-                  const t=setTimeout(()=>reject(new Error('metadata timeout')),20000);
-                  v.addEventListener('loadedmetadata',()=>{clearTimeout(t);resolve()},{once:true});
-                });
-              }
-              v.muted=true;
-              try { await v.play(); } catch {}
-              return {duration:v.duration,width:v.videoWidth,height:v.videoHeight,readyState:v.readyState,currentSrc:v.currentSrc};
-            });
+            // Let adaptive playback settle after the large resize, then re-select the highest-resolution frame.
+            for (const {f} of candidates) {
+              await f.evaluate(() => {
+                const v=document.querySelector('video');
+                if(v){v.muted=true;v.play().catch(()=>{});}
+              }).catch(()=>{});
+            }
+            await sleep(7000);
+            candidates=await playableFrames();
+            if(!candidates.length) throw new Error('Playable Vimeo frame disappeared');
+
+            const info=candidates[0].info;
             console.log('PLAYER_INFO',JSON.stringify(info));
+            console.log('ALL_PLAYERS',JSON.stringify(candidates.map(x=>x.info)));
             fs.writeFileSync('player-info.json',JSON.stringify(info,null,2));
 
-            // Seek through the entire public presentation so every adaptive segment is requested.
-            const step = 2.75;
+            const step=2.75;
             for(let t=0;t<info.duration;t+=step){
-              await frame.evaluate(async t=>{
+              const cs=await playableFrames();
+              if(!cs.length) throw new Error('Player disappeared while seeking');
+              const f=cs[0].f;
+              await f.evaluate(t=>{
                 const v=document.querySelector('video');
                 if(!v) return;
                 v.muted=true;
-                try { v.currentTime=t; } catch {}
-                try { await v.play(); } catch {}
-              },t);
+                try{v.currentTime=t}catch{}
+                v.play().catch(()=>{});
+              },t).catch(()=>{});
               await sleep(320);
             }
-            // Force the last segment too.
-            await frame.evaluate(async () => {
-              const v=document.querySelector('video');
-              if(v && Number.isFinite(v.duration)) {
-                try { v.currentTime=Math.max(0,v.duration-.2); } catch {}
-                try { await v.play(); } catch {}
-              }
-            });
+            const cs=await playableFrames();
+            if(cs.length){
+              await cs[0].f.evaluate(()=>{
+                const v=document.querySelector('video');
+                if(v && Number.isFinite(v.duration)){
+                  try{v.currentTime=Math.max(0,v.duration-.1)}catch{}
+                  v.play().catch(()=>{});
+                }
+              }).catch(()=>{});
+            }
             await sleep(5000);
 
             fs.writeFileSync('segment-urls.json',JSON.stringify(urlLog,null,2));
