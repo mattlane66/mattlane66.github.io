@@ -21,233 +21,73 @@ jobs:
           yt-dlp --version
 
       - name: Recover highest-quality public MP4 stream
+        env:
+          VIDEO_TEMPLATE: "https://vod-adaptive-ak.vimeocdn.com/exp=1790648075~acl=%2F1e07433a-c1b1-40c1-a782-ddad7bd9256b%2Fpsid%3D1074c4d7c12e71a47b56b94040948879bd1e948e1790644475%2F%2A~hmac=ecd289b306f3b80082f26ed2738baef6428ff40f065472ee3f4f21898719f5c7/1e07433a-c1b1-40c1-a782-ddad7bd9256b/psid=1074c4d7c12e71a47b56b94040948879bd1e948e1790644475/v2/remux/avf/9208d68a-4590-484c-8cb7-51628eaab871/segment.m4s?pathsig=8c953e4f~lSAS4mJQtxKdTC2AQ3CWe1daqlu2URaTySSh1vWn1QA&r=dXMtZWFzdDE%3D&sid=2&st=video"
+          AUDIO_TEMPLATE: "https://vod-adaptive-ak.vimeocdn.com/exp=1790648075~acl=%2F1e07433a-c1b1-40c1-a782-ddad7bd9256b%2Fpsid%3D1074c4d7c12e71a47b56b94040948879bd1e948e1790644475%2F%2A~hmac=ecd289b306f3b80082f26ed2738baef6428ff40f065472ee3f4f21898719f5c7/1e07433a-c1b1-40c1-a782-ddad7bd9256b/psid=1074c4d7c12e71a47b56b94040948879bd1e948e1790644475/v2/remux/avf/8f5184af-47d9-4744-894f-8dbbbd5b6145/segment.m4s?pathsig=8c953e4f~TW9ZwmTpaXDcSfian9l7_nv-_gBBJuHxqPZqwb-k81k&r=dXMtY2VudHJhbDE%3D&sid=1&st=audio"
         run: |
           set -euxo pipefail
-          npm init -y >/dev/null 2>&1
-          npm install playwright-core >/dev/null 2>&1
+          mkdir -p recovered
 
-          cat > capture-public-stream.cjs <<'NODE'
-          const { chromium } = require('playwright-core');
-          const fs = require('fs');
-          const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-          (async () => {
-            const browser = await chromium.launch({
-              headless: true,
-              executablePath: process.env.CHROME || '/usr/bin/google-chrome',
-              args: ['--no-sandbox','--disable-dev-shm-usage','--autoplay-policy=no-user-gesture-required']
-            });
-            const context = await browser.newContext({
-              viewport: { width: 1920, height: 1200 },
-              userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'
-            });
-            const page = await context.newPage();
-            const saved = new Set();
-            const templates = {};
-            const urlLog = [];
-
-            page.on('response', async res => {
-              const u = res.url();
-              if (!u.includes('vimeocdn.com') || !u.includes('/segment.m4s')) return;
-              const mSid = u.match(/[?&]sid=(\d+)/);
-              const mSt = u.match(/[?&]st=(video|audio)/);
-              if (!mSid || !mSt) return;
-              const sid = Number(mSid[1]);
-              const kind = mSt[1];
-              const key = `${kind}-${sid}`;
-              urlLog.push({kind,sid,url:u});
-              if (!templates[kind]) templates[kind]=u;
-              if (saved.has(key)) return;
-              try {
-                const buf = await res.body();
-                if (!buf || !buf.length) return;
-                fs.writeFileSync(`seg-${kind}-${sid}.m4s`, buf);
-                saved.add(key);
-                console.log('SAVED', key, buf.length);
-              } catch (e) {
-                console.log('BODY_FAIL', key, String(e));
-              }
-            });
-
-            await page.goto('https://mattlane66.github.io/?recover-simplebet=existing-player', {
-              waitUntil: 'domcontentloaded',
-              timeout: 60000
-            });
-
-            // Make the already-working modal player occupy a 1920x1080 stage.
-            await page.evaluate(() => {
-              const modal=document.getElementById('simplebet-modal');
-              const dialog=modal?.querySelector('.simplebet-dialog');
-              const stage=modal?.querySelector('.simplebet-stage');
-              const iframe=document.getElementById('simplebet-player');
-              if(modal) {
-                modal.classList.add('open');
-                modal.style.display='grid';
-                modal.style.padding='0';
-              }
-              if(dialog) {
-                dialog.style.width='1920px';
-                dialog.style.maxWidth='1920px';
-                dialog.style.maxHeight='1200px';
-              }
-              if(stage) {
-                stage.style.width='1920px';
-                stage.style.height='1080px';
-                stage.style.aspectRatio='auto';
-              }
-              if(iframe) {
-                iframe.style.width='1920px';
-                iframe.style.height='1080px';
-              }
-            });
-
-            async function playableFrames() {
-              const out=[];
-              for (const f of page.frames()) {
-                if (!f.url().includes('player.vimeo.com/video/410327242')) continue;
-                const info=await f.evaluate(() => {
-                  const v=document.querySelector('video');
-                  if(!v) return null;
-                  return {
-                    duration:v.duration,
-                    width:v.videoWidth,
-                    height:v.videoHeight,
-                    readyState:v.readyState,
-                    currentSrc:v.currentSrc
-                  };
-                }).catch(()=>null);
-                if(info && Number.isFinite(info.duration) && info.duration>0) out.push({f,info});
-              }
-              out.sort((a,b)=>(b.info.width*b.info.height)-(a.info.width*a.info.height));
-              return out;
-            }
-
-            let candidates=[];
-            for(let i=0;i<80;i++){
-              candidates=await playableFrames();
-              if(candidates.length) break;
-              await sleep(500);
-            }
-            if(!candidates.length) throw new Error('No playable Vimeo frame found');
-
-            // Let adaptive playback settle after the large resize, then re-select the highest-resolution frame.
-            for (const {f} of candidates) {
-              await f.evaluate(() => {
-                const v=document.querySelector('video');
-                if(v){v.muted=true;v.play().catch(()=>{});}
-              }).catch(()=>{});
-            }
-            await sleep(7000);
-            candidates=await playableFrames();
-            if(!candidates.length) throw new Error('Playable Vimeo frame disappeared');
-
-            const info=candidates[0].info;
-            console.log('PLAYER_INFO',JSON.stringify(info));
-            console.log('ALL_PLAYERS',JSON.stringify(candidates.map(x=>x.info)));
-            fs.writeFileSync('player-info.json',JSON.stringify(info,null,2));
-
-            const step=2.75;
-            for(let t=0;t<info.duration;t+=step){
-              const cs=await playableFrames();
-              if(!cs.length) throw new Error('Player disappeared while seeking');
-              const f=cs[0].f;
-              await f.evaluate(t=>{
-                const v=document.querySelector('video');
-                if(!v) return;
-                v.muted=true;
-                try{v.currentTime=t}catch{}
-                v.play().catch(()=>{});
-              },t).catch(()=>{});
-              await sleep(320);
-            }
-            const cs=await playableFrames();
-            if(cs.length){
-              await cs[0].f.evaluate(()=>{
-                const v=document.querySelector('video');
-                if(v && Number.isFinite(v.duration)){
-                  try{v.currentTime=Math.max(0,v.duration-.1)}catch{}
-                  v.play().catch(()=>{});
-                }
-              }).catch(()=>{});
-            }
-            await sleep(5000);
-
-            fs.writeFileSync('segment-urls.json',JSON.stringify(urlLog,null,2));
-            if(templates.video) fs.writeFileSync('template-video.txt',templates.video+'\n');
-            if(templates.audio) fs.writeFileSync('template-audio.txt',templates.audio+'\n');
-            console.log('SEGMENTS_SAVED',saved.size);
-            console.log('VIDEO_SIDS',[...saved].filter(x=>x.startsWith('video-')).map(x=>Number(x.split('-')[1])).sort((a,b)=>a-b).join(','));
-            console.log('AUDIO_SIDS',[...saved].filter(x=>x.startsWith('audio-')).map(x=>Number(x.split('-')[1])).sort((a,b)=>a-b).join(','));
-            await browser.close();
-          })().catch(err=>{console.error(err);process.exit(1)});
-          NODE
-
-          node capture-public-stream.cjs
-          cat player-info.json
-
-          # Fill any gaps by reusing the signed public segment template captured by the browser.
           python - <<'PY'
+          import os,re,subprocess
           from pathlib import Path
-          import json,re,subprocess
-          info=json.loads(Path("player-info.json").read_text())
-          for kind in ("video","audio"):
-              template_path=Path(f"template-{kind}.txt")
-              if not template_path.exists():
-                  raise SystemExit(f"missing {kind} template")
-              template=template_path.read_text().strip()
-              existing={}
-              for p in Path(".").glob(f"seg-{kind}-*.m4s"):
-                  m=re.search(r"-(\d+)\.m4s$",p.name)
-                  if m: existing[int(m.group(1))]=p
-              if not existing:
-                  raise SystemExit(f"no {kind} segments")
-              max_sid=max(existing)
-              print(kind,"captured",len(existing),"max sid",max_sid)
-              # sid zero may be an init/first segment; try it, then fill through the final observed sid.
-              for sid in range(0,max_sid+1):
-                  p=Path(f"seg-{kind}-{sid}.m4s")
-                  if p.exists() and p.stat().st_size>0: continue
+
+          templates={"video":os.environ["VIDEO_TEMPLATE"],"audio":os.environ["AUDIO_TEMPLATE"]}
+
+          for kind,template in templates.items():
+              misses=0
+              successes=0
+              # Known public playback already exposed sids 1-8. Walk forward until the stream ends.
+              for sid in range(0,401):
                   url=re.sub(r"([?&]sid=)\d+",rf"\g<1>{sid}",template)
                   url=re.sub(r"([?&]st=)(video|audio)",rf"\g<1>{kind}",url)
-                  cp=subprocess.run(["curl","-fL","--retry","2","--connect-timeout","10","-o",str(p),url])
-                  if cp.returncode!=0:
-                      p.unlink(missing_ok=True)
-              got=[]
-              for p in Path(".").glob(f"seg-{kind}-*.m4s"):
-                  m=re.search(r"-(\d+)\.m4s$",p.name)
-                  if m and p.stat().st_size>0: got.append(int(m.group(1)))
-              print(kind,"final sids",sorted(got))
+                  out=Path("recovered")/f"{kind}-{sid:04d}.m4s"
+                  cp=subprocess.run(
+                      ["curl","-fsSL","--retry","1","--connect-timeout","8","--max-time","20","-o",str(out),url],
+                      stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL
+                  )
+                  if cp.returncode==0 and out.exists() and out.stat().st_size>0:
+                      print("OK",kind,sid,out.stat().st_size,flush=True)
+                      successes+=1
+                      misses=0
+                  else:
+                      out.unlink(missing_ok=True)
+                      print("MISS",kind,sid,flush=True)
+                      if sid>=8:
+                          misses+=1
+                          if misses>=3:
+                              break
+              if successes<8:
+                  raise SystemExit(f"Only recovered {successes} {kind} segments")
           PY
 
-          echo "Fragment headers:"
-          xxd -l 96 "$(ls seg-video-*.m4s | sort -V | head -n1)" || true
-          xxd -l 96 "$(ls seg-audio-*.m4s | sort -V | head -n1)" || true
+          ls -lh recovered | head -50
+          echo "Video fragment header:"
+          xxd -l 128 "$(find recovered -name 'video-*.m4s' | sort | head -n1)"
+          echo "Audio fragment header:"
+          xxd -l 128 "$(find recovered -name 'audio-*.m4s' | sort | head -n1)"
 
           python - <<'PY'
           from pathlib import Path
-          import re
           for kind in ("video","audio"):
-              files=[]
-              for p in Path(".").glob(f"seg-{kind}-*.m4s"):
-                  m=re.search(r"-(\d+)\.m4s$",p.name)
-                  if m and p.stat().st_size>0: files.append((int(m.group(1)),p))
-              files.sort()
-              # Prefer starting at 0 if valid; otherwise 1.
-              out=Path(f"{kind}-joined.m4s")
-              with out.open("wb") as f:
-                  for _,p in files: f.write(p.read_bytes())
-              with Path(f"{kind}-list.txt").open("w") as f:
-                  for _,p in files: f.write(f"file '{p.resolve()}'\n")
-              print(kind,"joined",len(files),"segments",out.stat().st_size)
+              fs=sorted(Path("recovered").glob(f"{kind}-*.m4s"))
+              # If sid 0 is a valid init/first segment it naturally comes first.
+              with open(f"{kind}-joined.m4s","wb") as out:
+                  for p in fs: out.write(p.read_bytes())
+              with open(f"{kind}-list.txt","w") as out:
+                  for p in fs: out.write(f"file '{p.resolve()}'\n")
+              print(kind,len(fs),"segments",sum(p.stat().st_size for p in fs))
           PY
 
-          # First attempt: fragmented MP4 byte streams. Fallback: concat-demux each independently.
-          if ffmpeg -y -i video-joined.m4s -i audio-joined.m4s -c copy -movflags +faststart simplebet-410327242.mp4; then
-            echo "Merged joined fragmented streams."
+          ffprobe -v error -show_entries stream=index,codec_name,codec_type,width,height -show_entries format=duration,size -of json video-joined.m4s || true
+          ffprobe -v error -show_entries stream=index,codec_name,codec_type,width,height -show_entries format=duration,size -of json audio-joined.m4s || true
+
+          if ffmpeg -y -i video-joined.m4s -i audio-joined.m4s -map 0:v:0 -map 1:a:0 -c copy -movflags +faststart simplebet-410327242.mp4; then
+            echo "Merged fragmented streams directly."
           else
             ffmpeg -y -f concat -safe 0 -i video-list.txt -c copy video-track.mp4
             ffmpeg -y -f concat -safe 0 -i audio-list.txt -c copy audio-track.m4a
-            ffmpeg -y -i video-track.mp4 -i audio-track.m4a -c copy -movflags +faststart simplebet-410327242.mp4
+            ffmpeg -y -i video-track.mp4 -i audio-track.m4a -map 0:v:0 -map 1:a:0 -c copy -movflags +faststart simplebet-410327242.mp4
           fi
 
           ls -lh simplebet-410327242.mp4
