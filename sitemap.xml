@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://mattlane66.github.io/</loc>
-  </url>
-  <url>
-    <loc>https://mattlane66.github.io/splice/</loc>
-  </url>
-  <url>\n    <loc>https://mattlane66.github.io/fit-check/</loc>\n  </url>\n  <url>\n    <loc>https://mattlane66.github.io/notes/</loc>\n  </url>\n</urlset>
+  <url><loc>https://mattlane66.github.io/</loc></url>
+  <url><loc>https://mattlane66.github.io/splice/</loc></url>
+  <url><loc>https://mattlane66.github.io/nyshex/</loc></url>
+  <url><loc>https://mattlane66.github.io/fit-check/</loc></url>
+  <url><loc>https://mattlane66.github.io/notes/</loc></url>
+</urlset>
