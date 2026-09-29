@@ -44,7 +44,7 @@ jobs:
             if (/mpegurl|video\//i.test(ct) || /m3u8|\.mp4(?:\?|$)/i.test(u)) urls.add(u);
           });
 
-          await page.goto('https://mattlane66.github.io/', {waitUntil:'networkidle', timeout:90000});
+          await page.goto('https://mattlane66.github.io/', {waitUntil:'domcontentloaded', timeout:90000});
           await page.locator('#simplebet-open').scrollIntoViewIfNeeded().catch(()=>{});
           await page.waitForTimeout(15000);
 
