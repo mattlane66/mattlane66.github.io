@@ -1,0 +1,110 @@
+name: Recover SimpleBet Vimeo
+on:
+  push:
+    paths:
+      - ".github/workflows/recover-simplebet.yml"
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Download signed Vimeo fragments
+        run: |
+          mkdir -p recovered/video recovered/audio
+          python - <<'PY'
+          import requests, pathlib, time, json
+          root='https://vod-adaptive-ak.vimeocdn.com/exp=1790650421~acl=%2F1e07433a-c1b1-40c1-a782-ddad7bd9256b%2Fpsid%3D4c9b28abbf445753e26dd486880573ebaca095e41790646821%2F%2A~hmac=3e7b2a0cf2acca76dfe9ccc96242cac9b79f2a80e7223858dc5e95ca5b453e5c/1e07433a-c1b1-40c1-a782-ddad7bd9256b/psid=4c9b28abbf445753e26dd486880573ebaca095e41790646821/v2/remux/avf/8f5184af-47d9-4744-894f-8dbbbd5b6145'
+          pathsig='8c953e4f~TW9ZwmTpaXDcSfian9l7_nv-_gBBJuHxqPZqwb-k81k'
+          common={'pathsig':pathsig,'r':'dXMtY2VudHJhbDE=','st':None,'sid':None}
+          headers={'User-Agent':'Mozilla/5.0','Referer':'https://player.vimeo.com/','Origin':'https://player.vimeo.com'}
+          sess=requests.Session(); sess.headers.update(headers)
+          manifest={'probes':{},'tracks':{}}
+
+          # Probe likely init names.
+          for name in ['init.mp4','init.m4s','initialization.mp4','segment.m4s']:
+              for st in ['video','audio']:
+                  params={'pathsig':pathsig,'r':'dXMtY2VudHJhbDE=','sid':'0','st':st}
+                  u=f'{root}/{name}'
+                  try:
+                      r=sess.get(u,params=params,timeout=20)
+                      key=f'{name}:{st}'
+                      manifest['probes'][key]={'status':r.status_code,'bytes':len(r.content),'ct':r.headers.get('content-type'),'url':r.url}
+                      print(key,r.status_code,len(r.content),r.headers.get('content-type'))
+                      if r.status_code==200 and len(r.content)>0:
+                          pathlib.Path(f'recovered/{st}/{name}').write_bytes(r.content)
+                  except Exception as e:
+                      print('probe err',name,st,e)
+
+          for st in ['video','audio']:
+              got=[]
+              misses=0
+              started=False
+              for sid in range(0,240):
+                  params={'pathsig':pathsig,'r':'dXMtY2VudHJhbDE=','sid':str(sid),'st':st}
+                  u=f'{root}/segment.m4s'
+                  try:
+                      r=sess.get(u,params=params,timeout=30)
+                  except Exception as e:
+                      print(st,sid,'ERR',e); misses+=1
+                      if started and misses>=4: break
+                      continue
+                  print(st,sid,r.status_code,len(r.content),r.headers.get('content-type'))
+                  if r.status_code==200 and len(r.content)>0:
+                      started=True; misses=0
+                      p=pathlib.Path(f'recovered/{st}/seg-{sid:04d}.m4s')
+                      p.write_bytes(r.content)
+                      got.append({'sid':sid,'bytes':len(r.content),'url':r.url})
+                  else:
+                      misses+=1
+                      if started and misses>=4: break
+              manifest['tracks'][st]=got
+              print(st,'segments',len(got),'bytes',sum(x['bytes'] for x in got))
+          pathlib.Path('recovered/manifest.json').write_text(json.dumps(manifest,indent=2))
+          PY
+
+      - name: Inspect and reconstruct
+        run: |
+          set -euxo pipefail
+          echo "VIDEO FILES"; ls -lh recovered/video | head -30
+          echo "AUDIO FILES"; ls -lh recovered/audio | head -30
+          echo "FIRST VIDEO BOXES"; xxd -l 96 recovered/video/seg-0000.m4s || true
+          echo "FIRST AUDIO BOXES"; xxd -l 96 recovered/audio/seg-0000.m4s || true
+
+          # First try direct concatenation of all fragments (Vimeo remux streams often make sid=0 self-initializing).
+          cat recovered/video/seg-*.m4s > recovered/video-all.mp4
+          cat recovered/audio/seg-*.m4s > recovered/audio-all.mp4
+          ffprobe -v error -show_streams -show_format -of json recovered/video-all.mp4 > recovered/video-probe.json || true
+          ffprobe -v error -show_streams -show_format -of json recovered/audio-all.mp4 > recovered/audio-probe.json || true
+          cat recovered/video-probe.json || true
+          cat recovered/audio-probe.json || true
+
+          # If explicit init files are valid, also build initialized variants.
+          for init in init.mp4 init.m4s initialization.mp4; do
+            if [ -s "recovered/video/$init" ]; then cat "recovered/video/$init" recovered/video/seg-*.m4s > recovered/video-with-init.mp4; fi
+            if [ -s "recovered/audio/$init" ]; then cat "recovered/audio/$init" recovered/audio/seg-*.m4s > recovered/audio-with-init.mp4; fi
+          done
+
+          VIDEO=recovered/video-all.mp4
+          AUDIO=recovered/audio-all.mp4
+          if ! ffprobe -v error "$VIDEO" >/dev/null 2>&1 && [ -s recovered/video-with-init.mp4 ]; then VIDEO=recovered/video-with-init.mp4; fi
+          if ! ffprobe -v error "$AUDIO" >/dev/null 2>&1 && [ -s recovered/audio-with-init.mp4 ]; then AUDIO=recovered/audio-with-init.mp4; fi
+
+          ffmpeg -y -loglevel warning -i "$VIDEO" -i "$AUDIO" -map 0:v:0 -map 1:a:0 -c copy -movflags +faststart recovered/simplebet-410327242-recovered.mp4
+          ffprobe -v error -show_entries format=filename,format_name,duration,size,bit_rate -show_entries stream=index,codec_name,codec_type,width,height,r_frame_rate,bit_rate -of json recovered/simplebet-410327242-recovered.mp4 | tee recovered/final-ffprobe.json
+          ls -lh recovered/simplebet-410327242-recovered.mp4
+
+      - name: Upload recovered video
+        uses: actions/upload-artifact@v4
+        with:
+          name: simplebet-vimeo-410327242-recovered
+          path: |
+            recovered/simplebet-410327242-recovered.mp4
+            recovered/final-ffprobe.json
+            recovered/manifest.json
+          if-no-files-found: error
+          retention-days: 90
