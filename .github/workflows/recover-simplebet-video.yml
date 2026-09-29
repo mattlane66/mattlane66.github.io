@@ -23,19 +23,88 @@ jobs:
       - name: Recover highest-quality public MP4 stream
         run: |
           set -euxo pipefail
-          download_video() {
+          rm -f simplebet-410327242.* media-urls.txt
+
+          direct_download() {
             yt-dlp \
               --impersonate chrome \
-              --referer "https://vimeo.com/410327242" \
+              --referer "https://mattlane66.github.io/" \
               --merge-output-format mp4 \
               -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" \
               -o "simplebet-410327242.%(ext)s" \
               "$1"
           }
-          download_video "https://player.vimeo.com/video/410327242" || \
-          download_video "https://vimeo.com/410327242"
-          FILE="$(ls -S simplebet-410327242.* | head -n1)"
-          mv "$FILE" simplebet-410327242.mp4
+
+          if ! direct_download "https://player.vimeo.com/video/410327242"; then
+            echo "Direct extraction blocked; recovering the public media request from the working portfolio embed."
+            npm init -y >/dev/null 2>&1
+            npm install playwright-core >/dev/null 2>&1
+
+            cat > capture-vimeo.cjs <<'NODE'
+          const { chromium } = require('playwright-core');
+          const fs = require('fs');
+          (async () => {
+            const chrome = process.env.CHROME || '/usr/bin/google-chrome';
+            const browser = await chromium.launch({
+              headless: true,
+              executablePath: chrome,
+              args: ['--no-sandbox','--disable-dev-shm-usage','--autoplay-policy=no-user-gesture-required']
+            });
+            const context = await browser.newContext({
+              viewport: { width: 1440, height: 1000 },
+              userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'
+            });
+            const page = await context.newPage();
+            const urls = new Set();
+            page.on('request', req => {
+              const u = req.url();
+              if (/\.m3u8(?:\?|$)|\.mpd(?:\?|$)|\.mp4(?:\?|$)/i.test(u)) urls.add(u);
+            });
+            page.on('response', res => {
+              const u = res.url();
+              const ct = (res.headers()['content-type'] || '').toLowerCase();
+              if (/\.m3u8(?:\?|$)|\.mpd(?:\?|$)|\.mp4(?:\?|$)/i.test(u) ||
+                  ct.includes('mpegurl') || ct.includes('dash+xml') || ct.includes('video/mp4')) {
+                urls.add(u);
+              }
+            });
+            await page.goto('https://mattlane66.github.io/?recover-simplebet=1', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.waitForTimeout(18000);
+            for (const frame of page.frames()) {
+              try {
+                await frame.evaluate(() => {
+                  const v = document.querySelector('video');
+                  if (v) { v.muted = true; v.play().catch(() => {}); }
+                });
+              } catch {}
+            }
+            await page.waitForTimeout(12000);
+            fs.writeFileSync('media-urls.txt', [...urls].join('\n') + '\n');
+            console.log([...urls].join('\n'));
+            await browser.close();
+          })().catch(err => { console.error(err); process.exit(1); });
+          NODE
+
+            node capture-vimeo.cjs
+            test -s media-urls.txt
+
+            URL="$(grep -Ei '\.m3u8([?]|$)' media-urls.txt | head -n1 || true)"
+            if [ -z "$URL" ]; then URL="$(grep -Ei '\.mpd([?]|$)' media-urls.txt | head -n1 || true)"; fi
+            if [ -z "$URL" ]; then URL="$(grep -Ei '\.mp4([?]|$)' media-urls.txt | head -n1 || true)"; fi
+            test -n "$URL"
+            echo "Recovered public media URL: $URL"
+
+            yt-dlp \
+              --impersonate chrome \
+              --referer "https://mattlane66.github.io/" \
+              --merge-output-format mp4 \
+              -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" \
+              -o "simplebet-410327242.%(ext)s" \
+              "$URL"
+          fi
+
+          FILE="$(ls -S simplebet-410327242.* | grep -Ev '\.(part|ytdl)$' | head -n1)"
+          if [ "$FILE" != "simplebet-410327242.mp4" ]; then mv "$FILE" simplebet-410327242.mp4; fi
           ls -lh simplebet-410327242.mp4
           ffprobe -v error -show_entries format=duration,size,bit_rate -show_entries stream=index,codec_name,codec_type,width,height,r_frame_rate,bit_rate -of json simplebet-410327242.mp4
 
