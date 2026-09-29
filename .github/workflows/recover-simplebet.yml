@@ -1,0 +1,33 @@
+name: Recover SimpleBet Vimeo
+on:
+  push:
+    paths:
+      - ".github/workflows/recover-simplebet.yml"
+  workflow_dispatch:
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Install yt-dlp and ffmpeg
+        run: |
+          python -m pip install --upgrade yt-dlp
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Download highest-quality public stream
+        run: |
+          mkdir -p recovered
+          yt-dlp             --no-playlist             --merge-output-format mp4             -f "bv*+ba/b"             -o "recovered/simplebet-410327242.%(ext)s"             "https://vimeo.com/410327242"
+          ls -lh recovered
+      - name: Record media details
+        run: |
+          FILE="$(find recovered -maxdepth 1 -type f | head -n 1)"
+          ffprobe -v error             -show_entries format=filename,format_name,duration,size,bit_rate             -show_entries stream=index,codec_name,codec_type,width,height,r_frame_rate,bit_rate             -of json "$FILE" | tee recovered/ffprobe.json
+      - name: Upload recovered video
+        uses: actions/upload-artifact@v4
+        with:
+          name: simplebet-vimeo-410327242-recovered
+          path: recovered/
+          if-no-files-found: error
+          retention-days: 90
