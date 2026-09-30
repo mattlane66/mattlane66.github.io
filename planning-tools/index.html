@@ -4205,7 +4205,7 @@ kbd {
 .walkthrough-path-note strong { color: var(--ink); }
 .walkthrough-path-note a { display: inline-block; margin-left: 5px; }
 
-.reverse-fit { margin-top: 14px; }
+.reverse-fit { grid-column: 1 / -1; min-width: 0; margin-top: 0; }
 .detail-disclosure {
   display: flex;
   width: 100%;
@@ -4227,10 +4227,10 @@ kbd {
 .detail-disclosure svg { flex: 0 0 auto; }
 .detail-disclosure[aria-expanded="true"] svg { transform: rotate(90deg); }
 #reverse-fit-panel[hidden] { display: none; }
-#reverse-fit-panel { padding-top: 10px; }
+#reverse-fit-panel { min-width: 0; padding-top: 10px; }
 #reverse-fit-panel h5 { margin: 12px 0 6px; font-size: 14px; }
-.reverse-fit-note { color: var(--muted); font-size: 13px; line-height: 1.5; }
-.reverse-fit-scroll { max-width: 100%; border-radius: 4px; }
+.reverse-fit-note { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.reverse-fit-scroll { width: 100%; max-width: 100%; border-radius: 4px; overscroll-behavior-x: contain; }
 .reverse-fit-matrix {
   width: 100%;
   min-width: 580px;
@@ -4249,8 +4249,8 @@ kbd {
 .reverse-fit-matrix th small { display: block; max-width: 320px; margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.45; }
 .reverse-fit-mark { color: var(--evidence); font-size: 18px; font-weight: 800; }
 .reverse-fit-empty { color: var(--muted); }
-.reverse-coverage { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.reverse-coverage li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 10px; font-size: 13px; }
+.reverse-coverage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.reverse-coverage li { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: start; gap: 10px; min-width: 0; padding: 12px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
 .reverse-coverage li > strong { color: var(--verification); }
 .reverse-coverage small { display: block; color: var(--muted); font-size: 12px; }
 
@@ -4279,6 +4279,7 @@ kbd {
   .discovery-replay > summary > span { max-width: calc(100% - 22px); }
   .discovery-body { padding: 0 12px 12px; }
   .reverse-fit-matrix th:first-child { min-width: 220px; }
+  .reverse-coverage { grid-template-columns: 1fr; }
 }
 
 /* Applied artifact views inside the walkthrough */
@@ -4718,7 +4719,7 @@ kbd {
 
 .shape-path-detail {
   display: grid;
-  grid-template-columns: minmax(210px, .8fr) minmax(0, 1.2fr) auto;
+  grid-template-columns: minmax(210px, .8fr) minmax(0, 1.2fr);
   align-items: center;
   gap: 17px;
   margin: 10px 16px 0;
@@ -4734,42 +4735,47 @@ kbd {
   background: #f8fcf9;
 }
 
-.shape-path-detail header {
+.shape-path-detail > * { min-width: 0; }
+
+.shape-path-detail > header {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: 58px minmax(0, 1fr);
   align-items: center;
   gap: 9px;
 }
 
-.shape-path-detail header > span {
+.shape-path-detail > header > span {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 58px;
+  min-height: 34px;
   place-items: center;
-  border-radius: 50%;
+  padding: 6px;
+  border-radius: 5px;
   background: var(--walk-blue);
   color: white;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 760;
+  line-height: 1.3;
+  text-align: center;
 }
 
-.shape-path-detail.is-selected header > span {
+.shape-path-detail.is-selected > header > span {
   background: var(--walk-green);
 }
 
-.shape-path-detail h4 {
+.shape-path-detail > header h4 {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
 }
 
-.shape-path-detail header p {
+.shape-path-detail > header p {
   margin: 3px 0 0;
   color: #5d6b80;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
-.shape-path-detail ul {
+.shape-path-detail > ul {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
@@ -4778,13 +4784,13 @@ kbd {
   list-style: none;
 }
 
-.shape-path-detail li {
+.shape-path-detail > ul > li {
   padding: 4px 6px;
   border: 1px solid #cdd5df;
   border-radius: 4px;
   background: white;
   color: #304159;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 .shape-path-detail code {
@@ -4793,13 +4799,14 @@ kbd {
 }
 
 .shape-authority {
-  max-width: 150px;
+  grid-column: 1 / -1;
+  max-width: none;
   margin: 0;
   color: #56657b;
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 670;
-  line-height: 1.35;
-  text-align: right;
+  line-height: 1.45;
+  text-align: left;
 }
 
 .walkthrough-breadboard {
@@ -5414,8 +5421,8 @@ kbd {
   .fit-gate-explainer p,
   .human-shape-decision p,
   .human-shape-decision ul,
-  .shape-path-detail header p,
-  .shape-path-detail li,
+  .shape-path-detail > header p,
+  .shape-path-detail > ul > li,
   .shape-authority,
   .breadboard-legend,
   .dumplink-context,
