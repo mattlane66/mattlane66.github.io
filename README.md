@@ -18,7 +18,7 @@ I'm a product strategist, builder, and occasional over-thinker.
 
 I've spent my career turning fuzzy ideas into real things — from startups and AI products to tools, experiments, and the occasional weird side project.
 
-This repo powers my personal site. The site tells the stories. This is just the workshop.
+This repo powers my personal site. The site tells the stories. This is just the workshop for it.
 
 ## What's inside
 
