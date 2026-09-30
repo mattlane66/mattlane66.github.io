@@ -64,8 +64,15 @@
 #cases .case-snapshot-grid>a:focus-visible{outline:3px solid var(--blue);outline-offset:6px}
 .quiet-sec{padding:clamp(60px,7vw,92px) 0}
 .quiet-sec .shead h2{font-size:clamp(36px,4.8vw,64px);line-height:.96}
-#publications .shead{margin-bottom:0}
-#publications .section-status{margin-top:16px;font-size:11px;letter-spacing:.09em;text-transform:uppercase}
+#publications .shead{margin-bottom:34px}
+.pub-list{border-bottom:1px solid var(--line)}
+.pub-item{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.6fr);gap:36px;align-items:end;padding:24px 0;border-top:1px solid var(--line);transition:.16s color}
+.pub-item:hover{color:var(--blue)}
+.pub-title{font-size:clamp(23px,2.25vw,34px);line-height:1.08;letter-spacing:-.038em;font-weight:650;max-width:34ch}
+.pub-meta{display:flex;justify-content:space-between;gap:18px;align-items:end;font-size:12px;line-height:1.45;color:var(--muted)}
+.pub-source{max-width:30ch}
+.pub-arrow{font-weight:750;white-space:nowrap;color:var(--ink)}
+.pub-item:hover .pub-arrow{color:var(--blue)}
 .upcoming-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 28px}
 .upcoming-list li{border-top:1px solid var(--line);padding:20px 0;font-size:clamp(21px,2.2vw,30px);line-height:1.12;letter-spacing:-.035em;color:var(--muted)}
 .upcoming-tools{padding:10px 0}
@@ -114,6 +121,12 @@
   .tool-grid .fitcard{padding:24px}
   .tool-grid .fitcard h3{font-size:34px}
   .writing-card{padding:28px}
+}
+@media(max-width:650px){
+  #publications .shead{margin-bottom:28px}
+  .pub-item{grid-template-columns:1fr;gap:12px;padding:22px 0}
+  .pub-title{font-size:26px}
+  .pub-meta{align-items:start}
 }
 @media(prefers-reduced-motion:reduce){
   .feature,#cases .case-study-grid .tile,#cases .case-snapshot-grid .tile,.tool-grid .tile{transition:none}
@@ -202,7 +215,21 @@
 <section class="sec quiet-sec" id="publications">
   <div class="shead">
     <div><div class="num">04 · Publications</div><h2>Collaborative research and writing.</h2></div>
-    <div><p>Formal essays, articles, and external publications.</p><p class="section-status">Selected publications forthcoming</p></div>
+    <p>Formal essays, articles, and external publications.</p>
+  </div>
+  <div class="pub-list">
+    <a class="pub-item" href="https://www.luc.edu/quinlan/whyquinlan/centersandlabs/labforappliedartificialintelligence/publishedresearch/2024/1stquarter2024/bridgingthegapaguidetomachinelearningfornon-machinelearningengineers/" target="_blank" rel="noopener noreferrer">
+      <span class="pub-title">Bridging the Gap: A Guide to Machine Learning for Non-Machine Learning Engineers</span>
+      <span class="pub-meta"><span class="pub-source">Loyola University Chicago · Mar 28, 2024</span><span class="pub-arrow">Read ↗</span></span>
+    </a>
+    <a class="pub-item" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2808000" target="_blank" rel="noopener noreferrer">
+      <span class="pub-title">Containing Multitudes: The Many Impacts of Kickstarter Funding</span>
+      <span class="pub-meta"><span class="pub-source">University of Pennsylvania · Wharton School · Jul 11, 2016</span><span class="pub-arrow">Read ↗</span></span>
+    </a>
+    <a class="pub-item" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2699251" target="_blank" rel="noopener noreferrer">
+      <span class="pub-title">Delivery Rates on Kickstarter</span>
+      <span class="pub-meta"><span class="pub-source">University of Pennsylvania · Wharton School · Dec 4, 2015</span><span class="pub-arrow">Read ↗</span></span>
+    </a>
   </div>
 </section>
 <section class="sec" id="writing"><div class="shead"><div><div class="num">05 · Writing</div><h2>Unfinished thinking.</h2></div><p>Notes while ideas are still moving.</p></div><div class="writing"><div class="notes-panel"><a target="_self" class="thought t1" href="./notes/?rev=20260928c#note-346302478"><span>Writing &amp; craft</span><strong>The new contemporary always arrives late.</strong><em>2026-09-26 →</em></a><a target="_self" class="thought t2" href="./notes/?rev=20260928c#note-343664774"><span>Life &amp; learning</span><strong>I do not hate many things, but I do hate avoidable impedances.</strong><em>2026-09-23 →</em></a><a target="_self" class="thought t3" href="./notes/?rev=20260928c#note-335892300"><span>AI &amp; future work</span><strong>I can get non-determinism from humans. Thank you.</strong><em>2026-09-13 →</em></a><a target="_self" class="thought t4" href="./notes/?rev=20260928c#note-328175877"><span>Products &amp; systems</span><strong>Don’t dumb it down, smarten it up to simple.</strong><em>2026-09-02 →</em></a><a target="_self" class="thought t5" href="./notes/?rev=20260928c#note-84804029"><span>Judgment &amp; knowledge</span><strong>It’s easier to agree on what exists than what is good.</strong><em>2025-01-06 →</em></a><a target="_self" class="thought t6" href="./notes/?rev=20260928c#note-101050037"><span>Writing &amp; craft</span><strong>Too many “ands” are the enemy of small, simple things.</strong><em>2025-03-16 →</em></a><div class="notes-actions"><a target="_self" href="./notes/?rev=20260928c">Browse all 316 Notes →</a></div></div></div></section><footer class="foot"><span>© 2026 Matt Lane</span><span><a href="https://www.linkedin.com/in/matthewhlane/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></span></footer></main>
