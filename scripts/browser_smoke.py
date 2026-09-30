@@ -116,6 +116,63 @@ def main() -> int:
 
                         # Core interactive smoke checks.
                         if name == "home":
+                            # Top navigation must land correctly on the first click, including
+                            # when the URL already has that hash and after returning from a subpage.
+                            def nav_is_aligned(hash_value: str) -> bool:
+                                try:
+                                    page.wait_for_function(
+                                        """hash => {
+                                            const target = document.querySelector(hash);
+                                            const header = document.querySelector('.top');
+                                            if (!target || !header) return false;
+                                            const expected = header.getBoundingClientRect().height;
+                                            return location.hash === hash &&
+                                                Math.abs(target.getBoundingClientRect().top - expected) <= 3;
+                                        }""",
+                                        arg=hash_value,
+                                        timeout=3_000,
+                                    )
+                                    return True
+                                except PlaywrightTimeoutError:
+                                    return False
+
+                            for href in ["#cases", "#projects", "#tools", "#writing"]:
+                                link = page.locator(f'.nav a[href="{href}"]')
+                                if link.count() != 1:
+                                    failures.append(f"{viewport_name} /: missing nav link {href}")
+                                    continue
+                                link.click()
+                                if not nav_is_aligned(href):
+                                    failures.append(
+                                        f"{viewport_name} /: first click on {href} did not align target below sticky header"
+                                    )
+
+                            # Re-clicking the current hash after scrolling away must realign it.
+                            projects_link = page.locator('.nav a[href="#projects"]')
+                            projects_link.click()
+                            nav_is_aligned("#projects")
+                            page.evaluate("window.scrollBy(0, 240)")
+                            page.wait_for_timeout(100)
+                            projects_link.click()
+                            if not nav_is_aligned("#projects"):
+                                failures.append(
+                                    f"{viewport_name} /: repeated #projects click did not realign existing hash"
+                                )
+
+                            # Reproduce the reported cross-page path: subpage -> home -> top nav.
+                            page.goto(base + "/about/", wait_until="domcontentloaded", timeout=60_000)
+                            back = page.locator('a.back[href="../"]').first
+                            if back.count():
+                                back.click()
+                                page.wait_for_url(base + "/", timeout=10_000)
+                                page.locator('.nav a[href="#tools"]').click()
+                                if not nav_is_aligned("#tools"):
+                                    failures.append(
+                                        f"{viewport_name} /: nav failed after returning from /about/"
+                                    )
+                            else:
+                                failures.append(f"{viewport_name} /about/: missing back-to-home link")
+
                             for opener, modal, closer in [
                                 ("#paypal-open", "#paypal-modal", "#paypal-close"),
                                 ("#simplebet-open", "#simplebet-modal", "#simplebet-close"),
