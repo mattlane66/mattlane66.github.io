@@ -20,6 +20,7 @@ a{color:inherit;text-decoration:none}
 .mark{font-weight:800;letter-spacing:-.025em}
 .back{font-size:12px;color:var(--muted)}
 .back:hover{color:var(--blue)}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .about{min-height:calc(100vh - 58px);display:grid;grid-template-columns:minmax(320px,.72fr) minmax(0,1.28fr);gap:clamp(36px,6vw,96px);align-items:start;padding:clamp(72px,9vw,130px) 0}
 .portrait{margin:0}
 .portrait img{display:block;width:100%;max-width:360px;height:auto;border:1px solid var(--ink);image-rendering:auto}
@@ -43,6 +44,7 @@ a{color:inherit;text-decoration:none}
   </div>
 </header>
 <main class="shell">
+  <h1 class="sr">About Matt Lane</h1>
   <section class="about">
     <figure class="portrait"><img src="../assets/about-matt-lane-2x.avif?v=20260930sharp2" alt="Matt Lane standing beside a gorilla enclosure" width="360" height="480"></figure>
     <div class="copy">
