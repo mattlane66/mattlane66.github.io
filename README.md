@@ -3,12 +3,6 @@
 A place for things I make, things I think about, and things I couldn't stop myself from building.
 
 <p align="center">
-  <a href="https://mattlane66.github.io">
-    <img src="./assets/working-form-flow-crisp-v3.jpg" alt="Matt's work" width="760">
-  </a>
-</p>
-
-<p align="center">
   <a href="https://mattlane66.github.io">Visit the site →</a>
 </p>
 
