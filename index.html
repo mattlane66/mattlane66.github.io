@@ -40,28 +40,28 @@
 /* The finished work leads; shorter snapshots and forthcoming items follow. */
 #cases,#projects,#publications,#tools{scroll-margin-top:58px}
 #cases .shead,#projects .shead,#tools .shead{margin-bottom:40px}
-.case-study-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;margin-top:36px}
-.case-study-grid .tile{min-height:440px}
-.case-study-grid .nyshex-shot,.case-study-grid .codeai-shot{height:clamp(180px,18vw,240px)}
-.case-study-grid .nyshex-copy,.case-study-grid .codeai-copy{padding:26px 28px;gap:14px}
-.case-study-grid .tile h3{font-size:clamp(30px,2.8vw,42px);line-height:1.04;max-width:19ch}
-.case-study-grid .tile p{font-size:15px;line-height:1.5;max-width:48ch}
-.case-study-grid .nyshex-meta,.case-study-grid .codeai-meta,.case-snapshot-grid .bloomberg-meta{flex-wrap:wrap;align-items:start;gap:8px 16px;padding-top:12px;line-height:1.5}
-.case-study-grid .nyshex-meta span:last-child,.case-study-grid .codeai-meta span:last-child,.case-snapshot-grid .bloomberg-meta span:last-child{margin-left:auto;white-space:nowrap}
+#cases .case-study-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;margin-top:36px}
+#cases .case-study-grid .tile{min-height:440px}
+#cases .case-study-grid .nyshex-shot,#cases .case-study-grid .codeai-shot{height:clamp(180px,18vw,240px)}
+#cases .case-study-grid .nyshex-copy,#cases .case-study-grid .codeai-copy{padding:26px 28px;gap:14px}
+#cases .case-study-grid .tile h3{font-size:clamp(30px,2.8vw,42px);line-height:1.04;max-width:19ch}
+#cases .case-study-grid .tile p{font-size:15px;line-height:1.5;max-width:48ch}
+#cases .case-study-grid .nyshex-meta,#cases .case-study-grid .codeai-meta,#cases .case-snapshot-grid .bloomberg-meta{flex-wrap:wrap;align-items:start;gap:8px 16px;padding-top:12px;line-height:1.5}
+#cases .case-study-grid .nyshex-meta span:last-child,#cases .case-study-grid .codeai-meta span:last-child,#cases .case-snapshot-grid .bloomberg-meta span:last-child{margin-left:auto;white-space:nowrap}
 .case-snapshots{margin-top:60px;padding-top:24px;border-top:1px solid var(--line)}
 .group-title{margin:0 0 24px;font-size:11px;line-height:1.4;letter-spacing:.12em;text-transform:uppercase;font-weight:750;color:var(--muted)}
-.case-snapshot-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
-.case-snapshot-grid .tile{min-height:400px}
-.case-snapshot-grid .paypal-preview,.case-snapshot-grid .simplebet-preview{flex:1;min-height:400px}
-.case-snapshot-grid .paypal-open,.case-snapshot-grid .simplebet-open{padding:26px;font-family:inherit}
-.case-snapshot-grid .paypal-open h3,.case-snapshot-grid .simplebet-open h3{font-size:clamp(28px,2.4vw,38px);line-height:1.04;margin-bottom:16px}
-.case-snapshot-grid .bloomberg-shot{height:180px}
-.case-snapshot-grid .bloomberg-copy{padding:24px;gap:14px}
-.case-snapshot-grid .bloomberg-copy h3{font-size:clamp(28px,2.4vw,38px);line-height:1.04}
-.case-snapshot-grid .bloomberg-copy p{font-size:14px;line-height:1.5}
-.case-study-grid>a:focus-visible,.feature:focus-visible,.tool-grid>a:focus-visible{outline:3px solid var(--blue);outline-offset:6px}
-.case-snapshot-grid button:focus-visible{outline:3px solid #fff;outline-offset:-8px}
-.case-snapshot-grid>a:focus-visible{outline:3px solid var(--blue);outline-offset:6px}
+#cases .case-snapshot-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+#cases .case-snapshot-grid .tile{min-height:400px}
+#cases .case-snapshot-grid .paypal-preview,#cases .case-snapshot-grid .simplebet-preview{flex:1;min-height:400px}
+#cases .case-snapshot-grid .paypal-open,#cases .case-snapshot-grid .simplebet-open{padding:26px;font-family:inherit}
+#cases .case-snapshot-grid .paypal-open h3,#cases .case-snapshot-grid .simplebet-open h3{font-size:clamp(28px,2.4vw,38px);line-height:1.04;margin-bottom:16px}
+#cases .case-snapshot-grid .bloomberg-shot{height:180px}
+#cases .case-snapshot-grid .bloomberg-copy{padding:24px;gap:14px}
+#cases .case-snapshot-grid .bloomberg-copy h3{font-size:clamp(28px,2.4vw,38px);line-height:1.04}
+#cases .case-snapshot-grid .bloomberg-copy p{font-size:14px;line-height:1.5}
+#cases .case-study-grid>a:focus-visible,.feature:focus-visible,.tool-grid>a:focus-visible{outline:3px solid var(--blue);outline-offset:6px}
+#cases .case-snapshot-grid button:focus-visible{outline:3px solid #fff;outline-offset:-8px}
+#cases .case-snapshot-grid>a:focus-visible{outline:3px solid var(--blue);outline-offset:6px}
 .quiet-sec{padding:clamp(60px,7vw,92px) 0}
 .quiet-sec .shead h2{font-size:clamp(36px,4.8vw,64px);line-height:.96}
 #publications .shead{margin-bottom:0}
@@ -79,27 +79,27 @@
 .tool-grid .fitcard h3{font-size:clamp(32px,3.4vw,48px);line-height:1.02;max-width:14ch;margin:14px 0 18px}
 .tool-grid .fitcard p{font-size:16px;line-height:1.5;max-width:38ch}
 @media(max-width:1000px){
-  .case-snapshot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .case-snapshot-grid .bloomberg{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:300px}
-  .case-snapshot-grid .bloomberg-shot{height:100%;min-height:300px;border-bottom:0;border-right:1px solid var(--ink)}
-  .case-snapshot-grid .bloomberg-copy{min-width:0}
+  #cases .case-snapshot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #cases .case-snapshot-grid .bloomberg{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:300px}
+  #cases .case-snapshot-grid .bloomberg-shot{height:100%;min-height:300px;border-bottom:0;border-right:1px solid var(--ink)}
+  #cases .case-snapshot-grid .bloomberg-copy{min-width:0}
   .upcoming-list{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tool-grid .fitcard{grid-template-columns:1fr;gap:24px}
   .tool-grid .fitcard h3{max-width:none}
 }
 @media(max-width:650px){
   #cases .shead,#projects .shead,#tools .shead{margin-bottom:28px}
-  .case-study-grid,.case-snapshot-grid{grid-template-columns:1fr;gap:24px}
-  .case-study-grid{margin-top:30px}
-  .case-study-grid .tile{min-height:0}
-  .case-study-grid .nyshex-shot,.case-study-grid .codeai-shot{height:200px}
-  .case-study-grid .nyshex-copy,.case-study-grid .codeai-copy{padding:24px}
-  .case-study-grid .tile h3{font-size:32px}
+  #cases .case-study-grid,#cases .case-snapshot-grid{grid-template-columns:1fr;gap:24px}
+  #cases .case-study-grid{margin-top:30px}
+  #cases .case-study-grid .tile{min-height:0}
+  #cases .case-study-grid .nyshex-shot,#cases .case-study-grid .codeai-shot{height:200px}
+  #cases .case-study-grid .nyshex-copy,#cases .case-study-grid .codeai-copy{padding:24px}
+  #cases .case-study-grid .tile h3{font-size:32px}
   .case-snapshots{margin-top:44px;padding-top:22px}
-  .case-snapshot-grid .tile,.case-snapshot-grid .paypal-preview,.case-snapshot-grid .simplebet-preview{min-height:380px}
-  .case-snapshot-grid .bloomberg{grid-column:auto;display:flex;min-height:0}
-  .case-snapshot-grid .bloomberg-shot{height:180px;min-height:0;border-right:0;border-bottom:1px solid var(--ink)}
-  .case-snapshot-grid .paypal-open h3,.case-snapshot-grid .simplebet-open h3,.case-snapshot-grid .bloomberg-copy h3{font-size:32px}
+  #cases .case-snapshot-grid .tile,#cases .case-snapshot-grid .paypal-preview,#cases .case-snapshot-grid .simplebet-preview{min-height:380px}
+  #cases .case-snapshot-grid .bloomberg{grid-column:auto;display:flex;min-height:0}
+  #cases .case-snapshot-grid .bloomberg-shot{height:180px;min-height:0;border-right:0;border-bottom:1px solid var(--ink)}
+  #cases .case-snapshot-grid .paypal-open h3,#cases .case-snapshot-grid .simplebet-open h3,#cases .case-snapshot-grid .bloomberg-copy h3{font-size:32px}
   .upcoming-list{grid-template-columns:1fr}
   .upcoming-list li{padding:18px 0;font-size:24px}
   .tool-grid{gap:28px}
@@ -109,7 +109,7 @@
   .writing-card{padding:28px}
 }
 @media(prefers-reduced-motion:reduce){
-  .feature,.case-study-grid .tile,.case-snapshot-grid .tile,.tool-grid .tile{transition:none}
+  .feature,#cases .case-study-grid .tile,#cases .case-snapshot-grid .tile,.tool-grid .tile{transition:none}
 }
 </style></head><body><header class="top"><div class="shell topin"><a class="mark" href="#top">Matt Lane</a><nav class="nav"><a href="#cases">Case studies</a><a href="#projects">Side projects</a><a href="#tools">Thinking tools</a><a href="#writing">Writing</a><a href="mailto:mattlane66@me.com">Email</a></nav></div></header>
 <main id="top" class="shell"><section class="hero"><div><div class="k">Product Strategist · AI-Native Design Engineer</div><h1>I make the hard parts visible.</h1><p><strong>Judgment about the whole — experience, economics, and distribution — turned into working form.</strong> A collection of work, projects, methods, and unfinished thoughts.</p></div><div class="hero-map"><img src="./assets/working-form-flow-crisp-v3.jpg?v=20260929f" alt="Detailed product interaction and workflow map"></div></div></section></main><div class="tape"><div class="track"><span>case studies</span><span>side projects</span><span>thinking tools</span><span>publications</span><span>selected writing</span><span>notes</span><span>case studies</span><span>side projects</span><span>thinking tools</span><span>publications</span><span>selected writing</span><span>notes</span></div></div><main class="shell">
