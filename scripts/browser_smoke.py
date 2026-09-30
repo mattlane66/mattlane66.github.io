@@ -104,7 +104,7 @@ def main() -> int:
                             except PlaywrightTimeoutError:
                                 failures.append(f"{viewport_name} /planning-tools/: runtime did not become ready")
                         elif name == "splice":
-                            if page.locator("#next-button").count():
+                            if page.locator("#next-button").count() and page.locator("#next-button").is_visible():
                                 before = page.locator("#counter").inner_text() if page.locator("#counter").count() else ""
                                 page.locator("#next-button").click()
                                 page.wait_for_timeout(200)
