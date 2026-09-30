@@ -3,6 +3,8 @@
 from __future__ import annotations
 import contextlib
 import http.server
+import json
+import re
 import socket
 import threading
 import time
@@ -11,6 +13,8 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
 ROOT = Path(__file__).resolve().parents[1]
+DIRECT_NOTES = ROOT / "notes" / "direct-notes.json"
+DIRECT_TEST_ID = "ci-direct-sync-test"
 PAGES = [
     ("/", "home"),
     ("/about/", "about"),
@@ -37,14 +41,37 @@ def free_port() -> int:
         return s.getsockname()[1]
 
 def main() -> int:
+    failures: list[str] = []
+    warnings: list[str] = []
+
+    notes_html = (ROOT / "notes" / "index.html").read_text(encoding="utf-8")
+    match = re.search(r"let NOTES=(\[.*?\]);const CATS=", notes_html, re.S)
+    if not match:
+        print("ERROR: notes/index.html: could not locate embedded Notes archive")
+        return 1
+    archive_count = len(json.loads(match.group(1)))
+
+    original_direct = DIRECT_NOTES.read_text(encoding="utf-8")
+    direct_notes = json.loads(original_direct)
+    if not isinstance(direct_notes, list):
+        print("ERROR: notes/direct-notes.json must contain a JSON array")
+        return 1
+    direct_notes.append({
+        "id": DIRECT_TEST_ID,
+        "date": "9999-12-31",
+        "title": "CI direct note sync test",
+        "body": "This temporary note verifies direct Notes loading.",
+        "category": "Writing & craft",
+    })
+    DIRECT_NOTES.write_text(json.dumps(direct_notes, ensure_ascii=False), encoding="utf-8")
+    expected_notes_total = archive_count + len(direct_notes)
+
     port = free_port()
     handler = lambda *a, **kw: QuietHandler(*a, directory=str(ROOT), **kw)
     server = http.server.ThreadingHTTPServer(("127.0.0.1", port), handler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     base = f"http://127.0.0.1:{port}"
-    failures: list[str] = []
-    warnings: list[str] = []
 
     try:
         with sync_playwright() as p:
@@ -98,6 +125,28 @@ def main() -> int:
                                     if "open" not in (page.locator(modal).get_attribute("class") or ""):
                                         failures.append(f"{viewport_name} /: {modal} did not open")
                                     page.locator(closer).click()
+                        elif name == "notes":
+                            try:
+                                page.wait_for_function(
+                                    f'document.documentElement.dataset.notesTotal === "{expected_notes_total}"',
+                                    timeout=10_000,
+                                )
+                            except PlaywrightTimeoutError:
+                                failures.append(
+                                    f"{viewport_name} /notes/: expected total {expected_notes_total} "
+                                    "after direct-note load"
+                                )
+                            if page.locator(f'[data-id="{DIRECT_TEST_ID}"]').count() != 1:
+                                failures.append(
+                                    f"{viewport_name} /notes/: directly added test note did not render"
+                                )
+                            elif page.locator("#resultCount b").count():
+                                shown = page.locator("#resultCount b").inner_text()
+                                if shown != str(expected_notes_total):
+                                    failures.append(
+                                        f"{viewport_name} /notes/: displayed total {shown}, "
+                                        f"expected {expected_notes_total}"
+                                    )
                         elif name == "planning-tools":
                             try:
                                 page.wait_for_function("window.__PLANNING_PORTAL_READY__ === true", timeout=20_000)
@@ -119,6 +168,7 @@ def main() -> int:
     finally:
         server.shutdown()
         server.server_close()
+        DIRECT_NOTES.write_text(original_direct, encoding="utf-8")
 
     for w in sorted(set(warnings)):
         print("WARNING:", w)
