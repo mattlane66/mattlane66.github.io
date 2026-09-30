@@ -159,19 +159,46 @@ def main() -> int:
                                     f"{viewport_name} /: repeated #projects click did not realign existing hash"
                                 )
 
-                            # Reproduce the reported cross-page path: subpage -> home -> top nav.
+                            # Direct section URLs must align on initial load.
+                            page.goto(base + "/#writing", wait_until="domcontentloaded", timeout=60_000)
+                            if not nav_is_aligned("#writing"):
+                                failures.append(
+                                    f"{viewport_name} /#writing: direct hash load did not align target"
+                                )
+
+                            # Browser-history return must restore the previously selected section.
+                            page.goto(base + "/", wait_until="domcontentloaded", timeout=60_000)
+                            page.locator('.nav a[href="#projects"]').click()
+                            if not nav_is_aligned("#projects"):
+                                failures.append(
+                                    f"{viewport_name} /: could not establish #projects before history test"
+                                )
                             page.goto(base + "/about/", wait_until="domcontentloaded", timeout=60_000)
-                            back = page.locator('a.back[href="../"]').first
+                            page.go_back(wait_until="domcontentloaded")
+                            if not nav_is_aligned("#projects"):
+                                failures.append(
+                                    f"{viewport_name} /: browser Back from /about/ did not restore #projects"
+                                )
+
+                            # The About page's own return links intentionally go to the homepage top.
+                            page.goto(base + "/about/", wait_until="domcontentloaded", timeout=60_000)
+                            back = page.locator('a.back[href="../#top"]').first
                             if back.count():
                                 back.click()
-                                page.wait_for_url(base + "/", timeout=10_000)
+                                page.wait_for_url(base + "/#top", timeout=10_000)
+                                try:
+                                    page.wait_for_function("window.scrollY <= 3", timeout=3_000)
+                                except PlaywrightTimeoutError:
+                                    failures.append(
+                                        f"{viewport_name} /about/: Back to work did not return to homepage top"
+                                    )
                                 page.locator('.nav a[href="#tools"]').click()
                                 if not nav_is_aligned("#tools"):
                                     failures.append(
-                                        f"{viewport_name} /: nav failed after returning from /about/"
+                                        f"{viewport_name} /: nav failed after About returned to top"
                                     )
                             else:
-                                failures.append(f"{viewport_name} /about/: missing back-to-home link")
+                                failures.append(f"{viewport_name} /about/: missing #top back-to-home link")
 
                             for opener, modal, closer in [
                                 ("#paypal-open", "#paypal-modal", "#paypal-close"),
