@@ -147,6 +147,16 @@ def main() -> int:
                                         f"{viewport_name} /notes/: displayed total {shown}, "
                                         f"expected {expected_notes_total}"
                                     )
+                            noisy_feed = page.evaluate("""() => NOTES.map(n => ({
+                                id: String(n.id),
+                                title: feedTitle(n),
+                                excerpt: feedExcerpt(n, feedTitle(n))
+                            })).filter(x => /https?:\\/\\//i.test(x.title + " " + x.excerpt) || /\\bAttachments?\\b/i.test(x.title + " " + x.excerpt)).slice(0, 5)""")
+                            if noisy_feed:
+                                failures.append(
+                                    f"{viewport_name} /notes/: raw link/attachment noise leaked into feed: "
+                                    f"{noisy_feed}"
+                                )
                         elif name == "planning-tools":
                             try:
                                 page.wait_for_function("window.__PLANNING_PORTAL_READY__ === true", timeout=20_000)
