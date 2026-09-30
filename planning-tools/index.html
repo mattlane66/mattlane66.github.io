@@ -153,6 +153,25 @@ a {
   transform: translateY(0);
 }
 
+.portfolio-return {
+  padding: 8px var(--page-gutter);
+  border-bottom: 1px solid var(--rule);
+  background: var(--canvas);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.portfolio-return a {
+  color: var(--muted);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.portfolio-return a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
 .site-header {
   position: sticky;
   z-index: 100;
@@ -7085,6 +7104,7 @@ kbd {
 </style>
   </head>
   <body>
+    <div class="portfolio-return"><a href="../">← Back to Matt Lane’s portfolio</a></div>
     <div id="root">
       <main class="boot-shell">
         <h1>Planning Skills Lab</h1>
