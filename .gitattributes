@@ -1,0 +1,6 @@
+# Large standalone exports are generated deploy artifacts, not hand-authored source.
+planning-tools/index.html linguist-generated=true
+notes/index.html linguist-generated=true
+
+# Binary site icon.
+favicon.ico binary
