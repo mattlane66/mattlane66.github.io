@@ -177,9 +177,12 @@ def main() -> int:
                                 )
                             page.reload(wait_until="domcontentloaded", timeout=60_000)
                             page.wait_for_timeout(800)
-                            if page.evaluate("window.scrollY") > 3 or page.evaluate("location.hash"):
+                            reload_y = page.evaluate("window.scrollY")
+                            reload_hash = page.evaluate("location.hash")
+                            if reload_y > 3 or reload_hash:
                                 failures.append(
-                                    f"{viewport_name} /#writing: refresh did not reset homepage to top"
+                                    f"{viewport_name} /#writing: refresh did not reset homepage to top "
+                                    f"(scrollY={reload_y}, hash={reload_hash!r})"
                                 )
 
                             # Browser-history return must restore the previously selected section.
