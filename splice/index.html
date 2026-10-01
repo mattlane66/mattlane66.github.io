@@ -98,7 +98,8 @@
     .js:not(.reading) .bottom-nav{position:fixed;z-index:35;left:0;right:0;bottom:0;height:var(--bottom-h);padding:0 var(--pad-x) 16px;
       display:grid;grid-template-columns:132px 1fr 132px;align-items:end;gap:18px;
       background:linear-gradient(to top,#fff 66%,rgba(255,255,255,0))}
-    .js:not(.reading) .slides{position:absolute;inset:0}
+    /* Keep off-screen slide transitions inside the presentation viewport. */
+    .js:not(.reading) .slides{position:absolute;inset:0;overflow:hidden}
     .js:not(.reading) .slide{position:absolute;inset:0;border-top:0;
       padding:calc(var(--top-h) + clamp(16px,3vh,38px)) var(--pad-x) calc(var(--bottom-h) + clamp(8px,1.4vh,18px));
       opacity:0;visibility:hidden;transform:translateX(18px);
