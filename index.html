@@ -195,12 +195,17 @@
 .writing-group-head>span{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 .writing-group-head>p{margin:0;font-size:12px;color:var(--muted)}
 .articles-panel{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
-.article-card{flex:0 0 min(320px,100%);width:min(320px,100%);aspect-ratio:1/1;min-height:0;border:1px solid var(--ink);background:var(--blue);color:#fff;padding:clamp(18px,2.2vw,24px);display:flex;flex-direction:column;align-items:flex-start;overflow:hidden;container-type:inline-size;transition:.16s transform,.16s box-shadow}
+.article-card{--card-bg:var(--blue);--card-fg:#fff;--card-muted:#dfe4ff;--card-copy:#eef1ff;flex:0 0 min(320px,100%);width:min(320px,100%);aspect-ratio:1/1;min-height:0;border:1px solid var(--ink);background:var(--card-bg);color:var(--card-fg);padding:clamp(18px,2.2vw,24px);display:flex;flex-direction:column;align-items:flex-start;overflow:hidden;container-type:inline-size;transition:.16s transform,.16s box-shadow}
+.article-card:nth-child(6n+2){--card-bg:var(--lime);--card-fg:var(--ink);--card-muted:var(--muted);--card-copy:var(--ink)}
+.article-card:nth-child(6n+3){--card-bg:#fff;--card-fg:var(--ink);--card-muted:var(--muted);--card-copy:var(--ink)}
+.article-card:nth-child(6n+4){--card-bg:#ffe8e0;--card-fg:var(--ink);--card-muted:var(--muted);--card-copy:var(--ink)}
+.article-card:nth-child(6n+5){--card-bg:#eef1ff;--card-fg:var(--ink);--card-muted:var(--muted);--card-copy:var(--ink)}
+.article-card:nth-child(6n){--card-bg:var(--yellow);--card-fg:var(--ink);--card-muted:var(--muted);--card-copy:var(--ink)}
 .article-card:hover{transform:translate(-3px,-3px);box-shadow:7px 7px 0 var(--ink)}
-.article-card>span,.article-card>em{font-size:clamp(8px,2.8cqw,10px);line-height:1.2;letter-spacing:.08em;text-transform:uppercase;font-style:normal;color:#dfe4ff;overflow-wrap:anywhere}
+.article-card>span,.article-card>em{font-size:clamp(8px,2.8cqw,10px);line-height:1.2;letter-spacing:.08em;text-transform:uppercase;font-style:normal;color:var(--card-muted);overflow-wrap:anywhere}
 .article-card>strong{font-size:clamp(26px,10cqw,34px);line-height:.94;letter-spacing:-.05em;margin:clamp(18px,6cqw,24px) 0 10px;max-width:100%;text-wrap:balance;overflow-wrap:anywhere}
-.article-card>p{font-size:clamp(12px,4.1cqw,14px);line-height:1.4;color:#eef1ff;max-width:100%;margin:0 0 14px;overflow-wrap:anywhere}
-.article-card>em{margin-top:auto;font-weight:800;color:#fff}
+.article-card>p{font-size:clamp(12px,4.1cqw,14px);line-height:1.4;color:var(--card-copy);max-width:100%;margin:0 0 14px;overflow-wrap:anywhere}
+.article-card>em{margin-top:auto;font-weight:800;color:var(--card-fg)}
 .article-card.compact>strong{font-size:clamp(22px,8.1cqw,28px);line-height:.96;margin-top:16px}
 .article-card.compact>p{font-size:clamp(11px,3.8cqw,13px);line-height:1.35;margin-bottom:10px}
 .article-card.dense>strong{font-size:clamp(19px,7.2cqw,24px);line-height:.98;margin-top:12px}
@@ -212,7 +217,7 @@
   .article-card{min-height:0}
 }
 
-</style><!-- homepage-rev:20261001-full-articles-v3 --></head><body><header class="top"><div class="shell topin"><a class="mark" href="#top">Matt Lane</a><nav class="nav"><a href="#cases">Case studies</a><a href="#projects">Side projects</a><a href="#tools">Thinking tools</a><a href="#writing">Writing</a><a href="./about/" target="_blank" rel="noopener noreferrer">About</a></nav></div></header>
+</style><!-- homepage-rev:20261001-full-articles-colors-v1 --></head><body><header class="top"><div class="shell topin"><a class="mark" href="#top">Matt Lane</a><nav class="nav"><a href="#cases">Case studies</a><a href="#projects">Side projects</a><a href="#tools">Thinking tools</a><a href="#writing">Writing</a><a href="./about/" target="_blank" rel="noopener noreferrer">About</a></nav></div></header>
 <main id="top" class="shell"><section class="hero"><div><div class="k">Product Strategist · AI-Native Design Engineer</div><h1>I make the hard parts visible.</h1><p>I make judgments about the whole—experience, economics, and distribution—then turn them into working form: capabilities, interactions, and structure.</p></div><div class="hero-visual"><div class="hero-map"><img src="./assets/working-form-flow-crisp-v3.jpg?v=20260929f" alt="Detailed product interaction and workflow map" width="1568" height="1003" fetchpriority="high" decoding="async"></div><p class="hero-caption">I decide what matters, what belongs, what gets in the way, and what needs to be obvious—then wire the system so humans and agents can make the right thing the right way.</p></div></div></section></main><div class="tape"><div class="track"><span>case studies</span><span>side projects</span><span>thinking tools</span><span>publications</span><span>selected writing</span><span>notes</span><span>case studies</span><span>side projects</span><span>thinking tools</span><span>publications</span><span>selected writing</span><span>notes</span></div></div><main class="shell">
 <section class="sec" id="cases"><div class="shead"><div><div class="num">01 · Case studies</div><h2>Work in context.</h2></div><p>The decisions, boundaries, trade-offs, and outcomes behind products I helped shape and build.</p></div><a class="feature" href="./splice/?rev=20260928clean1" target="_blank" rel="noopener noreferrer"><div class="fvis"><div class="browser"><img src="./assets/splice-case-preview.png?v=20261001a" alt="Preview of the Splice Create / Stacks case study" width="1440" height="900" decoding="async"></div></div><div class="fcopy"><div><div class="tag">Featured case · Splice</div><h3>Create / Stacks</h3><p>How a deliberately narrow song starter changed the product strategy — moving Splice from finding sounds to helping creators reach a promising musical idea.</p><div class="go">Open interactive case →</div></div><div class="tag">Head of Creator Product · 0→1 · AI-assisted creation</div></div></a><div class="case-study-grid">
 <a class="tile nyshex" href="./nyshex/?rev=20260930links1" aria-label="Open NYSHEX case study" target="_blank" rel="noopener noreferrer">
