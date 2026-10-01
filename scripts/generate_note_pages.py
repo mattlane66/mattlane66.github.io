@@ -54,8 +54,8 @@ def patch_planning_tools() -> None:
     url = SITE + "/planning-tools/"
     image = SITE + "/assets/planning-skills-lab-preview.jpg"
     text = re.sub(r"<title>[\s\S]*?</title>", f"<title>{title}</title>", text, count=1, flags=re.I)
-    text = re.sub(r"<meta\\b(?=[^>]*\\bname=['\\\"]description['\\\"])[^>]*>\\s*", "", text, count=1, flags=re.I)
-    text = re.sub(r"<link\\b(?=[^>]*\\brel=['\\\"]canonical['\\\"])[^>]*>\\s*", "", text, flags=re.I)
+    text = re.sub(r"<meta\b(?=[^>]*\bname=['\"]description['\"])[^>]*>\s*", "", text, count=1, flags=re.I)
+    text = re.sub(r"<link\b(?=[^>]*\brel=['\"]canonical['\"])[^>]*>\s*", "", text, flags=re.I)
     schema = {
         "@context":"https://schema.org","@type":"CreativeWork","@id":url+"#lab",
         "name":"Planning Skills Lab","description":desc,"url":url,"image":image,
@@ -78,7 +78,7 @@ def patch_planning_tools() -> None:
 <meta name="twitter:image" content="{image}">
 <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 """
-    style = re.search(r"<style\\b", text, re.I)
+    style = re.search(r"<style\b", text, re.I)
     if not style:
         raise SystemExit("Could not find <style> in planning-tools/index.html")
     text = text[:style.start()] + block + text[style.start():]
