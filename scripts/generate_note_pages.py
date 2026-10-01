@@ -32,11 +32,60 @@ def description(n: dict) -> str:
         return value
     return re.sub(r"\s+\S*$", "", value[:152]) + "…"
 
+def seo_title(value: str) -> str:
+    if len(value) <= 66:
+        return value
+    short = re.sub(r"\s+\S*$", "", value[:63]).strip()
+    return (short or value[:63]).rstrip(" ,.;:—-") + "…"
+
 def render_body(value: str) -> str:
     blocks = [b.strip() for b in re.split(r"\n\s*\n", value or "") if b.strip()]
     return "\n".join("<p>" + html.escape(b).replace("\n", "<br>") + "</p>" for b in blocks)
 
+
+def patch_planning_tools() -> None:
+    path = ROOT / "planning-tools" / "index.html"
+    text = path.read_text(encoding="utf-8")
+    marker = '<meta name="x-seo-layer" content="2026-10-01">'
+    if marker in text:
+        return
+    title = "Planning Skills Lab — Human + Agent Planning · Matt Lane"
+    desc = "A click-through human and agent collaboration walkthrough from messy evidence to a build-ready slice."
+    url = SITE + "/planning-tools/"
+    image = SITE + "/assets/planning-skills-lab-preview.jpg"
+    text = re.sub(r"<title>[\s\S]*?</title>", f"<title>{title}</title>", text, count=1, flags=re.I)
+    text = re.sub(r'<meta\\b(?=[^>]*\\bname=(["\\'])description\\1)[^>]*>\\s*', "", text, count=1, flags=re.I)
+    text = re.sub(r'<link\\b(?=[^>]*\\brel=(["\\'])canonical\\1)[^>]*>\\s*', "", text, flags=re.I)
+    schema = {
+        "@context":"https://schema.org","@type":"CreativeWork","@id":url+"#lab",
+        "name":"Planning Skills Lab","description":desc,"url":url,"image":image,
+        "author":{"@type":"Person","@id":SITE+"/#person","name":"Matt Lane","url":SITE+"/"},
+        "genre":"Interactive planning tool",
+    }
+    block = f"""\n{marker}
+<meta name="description" content="{html.escape(desc, quote=True)}">
+<link rel="canonical" href="{url}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Matt Lane">
+<meta property="og:url" content="{url}">
+<meta property="og:title" content="{html.escape(title, quote=True)}">
+<meta property="og:description" content="{html.escape(desc, quote=True)}">
+<meta property="og:image" content="{image}">
+<meta property="og:image:alt" content="Planning Skills Lab human and agent planning walkthrough">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{html.escape(title, quote=True)}">
+<meta name="twitter:description" content="{html.escape(desc, quote=True)}">
+<meta name="twitter:image" content="{image}">
+<script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+"""
+    style = re.search(r"<style\\b", text, re.I)
+    if not style:
+        raise SystemExit("Could not find <style> in planning-tools/index.html")
+    text = text[:style.start()] + block + text[style.start():]
+    path.write_text(text, encoding="utf-8")
+
 def main() -> None:
+    patch_planning_tools()
     text = NOTES_HTML.read_text(encoding="utf-8")
     match = re.search(r"let NOTES=(\[.*?\]);const CATS=", text, re.S)
     if not match:
@@ -65,8 +114,13 @@ def main() -> None:
         folder.mkdir()
         url = f"{SITE}/notes/n/{slug}/"
         title = str(n.get("title") or "Untitled note")
+        search_title = seo_title(title)
         desc = description(n)
         body = render_body(str(n.get("body") or ""))
+        if not body:
+            fallback = str(n.get("summary") or n.get("excerpt") or "")
+            if strip_md(fallback).lower() != strip_md(title).lower():
+                body = render_body(fallback)
         discussion = render_body(str(n.get("discussion") or ""))
         category = html.escape(str(n.get("category") or ""))
         date = html.escape(str(n.get("date") or ""))
@@ -87,7 +141,7 @@ def main() -> None:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" href="/favicon.svg?v=20260930" type="image/svg+xml">
-<title>{html.escape(title)} — Matt Lane</title>
+<title>{html.escape(search_title)} — Matt Lane</title>
 <meta name="description" content="{html.escape(desc, quote=True)}">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="article">
