@@ -4,6 +4,7 @@ from __future__ import annotations
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -139,6 +140,8 @@ def main() -> int:
         if not (parser.icon or has_fallback_icon):
             errors.append(f"{rel}: no favicon available")
         needs_seo = rel in SEO_CORE or rel.startswith("notes/n/")
+        if rel.startswith("notes/n/") and re.search(r'https?://[^"\'<>\s]*substack', text, flags=re.I):
+            errors.append(f"{rel}: generated Note page contains an old Substack URL")
         if needs_seo:
             if not parser.canonical:
                 errors.append(f"{rel}: missing canonical URL")
@@ -174,6 +177,29 @@ def main() -> int:
     for required in ("robots.txt", "sitemap.xml", "favicon.svg", "favicon.ico"):
         if not (ROOT / required).is_file():
             errors.append(f"root: missing {required}")
+
+    sitemap_path = ROOT / "sitemap.xml"
+    if sitemap_path.is_file():
+        sitemap_text = sitemap_path.read_text(encoding="utf-8", errors="replace")
+        locs = re.findall(r"<loc>([^<]+)</loc>", sitemap_text)
+        if len(locs) != len(set(locs)):
+            errors.append("sitemap.xml: duplicate URLs")
+        indexed_pages = []
+        for page in html_files:
+            rel = page.relative_to(ROOT).as_posix()
+            if rel in SEO_CORE or rel.startswith("notes/n/"):
+                if rel == "index.html":
+                    indexed_pages.append(SITE)
+                elif rel.endswith("/index.html"):
+                    indexed_pages.append(SITE + rel[:-10])
+        missing_from_sitemap = sorted(set(indexed_pages) - set(locs))
+        if missing_from_sitemap:
+            errors.append(f"sitemap.xml: missing {len(missing_from_sitemap)} indexable page(s): {missing_from_sitemap[:5]}")
+    robots_path = ROOT / "robots.txt"
+    if robots_path.is_file():
+        robots_text = robots_path.read_text(encoding="utf-8", errors="replace")
+        if "Sitemap: https://mattlane66.github.io/sitemap.xml" not in robots_text:
+            errors.append("robots.txt: missing canonical sitemap declaration")
 
     print(f"Checked {len(html_files)} HTML pages.")
     for item in warnings:
