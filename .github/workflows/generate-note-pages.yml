@@ -1,0 +1,43 @@
+name: Generate Note pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "notes/index.html"
+      - "notes/direct-notes.json"
+      - "scripts/generate_note_pages.py"
+      - ".github/workflows/generate-note-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-note-pages
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Generate indexable Note pages and sitemap
+        run: python scripts/generate_note_pages.py
+      - name: Commit generated pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes/n sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No generated changes."
+          else
+            git commit -m "Generate indexable Note pages"
+            git push
+          fi
