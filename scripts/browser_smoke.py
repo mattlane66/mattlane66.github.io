@@ -49,7 +49,7 @@ def main() -> int:
     if not match:
         print("ERROR: notes/index.html: could not locate embedded Notes archive")
         return 1
-    archive_count = len(json.loads(match.group(1)))
+    archive_ids = {str(n["id"]) for n in json.loads(match.group(1))}
 
     original_direct = DIRECT_NOTES.read_text(encoding="utf-8")
     direct_notes = json.loads(original_direct)
@@ -64,7 +64,16 @@ def main() -> int:
         "category": "Writing & craft",
     })
     DIRECT_NOTES.write_text(json.dumps(direct_notes, ensure_ascii=False), encoding="utf-8")
-    expected_notes_total = archive_count + len(direct_notes)
+    # A direct note replaces the archive entry with the same ID; it is not
+    # an additional note. Count valid, normalized IDs across both sources.
+    expected_ids = set(archive_ids)
+    for i, note in enumerate(direct_notes):
+        if not isinstance(note, dict) or not note.get("title") or not note.get("date"):
+            continue
+        ident = str(note.get("id") or f"{note['date']}-{note['title']}-{i}").lower()
+        ident = re.sub(r"[^a-z0-9_-]+", "-", ident).strip("-") or f"direct-{i}"
+        expected_ids.add(ident)
+    expected_notes_total = len(expected_ids)
 
     port = free_port()
     handler = lambda *a, **kw: QuietHandler(*a, directory=str(ROOT), **kw)

@@ -14,12 +14,23 @@ DIRECT = ROOT / "notes" / "direct-notes.json"
 OUT = ROOT / "notes" / "n"
 GENERIC_IMAGE = SITE + "/assets/working-form-flow-crisp-v3.jpg"
 
+def strip_substack_urls(value: str) -> str:
+    # Public Note pages are site-native. Keep link labels and note text, but
+    # omit legacy Substack article, profile, and image-host URLs.
+    value = value or ""
+    value = re.sub(r'!\[([^\]]*)\]\((https?://[^)]*substack[^)]*)\)', '', value, flags=re.I)
+    value = re.sub(r'\[([^\]]+)\]\((https?://[^)]*substack[^)]*)\)', r'\1', value, flags=re.I)
+    value = re.sub(r'https?://[^\s)\]]*substack[^\s)\]]*', '', value, flags=re.I)
+    value = re.sub(r'^#{1,6}\s+Attachments?\s*$', '', value, flags=re.I | re.M)
+    return re.sub(r'^\s*\d+\.\s*$', '', value, flags=re.M)
+
 def slugify(value: str) -> str:
     value = re.sub(r"https?://\S+", "", value.lower())
     value = re.sub(r"[^a-z0-9]+", "-", value).strip("-") or "note"
     return value[:72].rstrip("-")
 
 def strip_md(value: str) -> str:
+    value = strip_substack_urls(value)
     value = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", value or "")
     value = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", value)
     value = re.sub(r"https?://\S+", " ", value)
@@ -39,6 +50,7 @@ def seo_title(value: str) -> str:
     return (short or value[:63]).rstrip(" ,.;:—-") + "…"
 
 def render_body(value: str) -> str:
+    value = strip_substack_urls(value)
     blocks = [b.strip() for b in re.split(r"\n\s*\n", value or "") if b.strip()]
     return "\n".join("<p>" + html.escape(b).replace("\n", "<br>") + "</p>" for b in blocks)
 
@@ -113,7 +125,7 @@ def main() -> None:
         folder = OUT / slug
         folder.mkdir()
         url = f"{SITE}/notes/n/{slug}/"
-        title = str(n.get("title") or "Untitled note")
+        title = strip_substack_urls(str(n.get("title") or "")).strip() or "Untitled note"
         search_title = seo_title(title)
         desc = description(n)
         body = render_body(str(n.get("body") or ""))
@@ -176,6 +188,8 @@ h1{{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>"""
+        if re.search(r'https?://[^"\'<>\s]*substack', page, flags=re.I):
+            raise RuntimeError(f"Substack URL leaked into generated page: {slug}")
         (folder / "index.html").write_text(page, encoding="utf-8")
         note_urls.append((url, str(n.get("date") or "")))
 

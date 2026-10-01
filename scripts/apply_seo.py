@@ -2,6 +2,7 @@
 from __future__ import annotations
 import html, json, re, shutil
 from pathlib import Path
+from generate_note_pages import strip_substack_urls
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://mattlane66.github.io"
@@ -100,17 +101,6 @@ def inject(page: str, cfg: dict) -> str:
     else:
         page = re.sub(r"</head>", block+"</head>", page, count=1, flags=re.I)
     return page
-
-def strip_substack_urls(s: str) -> str:
-    # The public SEO pages are site-native. Preserve the note's words, but do not
-    # carry old Substack profile/article/image-host URLs into the generated pages.
-    s = s or ""
-    s = re.sub(r'!\[([^\]]*)\]\((https?://[^)]*substack[^)]*)\)', '', s, flags=re.I)
-    s = re.sub(r'\[([^\]]+)\]\((https?://[^)]*substack[^)]*)\)', r'\1', s, flags=re.I)
-    s = re.sub(r'https?://[^\s)\]]*substack[^\s)\]]*', '', s, flags=re.I)
-    s = re.sub(r'^#{1,6}\s+Attachments?\s*$', '', s, flags=re.I | re.M)
-    s = re.sub(r'^\s*\d+\.\s*$', '', s, flags=re.M)
-    return s
 
 def strip_md(s: str) -> str:
     s = strip_substack_urls(s)
