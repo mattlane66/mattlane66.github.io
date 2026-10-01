@@ -1,6 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+(function(){
+  const entry=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];
+  const isReload=entry?entry.type==='reload':!!(performance.navigation&&performance.navigation.type===1);
+  if(!isReload)return;
+  if('scrollRestoration' in history)history.scrollRestoration='manual';
+  if(location.hash)history.replaceState(null,'',location.pathname+location.search);
+  const top=()=>window.scrollTo({top:0,left:0,behavior:'auto'});
+  top();
+  document.addEventListener('DOMContentLoaded',top,{once:true});
+  window.addEventListener('load',top,{once:true});
+  window.addEventListener('pageshow',top,{once:true});
+  setTimeout(top,60);
+  setTimeout(top,250);
+  setTimeout(function(){
+    top();
+    if('scrollRestoration' in history)history.scrollRestoration='auto';
+  },600);
+})();
+</script>
 <link rel="icon" href="/favicon.svg?v=20260930" type="image/svg+xml">
 <meta charset="utf-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">

@@ -90,6 +90,16 @@ def main() -> int:
                         # Let deferred JS/layout settle without waiting for third-party network idleness.
                         page.wait_for_timeout(1500 if name != "planning-tools" else 3000)
 
+                        # Refresh is intentionally a reset: every standard content page starts at the top.
+                        # planning-tools is a separately bundled interactive artifact and is tested for runtime readiness below.
+                        if name not in ("planning-tools", "404"):
+                            page.evaluate("window.scrollTo(0, Math.min(700, Math.max(0, document.documentElement.scrollHeight - innerHeight)))")
+                            page.wait_for_timeout(100)
+                            page.reload(wait_until="domcontentloaded", timeout=60_000)
+                            page.wait_for_timeout(800)
+                            if page.evaluate("window.scrollY") > 3:
+                                failures.append(f"{viewport_name} {path}: refresh did not reset scroll to top")
+
                         metrics = page.evaluate("""() => ({
                             htmlScroll: document.documentElement.scrollWidth,
                             htmlClient: document.documentElement.clientWidth,
@@ -164,6 +174,12 @@ def main() -> int:
                             if not nav_is_aligned("#writing"):
                                 failures.append(
                                     f"{viewport_name} /#writing: direct hash load did not align target"
+                                )
+                            page.reload(wait_until="domcontentloaded", timeout=60_000)
+                            page.wait_for_timeout(800)
+                            if page.evaluate("window.scrollY") > 3 or page.evaluate("location.hash"):
+                                failures.append(
+                                    f"{viewport_name} /#writing: refresh did not reset homepage to top"
                                 )
 
                             # Browser-history return must restore the previously selected section.
