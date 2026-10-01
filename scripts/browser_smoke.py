@@ -126,6 +126,12 @@ def main() -> int:
 
                         # Core interactive smoke checks.
                         if name == "home":
+                            # Featured previews are static images, never embedded scrollable documents.
+                            if page.locator(".browser iframe, .fitpreview iframe").count():
+                                failures.append(f"{viewport_name} /: static tile previews regressed to iframes")
+                            if page.locator('.browser img[src*="splice-case-preview"], .fitpreview img[src*="fit-check-preview"]').count() != 2:
+                                failures.append(f"{viewport_name} /: expected both static tile preview images")
+
                             # Top navigation must land correctly on the first click, including
                             # when the URL already has that hash and after returning from a subpage.
                             def nav_is_aligned(hash_value: str) -> bool:
