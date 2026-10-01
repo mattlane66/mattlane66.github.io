@@ -108,7 +108,10 @@ def strip_substack_urls(s: str) -> str:
     s = re.sub(r'!\[([^\]]*)\]\((https?://[^)]*substack[^)]*)\)', '', s, flags=re.I)
     s = re.sub(r'\[([^\]]+)\]\((https?://[^)]*substack[^)]*)\)', r'\1', s, flags=re.I)
     s = re.sub(r'https?://[^\s)\]]*substack[^\s)\]]*', '', s, flags=re.I)
-    s = re.sub(r'^#{1,6}\s+Attachments?\s*
+    s = re.sub(r'^#{1,6}\s+Attachments?\s*$', '', s, flags=re.I | re.M)
+    s = re.sub(r'^\s*\d+\.\s*$', '', s, flags=re.M)
+    return s
+
 def strip_md(s: str) -> str:
     s = strip_substack_urls(s)
     s = re.sub(r'!\[[^\]]*\]\([^)]*\)', ' ', s)
