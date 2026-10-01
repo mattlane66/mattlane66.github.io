@@ -12,7 +12,7 @@ SKIP_DIRS = {".git", ".github"}
 GENERATED = {"planning-tools/index.html", "notes/index.html"}
 SEO_CORE = {
     "index.html", "about/index.html", "splice/index.html", "nyshex/index.html",
-    "codeai/index.html", "fit-check/index.html", "notes/index.html",
+    "codeai/index.html", "fit-check/index.html", "planning-tools/index.html", "notes/index.html",
 }
 
 class PageParser(HTMLParser):
