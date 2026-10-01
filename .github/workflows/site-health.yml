@@ -41,5 +41,14 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check playwright
           python -m playwright install --with-deps chromium
+      - name: Capture static homepage previews
+        run: python scripts/capture_previews.py
       - name: Test desktop and phone rendering in Chromium
         run: python scripts/browser_smoke.py
+      - name: Upload preview captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: homepage-preview-captures
+          path: preview-captures/*.png
+          if-no-files-found: error
