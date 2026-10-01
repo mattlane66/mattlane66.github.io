@@ -194,8 +194,8 @@
 .writing-group-head{display:flex;justify-content:space-between;align-items:end;gap:20px;padding-bottom:10px;border-bottom:1px solid var(--ink)}
 .writing-group-head>span{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 .writing-group-head>p{margin:0;font-size:12px;color:var(--muted)}
-.articles-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,320px));gap:10px;justify-content:start}
-.article-card{aspect-ratio:1/1;width:100%;min-height:0;border:1px solid var(--ink);background:var(--blue);color:#fff;padding:clamp(22px,3vw,34px);display:flex;flex-direction:column;align-items:flex-start;transition:.16s transform,.16s box-shadow}
+.articles-panel{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+.article-card{flex:0 0 min(320px,100%);width:min(320px,100%);aspect-ratio:1/1;min-height:0;border:1px solid var(--ink);background:var(--blue);color:#fff;padding:clamp(22px,3vw,34px);display:flex;flex-direction:column;align-items:flex-start;transition:.16s transform,.16s box-shadow}
 .article-card:hover{transform:translate(-3px,-3px);box-shadow:7px 7px 0 var(--ink)}
 .article-card>span,.article-card>em{font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-style:normal;color:#dfe4ff}
 .article-card>strong{font-size:clamp(32px,4vw,58px);line-height:.92;letter-spacing:-.055em;margin:32px 0 12px;max-width:15ch}
@@ -205,7 +205,7 @@
   #writing .writing{gap:34px}
   .writing-group-head{display:block}
   .writing-group-head>p{margin-top:6px}
-  .article-card{min-height:240px}
+  .article-card{min-height:0}
 }
 
 </style><!-- homepage-rev:20260930-mobile-nav-v2 --></head><body><header class="top"><div class="shell topin"><a class="mark" href="#top">Matt Lane</a><nav class="nav"><a href="#cases">Case studies</a><a href="#projects">Side projects</a><a href="#tools">Thinking tools</a><a href="#writing">Writing</a><a href="./about/" target="_blank" rel="noopener noreferrer">About</a></nav></div></header>
