@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: site-health-${{ github.ref }}
@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          persist-credentials: false
+          persist-credentials: true
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          persist-credentials: false
+          persist-credentials: true
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
@@ -43,6 +43,17 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Capture static homepage previews
         run: python scripts/capture_previews.py
+      - name: Commit preview captures
+        run: |
+          cp preview-captures/splice-case-preview.png assets/splice-case-preview.png
+          cp preview-captures/fit-check-preview.png assets/fit-check-preview.png
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/splice-case-preview.png assets/fit-check-preview.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Add static tile preview images"
+            git push
+          fi
       - name: Test desktop and phone rendering in Chromium
         run: python scripts/browser_smoke.py
       - name: Upload preview captures
