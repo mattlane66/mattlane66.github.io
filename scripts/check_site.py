@@ -10,6 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://mattlane66.github.io/"
 SKIP_DIRS = {".git", ".github"}
 GENERATED = {"planning-tools/index.html", "notes/index.html"}
+SEO_CORE = {
+    "index.html", "about/index.html", "splice/index.html", "nyshex/index.html",
+    "codeai/index.html", "fit-check/index.html", "notes/index.html",
+}
 
 class PageParser(HTMLParser):
     def __init__(self):
@@ -19,6 +23,12 @@ class PageParser(HTMLParser):
         self.title = ""
         self.viewport = False
         self.description = False
+        self.canonical = False
+        self.og_title = False
+        self.og_description = False
+        self.og_image = False
+        self.twitter_card = False
+        self.json_ld = False
         self.icon = False
         self.h1 = 0
         self.ids = []
@@ -38,10 +48,21 @@ class PageParser(HTMLParser):
                 self.viewport = True
             if name == "description" and (a.get("content") or "").strip():
                 self.description = True
+            if name == "twitter:card" and (a.get("content") or "").strip():
+                self.twitter_card = True
+            prop = (a.get("property") or "").lower()
+            if prop == "og:title" and (a.get("content") or "").strip():
+                self.og_title = True
+            if prop == "og:description" and (a.get("content") or "").strip():
+                self.og_description = True
+            if prop == "og:image" and (a.get("content") or "").strip():
+                self.og_image = True
         elif tag == "link":
             rel = (a.get("rel") or "").lower()
             if "icon" in rel:
                 self.icon = True
+            if "canonical" in rel and (a.get("href") or "").strip():
+                self.canonical = True
             if a.get("href"):
                 self.refs.append(a["href"])
         elif tag == "a":
@@ -53,6 +74,8 @@ class PageParser(HTMLParser):
                 if "noopener" not in rel:
                     self.blank_links.append(href or "(missing href)")
         elif tag in {"img", "script", "iframe", "source", "video", "audio"}:
+            if tag == "script" and (a.get("type") or "").lower() == "application/ld+json":
+                self.json_ld = True
             if a.get("src"):
                 self.refs.append(a["src"])
             if tag == "img" and "alt" not in a:
@@ -115,6 +138,16 @@ def main() -> int:
             errors.append(f"{rel}: missing meta description")
         if not (parser.icon or has_fallback_icon):
             errors.append(f"{rel}: no favicon available")
+        needs_seo = rel in SEO_CORE or rel.startswith("notes/n/")
+        if needs_seo:
+            if not parser.canonical:
+                errors.append(f"{rel}: missing canonical URL")
+            if not (parser.og_title and parser.og_description and parser.og_image):
+                errors.append(f"{rel}: incomplete Open Graph metadata")
+            if not parser.twitter_card:
+                errors.append(f"{rel}: missing Twitter card metadata")
+            if not parser.json_ld:
+                errors.append(f"{rel}: missing JSON-LD structured data")
         if parser.h1 != 1:
             errors.append(f"{rel}: expected exactly one h1, found {parser.h1}")
         if parser.blank_links:
