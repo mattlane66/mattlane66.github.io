@@ -58,6 +58,18 @@ def main() -> int:
     if not isinstance(direct_notes, list):
         print("ERROR: notes/direct-notes.json must contain a JSON array")
         return 1
+
+    # The committed HTML must contain every real note before JavaScript runs.
+    expected_static_ids = set(archive_ids)
+    for i, note in enumerate(direct_notes):
+        if not isinstance(note, dict) or not note.get("title") or not note.get("date"):
+            continue
+        ident = str(note.get("id") or f"{note['date']}-{note['title']}-{i}").lower()
+        ident = re.sub(r"[^a-z0-9_-]+", "-", ident).strip("-") or f"direct-{i}"
+        if ident not in removed_ids:
+            expected_static_ids.add(ident)
+    expected_static_total = len(expected_static_ids)
+
     direct_notes.append({
         "id": DIRECT_TEST_ID,
         "date": "9999-12-31",
@@ -68,7 +80,7 @@ def main() -> int:
     DIRECT_NOTES.write_text(json.dumps(direct_notes, ensure_ascii=False), encoding="utf-8")
     # A direct note replaces the archive entry with the same ID; it is not
     # an additional note. Count valid, normalized IDs across both sources.
-    expected_ids = set(archive_ids)
+    expected_ids = set(expected_static_ids)
     for i, note in enumerate(direct_notes):
         if not isinstance(note, dict) or not note.get("title") or not note.get("date"):
             continue
@@ -88,6 +100,49 @@ def main() -> int:
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
+
+            # Progressive enhancement guarantee: the full Notes archive and
+            # real crawlable links must exist with JavaScript completely off.
+            nojs_context = browser.new_context(java_script_enabled=False)
+            nojs_page = nojs_context.new_page()
+            try:
+                response = nojs_page.goto(base + "/notes/", wait_until="domcontentloaded", timeout=60_000)
+                if response is None or response.status >= 400:
+                    failures.append(f"no-js /notes/: HTTP {getattr(response, 'status', None)}")
+                else:
+                    static_links = nojs_page.locator("#grid a.note[data-id]")
+                    if static_links.count() != expected_static_total:
+                        failures.append(
+                            f"no-js /notes/: expected {expected_static_total} static Note links, "
+                            f"found {static_links.count()}"
+                        )
+                    static_ids = set(static_links.evaluate_all(
+                        "els => els.map(el => el.getAttribute('data-id'))"
+                    ))
+                    missing_static = sorted(expected_static_ids - static_ids)
+                    if missing_static:
+                        failures.append(
+                            f"no-js /notes/: missing static Note IDs: {missing_static[:5]}"
+                        )
+                    leaked_static = sorted(removed_ids & static_ids)
+                    if leaked_static:
+                        failures.append(
+                            f"no-js /notes/: removed Note IDs leaked into static HTML: {leaked_static}"
+                        )
+                    bad_hrefs = static_links.evaluate_all(
+                        """els => els.filter(el => {
+                            const href = el.getAttribute('href') || '';
+                            return !/^\.\/n\/.+\/$/.test(href);
+                        }).slice(0, 5).map(el => el.getAttribute('href'))"""
+                    )
+                    if bad_hrefs:
+                        failures.append(
+                            f"no-js /notes/: non-crawlable static Note href(s): {bad_hrefs}"
+                        )
+            finally:
+                nojs_page.close()
+                nojs_context.close()
+
             for viewport_name, viewport in VIEWPORTS.items():
                 for path, name in PAGES:
                     page = browser.new_page(viewport=viewport)
