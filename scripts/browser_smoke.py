@@ -14,6 +14,7 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 
 ROOT = Path(__file__).resolve().parents[1]
 DIRECT_NOTES = ROOT / "notes" / "direct-notes.json"
+REMOVED_NOTES = ROOT / "notes" / "removed-note-ids.json"
 DIRECT_TEST_ID = "ci-direct-sync-test"
 PAGES = [
     ("/", "home"),
@@ -49,7 +50,8 @@ def main() -> int:
     if not match:
         print("ERROR: notes/index.html: could not locate embedded Notes archive")
         return 1
-    archive_ids = {str(n["id"]) for n in json.loads(match.group(1))}
+    removed_ids = {str(x) for x in json.loads(REMOVED_NOTES.read_text(encoding="utf-8"))}
+    archive_ids = {str(n["id"]) for n in json.loads(match.group(1)) if str(n["id"]) not in removed_ids}
 
     original_direct = DIRECT_NOTES.read_text(encoding="utf-8")
     direct_notes = json.loads(original_direct)
@@ -72,7 +74,8 @@ def main() -> int:
             continue
         ident = str(note.get("id") or f"{note['date']}-{note['title']}-{i}").lower()
         ident = re.sub(r"[^a-z0-9_-]+", "-", ident).strip("-") or f"direct-{i}"
-        expected_ids.add(ident)
+        if ident not in removed_ids:
+            expected_ids.add(ident)
     expected_notes_total = len(expected_ids)
 
     port = free_port()
@@ -257,6 +260,15 @@ def main() -> int:
                             if page.locator(f'[data-id="{DIRECT_TEST_ID}"]').count() != 1:
                                 failures.append(
                                     f"{viewport_name} /notes/: directly added test note did not render"
+                                )
+                            leaked_removed = page.evaluate(
+                                "(ids) => NOTES.filter(n => ids.includes(String(n.id))).map(n => String(n.id))",
+                                sorted(removed_ids),
+                            )
+                            if leaked_removed:
+                                failures.append(
+                                    f"{viewport_name} /notes/: removed note IDs leaked into runtime: "
+                                    f"{leaked_removed}"
                                 )
                             elif page.locator("#resultCount b").count():
                                 shown = page.locator("#resultCount b").inner_text()
