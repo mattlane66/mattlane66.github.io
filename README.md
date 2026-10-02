@@ -43,12 +43,6 @@ Plain HTML, CSS, and JavaScript.
 
 No framework. No magic. Just files you can open and understand.
 
-## Explore
-
-→ [Portfolio](https://mattlane66.github.io)  
-→ [Projects](https://mattlane66.github.io/#projects)  
-→ [Notes](https://mattlane66.github.io/notes/)
-
 ---
 
 Made by Matt Lane
