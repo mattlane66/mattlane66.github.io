@@ -26,6 +26,8 @@ jobs:
           python-version: "3.12"
       - name: Check site structure, links, and safety basics
         run: python scripts/check_site.py
+      - name: Compile site generation scripts
+        run: python -m py_compile scripts/generate_note_pages.py scripts/browser_smoke.py
 
   browser-smoke:
     runs-on: ubuntu-latest
