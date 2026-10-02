@@ -142,7 +142,10 @@ def main() -> None:
         ident = str(n.get("id") or f"{n['date']}-{n['title']}-{i}")
         ident = re.sub(r"[^a-z0-9_-]+", "-", ident.lower()).strip("-") or f"direct-{i}"
         by_id[ident] = {**n, "id": ident}
-    removed_ids = {str(x) for x in json.loads(REMOVED.read_text(encoding="utf-8"))}\n    by_id = {ident: n for ident, n in by_id.items() if ident not in removed_ids}\n    notes = sorted(by_id.values(), key=lambda n: (str(n.get("date","")), str(n.get("id",""))), reverse=True)\n
+    removed_ids = {str(x) for x in json.loads(REMOVED.read_text(encoding="utf-8"))}
+    by_id = {ident: n for ident, n in by_id.items() if ident not in removed_ids}
+    notes = sorted(by_id.values(), key=lambda n: (str(n.get("date","")), str(n.get("id",""))), reverse=True)
+
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True)
