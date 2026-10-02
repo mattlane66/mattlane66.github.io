@@ -6,6 +6,7 @@ on:
     paths:
       - "notes/index.html"
       - "notes/direct-notes.json"
+      - "notes/removed-note-ids.json"
       - "scripts/generate_note_pages.py"
       - ".github/workflows/generate-note-pages.yml"
   workflow_dispatch:
