@@ -270,6 +270,27 @@ def main() -> int:
                                     f"{viewport_name} /notes/: removed note IDs leaked into runtime: "
                                     f"{leaked_removed}"
                                 )
+                            for removed_id in sorted(removed_ids):
+                                probe = browser.new_page(viewport=viewport)
+                                try:
+                                    probe.goto(
+                                        base + f"/notes/#note-{removed_id}",
+                                        wait_until="domcontentloaded",
+                                        timeout=60_000,
+                                    )
+                                    probe.wait_for_timeout(1200)
+                                    if probe.evaluate("location.hash"):
+                                        failures.append(
+                                            f"{viewport_name} /notes/#note-{removed_id}: "
+                                            "removed-note hash was not cleared"
+                                        )
+                                    if probe.locator("#dialog[open]").count():
+                                        failures.append(
+                                            f"{viewport_name} /notes/#note-{removed_id}: "
+                                            "removed note dialog opened"
+                                        )
+                                finally:
+                                    probe.close()
                             elif page.locator("#resultCount b").count():
                                 shown = page.locator("#resultCount b").inner_text()
                                 if shown != str(expected_notes_total):
