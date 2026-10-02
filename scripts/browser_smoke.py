@@ -291,7 +291,7 @@ def main() -> int:
                                         )
                                 finally:
                                     probe.close()
-                            elif page.locator("#resultCount b").count():
+                            if page.locator("#resultCount b").count():
                                 shown = page.locator("#resultCount b").inner_text()
                                 if shown != str(expected_notes_total):
                                     failures.append(
