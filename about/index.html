@@ -79,7 +79,7 @@ a{color:inherit;text-decoration:none}
 .copy{max-width:900px}
 .copy p{font-size:clamp(18px,1.35vw,21px);line-height:1.45;letter-spacing:-.018em;margin:0 0 1.05em;max-width:46ch}
 .copy .turn{margin-top:1.7em}
-.music-divider{border-top:1px solid var(--line);padding-top:1.7em}
+.music-divider{width:100%;border-top:1px solid #c8c6bc;margin:2.2em 0 1.7em}
 .photo-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
 .photo-thumb{appearance:none;border:0;padding:0;background:none;cursor:zoom-in}
 .photo-thumb img{display:block;width:86px;height:64px;object-fit:cover;border:1px solid var(--line)}
@@ -129,7 +129,8 @@ a{color:inherit;text-decoration:none}
 
       <p class="turn">I play guitar, go to live music and stand-up, read mostly older books, ride an enduro eMTB, and spend probably too much time making hand-brewed coffee.</p>
 
-      <p class="turn music-divider">In another life, I recorded and mixed these albums.</p>
+      <div class="music-divider" aria-hidden="true"></div>
+      <p>In another life, I recorded and mixed these albums.</p>
       <iframe data-testid="embed-iframe" title="Albums recorded and mixed by Matt Lane" style="display:block;border:0;border-radius:12px" src="https://open.spotify.com/embed/playlist/45pzF03Lc9RoIBrovoNAtR?utm_source=generator&amp;theme=0&amp;si=386c6dc935bd4f52" width="100%" height="352" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       <div class="photo-strip" aria-label="Recording photos">
         <button class="photo-thumb" type="button" data-full="../assets/music-history/dsc00884.webp" data-alt="Recording session in a large hall" aria-label="Open recording hall photo">
