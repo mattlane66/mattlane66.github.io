@@ -55,6 +55,35 @@ def render_body(value: str) -> str:
     return "\n".join("<p>" + html.escape(b).replace("\n", "<br>") + "</p>" for b in blocks)
 
 
+def note_content(title: str, body: str) -> tuple[str, str]:
+    """Show a repeated opening once; preserve the remaining note verbatim.
+
+    Keep this presentation rule in sync with noteContent in notes/index.html.
+    Original titles still determine URLs, so expanding a heading never breaks links.
+    """
+    title, body = title.strip(), body.strip()
+    first = re.split(r"\n\s*\n", body, maxsplit=1)[0]
+    heading = re.sub(r"^#{1,5}\s+", "", first)
+    heading = re.sub(r"^(\*\*|__)([\s\S]+)\1$", r"\2", heading).strip()
+    if title and heading == title:
+        return title, body[len(first):].lstrip()
+    prefix = re.sub(r"(?:…|\.{3})$", "", title).rstrip()
+    if not prefix or not body.startswith(prefix):
+        return title, body
+    if prefix != title:
+        # Complete short, plain-text openings; never promote links or Markdown.
+        candidate = first.strip()
+        if len(candidate) > 360 or re.search(r"[\n*_\[\]`#>]", candidate):
+            sentence = re.match(r'''^[\s\S]*?[.!?]["'”’)]*(?=\s|$)''', body)
+            candidate = sentence.group(0) if sentence else ""
+        if not candidate or re.search(r"[\n*_\[\]`#>]", candidate):
+            return title, body
+        title = candidate
+    if body.startswith(title) and (len(body) == len(title) or body[len(title)].isspace()):
+        body = body[len(title):].lstrip()
+    return title, body
+
+
 def patch_planning_tools() -> None:
     path = ROOT / "planning-tools" / "index.html"
     text = path.read_text(encoding="utf-8")
@@ -126,13 +155,15 @@ def main() -> None:
         folder.mkdir()
         url = f"{SITE}/notes/n/{slug}/"
         title = strip_substack_urls(str(n.get("title") or "")).strip() or "Untitled note"
-        search_title = seo_title(title)
         desc = description(n)
-        body = render_body(str(n.get("body") or ""))
-        if not body:
+        source_body = str(n.get("body") or "")
+        if not render_body(source_body):
             fallback = str(n.get("summary") or n.get("excerpt") or "")
             if strip_md(fallback).lower() != strip_md(title).lower():
-                body = render_body(fallback)
+                source_body = fallback
+        title, source_body = note_content(title, source_body)
+        search_title = seo_title(title)
+        body = render_body(source_body)
         discussion = render_body(str(n.get("discussion") or ""))
         category = html.escape(str(n.get("category") or ""))
         date = html.escape(str(n.get("date") or ""))
