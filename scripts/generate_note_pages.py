@@ -84,6 +84,109 @@ def note_content(title: str, body: str) -> tuple[str, str]:
         body = body[len(title):].lstrip()
     return title, body
 
+def clean_feed_text(value: str) -> str:
+    value = str(value or "")
+    value = re.sub(r'!\[([^\]]*)\]\((https?://[^)]+)\)', r' \1 ', value, flags=re.I)
+    value = re.sub(
+        r'\[([^\]]+)\]\((https?://[^)]+)\)',
+        lambda m: "" if re.match(r"^https?://", m.group(1).strip(), re.I) else f" {m.group(1)} ",
+        value,
+        flags=re.I,
+    )
+    value = re.sub(r'https?://[^\s<>)\]]+', ' ', value, flags=re.I)
+    value = re.sub(r'\bAttachments?\b(?:\s+\d+\.?)+', ' ', value, flags=re.I)
+    value = re.sub(r'\bAttachments?\b', ' ', value, flags=re.I)
+    value = re.sub(r'\s+([,.;:!?])', r'\1', value)
+    value = re.sub(r'\s+', ' ', value).strip()
+    return value.strip("|·,:;-–— \t\r\n")
+
+
+def feed_title(n: dict) -> str:
+    raw_title = str(n.get("title") or "")
+    raw_body = str(n.get("body") or "")
+    presented_title, presented_body = note_content(raw_title, raw_body)
+    for raw in (presented_title, n.get("summary"), n.get("excerpt")):
+        value = clean_feed_text(str(raw or ""))
+        if value and not re.match(r"^note\s+\d+$", value, re.I) and value.lower() != "image":
+            return value
+    body = clean_feed_text(strip_md(presented_body or raw_body))
+    return body[:180].strip() if body else "Untitled note"
+
+
+def feed_excerpt(n: dict, title: str) -> str:
+    _, presented_body = note_content(str(n.get("title") or ""), str(n.get("body") or ""))
+    for raw in (n.get("excerpt"), n.get("summary"), strip_md(presented_body)):
+        value = clean_feed_text(str(raw or ""))
+        if not value or re.match(r"^note\s+\d+$", value, re.I) or value.lower() == "image":
+            continue
+        short = re.sub(r"(?:…|\.{3})$", "", value).rstrip()
+        if title and title.lower().startswith(short.lower()):
+            continue
+        if title and value.lower().startswith(title.lower()):
+            value = re.sub(r"^[\s:;,.–—-]+", "", value[len(title):]).strip()
+        if len(value) < 4 or re.match(r"^(or|and|pen|marker)$", value, re.I):
+            continue
+        return value[:420].strip()
+    return ""
+
+
+def note_word_count(n: dict) -> int:
+    try:
+        value = int(n.get("words") or 0)
+    except (TypeError, ValueError):
+        value = 0
+    if value:
+        return value
+    plain = strip_md(str(n.get("body") or ""))
+    return len(plain.split()) if plain else 0
+
+
+def note_card_class(n: dict) -> str:
+    words = note_word_count(n)
+    if words < 18:
+        return "short"
+    if words > 170:
+        return "long"
+    if words > 65:
+        return "medium"
+    return ""
+
+
+def render_archive_card(n: dict) -> str:
+    ident = str(n["id"])
+    slug = f"{slugify(str(n.get('title','')))}-{ident}"
+    href = f"./n/{slug}/"
+    title = feed_title(n)
+    excerpt = feed_excerpt(n, title)
+    words = note_word_count(n)
+    css_class = note_card_class(n)
+    category = str(n.get("category") or "")
+    relation = '<span class="rel">related ↗</span>' if n.get("relation") else "open →"
+    excerpt_html = f'<p class="excerpt">{html.escape(excerpt)}</p>' if words >= 24 and excerpt else ""
+    return (
+        f'<a class="note {css_class}" data-id="{html.escape(ident, quote=True)}" '
+        f'href="{html.escape(href, quote=True)}">'
+        f'<div><div class="date">{html.escape(str(n.get("date") or ""))}</div>'
+        f'<p class="quote">{html.escape(title)}</p>{excerpt_html}</div>'
+        f'<div class="foot"><span>{html.escape(category)}</span><span>{relation}</span></div></a>'
+    )
+
+
+def render_static_archive(text: str, notes: list[dict]) -> str:
+    cards = "".join(render_archive_card(n) for n in notes)
+    block = f"<!-- STATIC_NOTES_START -->{cards}<!-- STATIC_NOTES_END -->"
+    pattern = r'(<section class="grid" id="grid" aria-live="polite">)[\s\S]*?(</section>)'
+    if not re.search(pattern, text):
+        raise RuntimeError("Could not locate Notes grid for static rendering")
+    text = re.sub(pattern, lambda m: m.group(1) + block + m.group(2), text, count=1)
+    text = re.sub(
+        r'<span id="resultCount">[\s\S]*?</span>',
+        f'<span id="resultCount"><b>{len(notes)}</b> notes</span>',
+        text,
+        count=1,
+    )
+    return text
+
 
 def patch_planning_tools() -> None:
     path = ROOT / "planning-tools" / "index.html"
@@ -145,6 +248,9 @@ def main() -> None:
     removed_ids = {str(x) for x in json.loads(REMOVED.read_text(encoding="utf-8"))}
     by_id = {ident: n for ident, n in by_id.items() if ident not in removed_ids}
     notes = sorted(by_id.values(), key=lambda n: (str(n.get("date","")), str(n.get("id",""))), reverse=True)
+
+    text = render_static_archive(text, notes)
+    NOTES_HTML.write_text(text, encoding="utf-8")
 
     if OUT.exists():
         shutil.rmtree(OUT)
