@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://mattlane66.github.io"
 NOTES_HTML = ROOT / "notes" / "index.html"
 DIRECT = ROOT / "notes" / "direct-notes.json"
+REMOVED = ROOT / "notes" / "removed-note-ids.json"
 OUT = ROOT / "notes" / "n"
 GENERIC_IMAGE = SITE + "/assets/working-form-flow-crisp-v3.jpg"
 
@@ -141,8 +142,7 @@ def main() -> None:
         ident = str(n.get("id") or f"{n['date']}-{n['title']}-{i}")
         ident = re.sub(r"[^a-z0-9_-]+", "-", ident.lower()).strip("-") or f"direct-{i}"
         by_id[ident] = {**n, "id": ident}
-    notes = sorted(by_id.values(), key=lambda n: (str(n.get("date","")), str(n.get("id",""))), reverse=True)
-
+    removed_ids = {str(x) for x in json.loads(REMOVED.read_text(encoding="utf-8"))}\n    by_id = {ident: n for ident, n in by_id.items() if ident not in removed_ids}\n    notes = sorted(by_id.values(), key=lambda n: (str(n.get("date","")), str(n.get("id",""))), reverse=True)\n
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True)
