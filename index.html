@@ -217,6 +217,44 @@
   .article-card{min-height:0}
 }
 
+
+/* Hobby maker stack — Side projects feature and in-page modal. */
+.maker-feature{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;margin-top:44px;display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.43fr);gap:36px;align-items:end;position:relative;padding:27px 30px 30px;background:#fff;border:1px solid var(--ink);transition:transform .16s,box-shadow .16s}
+.maker-feature:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+.maker-feature:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--ink)}
+.maker-feature h3{margin:0 0 17px;font-size:clamp(29px,3.4vw,47px);letter-spacing:-.055em;line-height:.98}
+.maker-feature p{font-size:15px;line-height:1.5;color:var(--muted);margin:0;max-width:56ch}
+.maker-side{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;gap:22px}
+.maker-arrow{color:var(--blue);font-weight:800;font-size:15px}
+.maker-feature:hover .maker-arrow{text-decoration:underline;text-underline-offset:4px}
+body.maker-modal-open{overflow:hidden}
+.maker-dialog{border:1px solid var(--ink);padding:0;width:min(940px,calc(100vw - 40px));max-width:940px;max-height:min(88vh,980px);color:var(--ink);background:var(--paper);box-shadow:18px 20px 0 rgba(0,0,0,.18);overflow:hidden}
+.maker-dialog::backdrop{background:rgba(8,10,13,.67);backdrop-filter:blur(3px)}
+.maker-dialog .modal-frame{display:flex;flex-direction:column;max-height:min(88vh,980px);min-height:0}
+.maker-dialog .modal-topbar{display:flex;align-items:center;justify-content:flex-end;background:var(--paper);padding:16px clamp(22px,4vw,42px) 0;flex:0 0 auto}
+.maker-dialog .modal-close{font:inherit;border:1px solid var(--ink);background:transparent;color:var(--ink);width:38px;height:38px;display:grid;place-items:center;line-height:1;font-size:24px;cursor:pointer;flex:0 0 auto;transition:background .12s,color .12s}
+.maker-dialog .modal-close:hover{background:var(--ink);color:white}
+.maker-dialog .modal-close:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.maker-dialog .modal-scroll{overflow-y:auto;overscroll-behavior:contain;padding:clamp(22px,4vw,42px);min-height:0;scrollbar-gutter:stable}
+.maker-dialog .modal-intro{padding:0 0 27px;border-bottom:1px solid var(--ink);margin-bottom:29px}
+.maker-dialog .modal-intro h2{font-size:clamp(41px,5.8vw,75px);letter-spacing:-.071em;line-height:.91;margin:0 0 18px;max-width:12ch}
+.maker-dialog .modal-intro p{font-size:clamp(16px,1.7vw,20px);line-height:1.38;letter-spacing:-.016em;max-width:64ch;margin:0;color:#474740}
+.maker-dialog .modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 32px}
+.maker-dialog .modal-category{min-width:0}
+.maker-dialog .modal-category h3{font-size:18px;line-height:1.1;letter-spacing:-.038em;margin:0 0 12px}
+.maker-dialog .modal-category .category-sub{font-size:11px;color:var(--muted);line-height:1.45;margin:-5px 0 12px}
+.maker-dialog .modal-service{border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 15px;padding:12px 0 13px;align-items:start}
+.maker-dialog .modal-service a{color:var(--ink);font-size:13px;font-weight:750;text-decoration:none;line-height:1.35}
+.maker-dialog .modal-service a:hover{text-decoration:underline;text-underline-offset:3px;color:var(--blue)}
+.maker-dialog .modal-service .service-use{font-size:11px;line-height:1.45;color:var(--muted);grid-column:1;grid-row:2}
+.maker-dialog .modal-service .service-price{font-size:11px;line-height:1.4;color:var(--muted);white-space:nowrap;text-align:right;grid-column:2;grid-row:1 / span 2}
+.maker-dialog .modal-footer{border-top:1px solid var(--ink);margin-top:34px;padding-top:20px;display:flex;justify-content:space-between;gap:28px;align-items:flex-start}
+.maker-dialog .modal-footer p{font-size:12px;line-height:1.6;color:var(--muted);max-width:62ch;margin:0}
+.maker-dialog .modal-footer .modal-updated{font-size:10px;line-height:1.4;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+@media(max-width:820px){.maker-dialog .modal-grid{grid-template-columns:1fr 1fr;gap:28px 21px}.maker-dialog .modal-service{grid-template-columns:1fr}.maker-dialog .modal-service .service-price{grid-row:auto;grid-column:1;text-align:left;font-size:10px}.maker-dialog .modal-service .service-use{grid-row:auto}}
+@media(max-width:650px){.maker-feature{margin-top:30px;padding:22px;grid-template-columns:1fr;gap:14px}.maker-feature h3{font-size:35px}.maker-dialog{width:calc(100vw - 18px);max-height:calc(100dvh - 22px);box-shadow:5px 7px 0 rgba(0,0,0,.13)}.maker-dialog .modal-frame{max-height:calc(100dvh - 22px)}.maker-dialog .modal-topbar{padding:12px 20px}.maker-dialog .modal-scroll{padding:27px 20px 22px}.maker-dialog .modal-intro h2{font-size:49px}.maker-dialog .modal-grid{grid-template-columns:1fr;gap:25px}.maker-dialog .modal-service{grid-template-columns:minmax(0,1fr) auto}.maker-dialog .modal-service .service-price{grid-column:2;grid-row:1 / span 2;text-align:right}.maker-dialog .modal-service .service-use{grid-column:1;grid-row:2}.maker-dialog .modal-footer{display:block}.maker-dialog .modal-footer .modal-updated{display:block;margin-top:15px}}
+@media(prefers-reduced-motion:reduce){.maker-feature,.maker-dialog .modal-close{transition:none}}
+
 </style><!-- homepage-rev:20261001-taste-note-v2 --></head><body><header class="top"><div class="shell topin"><a class="mark" href="#top">Matt Lane</a><nav class="nav"><a href="#cases">Case studies</a><a href="#projects">Side projects</a><a href="#tools">Thinking tools</a><a href="#writing">Writing</a><a href="./about/" target="_blank" rel="noopener noreferrer">About</a></nav></div></header>
 <main id="top" class="shell"><section class="hero"><div><div class="k">Product Strategist · AI-Native Design Engineer</div><h1>I make the hard parts visible.</h1><p>I make judgments about the whole—experience, economics, and distribution—then turn them into working form: capabilities, interactions, and structure.</p></div><div class="hero-visual"><div class="hero-map"><img src="./assets/working-form-flow-crisp-v3.jpg?v=20260929f" alt="Detailed product interaction and workflow map" width="1568" height="1003" fetchpriority="high" decoding="async"></div><p class="hero-caption">I decide what matters, what belongs, what gets in the way, and what needs to be obvious—then wire the system so humans and agents can make the right thing the right way.</p></div></div></section></main><div class="tape"><div class="track"><span>case studies</span><span>side projects</span><span>thinking tools</span><span>publications</span><span>selected writing</span><span>notes</span><span>case studies</span><span>side projects</span><span>thinking tools</span><span>publications</span><span>selected writing</span><span>notes</span></div></div><main class="shell">
 <section class="sec" id="cases"><div class="shead"><div><div class="num">01 · Case studies</div><h2>Work in context.</h2></div><p>The decisions, boundaries, trade-offs, and outcomes behind products I helped shape and build.</p></div><a class="feature" href="./splice/?rev=20260928clean1" target="_blank" rel="noopener noreferrer"><div class="fvis"><div class="browser"><img src="./assets/splice-case-preview.png?v=20261001a" alt="Preview of the Splice Create / Stacks case study" width="1440" height="900" decoding="async"></div></div><div class="fcopy"><div><div class="tag">Featured case · Splice</div><h3>Create / Stacks</h3><p>How a deliberately narrow song starter changed the product strategy — moving Splice from finding sounds to helping creators reach a promising musical idea.</p><div class="go">Open interactive case →</div></div><div class="tag">Head of Creator Product · 0→1 · AI-assisted creation</div></div></a><div class="case-study-grid">
@@ -294,6 +332,14 @@
       <li><span>WatchNotes</span><small class="private-note">Private repo · access on request</small></li><li><a href="https://a.co/d/02WGj16y" target="_blank" rel="noopener noreferrer">That’s You Too ↗</a></li><li><a href="https://github.com/mattlane66/rawls-economic-dashboard" target="_blank" rel="noopener noreferrer">Rawls Dashboard ↗</a></li><li><a href="https://crushed.nyc" target="_blank" rel="noopener noreferrer">Crushed ↗</a><small class="project-note">A sauce business my wife (<a href="https://www.linkedin.com/in/deryalane/" target="_blank" rel="noopener noreferrer">Derya</a>) and I built together.</small></li>
     </ul>
   </div>
+
+  <button type="button" id="maker-feature" class="maker-feature" aria-haspopup="dialog" aria-controls="maker-modal" aria-label="Open my hobby maker stack">
+    <div>
+      <h3>My hobby maker stack.</h3>
+      <p>The tools I use to make some of these side projects—from rough ideas to running software, and occasionally getting paid.</p>
+    </div>
+    <div class="maker-side"><span class="maker-arrow">See the tools ↗</span></div>
+  </button>
 </section>
 
 <section class="sec" id="tools"><div class="shead"><div><div class="num">03 · My thinking in tools</div><h2>Methods you can use.</h2></div><p>Working systems for deciding what to pursue, what to make, and how to keep intent intact.</p></div><div class="tool-grid"><a class="tile fitcard lime" href="./fit-check/?rev=20260930nolink" target="_blank" rel="noopener noreferrer"><div><span class="state">Interactive method</span><h3>Fit Check Error Finder</h3><p>A design can pass every test we give it and still fail to produce the change we wanted. Build forward, verify locally, diagnose backward.</p><div class="go">Use the model →</div></div><div class="fitpreview"><img src="./assets/fit-check-preview.png?v=20261001a" alt="Preview of the Fit Check Error Model" width="1440" height="900" loading="lazy" decoding="async"></div></a><a class="tile blue planning" href="./planning-tools/?rev=20260930links1" target="_blank" rel="noopener noreferrer"><div class="planning-shot"><img src="./assets/planning-skills-lab-preview.jpg" alt="" width="1348" height="926" loading="lazy" decoding="async"></div><div class="planning-copy"><span class="state">Interactive lab</span><h3>Planning Tools</h3><p>Follow a human and a planning agent from messy product notes to a build-ready slice. Explore the walkthrough and the open-source planning tools behind it.</p><span class="state planning-action">Open interactive lab →</span></div></a><div class="tile orange figjam-card"><div class="figjam-shot"><img src="./assets/dumplink-figjam-preview.webp" alt="Dumplink FigJam board with scopes, dependencies, and tasks" width="640" height="459" loading="lazy" decoding="async"></div><div class="figjam-copy"><span class="state">FigJam template</span><h3>Dumplink</h3><p>Keep shaped work whole as teams dump, cluster, and sequence it into shippable vertical slices.</p><div class="figjam-actions"><a class="go" href="https://www.figma.com/community/file/1490782844879763276" target="_blank" rel="noopener noreferrer">Open template ↗</a><a href="https://github.com/klausbreyer/dump.link" target="_blank" rel="noopener noreferrer">GitHub repo ↗</a></div></div></div><a class="tile figjam-card" href="https://www.figma.com/community/file/1490786031847199566" target="_blank" rel="noopener noreferrer" aria-label="Open Team Shaping Playing Field on Figma Community"><div class="figjam-shot"><img src="./assets/team-shaping-playing-field-preview.webp?rev=20260930fix1" alt="Team Shaping Playing Field FigJam board with Frame, Fit Check, Paths, and Parts areas" width="640" height="321" loading="lazy" decoding="async"></div><div class="figjam-copy"><span class="state">FigJam template</span><h3>Team Shaping Playing Field</h3><p>A working space for framing the system, paths, parts, and fit checks together.</p><div class="figjam-actions"><span class="go">Open template ↗</span></div></div></a><a class="tile figjam-card research-card" href="https://github.com/mattlane66/scaled-interview-data-assistant" target="_blank" rel="noopener noreferrer" aria-label="Open Scaled Interview Data Assistant on GitHub"><div class="figjam-shot"><img src="https://github.com/user-attachments/assets/0206f00b-adf6-4df7-9c54-95adce35c2d5" alt="Scaled Interview Data Assistant workflow preview" width="1800" height="1200" loading="lazy" decoding="async"></div><div class="figjam-copy"><span class="state">Research method + validation layer</span><h3>Scaled Interview Data Assistant</h3><p>Turn interview transcripts into evidence-traceable JTBD/A2B analysis without letting polished summaries outrun the source material.</p><div class="figjam-actions"><span class="go">Open GitHub repo ↗</span></div></div></a><a class="tile" href="https://github.com/mattlane66/behavioral-simulation-for-agents-and-humans" target="_blank" rel="noopener noreferrer" aria-label="Open Behavioral Simulation for Agents and Humans on GitHub"><div><span class="state">Behavioral research method</span><h3>Behavioral Simulation</h3><p>Turn human evidence, explicit assumptions, and model outputs into bounded simulations of what people might do under changed conditions—without confusing simulation with observation.</p><div class="go">Open GitHub repo ↗</div></div></a></div></section>
@@ -334,6 +380,54 @@
 </div></div>
 <div class="writing-group"><div class="writing-group-head"><span>Unfinished thinking</span><p>Notes while ideas are still moving.</p></div><div class="notes-panel"><a target="_self" class="thought t7" href="./notes/?rev=20261005a#note-ideas-arent-cheap-guesses-20261005"><span>Judgment &amp; knowledge</span><strong>Ideas aren’t cheap. Guesses are.</strong><em>2026-10-05 →</em></a><a target="_self" class="thought t1" href="./notes/?rev=20261005a#note-ai-language-defaults-20261002"><span>AI &amp; future work</span><strong>People who use AI without enough language risk becoming products of its defaults.</strong><em>2026-10-02 →</em></a><a target="_self" class="thought t2" href="./notes/?rev=20261005a#note-ai-native-critical-path-20261002"><span>Products &amp; systems</span><strong>An AI-native product means the features on the critical path require intelligence.</strong><em>2026-10-02 →</em></a><a target="_self" class="thought t3 wide" href="./notes/?rev=20261005a#note-appetite-agent-budgeting-20261002"><span>Products &amp; systems</span><strong>Shape Up’s appetite is a value judgment, not an estimate.</strong><em>2026-10-02 →</em></a><a target="_self" class="thought t4" href="./notes/?rev=20261005a#note-opportunity-judgment-loop-20261002"><span>Judgment &amp; knowledge</span><strong>Opportunity Judgment Loop</strong><em>2026-10-02 →</em></a><a target="_self" class="thought t5" href="./notes/?rev=20261005a#note-product-judgment-agentic-era-20261002"><span>Judgment &amp; knowledge</span><strong>Product judgment is the learned ability to make good decisions under ambiguity.</strong><em>2026-10-02 →</em></a><a target="_self" class="thought t6 wide" href="./notes/?rev=20261005a#note-opportunity-scoping-questions-20261002"><span>Products &amp; systems</span><strong>High-value questions to ask when scoping which opportunities and desired outcomes to prioritize:</strong><em>2026-10-02 →</em></a><div class="notes-actions"><a target="_self" href="./notes/?rev=20261005a">Browse all 325 Notes →</a></div></div></div>
 </div></section><footer class="foot"><span>© 2026 Matt Lane</span><span class="social-links" aria-label="Social links"><a class="social-link" href="https://www.linkedin.com/in/matthewhlane/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708C16 15.487 15.474 16 14.825 16H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.521-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.506 1.248 1.327 1.248zm3.11 8.212h2.4V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.4V9.25c0-2.22-1.184-3.252-2.765-3.252-1.274 0-1.845.7-2.165 1.193h.032V6.169h-2.4c.03.678 0 7.225 0 7.225z"/></svg></a><a class="social-link" href="https://github.com/mattlane66" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65 7.65 0 0 1 8 4.84a7.7 7.7 0 0 1 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></span></footer></main>
+
+<dialog id="maker-modal" class="maker-dialog" aria-labelledby="maker-modal-title" aria-describedby="maker-modal-description">
+  <div class="modal-frame">
+    <div class="modal-topbar"><button type="button" class="modal-close" id="maker-close" aria-label="Close maker stack">×</button></div>
+    <div class="modal-scroll" id="maker-modal-scroller">
+      <div class="modal-intro">
+        <h2 id="maker-modal-title">My hobby maker stack.</h2>
+        <p id="maker-modal-description">A small collection of tools I use to design, build, publish, and sometimes monetize side projects like the ones on this site.</p>
+      </div>
+      <div class="modal-grid"><section class="modal-category">
+<h3>Build &amp; host</h3><p class="category-sub">The tools that run the projects.</p>
+<div class="modal-service"><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT Pro ↗</a><span class="service-use">AI-assisted planning and building.</span><span class="service-price">My plan: $100/mo</span></div>
+<div class="modal-service"><a href="https://railway.com/" target="_blank" rel="noopener noreferrer">Railway Hobby ↗</a><span class="service-use">Running apps and plugin backends.</span><span class="service-price">From $5/mo</span></div>
+<div class="modal-service"><a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub + GitHub Pages ↗</a><span class="service-use">Code, collaboration, and project documentation.</span><span class="service-price">Free tier</span></div>
+<div class="modal-service"><a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">Cloudflare Pages ↗</a><span class="service-use">Static commercial product sites.</span><span class="service-price">Free tier</span></div>
+<div class="modal-service"><a href="https://platform.openai.com/" target="_blank" rel="noopener noreferrer">AI APIs ↗</a><span class="service-use">Power AI features in apps when needed.</span><span class="service-price">Pay per use</span></div>
+</section>
+<section class="modal-category">
+<h3>Design &amp; collaboration</h3><p class="category-sub">For sketching and working with others.</p>
+<div class="modal-service"><a href="https://www.canva.com/online-whiteboard/" target="_blank" rel="noopener noreferrer">Canva ↗</a><span class="service-use">Whiteboards, wireframes, and breadboards.</span><span class="service-price">Free tier</span></div>
+<div class="modal-service"><a href="https://drive.google.com/" target="_blank" rel="noopener noreferrer">Google Drive / Docs / Sheets / Slides ↗</a><span class="service-use">Shared planning notes, documents, and files.</span><span class="service-price">Free tier</span></div>
+</section>
+<section class="modal-category">
+<h3>Monetization</h3><p class="category-sub">Only when a project earns money.</p>
+<div class="modal-service"><a href="https://www.lemonsqueezy.com/" target="_blank" rel="noopener noreferrer">Lemon Squeezy ↗</a><span class="service-use">Hosted checkout for digital products.</span><span class="service-price">Per sale</span></div>
+<div class="modal-service"><a href="https://github.com/sponsors" target="_blank" rel="noopener noreferrer">GitHub Sponsors ↗</a><span class="service-use">Optional support for open-source work.</span><span class="service-price">No monthly fee</span></div>
+</section>
+<section class="modal-category">
+<h3>Monitoring &amp; analytics</h3><p class="category-sub">Find problems and learn from usage.</p>
+<div class="modal-service"><a href="https://sentry.io/" target="_blank" rel="noopener noreferrer">Sentry ↗</a><span class="service-use">Application error tracking.</span><span class="service-price">Free tier</span></div>
+<div class="modal-service"><a href="https://uptimerobot.com/" target="_blank" rel="noopener noreferrer">UptimeRobot ↗</a><span class="service-use">Alerts when a site or app goes offline.</span><span class="service-price">Free tier</span></div>
+<div class="modal-service"><a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener noreferrer">Cloudflare Web Analytics ↗</a><span class="service-use">Basic website traffic and performance.</span><span class="service-price">Free</span></div>
+<div class="modal-service"><a href="https://posthog.com/" target="_blank" rel="noopener noreferrer">PostHog ↗</a><span class="service-use">Activation, funnels, retention, and usage.</span><span class="service-price">Free tier</span></div>
+</section>
+<section class="modal-category">
+<h3>Data &amp; email</h3><p class="category-sub">When an app needs accounts or messaging.</p>
+<div class="modal-service"><a href="https://supabase.com/" target="_blank" rel="noopener noreferrer">Supabase ↗</a><span class="service-use">Database, logins, and file storage.</span><span class="service-price">Free tier</span></div>
+<div class="modal-service"><a href="https://resend.com/" target="_blank" rel="noopener noreferrer">Resend ↗</a><span class="service-use">Emails from an app.</span><span class="service-price">Free tier</span></div>
+</section>
+<section class="modal-category">
+<h3>Domains</h3><p class="category-sub">Only when a custom address helps.</p>
+<div class="modal-service"><a href="https://www.cloudflare.com/products/registrar/" target="_blank" rel="noopener noreferrer">Cloudflare Registrar ↗</a><span class="service-use">Domain registration and renewals.</span><span class="service-price">Annual cost</span></div>
+</section></div>
+      <div class="modal-footer"><p>Mostly free tiers, a couple of subscriptions, and pay-as-you-go services when needed. I try to keep the overhead low and let the project—not the stack—dictate what gets added.</p><span class="modal-updated">October 2026</span></div>
+    </div>
+  </div>
+</dialog>
+
 <div class="paypal-modal" id="paypal-modal" role="dialog" aria-modal="true" aria-labelledby="paypal-title">
   <div class="paypal-dialog">
     <div class="paypal-dialog-head"><span>PayPal · Foundational blockchain work</span><button class="paypal-close" id="paypal-close" type="button" aria-label="Close">×</button></div>
@@ -527,4 +621,25 @@
     if(e.key==='Escape'&&modal.classList.contains('open'))shut();
   });
 })();
-</script></body></html>
+</script><script>
+(function(){
+  const trigger=document.getElementById('maker-feature');
+  const dialog=document.getElementById('maker-modal');
+  const close=document.getElementById('maker-close');
+  const scroller=document.getElementById('maker-modal-scroller');
+  if(!trigger || !dialog || !close || !scroller || typeof dialog.showModal !== 'function') return;
+  trigger.addEventListener('click',function(){
+    scroller.scrollTop=0;
+    dialog.showModal();
+    document.body.classList.add('maker-modal-open');
+    close.focus();
+  });
+  close.addEventListener('click',function(){dialog.close()});
+  dialog.addEventListener('click',function(event){if(event.target===dialog)dialog.close()});
+  dialog.addEventListener('close',function(){
+    document.body.classList.remove('maker-modal-open');
+    trigger.focus({preventScroll:true});
+  });
+})();
+</script>
+</body></html>
