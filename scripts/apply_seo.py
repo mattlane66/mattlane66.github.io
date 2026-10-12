@@ -10,21 +10,21 @@ GENERIC_IMAGE = SITE + "/assets/working-form-flow-crisp-v3.jpg"
 AUTHOR = {"@type":"Person","@id":SITE+"/#person","name":"Matt Lane","url":SITE+"/"}
 PERSON = {
     "@type":"Person","@id":SITE+"/#person","name":"Matt Lane","url":SITE+"/",
-    "jobTitle":"Product Strategist and Design Engineer",
+    "jobTitle":"Product Strategist and Builder",
     "image":SITE+"/assets/about-matt-lane-2x.avif",
     "sameAs":["https://github.com/mattlane66","https://www.linkedin.com/in/matthewhlane/"]
 }
 
 CONFIG = {
  "index.html": {
-   "title":"Matt Lane — Product Strategist & Design Engineer",
-   "description":"Product strategist and design engineer Matt Lane: case studies, side projects, thinking tools, research, and notes from 0→1 product work.",
+   "title":"Matt Lane — Product Strategist & Builder",
+   "description":"Product strategist and builder Matt Lane: case studies, side projects, thinking tools, research, and notes from 0→1 product work.",
    "url":SITE+"/","image":GENERIC_IMAGE,"image_alt":"Matt Lane product strategy and interaction map",
-   "ld":{"@context":"https://schema.org","@graph":[PERSON,{"@type":"WebSite","@id":SITE+"/#website","url":SITE+"/","name":"Matt Lane","author":{"@id":SITE+"/#person"}},{"@type":"WebPage","@id":SITE+"/#webpage","url":SITE+"/","name":"Matt Lane — Product Strategist & Design Engineer","isPartOf":{"@id":SITE+"/#website"},"about":{"@id":SITE+"/#person"}}]}
+   "ld":{"@context":"https://schema.org","@graph":[PERSON,{"@type":"WebSite","@id":SITE+"/#website","url":SITE+"/","name":"Matt Lane","author":{"@id":SITE+"/#person"}},{"@type":"WebPage","@id":SITE+"/#webpage","url":SITE+"/","name":"Matt Lane — Product Strategist & Builder","isPartOf":{"@id":SITE+"/#website"},"about":{"@id":SITE+"/#person"}}]}
  },
  "about/index.html": {
-   "title":"About Matt Lane — Product Strategist & Design Engineer",
-   "description":"About Matt Lane, a product strategist and design engineer working across product strategy, interaction design, AI, and 0→1 product development.",
+   "title":"About Matt Lane — Product Strategist & Builder",
+   "description":"About Matt Lane, a product strategist and builder working across product strategy, interaction design, AI, and 0→1 product development.",
    "url":SITE+"/about/","image":GENERIC_IMAGE,"image_alt":"Matt Lane product strategy and interaction map",
    "ld":{"@context":"https://schema.org","@graph":[PERSON,{"@type":"ProfilePage","@id":SITE+"/about/#page","url":SITE+"/about/","name":"About Matt Lane","mainEntity":{"@id":SITE+"/#person"}}]}
  },
