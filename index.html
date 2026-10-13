@@ -274,8 +274,8 @@ body.maker-modal-open{overflow:hidden}
       groups.forEach(group=>{group.innerHTML=repeated});
       copies=needed;
     }
-    // Keep desktop at 28px/s; make the three questions 21% quicker to read through on phones.
-    const pixelsPerSecond=window.matchMedia('(max-width: 650px)').matches?34:28;
+    // Keep desktop unchanged; move the three questions noticeably faster on phones.
+    const pixelsPerSecond=window.matchMedia('(max-width: 650px)').matches?48:28;
     track.style.setProperty('--ticker-duration',(oneSetWidth*needed/pixelsPerSecond).toFixed(2)+'s');
   }
   fit();

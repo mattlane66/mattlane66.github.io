@@ -193,6 +193,24 @@ def main() -> int:
 
                         # Core interactive smoke checks.
                         if name == "home":
+                            # Check the ticker's actual rendered speed at desktop and phone widths,
+                            # rather than just checking that the source contains a speed setting.
+                            ticker = page.evaluate("""() => {
+                                const track = document.querySelector('.tape .track');
+                                const group = track?.querySelector('.ticker-sequence');
+                                if (!group || group.children.length < 3) return null;
+                                const items = Array.from(group.children).slice(0, 3);
+                                const cycle = items.reduce((n, el) => n + el.getBoundingClientRect().width, 0);
+                                const copies = group.children.length / 3;
+                                const duration = parseFloat(getComputedStyle(track).animationDuration);
+                                return {speed: cycle * copies / duration, duration, copies};
+                            }""")
+                            expected_ticker_speed = 48 if viewport_name == "phone" else 28
+                            if not ticker or abs(ticker["speed"] - expected_ticker_speed) > 1:
+                                failures.append(
+                                    f"{viewport_name} /: ticker effective speed {ticker}, "
+                                    f"expected {expected_ticker_speed}px/s"
+                                )
                             # Featured previews are static images, never embedded scrollable documents.
                             if page.locator(".browser iframe, .fitpreview iframe").count():
                                 failures.append(f"{viewport_name} /: static tile previews regressed to iframes")
