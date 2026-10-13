@@ -32,10 +32,11 @@ h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:
 .body p{margin:0 0 1.1em}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
 .discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
 </style>
+<link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
 </head>
-<body>
+<body data-note-category="judgment">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
-<main class="wrap"><div class="meta">2024-12-05 · Judgment &amp; knowledge</div><h1>Frequentist Hypothesis Testing: In frequentist hypothesis testing, we begin with the null hypothesis (H0),…</h1><article class="body"><p>Frequentist Hypothesis Testing:</p>
+<main class="wrap"><div class="meta">2024-12-05 · <span class="category-name">Judgment &amp; knowledge</span></div><h1>Frequentist Hypothesis Testing: In frequentist hypothesis testing, we begin with the null hypothesis (H0),…</h1><article class="body"><p>Frequentist Hypothesis Testing:</p>
 <p>In **frequentist** hypothesis testing, we begin with the **null hypothesis** (H0), which often represents no effect or no difference (e.g., “A is equivalent to B”). We assume H0 is true and gather data to see whether the observed evidence is sufficiently unlikely under H0. Our goal is **not** to prove H0​ true; rather, we want to see if we can **reject** H0​ in favor of the **alternative hypothesis** (Ha​), which posits a difference or effect (e.g., “A is not B”).</p>
 <p>We do not aim to confirm or “prove” H0; instead, we attempt to falsify it. **Failing to reject** H0​ does **not** mean H0​ is true—it only indicates that the data do not provide sufficient evidence to discard H0​.</p>
 <p>The decision to reject or fail to reject H0​ typically depends on the **p-value**, which is the probability of observing data at least as extreme as what we observed, given H0​. A **small p-value** (often &lt; 0.05) suggests that such data would be unlikely if H0​ were true, so we **reject** H0​ in favor of Ha. A **larger p-value** indicates insufficient evidence to reject H0​.</p>
