@@ -351,10 +351,16 @@ h1{{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin
         (folder / "index.html").write_text(page, encoding="utf-8")
         note_urls.append((url, str(n.get("date") or "")))
 
+    # Include published long-form articles, not only case studies and Notes.
+    # Discover these from the actual site folders so new articles stay in the sitemap.
+    article_urls = [
+        SITE + "/" + page.parent.relative_to(ROOT).as_posix() + "/"
+        for page in sorted((ROOT / "articles").glob("*/index.html"))
+    ]
     core = [
         SITE+"/", SITE+"/about/", SITE+"/splice/", SITE+"/nyshex/", SITE+"/codeai/",
         SITE+"/fit-check/", SITE+"/planning-tools/", SITE+"/notes/"
-    ]
+    ] + article_urls
     lines = ['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     lines += [f"  <url><loc>{u}</loc></url>" for u in core]
     lines += [f"  <url><loc>{u}</loc><lastmod>{d}</lastmod></url>" for u,d in note_urls if d]
