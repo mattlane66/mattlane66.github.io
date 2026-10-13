@@ -62,3 +62,10 @@ body[data-note-category] .top{background:rgba(255,248,231,.94)}
 @media(max-width:640px){
 body[data-note-category] .body{font-size:18px;line-height:1.62}
 :where(.article p,.article li){overflow-wrap:break-word}}
+
+/* Homepage article-series accents: meaningful, not positional. */
+.article-card[data-series="design"]{--series-accent:#268bd2}
+.article-card[data-series="perception"]{--series-accent:#2aa198}
+.article-card[data-series="paradigms"]{--series-accent:#cb4b16}
+.article-card[data-series="realities"]{--series-accent:#6c71c4}
+.article-card[data-series="syntax"]{--series-accent:#d33682}
