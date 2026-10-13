@@ -123,6 +123,23 @@ def main() -> int:
                         png = re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-") + f"-{device}.png"
                         page.screenshot(path=str(output / png), full_page=full, animations="disabled")
                         pairs.append((device, png, full))
+                        # The Notes archive initially shows only its header; also
+                        # capture its actual first cards so new Notes can be reviewed.
+                        if path == "notes/index.html":
+                            page.evaluate("document.getElementById('grid')?.scrollIntoView({block:'start',behavior:'instant'})")
+                            page.wait_for_timeout(200)
+                            cards_png = png.replace(".png", "-cards.png")
+                            page.screenshot(path=str(output / cards_png), full_page=False, animations="disabled")
+                            pairs.append((device + " — Notes cards", cards_png, False))
+                        elif not full:
+                            # Very long articles remain browsable in the ZIP, but
+                            # screenshots also show their interior and conclusion.
+                            for position, fraction in (("middle", 0.5), ("ending", 1.0)):
+                                page.evaluate("(n) => window.scrollTo(0, n)", metrics["height"] * fraction)
+                                page.wait_for_timeout(150)
+                                extra = png.replace(".png", f"-{position}.png")
+                                page.screenshot(path=str(output / extra), full_page=False, animations="disabled")
+                                pairs.append((device + " — " + position, extra, False))
                     finally:
                         page.close()
                 captures.append((path, pairs))
