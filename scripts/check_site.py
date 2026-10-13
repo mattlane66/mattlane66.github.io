@@ -120,6 +120,12 @@ def main() -> int:
     for page in html_files:
         rel = page.relative_to(ROOT).as_posix()
         text = page.read_text(encoding="utf-8", errors="replace")
+        # Search Console ownership tokens are intentionally plain text .html files.
+        # Validate the exact token format; do not impose webpage structure on them.
+        if re.fullmatch(r"google[0-9a-f]{16}\.html", rel):
+            if text.strip() != f"google-site-verification: {rel}":
+                errors.append(f"{rel}: malformed Google Search Console verification token")
+            continue
         parser = PageParser()
         try:
             parser.feed(text)
