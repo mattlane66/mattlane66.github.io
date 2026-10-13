@@ -274,8 +274,9 @@ body.maker-modal-open{overflow:hidden}
       groups.forEach(group=>{group.innerHTML=repeated});
       copies=needed;
     }
-    // Keep perceived scrolling speed stable across screen sizes.
-    track.style.setProperty('--ticker-duration',(oneSetWidth*needed/28).toFixed(2)+'s');
+    // Keep desktop at 28px/s; make the three questions 21% quicker to read through on phones.
+    const pixelsPerSecond=window.matchMedia('(max-width: 650px)').matches?34:28;
+    track.style.setProperty('--ticker-duration',(oneSetWidth*needed/pixelsPerSecond).toFixed(2)+'s');
   }
   fit();
   if(typeof ResizeObserver!=='undefined'){
