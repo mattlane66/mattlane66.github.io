@@ -46,7 +46,7 @@ def main() -> int:
     warnings: list[str] = []
 
     notes_html = (ROOT / "notes" / "index.html").read_text(encoding="utf-8")
-    match = re.search(r"let NOTES=(\[.*?\]);const CATS=", notes_html, re.S)
+    match = re.search(r"let NOTES=(\[.*?\]);(?=\s*(?:const CATEGORY_KEYS=|const CATS=))", notes_html, re.S)
     if not match:
         print("ERROR: notes/index.html: could not locate embedded Notes archive")
         return 1
