@@ -205,7 +205,7 @@ def main() -> int:
                                 const duration = parseFloat(getComputedStyle(track).animationDuration);
                                 return {speed: cycle * copies / duration, duration, copies};
                             }""")
-                            expected_ticker_speed = 48 if viewport_name == "phone" else 28
+                            expected_ticker_speed = 64 if viewport_name == "phone" else 28
                             if not ticker or abs(ticker["speed"] - expected_ticker_speed) > 1:
                                 failures.append(
                                     f"{viewport_name} /: ticker effective speed {ticker}, "
