@@ -29,16 +29,15 @@ For a Note, use the existing JSON object format: `id`, `date` (`YYYY-MM-DD`), `t
    python scripts/preview_content.py --base origin/main
    ```
    Open `publication-preview/index.html` to view screenshots. Unzip `publication-preview/site-preview.zip`, change into the extracted site folder, run `python -m http.server 8000`, then open `http://localhost:8000/` for a navigable actual HTML site. Root-relative assets do not work reliably when opening an HTML file via `file://`. Remote fonts and external images still depend on network access.
-4. A PR automatically runs the **Publication preview** workflow and attaches the same screenshots and HTML bundle as a GitHub Actions artifact. It is a downloadable preview, **not** a hosted public preview URL. In ChatGPT, provide the preview directly as artifacts whenever possible.
+4. A same-repository PR automatically runs the **Publication preview** workflow, validates the candidate, then commits generated static HTML and sitemap to the **draft branch**, never to main. It attaches screenshots and the HTML bundle as a GitHub Actions artifact. It is a downloadable preview, **not** a hosted public preview URL. In ChatGPT, provide the preview directly as artifacts whenever possible. Fork-origin PRs are deliberately excluded from this write-capable workflow.
 5. Show any unresolved validation or layout issues and obtain explicit approval before merging or deploying. Changing the reviewed content requires a fresh preview.
-6. Merge **source plus all generated static HTML and sitemap changes** so the branch-based GitHub Pages deployment sees the final page from the actual merge commit. Verify the live page, sitemap and navigation afterwards.
+6. Merge **source plus all generated static HTML and sitemap changes** so branch-based GitHub Pages publishing sees the final page from the actual merge commit. The main-branch check asserts generated outputs are in sync instead of committing post-merge. Verify the live page, sitemap and navigation afterwards.
 
 For articles and cases, inspect the existing design language and ensure that a new page is discoverable from the home page. Check captions, figures, tables, mobile overflow and any external links. Long articles must be scrolled in the HTML preview; screenshots alone are insufficient.
 
 ## Why generated files must travel with the approved merge
 
-The current `.github/workflows/generate-note-pages.yml` generates static pages and commits them using the default `GITHUB_TOKEN`. GitHub documents that commits made with that token do **not** trigger a GitHub Pages build. Therefore an automated post-merge generator commit alone does not guarantee the live site updated. Generate and include static output in the reviewed PR before merging. Do not switch Pages publishing mode without checking its current configuration. An eventual explicit generate-and-deploy Pages workflow is a separate infrastructure improvement.
+GitHub documents that commits made by a workflow with its default `GITHUB_TOKEN` do **not** trigger a GitHub Pages build. The previous Notes generator wrote to `main` after a user's commit, creating a risk of generated content not reaching the live site. The new publication-preview workflow instead builds and commits generated output **on the PR branch**. That way the reviewed merge commit contains the final static files and can trigger the normal Pages build. The main-branch generator workflow now checks that those files match their sources; it never makes a follow-on bot commit.
 
-## Final publication checks
+**Privacy warning:** This is a *public repository*. A draft branch or PR is not private: unpublished manuscript text placed on GitHub may be visible before the homepage changes. For confidential drafts, prepare and inspect a local ChatGPT HTML preview first and commit only with informed approval.
 
-Check that the words are preserved, category and title are accurate, links work, metadata and sitemap exist, desktop and mobile pages display correctly, author approval covers this exact candidate, and the live site actually updates.
