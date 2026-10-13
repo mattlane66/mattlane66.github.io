@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Atkinson+Hyperlegible+Mono:wght@400;500;600&display=swap");
+/* Editorial design system. Standalone case studies intentionally excluded. */
+:root{
+--font-ui:Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;
+--font-reading:"Atkinson Hyperlegible Next",Arial,sans-serif;
+--font-data:"Atkinson Hyperlegible Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+--paper:#fff8e7;--bg:#fff8e7;--white:#fdf6e3;--ink:#16161d;
+--muted:#586e75;--line:#cfc8b7;--blue:#0c5b82;--orange:#cb4b16;--red:#cb4b16;
+--solarized-base2:#eee8d5;--solarized-base3:#fdf6e3;
+--solarized-cyan:#2aa198;--solarized-violet:#6c71c4;--solarized-magenta:#d33682;
+--solarized-green:#859900;--solarized-yellow:#b58900;
+--category-accent:var(--muted)}
+html{color-scheme:light}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+.top{background:rgba(255,248,231,.94)}
+:where(h1,h2,h3,h4,h5,h6),:where(nav,button,input,select,textarea){font-family:var(--font-ui)}
+:where(pre,code,kbd,samp){font-family:var(--font-data)}
+:where(a,button,input,select,textarea):focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+:where(.article p,.article li,.article blockquote,.article figcaption,
+.hero p,.hero-caption,.shead p,.tile p,.fcopy p,.lede,.copy p,
+.body,.body p,.note .excerpt,.excerpt,.dbody,.dbody p,.discussion .body,
+.pub-copy,.pub-desc,.writing p){font-family:var(--font-reading)}
+:where(.article pre,.article code){background:var(--solarized-base2)}
+:where(.article h1,.article h2,.article h3,.article h4,.article h5,
+.hero h1,.shead h2,.quote,.noteshero h1,.about h1){font-family:var(--font-ui)}
+:where(.date,.meta,.meta-line,.article pre,.article code){font-variant-numeric:tabular-nums}
+:where(.date,.meta){font-family:var(--font-data)}
+.hero-map{box-shadow:14px 14px 0 rgba(38,139,210,.14)}
+/* One consistent neutral paper for every note card, regardless of position. */
+body:has(#grid) .grid .note,
+body:has(#grid) .grid .note:nth-child(7n+2),
+body:has(#grid) .grid .note:nth-child(11n+4),
+body:has(#grid) .grid .note:nth-child(13n+5){background:var(--white)}
+[data-category="ai"],[data-note-category="ai"]{--category-accent:#2aa198}
+[data-category="products"],[data-note-category="products"]{--category-accent:#268bd2}
+[data-category="judgment"],[data-note-category="judgment"]{--category-accent:#6c71c4}
+[data-category="writing"],[data-note-category="writing"]{--category-accent:#d33682}
+[data-category="life"],[data-note-category="life"]{--category-accent:#859900}
+[data-category="society"],[data-note-category="society"]{--category-accent:#cb4b16}
+body:has(#grid) .grid .note[data-category]{
+border-top:4px solid var(--category-accent);padding-top:17px}
+body:has(#grid) .grid .note .foot>span:first-child::before,
+body:has(#grid) .chip[data-category]:not([data-category="all"])::before{
+content:"";display:inline-block;vertical-align:middle;width:9px;height:9px;
+border-radius:50%;background:var(--category-accent);margin:-2px 8px 0 0;
+box-shadow:0 0 0 1px #16161d18}
+body:has(#grid) .chip.on[data-category]{
+background:var(--ink);border-color:var(--ink);color:var(--paper)}
+body:has(#grid) .note .excerpt{color:var(--muted)}
+body:has(#grid) .grid .note:hover{box-shadow:6px 6px 0 var(--ink)}
+body[data-note-category] main.wrap{position:relative}
+body[data-note-category] main.wrap::before{
+content:"";display:block;width:104px;height:5px;
+background:var(--category-accent);margin-bottom:28px}
+body[data-note-category] .category-name::before{
+content:"";display:inline-block;vertical-align:middle;width:9px;height:9px;
+border-radius:50%;background:var(--category-accent);margin:-2px 8px 0 8px}
+body[data-note-category] .body{
+font-family:var(--font-reading);font-size:19px;line-height:1.67;max-width:760px}
+body[data-note-category] .body :where(code,pre){font-family:var(--font-data)}
+body[data-note-category] .top{background:rgba(255,248,231,.94)}
+@media(max-width:640px){
+body[data-note-category] .body{font-size:18px;line-height:1.62}
+:where(.article p,.article li){overflow-wrap:break-word}}
