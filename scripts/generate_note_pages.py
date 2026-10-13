@@ -14,6 +14,14 @@ DIRECT = ROOT / "notes" / "direct-notes.json"
 REMOVED = ROOT / "notes" / "removed-note-ids.json"
 OUT = ROOT / "notes" / "n"
 GENERIC_IMAGE = SITE + "/assets/working-form-flow-crisp-v3.jpg"
+NOTE_CATEGORY_KEYS = {
+    "AI & future work": "ai",
+    "Products & systems": "products",
+    "Judgment & knowledge": "judgment",
+    "Writing & craft": "writing",
+    "Life & learning": "life",
+    "Society & institutions": "society",
+}
 
 def strip_substack_urls(value: str) -> str:
     # Public Note pages are site-native. Keep link labels and note text, but
@@ -164,7 +172,7 @@ def render_archive_card(n: dict) -> str:
     relation = '<span class="rel">related ↗</span>' if n.get("relation") else "open →"
     excerpt_html = f'<p class="excerpt">{html.escape(excerpt)}</p>' if words >= 24 and excerpt else ""
     return (
-        f'<a class="note {css_class}" data-id="{html.escape(ident, quote=True)}" '
+        f'<a class="note {css_class}" data-category="{NOTE_CATEGORY_KEYS.get(category, "other")}" data-id="{html.escape(ident, quote=True)}" '
         f'href="{html.escape(href, quote=True)}">'
         f'<div><div class="date">{html.escape(str(n.get("date") or ""))}</div>'
         f'<p class="quote">{html.escape(title)}</p>{excerpt_html}</div>'
@@ -191,6 +199,13 @@ def render_static_archive(text: str, notes: list[dict]) -> str:
 def patch_planning_tools() -> None:
     path = ROOT / "planning-tools" / "index.html"
     text = path.read_text(encoding="utf-8")
+    # Keep Planning Skills Lab's functional colors and layout unchanged.
+    tool_type_link = '<link rel="stylesheet" href="/assets/site-tool-type.css?v=20261012">'
+    if tool_type_link not in text:
+        if "</head>" not in text:
+            raise RuntimeError("Planning Skills Lab has no head close tag")
+        text = text.replace("</head>", tool_type_link + "\n</head>", 1)
+        path.write_text(text, encoding="utf-8")
     marker = '<meta name="x-seo-layer" content="2026-10-01">'
     if marker in text:
         return
@@ -275,6 +290,7 @@ def main() -> None:
         body = render_body(source_body)
         discussion = render_body(str(n.get("discussion") or ""))
         category = html.escape(str(n.get("category") or ""))
+        category_key = NOTE_CATEGORY_KEYS.get(str(n.get("category") or ""), "other")
         date = html.escape(str(n.get("date") or ""))
         schema = {
             "@context":"https://schema.org",
@@ -321,10 +337,11 @@ h1{{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin
 .body p{{margin:0 0 1.1em}}.discussion{{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}}
 .discussion h2{{font-size:18px;letter-spacing:-.02em}}footer{{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}}
 </style>
+<link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
 </head>
-<body>
+<body data-note-category="{category_key}">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
-<main class="wrap"><div class="meta">{date}{(' · ' + category) if category else ''}</div><h1>{html.escape(title)}</h1><article class="body">{body}</article>{('<section class="discussion"><h2>Discussion</h2><div class="body">'+discussion+'</div></section>') if discussion else ''}</main>
+<main class="wrap"><div class="meta">{date}{(' · <span class="category-name">' + category + '</span>') if category else ''}</div><h1>{html.escape(title)}</h1><article class="body">{body}</article>{('<section class="discussion"><h2>Discussion</h2><div class="body">'+discussion+'</div></section>') if discussion else ''}</main>
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>"""
