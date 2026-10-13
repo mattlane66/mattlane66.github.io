@@ -89,3 +89,16 @@ body:has(#grid) .note .foot{font-size:11px;line-height:1.4}
 @media(max-width:650px){
   body[data-series] .article .kicker{font-size:11.5px}
 }
+
+/* Explicit editorial font roles override older page-local declarations.
+   Case-study and Fit Check pages do not load this stylesheet. */
+.dbody .content{font-family:var(--font-reading)}
+.dbody .content :is(h1,h2,h3,h4,h5){font-family:var(--font-ui)}
+.article code,.article pre{font-family:var(--font-data)}
+.article code{background:var(--solarized-base2)}
+.article-card > span:first-child,
+.thought > span:first-child,
+.thought > em:last-of-type,
+.article .kicker,
+.dbody time,
+.note .foot > span:first-child{font-family:var(--font-data)}

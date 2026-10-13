@@ -308,6 +308,7 @@ def main() -> None:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff8e7">
 <link rel="icon" href="/favicon.svg?v=20260930" type="image/svg+xml">
 <title>{html.escape(search_title)} — Matt Lane</title>
 <meta name="description" content="{html.escape(desc, quote=True)}">
