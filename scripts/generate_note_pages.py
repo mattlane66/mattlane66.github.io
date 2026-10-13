@@ -247,7 +247,7 @@ def patch_planning_tools() -> None:
 def main() -> None:
     patch_planning_tools()
     text = NOTES_HTML.read_text(encoding="utf-8")
-    match = re.search(r"let NOTES=(\[.*?\]);const CATS=", text, re.S)
+    match = re.search(r"let NOTES=(\[.*?\]);(?=\s*(?:const CATEGORY_KEYS=|const CATS=))", text, re.S)
     if not match:
         raise SystemExit("Could not locate embedded Notes archive")
     notes = json.loads(match.group(1))
