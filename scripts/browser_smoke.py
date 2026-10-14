@@ -21,6 +21,7 @@ PAGES = [
     ("/about/", "about"),
     ("/codeai/", "codeai"),
     ("/fit-check/", "fit-check"),
+    ("/articles/an-experimental-governance-model/", "governance-article"),
     ("/notes/", "notes"),
     ("/nyshex/", "nyshex"),
     ("/planning-tools/", "planning-tools"),
@@ -192,6 +193,34 @@ def main() -> int:
                             failures.append(f"{viewport_name} {path}: JS error(s): {page_errors[:3]}")
 
                         # Core interactive smoke checks.
+                        if name == "governance-article":
+                            explorer = page.locator("#governance-system")
+                            if explorer.count() != 1:
+                                failures.append(f"{viewport_name} governance article: interactive model missing")
+                            else:
+                                try:
+                                    # Default view, then switch through the philosophical and policy views.
+                                    if not page.locator('[data-gm-panel="how"]').is_visible():
+                                        failures.append(f"{viewport_name} governance article: default system view hidden")
+                                    page.locator('[data-gm-view="why"]').click()
+                                    if not page.locator('[data-gm-panel="why"]').is_visible():
+                                        failures.append(f"{viewport_name} governance article: why view failed")
+                                    page.locator('[data-gm-view="happens"]').click()
+                                    page.locator("#gm-policy").select_option("ownership")
+                                    if "trust" not in page.locator("#gm-action").inner_text().lower():
+                                        failures.append(f"{viewport_name} governance article: policy switch failed")
+                                    page.locator('[data-gm-lens="floor"]').click()
+                                    if "wealth" not in page.locator("#gm-lens-text").inner_text().lower():
+                                        failures.append(f"{viewport_name} governance article: guardrail switch failed")
+                                    page.locator('[data-gm-view="how"]').click()
+                                    page.locator('[data-gm-institution="markets"]').click()
+                                    if page.locator("#gm-institution-name").inner_text() != "Markets":
+                                        failures.append(f"{viewport_name} governance article: institution switch failed")
+                                    if page_errors:
+                                        failures.append(f"{viewport_name} governance article: interaction JS errors {page_errors[:3]}")
+                                except Exception as exc:
+                                    failures.append(f"{viewport_name} governance article: interactive smoke error: {exc}")
+
                         if name == "home":
                             # Check the ticker's actual rendered speed at desktop and phone widths,
                             # rather than just checking that the source contains a speed setting.
