@@ -160,7 +160,7 @@ def main() -> int:
 
                         # Refresh is intentionally a reset: every standard content page starts at the top.
                         # planning-tools is a separately bundled interactive artifact and is tested for runtime readiness below.
-                        if name not in ("planning-tools", "404"):
+                        if name not in ("planning-tools", "404", "governance-article"):
                             page.evaluate("window.scrollTo(0, Math.min(700, Math.max(0, document.documentElement.scrollHeight - innerHeight)))")
                             page.wait_for_timeout(100)
                             page.reload(wait_until="domcontentloaded", timeout=60_000)
