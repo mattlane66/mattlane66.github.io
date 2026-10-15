@@ -1,5 +1,13 @@
 [
   {
+    "id": "articulate-vs-scan-20261015",
+    "date": "2026-10-15",
+    "title": "When to articulate. When to scan.",
+    "category": "Products & systems",
+    "also": "AI, automation, and future work",
+    "body": "Some things are easier to describe than to find. Others are easier to recognize than to describe.\n\nReordering groceries may take one sentence. Choosing a chair may require seeing twenty. Reviewing an agent's changes may require a visual comparison of what existed before and what exists now.\n\nThe mistake is to assume that conversation should replace the graphical interface. Conversation reduces the effort of navigation but introduces the effort of articulation. Which is easier depends on what the person knows, what the task requires, and what remains uncertain.\n\nAn agent can do the work without making every judgment for us. We may need to explore before we can specify a goal, delegate steps we don't know how to perform, or inspect a result before we can accept it.\n\n**The design problem is not choosing between conversation and graphical interfaces. It is making the next judgment easier.**\n\nLet people articulate what is easier to say, scan what is easier to recognize, delegate what is easier to execute on their behalf, and inspect what they need to judge."
+  },
+  {
     "id": "art-of-seeing-20261013",
     "date": "2026-10-13",
     "title": "The Art of Seeing",
