@@ -27,7 +27,7 @@ jobs:
           p=Path('assets/shaping-board-preview.png')
           image=Image.open(p).convert('RGB')
           print('Captured dimensions:', image.size)
-          image=ImageOps.fit(image, (1280, 800), method=Image.Resampling.LANCZOS, centering=(0.5,0.05))
+          image=ImageOps.pad(image, (1280, 800), method=Image.Resampling.LANCZOS, color='#f8f8f6', centering=(0.5,0.0))
           image.save('assets/shaping-board-preview.webp', 'WEBP', quality=85, method=6)
           p.unlink()
           print('Optimized tile bytes:', Path('assets/shaping-board-preview.webp').stat().st_size)
