@@ -39,4 +39,6 @@ jobs:
           git add assets/shaping-board-preview.webp
           git diff --cached --quiet && exit 0
           git commit -m "Capture real Shaping Board preview for portfolio tile"
+          git fetch origin add-shaping-board-preview-20261016
+          git rebase origin/add-shaping-board-preview-20261016
           git push origin HEAD:add-shaping-board-preview-20261016
