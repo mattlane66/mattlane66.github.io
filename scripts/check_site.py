@@ -104,6 +104,10 @@ def repo_path_for_url(page: Path, ref: str) -> Path | None:
     u = urlparse(urljoin(base, ref))
     if u.netloc and u.netloc != "mattlane66.github.io":
         return None
+    # The Planning Skills project is published from a separate GitHub Pages repository.
+    # Its URLs share this host but are not files in this portfolio checkout.
+    if u.path.startswith("/planning-skills-for-agents-and-humans/"):
+        return None
     path = u.path.lstrip("/")
     if not path:
         return ROOT / "index.html"
