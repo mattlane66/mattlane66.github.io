@@ -321,15 +321,15 @@ def main() -> int:
                                     page.locator(closer).click()
                             # Reasoning workbench: example selection, rival models, learning, and responsive modal.
                             page.locator('[data-r-preview="4"]').click()
-                            if "distinguish" not in page.locator("#r-mini-heading").inner_text().lower():
+                            if "each model" not in page.locator("#r-mini-heading").inner_text().lower():
                                 failures.append(f"{viewport_name} /: final tile step did not update")
                             page.locator("#r-launch").click()
                             if not page.locator("#reasoning-dialog").evaluate("(el) => el.open"):
                                 failures.append(f"{viewport_name} /: reasoning modal failed to open")
                             for example, distinctive in [
-                                ("splice", "CoSo initiative"),
-                                ("medellin", "350 concrete steps"),
-                                ("mclean", "Ideal-X voyage"),
+                                ("splice", "CoSo"),
+                                ("medellin", "hundreds of irregular stairs"),
+                                ("mclean", "Ideal-X"),
                             ]:
                                 page.locator("#r-example").select_option(example)
                                 if distinctive not in page.locator("#r-evidence").input_value():
@@ -338,7 +338,14 @@ def main() -> int:
                                     failures.append(f"{viewport_name} /: {example} source and limitations missing")
                                 page.locator('[data-r-go="3"]').click()
                                 if not page.locator("#r-alternative").input_value() or not page.locator("#r-alternative2").input_value():
-                                    failures.append(f"{viewport_name} /: {example} missing competing explanations")
+                                    failures.append(f"{viewport_name} /: {example} missing representational alternatives")
+                                expected_relation = "scope" if example == "splice" else "nested"
+                                if page.locator("#r-relation").input_value() != expected_relation:
+                                    failures.append(f"{viewport_name} /: {example} incorrectly classified as rival")
+                                if expected_relation not in ("scope", "nested"):
+                                    failures.append(f"{viewport_name} /: unexpected relation type")
+                                if "How models relate:" not in page.locator("#r-summary").input_value():
+                                    failures.append(f"{viewport_name} /: model relationships missing from summary")
                                 page.locator('[data-r-go="4"]').click()
                                 if not page.locator("#r-discriminator").input_value():
                                     failures.append(f"{viewport_name} /: {example} missing discriminating observation")
@@ -349,7 +356,7 @@ def main() -> int:
                             if "Revised working explanation" not in page.locator("#r-summary").input_value():
                                 failures.append(f"{viewport_name} /: result and learning not reflected in summary")
                             page.locator("#r-reset").click()
-                            if page.locator("#r-example").input_value() or page.locator("#r-result").input_value():
+                            if page.locator("#r-example").input_value() or page.locator("#r-result").input_value() or page.locator("#r-relation").input_value() != "unknown":
                                 failures.append(f"{viewport_name} /: start fresh did not clear state")
                             page.locator("#r-close").click()
                             if page.locator("#reasoning-dialog").evaluate("(el) => el.open"):
