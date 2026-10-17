@@ -319,27 +319,43 @@ def main() -> int:
                                     if "open" not in (page.locator(modal).get_attribute("class") or ""):
                                         failures.append(f"{viewport_name} /: {modal} did not open")
                                     page.locator(closer).click()
-                            # Reasoning workbench interactions: the tile and modal stay on this page.
-                            # These checks run at both desktop and phone viewports.
-                            page.locator('[data-r-preview="3"]').click()
-                            if "change the problem" not in page.locator("#r-mini-heading").inner_text().lower():
-                                failures.append(f"{viewport_name} /: reasoning tile preview did not change")
+                            # Reasoning workbench: example selection, rival models, learning, and responsive modal.
+                            page.locator('[data-r-preview="4"]').click()
+                            if "distinguish" not in page.locator("#r-mini-heading").inner_text().lower():
+                                failures.append(f"{viewport_name} /: final tile step did not update")
                             page.locator("#r-launch").click()
-                            if not page.locator("#reasoning-dialog").evaluate("(element) => element.open"):
-                                failures.append(f"{viewport_name} /: reasoning workbench did not open")
-                            page.locator("#r-example").click()
-                            page.locator('[data-r-go="4"]').click()
-                            if "Musicians can find sounds" not in page.locator("#r-summary").input_value():
-                                failures.append(f"{viewport_name} /: example did not populate summary")
-                            page.locator("#r-prediction").fill("A different measurable result.")
-                            if "A different measurable result." not in page.locator("#r-summary").input_value():
-                                failures.append(f"{viewport_name} /: edited reasoning did not update summary")
+                            if not page.locator("#reasoning-dialog").evaluate("(el) => el.open"):
+                                failures.append(f"{viewport_name} /: reasoning modal failed to open")
+                            for example, distinctive in [
+                                ("splice", "CoSo initiative"),
+                                ("medellin", "350 concrete steps"),
+                                ("mclean", "Ideal-X voyage"),
+                            ]:
+                                page.locator("#r-example").select_option(example)
+                                if distinctive not in page.locator("#r-evidence").input_value():
+                                    failures.append(f"{viewport_name} /: {example} not loaded correctly")
+                                if page.locator("#r-source[hidden]").count():
+                                    failures.append(f"{viewport_name} /: {example} source and limitations missing")
+                                page.locator('[data-r-go="3"]').click()
+                                if not page.locator("#r-alternative").input_value() or not page.locator("#r-alternative2").input_value():
+                                    failures.append(f"{viewport_name} /: {example} missing competing explanations")
+                                page.locator('[data-r-go="4"]').click()
+                                if not page.locator("#r-discriminator").input_value():
+                                    failures.append(f"{viewport_name} /: {example} missing discriminating observation")
+                                if "C predicts:" not in page.locator("#r-summary").input_value():
+                                    failures.append(f"{viewport_name} /: {example} missing predictions in export")
+                            page.locator("#r-result").fill("Observed result from a test")
+                            page.locator("#r-learn").fill("Revised working explanation")
+                            if "Revised working explanation" not in page.locator("#r-summary").input_value():
+                                failures.append(f"{viewport_name} /: result and learning not reflected in summary")
+                            page.locator("#r-reset").click()
+                            if page.locator("#r-example").input_value() or page.locator("#r-result").input_value():
+                                failures.append(f"{viewport_name} /: start fresh did not clear state")
                             page.locator("#r-close").click()
-                            if page.locator("#reasoning-dialog").evaluate("(element) => element.open"):
-                                failures.append(f"{viewport_name} /: reasoning workbench did not close")
+                            if page.locator("#reasoning-dialog").evaluate("(el) => el.open"):
+                                failures.append(f"{viewport_name} /: reasoning modal failed to close")
                             if page.evaluate("location.pathname") != "/":
-                                failures.append(f"{viewport_name} /: reasoning workbench navigated away")
-
+                                failures.append(f"{viewport_name} /: reasoning modal navigated away")
                         elif name == "notes":
                             try:
                                 page.wait_for_function(
