@@ -123,6 +123,19 @@ def main() -> int:
                         png = re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-") + f"-{device}.png"
                         page.screenshot(path=str(output / png), full_page=full, animations="disabled")
                         pairs.append((device, png, full))
+                        # Capture each state of the interactive governance model, not
+                        # just the top/middle/end of this unusually long article.
+                        if path == "articles/an-experimental-governance-model/index.html":
+                            explorer = page.locator("#governance-system")
+                            if explorer.count() != 1:
+                                failures.append(f"{path} {device}: governance explorer missing")
+                            else:
+                                for mode in ("why", "how", "happens"):
+                                    page.locator(f'[data-gm-view="{mode}"]').click()
+                                    explorer_png = png.replace(".png", f"-explorer-{mode}.png")
+                                    explorer.screenshot(path=str(output / explorer_png), animations="disabled")
+                                    pairs.append((device + " — Governance " + mode, explorer_png, False))
+                                page.locator('[data-gm-view="how"]').click()
                         # The Notes archive initially shows only its header; also
                         # capture its actual first cards so new Notes can be reviewed.
                         if path == "notes/index.html":
