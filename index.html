@@ -252,6 +252,71 @@ body.maker-modal-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){.maker-feature,.maker-dialog .modal-close{transition:none}}
 
 </style>
+<style>
+/* Core reasoning method: interactive tile and in-page workbench */
+#tools .reasoning-tile{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);padding:0!important;min-height:425px;background:#121520;color:#fff;overflow:hidden;gap:0}
+#tools .reasoning-intro{padding:clamp(26px,4vw,52px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+#tools .reasoning-tile .state{color:#b6c3ff;font-weight:750}
+#tools .reasoning-tile h3{color:#fff;font-size:clamp(39px,4.7vw,69px);line-height:.94;letter-spacing:-.065em;max-width:12ch;margin:17px 0 21px}
+#tools .reasoning-tile p{color:#d4d9e9;font-size:clamp(15px,1.4vw,18px);line-height:1.46;max-width:40ch}
+.r-launch{min-height:46px;margin-top:29px;padding:12px 18px;border:1px solid #d9ff57;background:#d9ff57;color:#11131d;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.r-launch:hover{background:#fff;border-color:#fff}
+.r-mini{padding:clamp(24px,3.5vw,42px);background:#eef1ff;color:#121520;border-left:1px solid #121520;display:flex;flex-direction:column;justify-content:space-between;gap:22px}
+.r-mini-top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.r-mini-count{color:#5c637d}
+.r-mini-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.r-mini-nav button{min-height:45px;min-width:0;border:1px solid #bec7df;background:transparent;color:#404963;padding:7px 2px;font:inherit;font-size:clamp(9px,.86vw,11px);font-weight:750;cursor:pointer}
+.r-mini-nav button[aria-current=step]{background:#121520;color:#fff;border-color:#121520}
+.r-mini-nav button:hover:not([aria-current=step]){background:#dce3ff}
+.r-mini-case{min-height:146px;padding:21px;border:1px solid #bac3da;background:#fff;display:flex;flex-direction:column;justify-content:center}
+.r-mini-case small{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#535a73}
+.r-mini-case h4{font-size:clamp(22px,2.5vw,34px);line-height:1.08;letter-spacing:-.045em;margin:10px 0}
+#tools .reasoning-tile .r-mini-case p{font-size:14px;line-height:1.42;color:#4a4d59;margin:0}
+.r-mini-foot{font-size:12px;line-height:1.4;color:#545c77}
+body.reasoning-open-modal{overflow:hidden}
+.reasoning-dialog{padding:0;width:min(970px,calc(100vw - 36px));max-width:970px;max-height:min(92dvh,950px);background:var(--paper);color:var(--ink);border:1px solid var(--ink);box-shadow:14px 16px 0 rgba(0,0,0,.22);overflow:hidden}
+.reasoning-dialog::backdrop{background:rgba(7,9,16,.74);backdrop-filter:blur(4px)}
+.r-dialog-frame{max-height:min(92dvh,950px);min-height:0;display:flex;flex-direction:column}
+.r-dialog-top{display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:1px solid var(--ink);padding:13px clamp(20px,3.7vw,40px)}
+.r-dialog-top span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+.r-close{width:42px;height:42px;border:1px solid var(--ink);background:transparent;color:var(--ink);font:inherit;font-size:24px;cursor:pointer}
+.r-close:hover{background:var(--ink);color:#fff}
+.r-dialog-scroll{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:clamp(22px,3.7vw,40px)}
+.r-dialog-intro{padding-bottom:23px;border-bottom:1px solid var(--ink);margin-bottom:26px}
+.r-dialog-intro h2{font-size:clamp(36px,5vw,60px);line-height:.95;letter-spacing:-.065em;margin:0 0 14px}
+.r-dialog-intro p{font-size:15px;line-height:1.49;color:#504e47;max-width:64ch;margin:0}
+.r-workbench{display:grid;grid-template-columns:170px minmax(0,1fr);gap:29px}
+.r-step-rail{display:flex;flex-direction:column;gap:5px;align-self:start}
+.r-step-rail button{border:1px solid transparent;border-bottom-color:var(--line);padding:12px 8px;text-align:left;font:inherit;font-size:13px;font-weight:750;cursor:pointer;color:#4a4a43;background:transparent}
+.r-step-rail button[aria-current=step]{background:#121520;border-color:#121520;color:#fff}
+.r-step-rail button:hover:not([aria-current=step]){background:#eae9e3}
+.r-editor{min-width:0}
+.r-progress{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#626058}
+.r-panel[hidden]{display:none!important}
+.r-panel h3{font-size:clamp(26px,3.3vw,37px);line-height:1.07;letter-spacing:-.049em;margin:10px 0}
+.r-panel>p{font-size:14px;line-height:1.5;color:#646158;margin:0 0 18px}
+.r-field{margin:17px 0;display:flex;flex-direction:column;gap:7px}
+.r-field label{font-size:13px;font-weight:750}
+.reasoning-dialog textarea,.reasoning-dialog select{width:100%;font:inherit;font-size:15px;line-height:1.43;color:#11131d;background:#fff;border:1px solid #858279;border-radius:0;padding:12px;resize:vertical}
+.reasoning-dialog textarea{min-height:102px}
+.reasoning-dialog select{min-height:45px}
+.reasoning-dialog textarea::placeholder{color:#77756e}
+.r-caption{font-size:12px;line-height:1.45;color:#68655e}
+.r-inline-buttons{display:flex;gap:16px;flex-wrap:wrap;margin:7px 0 20px}
+.r-inline-buttons button{font:inherit;font-size:12px;font-weight:750;border:0;border-bottom:1px solid currentColor;background:none;padding:2px 0;color:#1a1a19;cursor:pointer}
+.r-editor-footer{border-top:1px solid var(--line);padding-top:20px;margin-top:25px;display:flex;justify-content:space-between;gap:12px}
+.r-editor-footer button,.r-copy{min-height:44px;border:1px solid var(--ink);padding:11px 17px;font:inherit;font-size:13px;font-weight:750;cursor:pointer;background:transparent;color:var(--ink)}
+.r-editor-footer button[disabled]{opacity:.33;cursor:not-allowed}
+.r-editor-footer button.primary,.r-copy{background:#121520;color:#fff}
+.r-editor-footer button:hover:not([disabled]),.r-copy:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.r-review{background:#e6ebff;border:1px solid #bac4e4;padding:17px;margin-top:24px}
+.r-review h4{font-size:20px;letter-spacing:-.03em;margin:0 0 8px}
+.r-review textarea{min-height:250px;font-size:13px;line-height:1.5;margin:5px 0 12px}
+.r-copy-status{font-size:12px;color:#4c546d;min-height:18px;margin:8px 0 0}
+.reasoning-tile button:focus-visible,.reasoning-dialog button:focus-visible,.reasoning-dialog textarea:focus-visible,.reasoning-dialog select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+@media(max-width:840px){#tools .reasoning-tile{grid-template-columns:1fr}.r-mini{border-left:0;border-top:1px solid #121520}#tools .reasoning-tile h3{max-width:18ch}}
+@media(max-width:650px){#tools .reasoning-intro{padding:25px}#tools .r-mini{padding:21px;gap:14px}.r-mini-nav button{font-size:9px}.reasoning-dialog{width:calc(100vw - 14px);max-height:calc(100dvh - 16px);box-shadow:4px 5px 0 rgba(0,0,0,.18)}.r-dialog-frame{max-height:calc(100dvh - 16px)}.r-dialog-top{padding:10px 17px}.r-dialog-scroll{padding:22px 17px}.r-dialog-intro h2{font-size:37px}.r-workbench{grid-template-columns:1fr;gap:19px}.r-step-rail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.r-step-rail button{padding:10px 2px;text-align:center;font-size:11px}.r-step-rail button span{display:none}}
+</style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012"><!-- homepage-rev:20261001-taste-note-v2 --></head><body><header class="top"><div class="shell topin"><a class="mark" href="#top">Matt Lane</a><nav class="nav"><a href="#cases">Case studies</a><a href="#projects">Side projects</a><a href="#tools">Thinking tools</a><a href="#writing">Writing</a><a href="./about/" target="_blank" rel="noopener noreferrer">About</a></nav></div></header>
 <main id="top" class="shell"><section class="hero"><div><div class="k">Product Strategist · Builder</div><h1>I direct<br>how products<br>take shape.</h1><p>I make judgments about the whole—experience, economics, distribution, and what compounds with use—then turn them into working form: capabilities, interactions, and structure.</p></div><div class="hero-visual"><div class="hero-map"><img src="./assets/working-form-flow-crisp-v3.jpg?v=20260929f" alt="Detailed product interaction and workflow map" width="1568" height="1003" fetchpriority="high" decoding="async"></div><p class="hero-caption">I decide what matters, what belongs, what gets in the way, and what needs to be obvious—then wire the system so humans and agents can make the right thing the right way.</p></div></div></section></main><div class="tape" role="group" aria-label="What deserves our attention? What shape should it take? What should we preserve as it takes shape?"><div class="track" aria-hidden="true"><div class="ticker-sequence"><span>What deserves our attention?</span><span>What shape should it take?</span><span>What should we preserve as it takes shape?</span></div><div class="ticker-sequence"><span>What deserves our attention?</span><span>What shape should it take?</span><span>What should we preserve as it takes shape?</span></div></div></div>
 <script>
@@ -373,7 +438,30 @@ body.maker-modal-open{overflow:hidden}
   </button>
 </section>
 
-<section class="sec" id="tools"><div class="shead"><div><div class="num">03 · My thinking in tools</div><h2>Methods you can use.</h2></div><p>Working systems for deciding what to pursue, what to make, and how to keep intent intact.</p></div><div class="tool-grid"><a class="tile fitcard lime" href="./fit-check/?rev=20260930nolink" target="_blank" rel="noopener noreferrer"><div><span class="state">Interactive method</span><h3>Fit Check Error Finder</h3><p>A design can pass every test we give it and still fail to produce the change we wanted. Build forward, verify locally, diagnose backward.</p><div class="go">Use the model →</div></div><div class="fitpreview"><img src="./assets/fit-check-preview.png?v=20261001a" alt="Preview of the Fit Check Error Model" width="1440" height="900" loading="lazy" decoding="async"></div></a><a class="tile blue planning" href="./planning-tools/?rev=20260930links1" target="_blank" rel="noopener noreferrer"><div class="planning-shot"><img src="./assets/planning-skills-lab-preview.jpg" alt="" width="1348" height="926" loading="lazy" decoding="async"></div><div class="planning-copy"><span class="state">Interactive lab</span><h3>Planning Tools</h3><p>Follow a human and a planning agent from messy product notes to a build-ready slice. Explore the walkthrough and the open-source planning tools behind it.</p><span class="state planning-action">Open interactive lab →</span></div></a><a class="tile planning shaping-board" href="https://mattlane66.github.io/planning-skills-for-agents-and-humans/shaping-board/" target="_blank" rel="noopener noreferrer"><div class="planning-shot"><img src="./assets/shaping-board-preview.webp" alt="Shaping Board workspace showing candidate solution comparisons and trade-offs" width="1280" height="800" loading="lazy" decoding="async"></div><div class="planning-copy"><span class="state">Interactive shaping workspace</span><h3>Shaping Board</h3><p>Compare solutions, trace requirements through a product map, and hand the plan to your AI agent. Optional checks in your repo can flag drift between approved intent and tested behavior.</p><span class="state planning-action">Open shaping board ↗</span></div></a><div class="tile orange figjam-card"><div class="figjam-shot"><img src="./assets/dumplink-figjam-preview.webp" alt="Dumplink FigJam board with scopes, dependencies, and tasks" width="640" height="459" loading="lazy" decoding="async"></div><div class="figjam-copy"><span class="state">FigJam template</span><h3>Dumplink</h3><p>Keep shaped work whole as teams dump, cluster, and sequence it into shippable vertical slices.</p><div class="figjam-actions"><a class="go" href="https://www.figma.com/community/file/1490782844879763276" target="_blank" rel="noopener noreferrer">Open template ↗</a><a href="https://github.com/klausbreyer/dump.link" target="_blank" rel="noopener noreferrer">GitHub repo ↗</a></div></div></div><a class="tile figjam-card" href="https://www.figma.com/community/file/1490786031847199566" target="_blank" rel="noopener noreferrer" aria-label="Open Team Shaping Playing Field on Figma Community"><div class="figjam-shot"><img src="./assets/team-shaping-playing-field-preview.webp?rev=20260930fix1" alt="Team Shaping Playing Field FigJam board with Frame, Fit Check, Paths, and Parts areas" width="640" height="321" loading="lazy" decoding="async"></div><div class="figjam-copy"><span class="state">FigJam template</span><h3>Team Shaping Playing Field</h3><p>A working space for framing the system, paths, parts, and fit checks together.</p><div class="figjam-actions"><span class="go">Open template ↗</span></div></div></a><a class="tile figjam-card research-card" href="https://github.com/mattlane66/scaled-interview-data-assistant" target="_blank" rel="noopener noreferrer" aria-label="Open Scaled Interview Data Assistant on GitHub"><div class="figjam-shot"><img src="https://github.com/user-attachments/assets/0206f00b-adf6-4df7-9c54-95adce35c2d5" alt="Scaled Interview Data Assistant workflow preview" width="1800" height="1200" loading="lazy" decoding="async"></div><div class="figjam-copy"><span class="state">Research method + validation layer</span><h3>Scaled Interview Data Assistant</h3><p>Turn interview transcripts into evidence-traceable JTBD/A2B analysis without letting polished summaries outrun the source material.</p><div class="figjam-actions"><span class="go">Open GitHub repo ↗</span></div></div></a><a class="tile" href="https://github.com/mattlane66/behavioral-simulation-for-agents-and-humans" target="_blank" rel="noopener noreferrer" aria-label="Open Behavioral Simulation for Agents and Humans on GitHub"><div><span class="state">Behavioral research method</span><h3>Behavioral Simulation</h3><p>Turn human evidence, explicit assumptions, and model outputs into bounded simulations of what people might do under changed conditions—without confusing simulation with observation.</p><div class="go">Open GitHub repo ↗</div></div></a></div></section>
+<section class="sec" id="tools"><div class="shead"><div><div class="num">03 · My thinking in tools</div><h2>Methods you can use.</h2></div><p>Working systems for deciding what to pursue, what to make, and how to keep intent intact.</p></div><div class="tool-grid"><article class="tile reasoning-tile" aria-labelledby="reasoning-tile-title">
+  <div class="reasoning-intro">
+    <span class="state">My core reasoning method · interactive</span>
+    <h3 id="reasoning-tile-title">Change the model. Change what's possible.</h3>
+    <p>Here's how I think: observe what happens, separate facts from assumptions, trace the relationships, change the representation, and test what follows.</p>
+    <button type="button" id="r-launch" class="r-launch">Try it on your problem ↗</button>
+  </div>
+  <div class="r-mini" aria-label="Five-step reasoning method illustrated with Splice">
+    <div class="r-mini-top"><span>Watch the reasoning change</span><span class="r-mini-count" id="r-mini-count">01 / 05</span></div>
+    <div class="r-mini-nav" role="group" aria-label="Explore the five reasoning steps">
+      <button type="button" data-r-preview="0" aria-current="step">Observe</button>
+      <button type="button" data-r-preview="1">Distinguish</button>
+      <button type="button" data-r-preview="2">Relate</button>
+      <button type="button" data-r-preview="3">Re-represent</button>
+      <button type="button" data-r-preview="4">Test</button>
+    </div>
+    <div class="r-mini-case" aria-live="polite" aria-atomic="true">
+      <small>Splice · Product reasoning</small>
+      <h4 id="r-mini-heading">What's actually happening?</h4>
+      <p id="r-mini-explanation">Finding sounds isn't always the same as getting started on a musical idea.</p>
+    </div>
+    <div class="r-mini-foot">Explore each step here. Open the workbench to apply it yourself.</div>
+  </div>
+</article><a class="tile fitcard lime" href="./fit-check/?rev=20260930nolink" target="_blank" rel="noopener noreferrer"><div><span class="state">Interactive method</span><h3>Fit Check Error Finder</h3><p>A design can pass every test we give it and still fail to produce the change we wanted. Build forward, verify locally, diagnose backward.</p><div class="go">Use the model →</div></div><div class="fitpreview"><img src="./assets/fit-check-preview.png?v=20261001a" alt="Preview of the Fit Check Error Model" width="1440" height="900" loading="lazy" decoding="async"></div></a><a class="tile blue planning" href="./planning-tools/?rev=20260930links1" target="_blank" rel="noopener noreferrer"><div class="planning-shot"><img src="./assets/planning-skills-lab-preview.jpg" alt="" width="1348" height="926" loading="lazy" decoding="async"></div><div class="planning-copy"><span class="state">Interactive lab</span><h3>Planning Tools</h3><p>Follow a human and a planning agent from messy product notes to a build-ready slice. Explore the walkthrough and the open-source planning tools behind it.</p><span class="state planning-action">Open interactive lab →</span></div></a><a class="tile planning shaping-board" href="https://mattlane66.github.io/planning-skills-for-agents-and-humans/shaping-board/" target="_blank" rel="noopener noreferrer"><div class="planning-shot"><img src="./assets/shaping-board-preview.webp" alt="Shaping Board workspace showing candidate solution comparisons and trade-offs" width="1280" height="800" loading="lazy" decoding="async"></div><div class="planning-copy"><span class="state">Interactive shaping workspace</span><h3>Shaping Board</h3><p>Compare solutions, trace requirements through a product map, and hand the plan to your AI agent. Optional checks in your repo can flag drift between approved intent and tested behavior.</p><span class="state planning-action">Open shaping board ↗</span></div></a><div class="tile orange figjam-card"><div class="figjam-shot"><img src="./assets/dumplink-figjam-preview.webp" alt="Dumplink FigJam board with scopes, dependencies, and tasks" width="640" height="459" loading="lazy" decoding="async"></div><div class="figjam-copy"><span class="state">FigJam template</span><h3>Dumplink</h3><p>Keep shaped work whole as teams dump, cluster, and sequence it into shippable vertical slices.</p><div class="figjam-actions"><a class="go" href="https://www.figma.com/community/file/1490782844879763276" target="_blank" rel="noopener noreferrer">Open template ↗</a><a href="https://github.com/klausbreyer/dump.link" target="_blank" rel="noopener noreferrer">GitHub repo ↗</a></div></div></div><a class="tile figjam-card" href="https://www.figma.com/community/file/1490786031847199566" target="_blank" rel="noopener noreferrer" aria-label="Open Team Shaping Playing Field on Figma Community"><div class="figjam-shot"><img src="./assets/team-shaping-playing-field-preview.webp?rev=20260930fix1" alt="Team Shaping Playing Field FigJam board with Frame, Fit Check, Paths, and Parts areas" width="640" height="321" loading="lazy" decoding="async"></div><div class="figjam-copy"><span class="state">FigJam template</span><h3>Team Shaping Playing Field</h3><p>A working space for framing the system, paths, parts, and fit checks together.</p><div class="figjam-actions"><span class="go">Open template ↗</span></div></div></a><a class="tile figjam-card research-card" href="https://github.com/mattlane66/scaled-interview-data-assistant" target="_blank" rel="noopener noreferrer" aria-label="Open Scaled Interview Data Assistant on GitHub"><div class="figjam-shot"><img src="https://github.com/user-attachments/assets/0206f00b-adf6-4df7-9c54-95adce35c2d5" alt="Scaled Interview Data Assistant workflow preview" width="1800" height="1200" loading="lazy" decoding="async"></div><div class="figjam-copy"><span class="state">Research method + validation layer</span><h3>Scaled Interview Data Assistant</h3><p>Turn interview transcripts into evidence-traceable JTBD/A2B analysis without letting polished summaries outrun the source material.</p><div class="figjam-actions"><span class="go">Open GitHub repo ↗</span></div></div></a><a class="tile" href="https://github.com/mattlane66/behavioral-simulation-for-agents-and-humans" target="_blank" rel="noopener noreferrer" aria-label="Open Behavioral Simulation for Agents and Humans on GitHub"><div><span class="state">Behavioral research method</span><h3>Behavioral Simulation</h3><p>Turn human evidence, explicit assumptions, and model outputs into bounded simulations of what people might do under changed conditions—without confusing simulation with observation.</p><div class="go">Open GitHub repo ↗</div></div></a></div></section>
 <!-- deploy-rev: behavioral-simulation-20261007 -->
 <section class="sec quiet-sec" id="publications">
   <div class="shead">
@@ -412,6 +500,36 @@ body.maker-modal-open{overflow:hidden}
 <div class="writing-group"><div class="writing-group-head"><span>Unfinished thinking</span><p>Notes while ideas are still moving.</p></div><div class="notes-panel"><a target="_self" class="thought" data-category="judgment" href="./notes/?rev=20261005a#note-ideas-arent-cheap-guesses-20261005"><span>Judgment &amp; knowledge</span><strong>Ideas aren’t cheap. Guesses are.</strong><em>2026-10-05 →</em></a><a target="_self" class="thought" data-category="ai" href="./notes/?rev=20261005a#note-ai-language-defaults-20261002"><span>AI &amp; future work</span><strong>People who use AI without enough language risk becoming products of its defaults.</strong><em>2026-10-02 →</em></a><a target="_self" class="thought" data-category="products" href="./notes/?rev=20261005a#note-ai-native-critical-path-20261002"><span>Products &amp; systems</span><strong>An AI-native product means the features on the critical path require intelligence.</strong><em>2026-10-02 →</em></a><a target="_self" class="thought wide" data-category="products" href="./notes/?rev=20261005a#note-appetite-agent-budgeting-20261002"><span>Products &amp; systems</span><strong>Shape Up’s appetite is a value judgment, not an estimate.</strong><em>2026-10-02 →</em></a><a target="_self" class="thought" data-category="judgment" href="./notes/?rev=20261005a#note-opportunity-judgment-loop-20261002"><span>Judgment &amp; knowledge</span><strong>Opportunity Judgment Loop</strong><em>2026-10-02 →</em></a><a target="_self" class="thought" data-category="judgment" href="./notes/?rev=20261005a#note-product-judgment-agentic-era-20261002"><span>Judgment &amp; knowledge</span><strong>Product judgment is the learned ability to make good decisions under ambiguity.</strong><em>2026-10-02 →</em></a><a target="_self" class="thought wide" data-category="products" href="./notes/?rev=20261005a#note-opportunity-scoping-questions-20261002"><span>Products &amp; systems</span><strong>High-value questions to ask when scoping which opportunities and desired outcomes to prioritize:</strong><em>2026-10-02 →</em></a><div class="notes-actions"><a target="_self" href="./notes/?rev=20261005a">Browse all 326 Notes →</a></div></div></div>
 </div></section><footer class="foot"><span>© 2026 Matt Lane</span><span class="social-links" aria-label="Social links"><a class="social-link" href="https://www.linkedin.com/in/matthewhlane/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708C16 15.487 15.474 16 14.825 16H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.521-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.506 1.248 1.327 1.248zm3.11 8.212h2.4V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.4V9.25c0-2.22-1.184-3.252-2.765-3.252-1.274 0-1.845.7-2.165 1.193h.032V6.169h-2.4c.03.678 0 7.225 0 7.225z"/></svg></a><a class="social-link" href="https://github.com/mattlane66" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65 7.65 0 0 1 8 4.84a7.7 7.7 0 0 1 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></span></footer></main>
 
+
+<dialog id="reasoning-dialog" class="reasoning-dialog" aria-labelledby="r-dialog-title" aria-describedby="r-dialog-desc">
+ <div class="r-dialog-frame">
+  <div class="r-dialog-top"><span>Thinking tools / reasoning workbench</span><button type="button" class="r-close" id="r-close" aria-label="Close reasoning workbench">×</button></div>
+  <div class="r-dialog-scroll">
+   <div class="r-dialog-intro"><h2 id="r-dialog-title">See the problem differently.</h2><p id="r-dialog-desc">An everyday method for better reasoning. Describe what you see, challenge the assumptions, change the model, and test whether the new explanation holds up. Your answers stay in this browser tab.</p></div>
+   <div class="r-workbench">
+    <div class="r-step-rail" role="group" aria-label="Work through the reasoning steps">
+     <button type="button" data-r-go="0" aria-current="step">1 <span>Observe</span></button>
+     <button type="button" data-r-go="1">2 <span>Distinguish</span></button>
+     <button type="button" data-r-go="2">3 <span>Relate</span></button>
+     <button type="button" data-r-go="3">4 <span>Re-represent</span></button>
+     <button type="button" data-r-go="4">5 <span>Test</span></button>
+    </div>
+    <div class="r-editor">
+     <div class="r-inline-buttons"><button type="button" id="r-example">Load Splice example</button><button type="button" id="r-reset">Start fresh</button></div>
+     <div class="r-progress" id="r-progress">Step 1 of 5 · Observe</div>
+     <section class="r-panel" data-r-stage="0"><h3 tabindex="-1">What's actually happening?</h3><p>Describe the difficulty or outcome. Don't prescribe a solution yet.</p><div class="r-field"><label for="r-problem">What do you want to understand or change?</label><textarea id="r-problem" placeholder="People are struggling to…"></textarea></div></section>
+     <section class="r-panel" data-r-stage="1" hidden><h3 tabindex="-1">What do I know versus assume?</h3><p>Don't confuse what you've seen with your explanation for it.</p><div class="r-field"><label for="r-evidence">What have I actually observed or established?</label><textarea id="r-evidence" placeholder="The evidence I have is…"></textarea></div><div class="r-field"><label for="r-assumptions">What am I treating as true without enough evidence?</label><textarea id="r-assumptions" placeholder="I am assuming that…"></textarea></div></section>
+     <section class="r-panel" data-r-stage="2" hidden><h3 tabindex="-1">What relates to what?</h3><p>Look for causes, dependencies, constraints, and the relationship to the outcome that matters.</p><div class="r-field"><label for="r-relations">How do I currently explain what happens?</label><textarea id="r-relations" placeholder="I currently think X affects Y because…"></textarea></div></section>
+     <section class="r-panel" data-r-stage="3" hidden><h3 tabindex="-1">What if my model is wrong?</h3><p>Change something fundamental about how you've represented the problem—not just your proposed solution.</p><div class="r-field"><label for="r-move">Try a different way of seeing it</label><select id="r-move"><option value="reverse">Reverse the explanation: is cause and effect different?</option><option value="unit">Change the unit: is the real unit something else?</option><option value="unify">Unify: are separate things part of one pattern?</option><option value="split">Separate: is one thing actually several processes?</option><option value="remove">Remove an assumption: is a constraint imaginary?</option><option value="generate">Look for a hidden rule: what generates the pattern?</option></select></div><div class="r-field"><label for="r-alternative">What's a genuinely different explanation?</label><textarea id="r-alternative" placeholder="What if the problem is actually…"></textarea></div></section>
+     <section class="r-panel" data-r-stage="4" hidden><h3 tabindex="-1">How would I know if I'm right?</h3><p>A useful new model should explain or predict something—and survive a meaningful check.</p><div class="r-field"><label for="r-prediction">If my new explanation is right, what should follow?</label><textarea id="r-prediction" placeholder="I would expect to see…"></textarea></div><div class="r-field"><label for="r-test">What's the smallest meaningful test?</label><textarea id="r-test" placeholder="I can compare, measure, reason through, or observe…"></textarea></div>
+      <div class="r-review"><h4>Your reasoning, in one place</h4><p class="r-caption">A working hypothesis, not a proven conclusion. Edit any step and the summary updates.</p><textarea id="r-summary" readonly aria-label="Summary of your reasoning"></textarea><button type="button" class="r-copy" id="r-copy">Copy my reasoning</button><p class="r-copy-status" id="r-copy-status" role="status" aria-live="polite"></p></div>
+     </section>
+     <div class="r-editor-footer"><button type="button" id="r-back" disabled>← Back</button><button type="button" class="primary" id="r-next">Continue →</button></div>
+    </div>
+   </div>
+  </div>
+ </div>
+</dialog>
 <dialog id="maker-modal" class="maker-dialog" aria-labelledby="maker-modal-title" aria-describedby="maker-modal-description">
   <div class="modal-frame">
     <div class="modal-topbar"><button type="button" class="modal-close" id="maker-close" aria-label="Close maker stack">×</button></div>
@@ -671,6 +789,105 @@ body.maker-modal-open{overflow:hidden}
     document.body.classList.remove('maker-modal-open');
     trigger.focus({preventScroll:true});
   });
+})();
+</script>
+<script>
+/* No network calls, tracking, or persistent storage: the workbench runs locally in the page. */
+(function(){
+ const dlg=document.getElementById('reasoning-dialog');
+ const launch=document.getElementById('r-launch');
+ if(!dlg||!launch||typeof dlg.showModal!=='function')return;
+ const preview=[
+  ["What's actually happening?","Finding sounds isn't always the same as reaching a promising musical idea."],
+  ["What is assumed?","Assumption to question: making sound search better is enough to help creators start."],
+  ["What relationships matter?","Sound discovery, creative momentum, and a usable starting point are related—but not identical."],
+  ["What if we change the problem?","From retrieving individual sounds → helping creators get to the beginning of a song."],
+  ["What should change if it's right?","Judge whether creators reach promising musical ideas, not just whether they find more sounds."]
+ ];
+ const names=['Observe','Distinguish','Relate','Re-represent','Test'];
+ document.querySelectorAll('[data-r-preview]').forEach(function(btn){
+   btn.addEventListener('click',function(){
+     const n=Number(btn.dataset.rPreview);
+     document.querySelectorAll('[data-r-preview]').forEach(function(b){if(b===btn)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
+     document.getElementById('r-mini-count').textContent=String(n+1).padStart(2,'0')+' / 05';
+     document.getElementById('r-mini-heading').textContent=preview[n][0];
+     document.getElementById('r-mini-explanation').textContent=preview[n][1];
+   });
+ });
+ const fields=['problem','evidence','assumptions','relations','move','alternative','prediction','test'];
+ const get=function(key){return document.getElementById('r-'+key)};
+ const panels=Array.from(dlg.querySelectorAll('[data-r-stage]'));
+ const steps=Array.from(dlg.querySelectorAll('[data-r-go]'));
+ const back=document.getElementById('r-back'),next=document.getElementById('r-next');
+ const summary=document.getElementById('r-summary');
+ const status=document.getElementById('r-copy-status');
+ let active=0,lastTrigger=launch;
+ function clean(k){return get(k).value.trim()||'[Not yet entered]'}
+ function compose(){
+   return [
+     'RELATIONAL REASONING · A WORKING MODEL',
+     '1. OBSERVE — What is actually happening?\n'+clean('problem'),
+     '2. DISTINGUISH — What do I know?\n'+clean('evidence')+'\nAssumptions:\n'+clean('assumptions'),
+     '3. RELATE — What relationships explain it?\n'+clean('relations'),
+     '4. RE-REPRESENT — What if the model is wrong?\nApproach: '+get('move').selectedOptions[0].text+'\nAlternative: '+clean('alternative'),
+     '5. TEST — What would follow if right?\n'+clean('prediction')+'\nSmallest meaningful check:\n'+clean('test'),
+     'Status: Hypothesis. Compare it with evidence, other explanations, or practical outcomes.'
+   ].join('\n\n');
+ }
+ function render(n,focusHeading){
+   active=Math.max(0,Math.min(4,n));
+   panels.forEach(function(p,i){p.hidden=i!==active});
+   steps.forEach(function(b,i){if(i===active)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
+   document.getElementById('r-progress').textContent='Step '+(active+1)+' of 5 · '+names[active];
+   back.disabled=active===0;
+   next.hidden=active===4;
+   summary.value=compose();
+   if(focusHeading)panels[active].querySelector('h3').focus({preventScroll:true});
+ }
+ fields.forEach(function(k){get(k).addEventListener('input',function(){summary.value=compose();status.textContent=''})});
+ steps.forEach(function(b){b.addEventListener('click',function(){render(Number(b.dataset.rGo),true)})});
+ back.addEventListener('click',function(){render(active-1,true)});
+ next.addEventListener('click',function(){render(active+1,true)});
+ document.getElementById('r-example').addEventListener('click',function(){
+   const example={
+     problem:'Musicians can find sounds but still struggle to get to a promising musical idea.',
+     evidence:'Splice provides searchable sounds; the product case concerns moving from finding sounds toward starting songs.',
+     assumptions:'Better retrieval by itself will create creative momentum.',
+     relations:'Finding an individual sound is an intermediate step. The outcome that matters is reaching a musical idea worth developing.',
+     move:'unit',
+     alternative:'Represent the job as reaching a promising starting point for a song, not merely retrieving samples.',
+     prediction:'Experiences that support making combinations should help creators reach promising ideas, even without improving individual search results.',
+     test:'Compare whether creators reach and continue developing promising musical starters. Define meaningful success before comparing alternatives.'
+   };
+   Object.keys(example).forEach(function(k){get(k).value=example[k]});
+   status.textContent='Illustrative interpretation of the Splice case, not a reconstruction of private thoughts.';
+   render(0,true);
+ });
+ document.getElementById('r-reset').addEventListener('click',function(){
+   fields.forEach(function(k){get(k).value=k==='move'?'reverse':''});
+   status.textContent='';
+   render(0,true);
+ });
+ document.getElementById('r-copy').addEventListener('click',async function(){
+   const value=compose();summary.value=value;
+   try{
+     if(!navigator.clipboard||!navigator.clipboard.writeText)throw new Error('Clipboard unavailable');
+     await navigator.clipboard.writeText(value);
+     status.textContent='Copied. This remains your working hypothesis until tested.';
+   }catch(err){
+     summary.focus();summary.select();
+     status.textContent='Clipboard access unavailable. Your text is selected—copy it with your keyboard.';
+   }
+ });
+ launch.addEventListener('click',function(){
+   lastTrigger=launch;render(active,false);dlg.showModal();
+   document.body.classList.add('reasoning-open-modal');
+   document.getElementById('r-close').focus();
+ });
+ document.getElementById('r-close').addEventListener('click',function(){dlg.close()});
+ dlg.addEventListener('click',function(event){if(event.target===dlg)dlg.close()});
+ dlg.addEventListener('close',function(){document.body.classList.remove('reasoning-open-modal');lastTrigger.focus({preventScroll:true})});
+ render(0,false);
 })();
 </script>
 </body></html>

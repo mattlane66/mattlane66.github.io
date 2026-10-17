@@ -319,6 +319,27 @@ def main() -> int:
                                     if "open" not in (page.locator(modal).get_attribute("class") or ""):
                                         failures.append(f"{viewport_name} /: {modal} did not open")
                                     page.locator(closer).click()
+                            # Reasoning workbench interactions: the tile and modal stay on this page.
+                            # These checks run at both desktop and phone viewports.
+                            page.locator('[data-r-preview="3"]').click()
+                            if "change the problem" not in page.locator("#r-mini-heading").inner_text().lower():
+                                failures.append(f"{viewport_name} /: reasoning tile preview did not change")
+                            page.locator("#r-launch").click()
+                            if not page.locator("#reasoning-dialog").evaluate("(element) => element.open"):
+                                failures.append(f"{viewport_name} /: reasoning workbench did not open")
+                            page.locator("#r-example").click()
+                            page.locator('[data-r-go="4"]').click()
+                            if "Musicians can find sounds" not in page.locator("#r-summary").input_value():
+                                failures.append(f"{viewport_name} /: example did not populate summary")
+                            page.locator("#r-prediction").fill("A different measurable result.")
+                            if "A different measurable result." not in page.locator("#r-summary").input_value():
+                                failures.append(f"{viewport_name} /: edited reasoning did not update summary")
+                            page.locator("#r-close").click()
+                            if page.locator("#reasoning-dialog").evaluate("(element) => element.open"):
+                                failures.append(f"{viewport_name} /: reasoning workbench did not close")
+                            if page.evaluate("location.pathname") != "/":
+                                failures.append(f"{viewport_name} /: reasoning workbench navigated away")
+
                         elif name == "notes":
                             try:
                                 page.wait_for_function(
