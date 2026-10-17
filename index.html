@@ -316,6 +316,32 @@ body.reasoning-open-modal{overflow:hidden}
 .reasoning-tile button:focus-visible,.reasoning-dialog button:focus-visible,.reasoning-dialog textarea:focus-visible,.reasoning-dialog select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 @media(max-width:840px){#tools .reasoning-tile{grid-template-columns:1fr}.r-mini{border-left:0;border-top:1px solid #121520}#tools .reasoning-tile h3{max-width:18ch}}
 @media(max-width:650px){#tools .reasoning-intro{padding:25px}#tools .r-mini{padding:21px;gap:14px}.r-mini-nav button{font-size:9px}.reasoning-dialog{width:calc(100vw - 14px);max-height:calc(100dvh - 16px);box-shadow:4px 5px 0 rgba(0,0,0,.18)}.r-dialog-frame{max-height:calc(100dvh - 16px)}.r-dialog-top{padding:10px 17px}.r-dialog-scroll{padding:22px 17px}.r-dialog-intro h2{font-size:37px}.r-workbench{grid-template-columns:1fr;gap:19px}.r-step-rail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.r-step-rail button{padding:10px 2px;text-align:center;font-size:11px}.r-step-rail button span{display:none}}
+
+/* Reasoning V2: sourced examples and competing models. */
+.r-example-control{display:flex;gap:13px;align-items:end;flex-wrap:wrap;margin-bottom:12px}
+.r-example-choice{flex:1 1 230px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.r-example-choice label{font-size:12px;font-weight:750}
+.reasoning-dialog .r-example-choice select{min-height:44px;font-size:13px}
+.reasoning-dialog .r-reset{min-height:44px;border:1px solid var(--ink);background:transparent;padding:10px 14px;font:inherit;font-weight:750;font-size:12px;cursor:pointer}
+.reasoning-dialog .r-reset:hover{background:#e9e8e1}
+.reasoning-dialog .r-source{border-left:3px solid var(--blue);background:#e8edf9;color:#363d55;padding:12px 14px;margin:0 0 19px;font-size:12px;line-height:1.45}
+.reasoning-dialog .r-source[hidden]{display:none}
+.reasoning-dialog #r-source-links{display:block;margin-top:6px}
+.reasoning-dialog #r-source-links a{display:inline-block;text-decoration:underline;text-underline-offset:3px;margin-right:16px;font-weight:750}
+.reasoning-dialog .r-compare,.reasoning-dialog .r-predictions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:17px 0}
+.reasoning-dialog .r-model{min-width:0;border:1px solid #b3b1a8;padding:12px;background:#fff;display:flex;flex-direction:column;gap:9px}
+.reasoning-dialog .r-model-current{background:#e8edf9}
+.reasoning-dialog .r-model-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:800}
+.reasoning-dialog .r-model label{font-size:12px;font-weight:750;line-height:1.4}
+.reasoning-dialog .r-model textarea{font-size:13px;min-height:150px;flex:1}
+.reasoning-dialog .r-model-readonly{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.45;margin:0;flex:1}
+.reasoning-dialog .r-small-edit{background:transparent;border:0;padding:4px 0;text-align:left;text-decoration:underline;font:inherit;font-size:11px;font-weight:750;cursor:pointer;align-self:start}
+.reasoning-dialog .r-predictions .r-field{background:#fff;border:1px solid #c9c5b9;margin:0;padding:12px}
+.reasoning-dialog .r-predictions label{font-size:12px;line-height:1.4}
+.reasoning-dialog .r-predictions textarea{font-size:13px;min-height:155px;flex:1}
+.reasoning-dialog .r-optional{font-size:11px;color:#69665d;font-weight:400}
+.reasoning-dialog .r-review textarea{min-height:320px}
+@media(max-width:740px){.reasoning-dialog .r-compare,.reasoning-dialog .r-predictions{grid-template-columns:1fr}.reasoning-dialog .r-model textarea{min-height:85px}.reasoning-dialog .r-predictions textarea{min-height:88px}}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012"><!-- homepage-rev:20261001-taste-note-v2 --></head><body><header class="top"><div class="shell topin"><a class="mark" href="#top">Matt Lane</a><nav class="nav"><a href="#cases">Case studies</a><a href="#projects">Side projects</a><a href="#tools">Thinking tools</a><a href="#writing">Writing</a><a href="./about/" target="_blank" rel="noopener noreferrer">About</a></nav></div></header>
 <main id="top" class="shell"><section class="hero"><div><div class="k">Product Strategist · Builder</div><h1>I direct<br>how products<br>take shape.</h1><p>I make judgments about the whole—experience, economics, distribution, and what compounds with use—then turn them into working form: capabilities, interactions, and structure.</p></div><div class="hero-visual"><div class="hero-map"><img src="./assets/working-form-flow-crisp-v3.jpg?v=20260929f" alt="Detailed product interaction and workflow map" width="1568" height="1003" fetchpriority="high" decoding="async"></div><p class="hero-caption">I decide what matters, what belongs, what gets in the way, and what needs to be obvious—then wire the system so humans and agents can make the right thing the right way.</p></div></div></section></main><div class="tape" role="group" aria-label="What deserves our attention? What shape should it take? What should we preserve as it takes shape?"><div class="track" aria-hidden="true"><div class="ticker-sequence"><span>What deserves our attention?</span><span>What shape should it take?</span><span>What should we preserve as it takes shape?</span></div><div class="ticker-sequence"><span>What deserves our attention?</span><span>What shape should it take?</span><span>What should we preserve as it takes shape?</span></div></div></div>
@@ -442,7 +468,7 @@ body.reasoning-open-modal{overflow:hidden}
   <div class="reasoning-intro">
     <span class="state">My core reasoning method · interactive</span>
     <h3 id="reasoning-tile-title">Change the model. Change what's possible.</h3>
-    <p>Here's how I think: observe what happens, separate facts from assumptions, trace the relationships, change the representation, and test what follows.</p>
+    <p>Here's how I think: observe what happens, separate facts from assumptions, trace the relationships, compare different explanations, and test what sets them apart.</p>
     <button type="button" id="r-launch" class="r-launch">Try it on your problem ↗</button>
   </div>
   <div class="r-mini" aria-label="Five-step reasoning method illustrated with Splice">
@@ -505,26 +531,45 @@ body.reasoning-open-modal{overflow:hidden}
  <div class="r-dialog-frame">
   <div class="r-dialog-top"><span>Thinking tools / reasoning workbench</span><button type="button" class="r-close" id="r-close" aria-label="Close reasoning workbench">×</button></div>
   <div class="r-dialog-scroll">
-   <div class="r-dialog-intro"><h2 id="r-dialog-title">See the problem differently.</h2><p id="r-dialog-desc">An everyday method for better reasoning. Describe what you see, challenge the assumptions, change the model, and test whether the new explanation holds up. Your answers stay in this browser tab.</p></div>
+   <div class="r-dialog-intro"><h2 id="r-dialog-title">See the problem differently.</h2><p id="r-dialog-desc">A five-step method: observe, distinguish, relate, compare explanations, and test what sets them apart. Return to any step as you learn.</p></div>
    <div class="r-workbench">
     <div class="r-step-rail" role="group" aria-label="Work through the reasoning steps">
      <button type="button" data-r-go="0" aria-current="step">1 <span>Observe</span></button>
      <button type="button" data-r-go="1">2 <span>Distinguish</span></button>
      <button type="button" data-r-go="2">3 <span>Relate</span></button>
      <button type="button" data-r-go="3">4 <span>Re-represent</span></button>
-     <button type="button" data-r-go="4">5 <span>Test</span></button>
+     <button type="button" data-r-go="4">5 <span>Test &amp; learn</span></button>
     </div>
     <div class="r-editor">
-     <div class="r-inline-buttons"><button type="button" id="r-example">Load Splice example</button><button type="button" id="r-reset">Start fresh</button></div>
+     <div class="r-example-control"><div class="r-example-choice"><label for="r-example">Load an example</label><select id="r-example"><option value="">Choose a problem…</option><option value="splice">Splice — from search to song</option><option value="medellin">Medellín — escalators in the sky</option><option value="mclean">Malcolm McLean — container shipping</option></select></div><button type="button" class="r-reset" id="r-reset">Start fresh</button></div><div class="r-source" id="r-source" hidden><span id="r-example-status"></span><span id="r-source-links"></span></div>
      <div class="r-progress" id="r-progress">Step 1 of 5 · Observe</div>
      <section class="r-panel" data-r-stage="0"><h3 tabindex="-1">What's actually happening?</h3><p>Describe the difficulty or outcome. Don't prescribe a solution yet.</p><div class="r-field"><label for="r-problem">What do you want to understand or change?</label><textarea id="r-problem" placeholder="People are struggling to…"></textarea></div></section>
      <section class="r-panel" data-r-stage="1" hidden><h3 tabindex="-1">What do I know versus assume?</h3><p>Don't confuse what you've seen with your explanation for it.</p><div class="r-field"><label for="r-evidence">What have I actually observed or established?</label><textarea id="r-evidence" placeholder="The evidence I have is…"></textarea></div><div class="r-field"><label for="r-assumptions">What am I treating as true without enough evidence?</label><textarea id="r-assumptions" placeholder="I am assuming that…"></textarea></div></section>
      <section class="r-panel" data-r-stage="2" hidden><h3 tabindex="-1">What relates to what?</h3><p>Look for causes, dependencies, constraints, and the relationship to the outcome that matters.</p><div class="r-field"><label for="r-relations">How do I currently explain what happens?</label><textarea id="r-relations" placeholder="I currently think X affects Y because…"></textarea></div></section>
-     <section class="r-panel" data-r-stage="3" hidden><h3 tabindex="-1">What if my model is wrong?</h3><p>Change something fundamental about how you've represented the problem—not just your proposed solution.</p><div class="r-field"><label for="r-move">Try a different way of seeing it</label><select id="r-move"><option value="reverse">Reverse the explanation: is cause and effect different?</option><option value="unit">Change the unit: is the real unit something else?</option><option value="unify">Unify: are separate things part of one pattern?</option><option value="split">Separate: is one thing actually several processes?</option><option value="remove">Remove an assumption: is a constraint imaginary?</option><option value="generate">Look for a hidden rule: what generates the pattern?</option></select></div><div class="r-field"><label for="r-alternative">What's a genuinely different explanation?</label><textarea id="r-alternative" placeholder="What if the problem is actually…"></textarea></div></section>
-     <section class="r-panel" data-r-stage="4" hidden><h3 tabindex="-1">How would I know if I'm right?</h3><p>A useful new model should explain or predict something—and survive a meaningful check.</p><div class="r-field"><label for="r-prediction">If my new explanation is right, what should follow?</label><textarea id="r-prediction" placeholder="I would expect to see…"></textarea></div><div class="r-field"><label for="r-test">What's the smallest meaningful test?</label><textarea id="r-test" placeholder="I can compare, measure, reason through, or observe…"></textarea></div>
-      <div class="r-review"><h4>Your reasoning, in one place</h4><p class="r-caption">A working hypothesis, not a proven conclusion. Edit any step and the summary updates.</p><textarea id="r-summary" readonly aria-label="Summary of your reasoning"></textarea><button type="button" class="r-copy" id="r-copy">Copy my reasoning</button><p class="r-copy-status" id="r-copy-status" role="status" aria-live="polite"></p></div>
-     </section>
-     <div class="r-editor-footer"><button type="button" id="r-back" disabled>← Back</button><button type="button" class="primary" id="r-next">Continue →</button></div>
+     <section class="r-panel" data-r-stage="3" hidden>
+  <h3 tabindex="-1">What else could explain it?</h3><p>Compare your current explanation with two genuinely different models, not just variations of a solution.</p>
+  <div class="r-field"><label for="r-move">How might you change the representation?</label><select id="r-move"><option value="reverse">Reverse the explanation — question cause and effect</option><option value="unit">Change the unit — focus on something else</option><option value="unify">Unify — find one underlying relationship</option><option value="split">Separate — unpack processes treated as one</option><option value="remove">Remove an assumption — challenge a constraint</option><option value="generate">Find a hidden rule — what generates the pattern?</option></select></div>
+  <div class="r-compare" role="group" aria-label="Compare competing explanations">
+    <div class="r-model r-model-current"><div class="r-model-label">A · Current model</div><p id="r-current-model" class="r-model-readonly">Describe your current model in Step 3.</p><button type="button" id="r-edit-current" class="r-small-edit">Edit Step 3 ↗</button></div>
+    <div class="r-model"><div class="r-model-label">B · Different explanation</div><label for="r-alternative">What else could explain it?</label><textarea id="r-alternative" placeholder="What if the real mechanism is…"></textarea></div>
+    <div class="r-model"><div class="r-model-label">C · Another explanation</div><label for="r-alternative2">What else might explain it?</label><textarea id="r-alternative2" placeholder="Or perhaps the problem is actually…"></textarea></div>
+  </div>
+  <p class="r-caption">All three are hypotheses. Different explanations can also contribute simultaneously.</p>
+ </section>
+ <section class="r-panel" data-r-stage="4" hidden>
+  <h3 tabindex="-1">What would distinguish them?</h3><p>Predict what each model implies. Find the smallest check that can tell them apart, then record what you learned.</p>
+  <div class="r-predictions" role="group" aria-label="Predictions for each explanation">
+   <div class="r-field"><label for="r-pred-current">If A is right, what would I see?</label><textarea id="r-pred-current" placeholder="A would predict…"></textarea></div>
+   <div class="r-field"><label for="r-pred-alt1">If B is right, what would I see?</label><textarea id="r-pred-alt1" placeholder="B would predict…"></textarea></div>
+   <div class="r-field"><label for="r-pred-alt2">If C is right, what would I see?</label><textarea id="r-pred-alt2" placeholder="C would predict…"></textarea></div>
+  </div>
+  <div class="r-field"><label for="r-discriminator">What evidence would distinguish these explanations?</label><textarea id="r-discriminator" placeholder="A result that favors one over the others would be…"></textarea></div>
+  <div class="r-field"><label for="r-test">What's the smallest meaningful check?</label><textarea id="r-test" placeholder="I can check this by…"></textarea></div>
+  <div class="r-field"><label for="r-result">What actually happened? <span class="r-optional">Optional · after testing</span></label><textarea id="r-result" placeholder="Leave blank until you have evidence."></textarea></div>
+  <div class="r-field"><label for="r-learn">What changed in your understanding? <span class="r-optional">Optional · after testing</span></label><textarea id="r-learn" placeholder="I now think… / Still inconclusive because…"></textarea></div>
+  <div class="r-review"><h4>Your reasoning, in one place</h4><p class="r-caption">A working model, not a proven conclusion. Edits to any step update this summary.</p><textarea id="r-summary" readonly aria-label="Summary of your reasoning"></textarea><button type="button" class="r-copy" id="r-copy">Copy my reasoning</button><p class="r-copy-status" id="r-copy-status" role="status" aria-live="polite"></p></div>
+ </section>
+ <div class="r-editor-footer"><button type="button" id="r-back" disabled>← Back</button><button type="button" class="primary" id="r-next">Continue →</button></div>
     </div>
    </div>
   </div>
@@ -792,100 +837,143 @@ body.reasoning-open-modal{overflow:hidden}
 })();
 </script>
 <script>
-/* No network calls, tracking, or persistent storage: the workbench runs locally in the page. */
+/* Five-step relational reasoning workbench — local-only, no storage, no tracking. */
 (function(){
- const dlg=document.getElementById('reasoning-dialog');
- const launch=document.getElementById('r-launch');
+ const dlg=document.getElementById('reasoning-dialog'),launch=document.getElementById('r-launch');
  if(!dlg||!launch||typeof dlg.showModal!=='function')return;
  const preview=[
-  ["What's actually happening?","Finding sounds isn't always the same as reaching a promising musical idea."],
-  ["What is assumed?","Assumption to question: making sound search better is enough to help creators start."],
-  ["What relationships matter?","Sound discovery, creative momentum, and a usable starting point are related—but not identical."],
-  ["What if we change the problem?","From retrieving individual sounds → helping creators get to the beginning of a song."],
-  ["What should change if it's right?","Judge whether creators reach promising musical ideas, not just whether they find more sounds."]
+ ["What's actually happening?","Finding sounds isn't always the same as reaching a promising musical idea."],
+ ["What is assumed?","Assumption to question: making sound search better is enough to help creators start."],
+ ["What relationships matter?","Sound discovery, creative momentum, and a usable starting point are related—but not identical."],
+ ["What if we change the problem?","From retrieving individual sounds → helping creators get to the beginning of a song."],
+ ["What would distinguish the models?","Compare what each approach predicts about reaching a usable musical idea."]
  ];
- const names=['Observe','Distinguish','Relate','Re-represent','Test'];
+ const names=['Observe','Distinguish','Relate','Re-represent','Test & learn'];
  document.querySelectorAll('[data-r-preview]').forEach(function(btn){
-   btn.addEventListener('click',function(){
-     const n=Number(btn.dataset.rPreview);
-     document.querySelectorAll('[data-r-preview]').forEach(function(b){if(b===btn)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
-     document.getElementById('r-mini-count').textContent=String(n+1).padStart(2,'0')+' / 05';
-     document.getElementById('r-mini-heading').textContent=preview[n][0];
-     document.getElementById('r-mini-explanation').textContent=preview[n][1];
-   });
+  btn.addEventListener('click',function(){
+   const n=Number(btn.dataset.rPreview);
+   document.querySelectorAll('[data-r-preview]').forEach(function(b){if(b===btn)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
+   document.getElementById('r-mini-count').textContent=String(n+1).padStart(2,'0')+' / 05';
+   document.getElementById('r-mini-heading').textContent=preview[n][0];
+   document.getElementById('r-mini-explanation').textContent=preview[n][1];
+  });
  });
- const fields=['problem','evidence','assumptions','relations','move','alternative','prediction','test'];
- const get=function(key){return document.getElementById('r-'+key)};
- const panels=Array.from(dlg.querySelectorAll('[data-r-stage]'));
- const steps=Array.from(dlg.querySelectorAll('[data-r-go]'));
- const back=document.getElementById('r-back'),next=document.getElementById('r-next');
- const summary=document.getElementById('r-summary');
- const status=document.getElementById('r-copy-status');
+ const ids=['problem','evidence','assumptions','relations','move','alternative','alternative2','pred-current','pred-alt1','pred-alt2','discriminator','test','result','learn'];
+ const get=function(k){return document.getElementById('r-'+k)};
+ const panels=Array.from(dlg.querySelectorAll('[data-r-stage]')),steps=Array.from(dlg.querySelectorAll('[data-r-go]'));
+ const back=get('back'),next=get('next'),summary=get('summary'),status=get('copy-status'),picker=get('example');
  let active=0,lastTrigger=launch;
+ const examples={
+  splice:{
+   note:'Illustrative reading of the Splice product case, not a record of private design decisions.',
+   sources:[['Splice case study','./splice/']],
+   problem:'Creators can find sounds but may still struggle to begin a promising musical idea. The outcome is starting and developing music.',
+   evidence:'Splice provides searchable sounds. The CoSo initiative explored helping creators make musical starting points. This alone does not establish why any individual creator struggles.',
+   assumptions:'Better sound retrieval by itself will create creative momentum.',
+   relations:'Finding the right individual sound is the main barrier to getting started.',
+   move:'unit',
+   alternative:'The real unit is a usable musical starting point. Helping creators combine sounds could advance the job without improving search.',
+   alternative2:'The bottleneck is direction or confidence. Starting prompts or creative guidance could help even when search and combination work well.',
+   'pred-current':'Improving retrieval relevance should raise the rate of sessions that become meaningful musical sketches.',
+   'pred-alt1':'Combination-first experiences should increase completed starting points even without changing sample retrieval.',
+   'pred-alt2':'Guidance or inspiration should help uncertain starters more than new retrieval or combination controls.',
+   discriminator:'Compare usable sketches created and continued after each approach, not sample downloads or clicks alone.',
+   test:'Try a small within-creator comparison of retrieval help, combination help and guidance. Define success with creators before testing.',
+   result:'',learn:''
+  },
+  medellin:{
+   note:'Historically documented infrastructure, with illustrative competing explanations and tests. The escalators were part of broader urban improvements.',
+   sources:[['Medellín city report','https://www.medellin.gov.co/es/sala-de-prensa/noticias/las-escaleras-electricas-de-la-comuna-13-en-medellin-una-transformacion-urbana-que-cambio-vidas/'],['CNN reference','https://www.cnn.com/travel/article/colombia-medellin-neighborhood']],
+   problem:'Residents on the steep slopes of Las Independencias in Medellín needed more practical access between their homes and services.',
+   evidence:'The hillside route previously involved about 350 concrete steps. Medellín installed outdoor escalators as one part of wider access and urban improvements, beginning in 2011.',
+   assumptions:'Better stairs and paths are necessarily the main answer to steep neighborhood access.',
+   relations:'The problem is primarily the difficulty and safety of climbing existing stairs.',
+   move:'unit',
+   alternative:'The main constraint is the energy and time required to gain elevation. Treat the hill as a vertical-transport corridor.',
+   alternative2:'The real problem is wider isolation from services and city transport. End-to-end connectivity matters beyond the hillside climb.',
+   'pred-current':'Safer, better stairs improve the walking route but do not remove much climbing effort.',
+   'pred-alt1':'Mechanized ascent should reduce exertion and time along the treated slope.',
+   'pred-alt2':'Even with a faster ascent, residents may face remaining barriers to reaching work, school and healthcare.',
+   discriminator:'Compare effort and travel time on the slope with actual door-to-door access for different groups and destinations.',
+   test:'Map representative trips with residents. Compare improved stairs, assisted ascent, and end-to-end transport links before committing capital.',
+   result:'',learn:''
+  },
+  mclean:{
+   note:'Container shipping history is documented; these competing explanations are an educational reconstruction, not McLean’s own recorded reasoning sequence.',
+   sources:[['Ideal-X history','https://transportgeography.org/contents/chapter1/the-setting-of-global-transportation-systems/idealx-first-containeriship-1956/']],
+   problem:'Shipping cargo between trucks, docks and ships required costly, time-consuming handling.',
+   evidence:'Traditional break-bulk cargo was loaded piece by piece. Malcolm McLean introduced a container-based system in the 1956 Ideal-X voyage.',
+   assumptions:'Reducing transport cost must mainly mean faster manual cargo handling or faster ships.',
+   relations:'The main bottleneck is how quickly workers handle each individual piece of cargo.',
+   move:'unit',
+   alternative:'Change the unit being handled: transfer a standardized sealed container rather than every individual item.',
+   alternative2:'Change the whole system: coordinate container standards, ships, ports, cranes, trucking and onward transport.',
+   'pred-current':'Faster manual handling improves per-piece labor productivity but keeps repeated handling at each transfer.',
+   'pred-alt1':'Unitized loads sharply reduce transfers, handling cost per ton, and time spent in port.',
+   'pred-alt2':'End-to-end savings depend on compatible infrastructure and intermodal coordination, not containers alone.',
+   discriminator:'Measure cost per ton and port turnaround, plus total journey cost and transfer compatibility.',
+   test:'Pilot one lane using standardized containers and compatible handling equipment; compare with break-bulk loading and end-to-end delivery.',
+   result:'',learn:''
+  }
+ };
  function clean(k){return get(k).value.trim()||'[Not yet entered]'}
  function compose(){
-   return [
-     'RELATIONAL REASONING · A WORKING MODEL',
-     '1. OBSERVE — What is actually happening?\n'+clean('problem'),
-     '2. DISTINGUISH — What do I know?\n'+clean('evidence')+'\nAssumptions:\n'+clean('assumptions'),
-     '3. RELATE — What relationships explain it?\n'+clean('relations'),
-     '4. RE-REPRESENT — What if the model is wrong?\nApproach: '+get('move').selectedOptions[0].text+'\nAlternative: '+clean('alternative'),
-     '5. TEST — What would follow if right?\n'+clean('prediction')+'\nSmallest meaningful check:\n'+clean('test'),
-     'Status: Hypothesis. Compare it with evidence, other explanations, or practical outcomes.'
-   ].join('\n\n');
+  return [
+   'RELATIONAL REASONING · WORKING MODEL',
+   '1. OBSERVE\n'+clean('problem'),
+   '2. DISTINGUISH\nEvidence: '+clean('evidence')+'\nAssumptions: '+clean('assumptions'),
+   '3. RELATE\nCurrent explanation (A): '+clean('relations'),
+   '4. RE-REPRESENT\nMove: '+get('move').selectedOptions[0].text+'\nA — Current: '+clean('relations')+'\nB — Alternative: '+clean('alternative')+'\nC — Another: '+clean('alternative2'),
+   '5. TEST & LEARN\nA predicts: '+clean('pred-current')+'\nB predicts: '+clean('pred-alt1')+'\nC predicts: '+clean('pred-alt2')+'\nWhat distinguishes them: '+clean('discriminator')+'\nSmallest meaningful check: '+clean('test')+'\nObserved result: '+clean('result')+'\nWhat changed: '+clean('learn'),
+   'Status: Working hypotheses, not proven conclusions. More than one model may contribute.'
+  ].join('\n\n');
  }
- function render(n,focusHeading){
-   active=Math.max(0,Math.min(4,n));
-   panels.forEach(function(p,i){p.hidden=i!==active});
-   steps.forEach(function(b,i){if(i===active)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
-   document.getElementById('r-progress').textContent='Step '+(active+1)+' of 5 · '+names[active];
-   back.disabled=active===0;
-   next.hidden=active===4;
-   summary.value=compose();
-   if(focusHeading)panels[active].querySelector('h3').focus({preventScroll:true});
+ function sync(){
+  get('current-model').textContent=get('relations').value.trim()||'Describe your current explanation in Step 3.';
+  summary.value=compose();
  }
- fields.forEach(function(k){get(k).addEventListener('input',function(){summary.value=compose();status.textContent=''})});
+ function render(n,focus){
+  active=Math.max(0,Math.min(4,n));
+  panels.forEach(function(p,i){p.hidden=i!==active});
+  steps.forEach(function(b,i){if(i===active)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
+  get('progress').textContent='Step '+(active+1)+' of 5 · '+names[active];
+  back.disabled=active===0;next.hidden=active===4;sync();
+  if(focus)panels[active].querySelector('h3').focus({preventScroll:true});
+ }
+ ids.forEach(function(k){get(k).addEventListener('input',function(){sync();status.textContent=''})});
  steps.forEach(function(b){b.addEventListener('click',function(){render(Number(b.dataset.rGo),true)})});
+ get('edit-current').addEventListener('click',function(){render(2,true)});
  back.addEventListener('click',function(){render(active-1,true)});
  next.addEventListener('click',function(){render(active+1,true)});
- document.getElementById('r-example').addEventListener('click',function(){
-   const example={
-     problem:'Musicians can find sounds but still struggle to get to a promising musical idea.',
-     evidence:'Splice provides searchable sounds; the product case concerns moving from finding sounds toward starting songs.',
-     assumptions:'Better retrieval by itself will create creative momentum.',
-     relations:'Finding an individual sound is an intermediate step. The outcome that matters is reaching a musical idea worth developing.',
-     move:'unit',
-     alternative:'Represent the job as reaching a promising starting point for a song, not merely retrieving samples.',
-     prediction:'Experiences that support making combinations should help creators reach promising ideas, even without improving individual search results.',
-     test:'Compare whether creators reach and continue developing promising musical starters. Define meaningful success before comparing alternatives.'
-   };
-   Object.keys(example).forEach(function(k){get(k).value=example[k]});
-   status.textContent='Illustrative interpretation of the Splice case, not a reconstruction of private thoughts.';
-   render(0,true);
+ function reset(){
+  ids.forEach(function(k){get(k).value=k==='move'?'reverse':''});
+  picker.value='';get('source').hidden=true;get('source-links').replaceChildren();status.textContent='';render(0,true);
+ }
+ get('reset').addEventListener('click',reset);
+ picker.addEventListener('change',function(){
+  const example=examples[picker.value];if(!example){reset();return}
+  ids.forEach(function(k){get(k).value=example[k]===undefined?(k==='move'?'reverse':''):example[k]});
+  get('example-status').textContent=example.note;
+  const links=get('source-links');links.replaceChildren();
+  example.sources.forEach(function(pair){
+   const a=document.createElement('a');a.href=pair[1];a.textContent=pair[0]+' ↗';a.target='_blank';a.rel='noopener noreferrer';links.appendChild(a);
+  });
+  get('source').hidden=false;status.textContent='';render(0,true);
  });
- document.getElementById('r-reset').addEventListener('click',function(){
-   fields.forEach(function(k){get(k).value=k==='move'?'reverse':''});
-   status.textContent='';
-   render(0,true);
- });
- document.getElementById('r-copy').addEventListener('click',async function(){
-   const value=compose();summary.value=value;
-   try{
-     if(!navigator.clipboard||!navigator.clipboard.writeText)throw new Error('Clipboard unavailable');
-     await navigator.clipboard.writeText(value);
-     status.textContent='Copied. This remains your working hypothesis until tested.';
-   }catch(err){
-     summary.focus();summary.select();
-     status.textContent='Clipboard access unavailable. Your text is selected—copy it with your keyboard.';
-   }
+ get('copy').addEventListener('click',async function(){
+  const txt=compose();summary.value=txt;
+  try{
+   if(!navigator.clipboard||!navigator.clipboard.writeText)throw new Error('Clipboard unavailable');
+   await navigator.clipboard.writeText(txt);status.textContent='Copied. Hypotheses remain unproven until tested.';
+  }catch(err){
+   summary.focus();summary.select();status.textContent='Clipboard unavailable. Text selected; copy it with your keyboard.';
+  }
  });
  launch.addEventListener('click',function(){
-   lastTrigger=launch;render(active,false);dlg.showModal();
-   document.body.classList.add('reasoning-open-modal');
-   document.getElementById('r-close').focus();
+  lastTrigger=launch;render(active,false);dlg.showModal();document.body.classList.add('reasoning-open-modal');get('close').focus();
  });
- document.getElementById('r-close').addEventListener('click',function(){dlg.close()});
- dlg.addEventListener('click',function(event){if(event.target===dlg)dlg.close()});
+ get('close').addEventListener('click',function(){dlg.close()});
+ dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()});
  dlg.addEventListener('close',function(){document.body.classList.remove('reasoning-open-modal');lastTrigger.focus({preventScroll:true})});
  render(0,false);
 })();
