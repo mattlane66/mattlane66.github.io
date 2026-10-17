@@ -468,7 +468,7 @@ body.reasoning-open-modal{overflow:hidden}
   <div class="reasoning-intro">
     <span class="state">My core reasoning method · interactive</span>
     <h3 id="reasoning-tile-title">Change the model. Change what's possible.</h3>
-    <p>Here's how I think: observe what happens, separate facts from assumptions, trace the relationships, compare different explanations, and test what sets them apart.</p>
+    <p>Here's how I think: observe what happens, separate facts from assumptions, trace the relationships, change the representation, and test what the new view reveals.</p>
     <button type="button" id="r-launch" class="r-launch">Try it on your problem ↗</button>
   </div>
   <div class="r-mini" aria-label="Five-step reasoning method illustrated with Splice">
@@ -541,29 +541,29 @@ body.reasoning-open-modal{overflow:hidden}
      <button type="button" data-r-go="4">5 <span>Test &amp; learn</span></button>
     </div>
     <div class="r-editor">
-     <div class="r-example-control"><div class="r-example-choice"><label for="r-example">Load an example</label><select id="r-example"><option value="">Choose a problem…</option><option value="splice">Splice — from search to song</option><option value="medellin">Medellín — escalators in the sky</option><option value="mclean">Malcolm McLean — container shipping</option></select></div><button type="button" class="r-reset" id="r-reset">Start fresh</button></div><div class="r-source" id="r-source" hidden><span id="r-example-status"></span><span id="r-source-links"></span></div>
+     <div class="r-example-control"><div class="r-example-choice"><label for="r-example">Load an example</label><select id="r-example"><option value="">Choose a problem…</option><option value="splice">Splice — from search to song</option><option value="medellin">Medellín — escalators in the sky</option><option value="mclean">Malcom McLean — container shipping</option></select></div><button type="button" class="r-reset" id="r-reset">Start fresh</button></div><div class="r-source" id="r-source" hidden><span id="r-example-status"></span><span id="r-source-links"></span></div>
      <div class="r-progress" id="r-progress">Step 1 of 5 · Observe</div>
      <section class="r-panel" data-r-stage="0"><h3 tabindex="-1">What's actually happening?</h3><p>Describe the difficulty or outcome. Don't prescribe a solution yet.</p><div class="r-field"><label for="r-problem">What do you want to understand or change?</label><textarea id="r-problem" placeholder="People are struggling to…"></textarea></div></section>
      <section class="r-panel" data-r-stage="1" hidden><h3 tabindex="-1">What do I know versus assume?</h3><p>Don't confuse what you've seen with your explanation for it.</p><div class="r-field"><label for="r-evidence">What have I actually observed or established?</label><textarea id="r-evidence" placeholder="The evidence I have is…"></textarea></div><div class="r-field"><label for="r-assumptions">What am I treating as true without enough evidence?</label><textarea id="r-assumptions" placeholder="I am assuming that…"></textarea></div></section>
      <section class="r-panel" data-r-stage="2" hidden><h3 tabindex="-1">What relates to what?</h3><p>Look for causes, dependencies, constraints, and the relationship to the outcome that matters.</p><div class="r-field"><label for="r-relations">How do I currently explain what happens?</label><textarea id="r-relations" placeholder="I currently think X affects Y because…"></textarea></div></section>
      <section class="r-panel" data-r-stage="3" hidden>
-  <h3 tabindex="-1">What else could explain it?</h3><p>Compare your current explanation with two genuinely different models, not just variations of a solution.</p>
+  <h3 tabindex="-1">What else could the problem be?</h3><p>Explore different ways to understand the problem. They may compete, complement one another, or describe different levels of the same system.</p>
   <div class="r-field"><label for="r-move">How might you change the representation?</label><select id="r-move"><option value="reverse">Reverse the explanation — question cause and effect</option><option value="unit">Change the unit — focus on something else</option><option value="unify">Unify — find one underlying relationship</option><option value="split">Separate — unpack processes treated as one</option><option value="remove">Remove an assumption — challenge a constraint</option><option value="generate">Find a hidden rule — what generates the pattern?</option></select></div>
   <div class="r-compare" role="group" aria-label="Compare competing explanations">
-    <div class="r-model r-model-current"><div class="r-model-label">A · Current model</div><p id="r-current-model" class="r-model-readonly">Describe your current model in Step 3.</p><button type="button" id="r-edit-current" class="r-small-edit">Edit Step 3 ↗</button></div>
-    <div class="r-model"><div class="r-model-label">B · Different explanation</div><label for="r-alternative">What else could explain it?</label><textarea id="r-alternative" placeholder="What if the real mechanism is…"></textarea></div>
-    <div class="r-model"><div class="r-model-label">C · Another explanation</div><label for="r-alternative2">What else might explain it?</label><textarea id="r-alternative2" placeholder="Or perhaps the problem is actually…"></textarea></div>
+    <div class="r-model r-model-current"><div class="r-model-label">A · Current representation</div><p id="r-current-model" class="r-model-readonly">Describe your current model in Step 3.</p><button type="button" id="r-edit-current" class="r-small-edit">Edit Step 3 ↗</button></div>
+    <div class="r-model"><div class="r-model-label">B · Different representation</div><label for="r-alternative">What changes if you see it differently?</label><textarea id="r-alternative" placeholder="What if the real mechanism is…"></textarea></div>
+    <div class="r-model"><div class="r-model-label">C · Another level or possibility</div><label for="r-alternative2">What would a wider or competing model reveal?</label><textarea id="r-alternative2" placeholder="Or perhaps the problem is actually…"></textarea></div>
   </div>
-  <p class="r-caption">All three are hypotheses. Different explanations can also contribute simultaneously.</p>
+  <div class="r-field"><label for="r-relation">How are these models related?</label><select id="r-relation"><option value="unknown">Not sure yet</option><option value="rival">Competing explanations — different possible causes</option><option value="scope">Alternative boundaries — different parts of the job</option><option value="nested">Nested — one model explains more of the system</option><option value="complementary">Complementary — different mechanisms work together</option></select></div><p class="r-caption" id="r-relation-help">Check whether these models actually compete. They may describe different levels of the same system.</p>
  </section>
  <section class="r-panel" data-r-stage="4" hidden>
-  <h3 tabindex="-1">What would distinguish them?</h3><p>Predict what each model implies. Find the smallest check that can tell them apart, then record what you learned.</p>
+  <h3 tabindex="-1">What would each model change?</h3><p>Ask what each model explains or predicts. For rivals, seek evidence that distinguishes them. For nested or complementary models, test what the added layer contributes.</p>
   <div class="r-predictions" role="group" aria-label="Predictions for each explanation">
    <div class="r-field"><label for="r-pred-current">If A is right, what would I see?</label><textarea id="r-pred-current" placeholder="A would predict…"></textarea></div>
    <div class="r-field"><label for="r-pred-alt1">If B is right, what would I see?</label><textarea id="r-pred-alt1" placeholder="B would predict…"></textarea></div>
    <div class="r-field"><label for="r-pred-alt2">If C is right, what would I see?</label><textarea id="r-pred-alt2" placeholder="C would predict…"></textarea></div>
   </div>
-  <div class="r-field"><label for="r-discriminator">What evidence would distinguish these explanations?</label><textarea id="r-discriminator" placeholder="A result that favors one over the others would be…"></textarea></div>
+  <div class="r-field"><label for="r-discriminator">What evidence would distinguish them—or show the added value of one?</label><textarea id="r-discriminator" placeholder="A result that favors one over the others would be…"></textarea></div>
   <div class="r-field"><label for="r-test">What's the smallest meaningful check?</label><textarea id="r-test" placeholder="I can check this by…"></textarea></div>
   <div class="r-field"><label for="r-result">What actually happened? <span class="r-optional">Optional · after testing</span></label><textarea id="r-result" placeholder="Leave blank until you have evidence."></textarea></div>
   <div class="r-field"><label for="r-learn">What changed in your understanding? <span class="r-optional">Optional · after testing</span></label><textarea id="r-learn" placeholder="I now think… / Still inconclusive because…"></textarea></div>
@@ -845,8 +845,8 @@ body.reasoning-open-modal{overflow:hidden}
  ["What's actually happening?","Finding sounds isn't always the same as reaching a promising musical idea."],
  ["What is assumed?","Assumption to question: making sound search better is enough to help creators start."],
  ["What relationships matter?","Sound discovery, creative momentum, and a usable starting point are related—but not identical."],
- ["What if we change the problem?","From retrieving individual sounds → helping creators get to the beginning of a song."],
- ["What would distinguish the models?","Compare what each approach predicts about reaching a usable musical idea."]
+ ["What if we change the problem?","From retrieving individual samples → hearing compatible sounds together and steering a song starter."],
+ ["What would each model change?","Compare time to a usable sketch, the need to steer, and continuation into the DAW."]
  ];
  const names=['Observe','Distinguish','Relate','Re-represent','Test & learn'];
  document.querySelectorAll('[data-r-preview]').forEach(function(btn){
@@ -858,61 +858,61 @@ body.reasoning-open-modal{overflow:hidden}
    document.getElementById('r-mini-explanation').textContent=preview[n][1];
   });
  });
- const ids=['problem','evidence','assumptions','relations','move','alternative','alternative2','pred-current','pred-alt1','pred-alt2','discriminator','test','result','learn'];
+ const ids=['problem','evidence','assumptions','relations','move','relation','alternative','alternative2','pred-current','pred-alt1','pred-alt2','discriminator','test','result','learn'];
  const get=function(k){return document.getElementById('r-'+k)};
  const panels=Array.from(dlg.querySelectorAll('[data-r-stage]')),steps=Array.from(dlg.querySelectorAll('[data-r-go]'));
  const back=get('back'),next=get('next'),summary=get('summary'),status=get('copy-status'),picker=get('example');
  let active=0,lastTrigger=launch;
  const examples={
   splice:{
-   note:'Illustrative reading of the Splice product case, not a record of private design decisions.',
-   sources:[['Splice case study','./splice/']],
-   problem:'Creators can find sounds but may still struggle to begin a promising musical idea. The outcome is starting and developing music.',
-   evidence:'Splice provides searchable sounds. The CoSo initiative explored helping creators make musical starting points. This alone does not establish why any individual creator struggles.',
-   assumptions:'Better sound retrieval by itself will create creative momentum.',
-   relations:'Finding the right individual sound is the main barrier to getting started.',
-   move:'unit',
-   alternative:'The real unit is a usable musical starting point. Helping creators combine sounds could advance the job without improving search.',
-   alternative2:'The bottleneck is direction or confidence. Starting prompts or creative guidance could help even when search and combination work well.',
-   'pred-current':'Improving retrieval relevance should raise the rate of sessions that become meaningful musical sketches.',
-   'pred-alt1':'Combination-first experiences should increase completed starting points even without changing sample retrieval.',
-   'pred-alt2':'Guidance or inspiration should help uncertain starters more than new retrieval or combination controls.',
-   discriminator:'Compare usable sketches created and continued after each approach, not sample downloads or clicks alone.',
-   test:'Try a small within-creator comparison of retrieval help, combination help and guidance. Define success with creators before testing.',
+   note:'Splice case facts come from the case study and Splice; the A/B/C comparison and proposed tests are a teaching reconstruction, not a historical experiment.',
+   sources:[['Splice case study','./splice/'],['Splice on CoSo','https://splice.com/blog/meet-coso-splice/']],
+   problem:'Splice had abundant searchable sounds, yet finding samples and getting a musical idea started were not the same job. The goal was progress toward a usable sketch.',
+   evidence:'The case study reports creator research about blank-canvas friction and the work of assembling samples after search. Splice publicly documents CoSo combining compatible loops into steerable Stacks that can be taken into a DAW. Research claims in the case are not independently verified here.',
+   assumptions:'If the search experience improves, musical momentum will follow; or, at the opposite extreme, Splice should become a complete composition environment.',
+   relations:'A — Sound discovery. The product’s job is to help creators retrieve relevant individual samples; creators assemble them separately in their DAW.',
+   move:'unit',relation:'scope',
+   alternative:'B — Song starting. The unit of value is a usable combination of compatible sounds that a creator can steer, save and export to a DAW. This moves the product boundary one step later.',
+   alternative2:'C — Full composition. The product owns editing and finishing an entire track inside Splice. This stretches the boundary much further than a song starter.',
+   'pred-current':'A may shorten time to finding samples, but creators still need to assemble an idea before they can evaluate it.',
+   'pred-alt1':'B should improve time to a coherent, usable sketch and increase saves, exports, and continued work in the DAW without replacing the DAW.',
+   'pred-alt2':'C could increase on-platform editing but adds significantly more workflow complexity and may be unnecessary if creators prefer to finish in their DAW.',
+   discriminator:'Compare time to a sketch worth keeping, steering effort, DAW continuation, and implementation cost—not only sample searches or layers generated.',
+   test:'With the same source sounds, let a few creators try improved search, a steerable Stack prototype, and a low-fidelity full-editor concept. Observe progress to a usable sketch and what they choose to continue.',
    result:'',learn:''
   },
   medellin:{
-   note:'Historically documented infrastructure, with illustrative competing explanations and tests. The escalators were part of broader urban improvements.',
+   note:'Medellín city reports substantiate the escalators and the wider neighborhood intervention. A/B/C are nested planning lenses, not claims about the planners’ private thoughts or isolated causal effects.',
    sources:[['Medellín city report','https://www.medellin.gov.co/es/sala-de-prensa/noticias/las-escaleras-electricas-de-la-comuna-13-en-medellin-una-transformacion-urbana-que-cambio-vidas/'],['CNN reference','https://www.cnn.com/travel/article/colombia-medellin-neighborhood']],
-   problem:'Residents on the steep slopes of Las Independencias in Medellín needed more practical access between their homes and services.',
-   evidence:'The hillside route previously involved about 350 concrete steps. Medellín installed outdoor escalators as one part of wider access and urban improvements, beginning in 2011.',
-   assumptions:'Better stairs and paths are necessarily the main answer to steep neighborhood access.',
-   relations:'The problem is primarily the difficulty and safety of climbing existing stairs.',
-   move:'unit',
-   alternative:'The main constraint is the energy and time required to gain elevation. Treat the hill as a vertical-transport corridor.',
-   alternative2:'The real problem is wider isolation from services and city transport. End-to-end connectivity matters beyond the hillside climb.',
-   'pred-current':'Safer, better stairs improve the walking route but do not remove much climbing effort.',
-   'pred-alt1':'Mechanized ascent should reduce exertion and time along the treated slope.',
-   'pred-alt2':'Even with a faster ascent, residents may face remaining barriers to reaching work, school and healthcare.',
-   discriminator:'Compare effort and travel time on the slope with actual door-to-door access for different groups and destinations.',
-   test:'Map representative trips with residents. Compare improved stairs, assisted ascent, and end-to-end transport links before committing capital.',
+   problem:'Residents of steep neighborhoods in Comuna 13 faced difficult trips between home and everyday destinations. The objective was access, not simply nicer steps.',
+   evidence:'Residents previously climbed hundreds of irregular stairs on steep routes. Medellín began operating public outdoor escalators in 2011 within a wider program of infrastructure, culture and social improvements. The city describes physical and social isolation as part of the problem.',
+   assumptions:'If climbing is difficult, the problem must be the design of the stairs; reducing physical effort alone guarantees full access for everyone.',
+   relations:'A — Pedestrian-path problem. Improve the existing stair route to make climbing safer and more manageable.',
+   move:'unit',relation:'nested',
+   alternative:'B — Vertical-mobility problem. The cost is gaining elevation, so change how people ascend the hill; outdoor escalators reduce the effort of the climb.',
+   alternative2:'C — Neighborhood-access problem. The real job is reaching destinations safely and independently. Vertical travel is one component alongside connections, accessible routes, services and social conditions.',
+   'pred-current':'A would make the existing walking path safer, but residents would still need to climb substantial elevation.',
+   'pred-alt1':'B should reduce travel time and exertion on the escalator route, but escalators alone cannot establish end-to-end accessibility, especially for wheelchair users.',
+   'pred-alt2':'C requires improvement in door-to-door access across groups and destinations, beyond the escalator segment, and may need additional routes or interventions.',
+   discriminator:'First measure time and exertion for ascent. Then measure actual door-to-door access, including people for whom escalators are not usable. The second measure tests what the wider model adds.',
+   test:'Map trips with residents of different mobility needs. Compare stairs, mechanical ascent and full trips to work, school and services. Identify remaining barriers before asserting a broader effect.',
    result:'',learn:''
   },
   mclean:{
-   note:'Container shipping history is documented; these competing explanations are an educational reconstruction, not McLean’s own recorded reasoning sequence.',
-   sources:[['Ideal-X history','https://transportgeography.org/contents/chapter1/the-setting-of-global-transportation-systems/idealx-first-containeriship-1956/']],
-   problem:'Shipping cargo between trucks, docks and ships required costly, time-consuming handling.',
-   evidence:'Traditional break-bulk cargo was loaded piece by piece. Malcolm McLean introduced a container-based system in the 1956 Ideal-X voyage.',
-   assumptions:'Reducing transport cost must mainly mean faster manual cargo handling or faster ships.',
-   relations:'The main bottleneck is how quickly workers handle each individual piece of cargo.',
-   move:'unit',
-   alternative:'Change the unit being handled: transfer a standardized sealed container rather than every individual item.',
-   alternative2:'Change the whole system: coordinate container standards, ships, ports, cranes, trucking and onward transport.',
-   'pred-current':'Faster manual handling improves per-piece labor productivity but keeps repeated handling at each transfer.',
-   'pred-alt1':'Unitized loads sharply reduce transfers, handling cost per ton, and time spent in port.',
-   'pred-alt2':'End-to-end savings depend on compatible infrastructure and intermodal coordination, not containers alone.',
-   discriminator:'Measure cost per ton and port turnaround, plus total journey cost and transfer compatibility.',
-   test:'Pilot one lane using standardized containers and compatible handling equipment; compare with break-bulk loading and end-to-end delivery.',
+   note:'Malcom McLean’s historical progression included the idea of moving truck trailers before detachable containers. The baseline, predictions and hypothetical test are educational reconstructions.',
+   sources:[['Richmond Fed history','https://www.richmondfed.org/-/media/richmondfedorg/publications/research/econ_focus/2012/q2-3/pdf/economic_history.pdf'],['Ideal-X transport history','https://transportgeography.org/contents/chapter1/the-setting-of-global-transportation-systems/idealx-first-containeriship-1956/']],
+   problem:'Break-bulk shipping repeatedly handled goods as individual items at truck-to-ship transfers. Port handling was costly and slow, even if the voyage itself was efficient.',
+   evidence:'Cargo was traditionally handled piece by piece. McLean considered shipping truck trailers, but their undercarriages used valuable ship space; detachable cargo boxes became the unit moved between modes. The Ideal-X carried 58 containers in 1956.',
+   assumptions:'The only way to reduce handling cost is to move each item faster; alternatively, moving an entire truck trailer is already a sufficient redesign.',
+   relations:'A — Individual freight units. Improve the speed or labor cost of loading and unloading each item at each transfer.',
+   move:'unit',relation:'nested',
+   alternative:'B — Whole trailer. Load the freight-carrying trailer onto the ship as one unit. This eliminates piece-by-piece rehandling but carries wheels and chassis that waste cargo space.',
+   alternative2:'C — Detachable container and intermodal system. Lift the loaded box off its chassis. Keep freight sealed between modes, with compatible cranes, vessels, trucks and port operations.',
+   'pred-current':'A might cut labor time per item, but handling still scales with the number of items and transfers.',
+   'pred-alt1':'B should reduce individual handling lifts, but wastes ship capacity on the undercarriage and adds weight and volume.',
+   'pred-alt2':'C should retain the handling advantage of B while using vessel space better; the full benefit also requires compatible transfers and port systems.',
+   discriminator:'Compare lifts per shipment, labor cost per ton, usable ship capacity, port turnaround and end-to-end transport costs. Capacity distinguishes whole trailers from detachable boxes.',
+   test:'Compare a representative shipment loaded as break-bulk, trailer-on-ship and detachable containers. Estimate lifts, deck utilization and total handling cost before a full route pilot.',
    result:'',learn:''
   }
  };
@@ -923,7 +923,7 @@ body.reasoning-open-modal{overflow:hidden}
    '1. OBSERVE\n'+clean('problem'),
    '2. DISTINGUISH\nEvidence: '+clean('evidence')+'\nAssumptions: '+clean('assumptions'),
    '3. RELATE\nCurrent explanation (A): '+clean('relations'),
-   '4. RE-REPRESENT\nMove: '+get('move').selectedOptions[0].text+'\nA — Current: '+clean('relations')+'\nB — Alternative: '+clean('alternative')+'\nC — Another: '+clean('alternative2'),
+   '4. RE-REPRESENT\nMove: '+get('move').selectedOptions[0].text+'\nHow models relate: '+get('relation').selectedOptions[0].text+'\nA — Current: '+clean('relations')+'\nB — Alternative: '+clean('alternative')+'\nC — Another: '+clean('alternative2'),
    '5. TEST & LEARN\nA predicts: '+clean('pred-current')+'\nB predicts: '+clean('pred-alt1')+'\nC predicts: '+clean('pred-alt2')+'\nWhat distinguishes them: '+clean('discriminator')+'\nSmallest meaningful check: '+clean('test')+'\nObserved result: '+clean('result')+'\nWhat changed: '+clean('learn'),
    'Status: Working hypotheses, not proven conclusions. More than one model may contribute.'
   ].join('\n\n');
@@ -931,6 +931,8 @@ body.reasoning-open-modal{overflow:hidden}
  function sync(){
   get('current-model').textContent=get('relations').value.trim()||'Describe your current explanation in Step 3.';
   summary.value=compose();
+  const relationHints={unknown:'Check whether these models compete, complement one another, or describe different levels.',rival:'For competing explanations, look for evidence that favors one prediction over another.',scope:'For different scopes, compare the outcome, boundary and cost of each approach.',nested:'For nested models, test what each added level explains or improves beyond the previous level.',complementary:'For complementary models, test what changes when their mechanisms work together.'};
+  get('relation-help').textContent=relationHints[get('relation').value];
  }
  function render(n,focus){
   active=Math.max(0,Math.min(4,n));
@@ -946,13 +948,13 @@ body.reasoning-open-modal{overflow:hidden}
  back.addEventListener('click',function(){render(active-1,true)});
  next.addEventListener('click',function(){render(active+1,true)});
  function reset(){
-  ids.forEach(function(k){get(k).value=k==='move'?'reverse':''});
+  ids.forEach(function(k){get(k).value=k==='move'?'reverse':k==='relation'?'unknown':''});
   picker.value='';get('source').hidden=true;get('source-links').replaceChildren();status.textContent='';render(0,true);
  }
  get('reset').addEventListener('click',reset);
  picker.addEventListener('change',function(){
   const example=examples[picker.value];if(!example){reset();return}
-  ids.forEach(function(k){get(k).value=example[k]===undefined?(k==='move'?'reverse':''):example[k]});
+  ids.forEach(function(k){get(k).value=example[k]===undefined?(k==='move'?'reverse':k==='relation'?'unknown':''):example[k]});
   get('example-status').textContent=example.note;
   const links=get('source-links');links.replaceChildren();
   example.sources.forEach(function(pair){
