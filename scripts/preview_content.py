@@ -50,17 +50,18 @@ def changed_pages(base: str) -> list[str]:
     order = lambda p: (0 if p.startswith("notes/n/") else 1 if p.startswith("articles/") else 2, p)
     selected = sorted(pages, key=order)
     if len(selected) > MAX_PAGES:
-        # One Markdown-renderer change rebuilds hundreds of generated pages.
+        # Updating Note sources can rebuild hundreds of pages and now also
+        # regenerates the homepage count. Review both entry points.
         # Site-wide structural tests still cover every page; browser screenshots
         # target known regressions and a deterministic sample on both viewports.
-        if not all(p == "notes/index.html" or p.startswith("notes/n/") for p in selected):
+        if not all(p in ("index.html", "notes/index.html") or p.startswith("notes/n/") for p in selected):
             raise RuntimeError(f"{len(selected)} changed pages exceed review limit {MAX_PAGES}; split the PR rather than silently omit pages.")
         priority_ids = (
             "299848006", "211335608", "90731649", "85797688",
             "80202193", "104925537", "89034495", "82389527",
             "opportunity-judgment-loop-20261002",
         )
-        picked = ["notes/index.html"] if "notes/index.html" in pages else []
+        picked = [p for p in ("index.html", "notes/index.html") if p in pages]
         for ident in priority_ids:
             picked.extend(p for p in selected if p.endswith("-" + ident + "/index.html") and p not in picked)
         other_notes = [p for p in selected if p not in picked]

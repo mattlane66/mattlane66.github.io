@@ -252,6 +252,25 @@ def patch_planning_tools() -> None:
     text = text[:style.start()] + block + text[style.start():]
     path.write_text(text, encoding="utf-8")
 
+def sync_home_note_count(total: int) -> None:
+    """Keep the homepage CTA in sync with the canonical active Notes collection.
+
+    The number is a derived publishing artifact, not an independently edited
+    marketing claim. Fail closed if the homepage markup changes unexpectedly.
+    """
+    path = ROOT / "index.html"
+    page = path.read_text(encoding="utf-8")
+    pattern = r'(<a\b[^>]*href="\./notes/[^"]*"[^>]*>Browse all )\d+( Notes →</a>)'
+    matches = list(re.finditer(pattern, page))
+    if len(matches) != 1:
+        raise RuntimeError(
+            f"Expected exactly one homepage Browse all Notes counter, found {len(matches)}"
+        )
+    page = re.sub(pattern, lambda m: f"{m.group(1)}{total}{m.group(2)}", page, count=1)
+    if page != path.read_text(encoding="utf-8"):
+        path.write_text(page, encoding="utf-8")
+
+
 def main() -> None:
     patch_planning_tools()
     text = NOTES_HTML.read_text(encoding="utf-8")
@@ -274,6 +293,7 @@ def main() -> None:
 
     text = render_static_archive(text, notes)
     NOTES_HTML.write_text(text, encoding="utf-8")
+    sync_home_note_count(len(notes))
 
     if OUT.exists():
         shutil.rmtree(OUT)
