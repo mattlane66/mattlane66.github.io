@@ -386,7 +386,7 @@ h1{{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin
         for page in sorted((ROOT / "articles").glob("*/index.html"))
     ]
     core = [
-        SITE+"/", SITE+"/about/", SITE+"/splice/", SITE+"/nyshex/", SITE+"/codeai/",
+        SITE+"/", SITE+"/about/", SITE+"/splice/", SITE+"/splice/rooted-layered-dag/", SITE+"/nyshex/", SITE+"/codeai/",
         SITE+"/fit-check/", SITE+"/planning-tools/", SITE+"/notes/"
     ] + article_urls
     lines = ['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
