@@ -30,7 +30,7 @@ a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
 main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
 h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
 .body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}
-.body p{margin:0 0 1.1em}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
 .discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
@@ -38,11 +38,34 @@ h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:
 <body data-note-category="products">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
 <main class="wrap"><div class="meta">2025-01-23 · <span class="category-name">Products &amp; systems</span></div><h1>Appetites, not Estimates</h1><article class="body"><p>Estimates start with a design and end with a number. Appetites start with a number and end with a design.</p>
-<p>What the graphic below shows are two very different ways of deciding how (and *how much*) work gets done:</p>
-<p>1. **Estimate** (Fixed Scope, Variable Time)</p>
-<p>- Here, you begin by locking down *everything* you want delivered—the full feature set, requirements, etc.<br>    - Because that scope is fixed, the time (and cost) will vary. You might go over budget or stretch deadlines if the project (e.g., a product feature) takes longer than expected.<br>    - This approach leads to detailed “how long will it take?” estimates up front, which can be notoriously off-target in software projects unless there are 0 unknowns left or you are doing something for the 10th time and there’s minimal variability in the task.<br>2. **Appetite** (Fixed Time, Variable Scope, i.e., time budgets and talent allocation (number of people and their domain experience levels))</p>
-<p>- Instead of guaranteeing *all* possible features, you fix the amount of time you’ll spend—say, six weeks (ideal max time to spend at a time).<br>    - Once you have a narrow problem or opportunity defined, you ask yourself: “How much time is it worth spending on this?”.<br>    - Then, you shape the project or projects to fit within the Appetite’s time budget, focusing on a *reduced* set of must-have work.<br>    - While shaping (not building), if something looks like it would blow the time budget, you cut or simplify that piece so you can still ship on time. You estimate up to a defined constraint, the outermost boundaries, i.e., the Appetite. This is much like you do when planning a vacation, and you know you have, e.g., one week to fill up.<br>    - You also use this time budget to guide the development cycle. So, an Appetite is a constraint on planning and building. If you are going to have overruns into the post-launch period (like a cool-down week), ask if there are too many unknowns vs. knowns left. If there are going to be too many unknowns at the end of the budget, consider not giving in to the sunk cost fallacy and asking if this needs to be reshaped or paused for another reason. Preserve optionality!<br>Why **order-of-magnitude estimation** might not be all that helpful in the “Appetite” (time budget) model:</p>
-<p>- When you fix time (e.g., “We have six weeks”), it’s no longer about whether a feature is a 2‑week or 10‑week project in a broad sense; you already know your total runway is six weeks at a time.<br>- If an idea looks too big—even an “order of magnitude” bigger than you can handle in six weeks—you’re going to cut or reshape it immediately. There’s no real need to fine-tune whether it’s “two or three times bigger” because you’re not going to expand the six-week window. You’ll only ever shrink or simplify the scope.<br>- In other words, the *exact* size of the project (even if “big” vs “huge”) isn’t as relevant because you don’t flex the schedule—you flex what you build. Once it’s clear it won’t fit in six weeks, you don’t proceed as-is; you reduce the scope or abandon parts of the idea.<br>This is why, in a fixed-schedule (Appetite) approach, deeply detailed or large-scale estimates add limited value. You’re less concerned with nailing down precise guesses and more focused on shaping the scope to meet your fixed time constraint.</p>
+<p>What the graphic below shows are two very different ways of deciding how (and <em>how much</em>) work gets done:</p>
+<ol>
+<li>
+<p><strong>Estimate</strong> (Fixed Scope, Variable Time)</p>
+<ul>
+<li>Here, you begin by locking down <em>everything</em> you want delivered—the full feature set, requirements, etc.</li>
+<li>Because that scope is fixed, the time (and cost) will vary. You might go over budget or stretch deadlines if the project (e.g., a product feature) takes longer than expected.</li>
+<li>This approach leads to detailed “how long will it take?” estimates up front, which can be notoriously off-target in software projects unless there are 0 unknowns left or you are doing something for the 10th time and there’s minimal variability in the task.</li>
+</ul>
+</li>
+<li>
+<p><strong>Appetite</strong> (Fixed Time, Variable Scope, i.e., time budgets and talent allocation (number of people and their domain experience levels))</p>
+<ul>
+<li>Instead of guaranteeing <em>all</em> possible features, you fix the amount of time you’ll spend—say, six weeks (ideal max time to spend at a time).</li>
+<li>Once you have a narrow problem or opportunity defined, you ask yourself: “How much time is it worth spending on this?”.</li>
+<li>Then, you shape the project or projects to fit within the Appetite’s time budget, focusing on a <em>reduced</em> set of must-have work.</li>
+<li>While shaping (not building), if something looks like it would blow the time budget, you cut or simplify that piece so you can still ship on time. You estimate up to a defined constraint, the outermost boundaries, i.e., the Appetite. This is much like you do when planning a vacation, and you know you have, e.g., one week to fill up.</li>
+<li>You also use this time budget to guide the development cycle. So, an Appetite is a constraint on planning and building. If you are going to have overruns into the post-launch period (like a cool-down week), ask if there are too many unknowns vs. knowns left. If there are going to be too many unknowns at the end of the budget, consider not giving in to the sunk cost fallacy and asking if this needs to be reshaped or paused for another reason. Preserve optionality!<br>
+Why <strong>order-of-magnitude estimation</strong> might not be all that helpful in the “Appetite” (time budget) model:</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>When you fix time (e.g., “We have six weeks”), it’s no longer about whether a feature is a 2‑week or 10‑week project in a broad sense; you already know your total runway is six weeks at a time.</li>
+<li>If an idea looks too big—even an “order of magnitude” bigger than you can handle in six weeks—you’re going to cut or reshape it immediately. There’s no real need to fine-tune whether it’s “two or three times bigger” because you’re not going to expand the six-week window. You’ll only ever shrink or simplify the scope.</li>
+<li>In other words, the <em>exact</em> size of the project (even if “big” vs “huge”) isn’t as relevant because you don’t flex the schedule—you flex what you build. Once it’s clear it won’t fit in six weeks, you don’t proceed as-is; you reduce the scope or abandon parts of the idea.<br>
+This is why, in a fixed-schedule (Appetite) approach, deeply detailed or large-scale estimates add limited value. You’re less concerned with nailing down precise guesses and more focused on shaping the scope to meet your fixed time constraint.</li>
+</ul>
 <p>Here’s another way to understand the Appetite.</p>
 <p>There isn’t “one” Time Budget for a project. That would presume that the project is already defined.</p>
 <p>Instead, think of how we might consider three different Appetites for the project:</p>

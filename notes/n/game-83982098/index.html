@@ -30,21 +30,51 @@ a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
 main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
 h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
 .body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}
-.body p{margin:0 0 1.1em}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
 .discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
 </head>
 <body data-note-category="life">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
-<main class="wrap"><div class="meta">2025-01-01 · <span class="category-name">Life &amp; learning</span></div><h1>GAME!</h1><article class="body"><p>**A variation of NIM I created with Claude (In like 3 minutes/4 sequential prompts. Bananas).**</p>
-<p>Teach this one to kids. Don’t stop at *Tic-tac-toe*.</p>
-<p>[https://claude.site/artifacts/96421b81-76eb-4132-b905-c613798f0574](https://claude.site/artifacts/96421b81-76eb-4132-b905-c613798f0574)</p>
+<main class="wrap"><div class="meta">2025-01-01 · <span class="category-name">Life &amp; learning</span></div><h1>GAME!</h1><article class="body"><p><strong>A variation of NIM I created with Claude (In like 3 minutes/4 sequential prompts. Bananas).</strong></p>
+<p>Teach this one to kids. Don’t stop at <em>Tic-tac-toe</em>.</p>
+<p><a href="https://claude.site/artifacts/96421b81-76eb-4132-b905-c613798f0574">https://claude.site/artifacts/96421b81-76eb-4132-b905-c613798f0574</a></p>
 <p>Setup and Rules:</p>
-<p>1. The game starts with 21 empty cells arranged in a row.<br>2. Two players take turns - Player X and Player O.<br>3. On your turn, you must place your mark (X or O) in 1, 2, or 3 consecutive empty cells.<br>4. It does not matter which cells you fill, but it is nice to move in lines to easily see how many are left.<br>5. After placing your marks, click &quot;Enter&quot; to confirm your move and end your turn/<br>How to Win:</p>
-<p>- The goal is to place the LAST mark(s) on the board.<br>- In other words, whoever fills the final cell(s) wins the game.<br>- This means you want to try to leave your opponent with no valid moves.<br>Strategy Tips (spoilers):</p>
-<p>1. Count ahead to try to control key positions<br>2. Pay attention to how many empty cells remain<br>3. Key positions to control are positions where you can force your opponent into a losing situation/<br>4. For example, if there are 4 empty cells left and it&#x27;s your opponent&#x27;s turn, they must leave at least 1 cell for you to win. The trick is to think this way (backward induction) from the start.<br>5. The game is mathematically solvable - with perfect play, the player who goes first can always win (or the one who is rational and is the last to get the board into a multiple of four wins). How? Ideally, go first, and get the board into a multiple of 4. Then, all you need to do is 4 minus x. That’s the equation to solve the game. Subtract however many cells your opponent filled and fill that many cells on your turn. For example, if you go first, fill one cell. The board is now in a multiple of 4 (20 cells left). Player 2 fills 3 cells. 4 minus 3. You fill one cell. And so on. If both players are rational (understand the rules of the game) it is not worth playing. Walk away. :)</p>
-<p>1. [Claude Artifact](https://claude.site/artifacts/96421b81-76eb-4132-b905-c613798f0574)</p></article></main>
+<ol>
+<li>The game starts with 21 empty cells arranged in a row.</li>
+<li>Two players take turns - Player X and Player O.</li>
+<li>On your turn, you must place your mark (X or O) in 1, 2, or 3 consecutive empty cells.</li>
+<li>It does not matter which cells you fill, but it is nice to move in lines to easily see how many are left.</li>
+<li>After placing your marks, click &quot;Enter&quot; to confirm your move and end your turn/<br>
+How to Win:</li>
+</ol>
+<ul>
+<li>The goal is to place the LAST mark(s) on the board.</li>
+<li>In other words, whoever fills the final cell(s) wins the game.</li>
+<li>This means you want to try to leave your opponent with no valid moves.<br>
+Strategy Tips (spoilers):</li>
+</ul>
+<ol>
+<li>
+<p>Count ahead to try to control key positions</p>
+</li>
+<li>
+<p>Pay attention to how many empty cells remain</p>
+</li>
+<li>
+<p>Key positions to control are positions where you can force your opponent into a losing situation/</p>
+</li>
+<li>
+<p>For example, if there are 4 empty cells left and it's your opponent's turn, they must leave at least 1 cell for you to win. The trick is to think this way (backward induction) from the start.</p>
+</li>
+<li>
+<p>The game is mathematically solvable - with perfect play, the player who goes first can always win (or the one who is rational and is the last to get the board into a multiple of four wins). How? Ideally, go first, and get the board into a multiple of 4. Then, all you need to do is 4 minus x. That’s the equation to solve the game. Subtract however many cells your opponent filled and fill that many cells on your turn. For example, if you go first, fill one cell. The board is now in a multiple of 4 (20 cells left). Player 2 fills 3 cells. 4 minus 3. You fill one cell. And so on. If both players are rational (understand the rules of the game) it is not worth playing. Walk away. :)</p>
+</li>
+<li>
+<p><a href="https://claude.site/artifacts/96421b81-76eb-4132-b905-c613798f0574">Claude Artifact</a></p>
+</li>
+</ol></article></main>
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>

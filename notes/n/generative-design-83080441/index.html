@@ -30,7 +30,7 @@ a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
 main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
 h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
 .body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}
-.body p{margin:0 0 1.1em}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
 .discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
@@ -38,20 +38,47 @@ h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:
 <body data-note-category="products">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
 <main class="wrap"><div class="meta">2024-12-26 · <span class="category-name">Products &amp; systems</span></div><h1>Generative Design</h1><article class="body"><p>Good design defines a space of possible physical configurations, not one specific configuration.</p>
-<p>Provide so much latitude that it could lead the team or your future self to arrive at a configuration nobody could anticipate (because we can’t know until the realities of a project unfold), while *still* satisfying the system of relationships that make it fulfill its purpose.</p>
-<p>It&#x27;s one thing to say: &quot;Design a kitchen.&quot;</p>
-<p>It&#x27;s another thing to say, &quot;Here are the specific and fixed-scope blueprints of the kitchen; go build it.&quot;</p>
-<p>And it&#x27;s yet another thing to say: &quot;A good kitchen has windows giving light from two sides. The counters are long and generous along the south side to get the light. Place a big table in the middle and light it from above to create an eating atmosphere.&quot;</p>
+<p>Provide so much latitude that it could lead the team or your future self to arrive at a configuration nobody could anticipate (because we can’t know until the realities of a project unfold), while <em>still</em> satisfying the system of relationships that make it fulfill its purpose.</p>
+<p>It's one thing to say: &quot;Design a kitchen.&quot;</p>
+<p>It's another thing to say, &quot;Here are the specific and fixed-scope blueprints of the kitchen; go build it.&quot;</p>
+<p>And it's yet another thing to say: &quot;A good kitchen has windows giving light from two sides. The counters are long and generous along the south side to get the light. Place a big table in the middle and light it from above to create an eating atmosphere.&quot;</p>
 <p>The latter is a very limited example of a better working description that can enable your future self and/or others to work within constraints while leaving the specifics open according to the realities of the project.</p>
 <p>Enough latitude to enable breakthroughs. Firm boundaries to enable agreement. Specifics when hard-earned knowledge informs decisions. Trust when we know that capable people can work it out themselves.</p>
 <p>Images courtesy of Christopher Alexander.</p>
-<p>3. Generative Design Writing</p></article><section class="discussion"><h2>Discussion</h2><div class="body"><p>**Generative Design Writing**</p>
-<p>**Key Idea:** Emphasize *relationships* (the “why” and “how”) instead of prescribing exact forms.</p>
-<p>- **Decomposition:**</p>
-<p>- Breaks complex designs into *key centers* and describes how these centers connect or interact.<br>    - Identifies the sub-elements of the design by focusing on *relationships* first, then refining details later.<br>- **Abstraction:**</p>
-<p>- Moves away from final “forms” (the specifics of UI, layout, etc.) to the *conceptual logic* of connections among elements.<br>    - Creates flexibility so new ideas can emerge without being pinned down prematurely.<br>- **Pattern Recognition:**</p>
-<p>- Encourages spotting repeated structures in relationships across different parts of the system or problem domain.<br>    - Helps you describe “relational patterns” that appear in multiple contexts.<br>- **Algorithm/Procedure:**</p>
-<p>- More of a *conceptual guide* than a strict step-by-step process.<br>    - In practice, the *rules of relationship* can be encoded into design constraints once the relationships are well understood.</p></div></section></main>
+<ol start="3">
+<li>Generative Design Writing</li>
+</ol></article><section class="discussion"><h2>Discussion</h2><div class="body"><p><strong>Generative Design Writing</strong></p>
+<p><strong>Key Idea:</strong> Emphasize <em>relationships</em> (the “why” and “how”) instead of prescribing exact forms.</p>
+<ul>
+<li>
+<p><strong>Decomposition:</strong></p>
+<ul>
+<li>Breaks complex designs into <em>key centers</em> and describes how these centers connect or interact.</li>
+<li>Identifies the sub-elements of the design by focusing on <em>relationships</em> first, then refining details later.</li>
+</ul>
+</li>
+<li>
+<p><strong>Abstraction:</strong></p>
+<ul>
+<li>Moves away from final “forms” (the specifics of UI, layout, etc.) to the <em>conceptual logic</em> of connections among elements.</li>
+<li>Creates flexibility so new ideas can emerge without being pinned down prematurely.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pattern Recognition:</strong></p>
+<ul>
+<li>Encourages spotting repeated structures in relationships across different parts of the system or problem domain.</li>
+<li>Helps you describe “relational patterns” that appear in multiple contexts.</li>
+</ul>
+</li>
+<li>
+<p><strong>Algorithm/Procedure:</strong></p>
+<ul>
+<li>More of a <em>conceptual guide</em> than a strict step-by-step process.</li>
+<li>In practice, the <em>rules of relationship</em> can be encoded into design constraints once the relationships are well understood.</li>
+</ul>
+</li>
+</ul></div></section></main>
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>

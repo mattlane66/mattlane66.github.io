@@ -30,7 +30,7 @@ a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
 main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
 h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
 .body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}
-.body p{margin:0 0 1.1em}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
 .discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
@@ -38,17 +38,42 @@ h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:
 <body data-note-category="judgment">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
 <main class="wrap"><div class="meta">2024-12-05 · <span class="category-name">Judgment &amp; knowledge</span></div><h1>Frequentist Hypothesis Testing: In frequentist hypothesis testing, we begin with the null hypothesis (H0),…</h1><article class="body"><p>Frequentist Hypothesis Testing:</p>
-<p>In **frequentist** hypothesis testing, we begin with the **null hypothesis** (H0), which often represents no effect or no difference (e.g., “A is equivalent to B”). We assume H0 is true and gather data to see whether the observed evidence is sufficiently unlikely under H0. Our goal is **not** to prove H0​ true; rather, we want to see if we can **reject** H0​ in favor of the **alternative hypothesis** (Ha​), which posits a difference or effect (e.g., “A is not B”).</p>
-<p>We do not aim to confirm or “prove” H0; instead, we attempt to falsify it. **Failing to reject** H0​ does **not** mean H0​ is true—it only indicates that the data do not provide sufficient evidence to discard H0​.</p>
-<p>The decision to reject or fail to reject H0​ typically depends on the **p-value**, which is the probability of observing data at least as extreme as what we observed, given H0​. A **small p-value** (often &lt; 0.05) suggests that such data would be unlikely if H0​ were true, so we **reject** H0​ in favor of Ha. A **larger p-value** indicates insufficient evidence to reject H0​.</p>
-<p>1. **Assume** H0​ is true.<br>2. **Seek evidence** that would be unlikely under H0​ (this underlies the p-value calculation).<br>3. **Reject** H0​ if the evidence is strong (i.e., p-value &lt; your chosen significance level), providing support for Ha​.<br>4. If we **cannot reject** H0​, we are **not** proving it; we simply lack sufficient evidence to falsify it.<br>A Note on Bayesian Methods:</p>
-<p>By contrast, in **Bayesian** inference, probability reflects a *degree of belief*. Bayesian methods incorporate **prior** beliefs about parameters or hypotheses and then **update** those beliefs as data are observed, yielding a **posterior** probability of the hypothesis itself. Whereas frequentist methods focus on the probability of the **data** given H0​, Bayesian approaches directly quantify the probability of H0​ (or other hypotheses), given the data and prior. This leads to different ways of interpreting evidence but does not negate the utility of frequentist p-values as a widely used decision criterion.</p>
+<p>In <strong>frequentist</strong> hypothesis testing, we begin with the <strong>null hypothesis</strong> (H0), which often represents no effect or no difference (e.g., “A is equivalent to B”). We assume H0 is true and gather data to see whether the observed evidence is sufficiently unlikely under H0. Our goal is <strong>not</strong> to prove H0​ true; rather, we want to see if we can <strong>reject</strong> H0​ in favor of the <strong>alternative hypothesis</strong> (Ha​), which posits a difference or effect (e.g., “A is not B”).</p>
+<p>We do not aim to confirm or “prove” H0; instead, we attempt to falsify it. <strong>Failing to reject</strong> H0​ does <strong>not</strong> mean H0​ is true—it only indicates that the data do not provide sufficient evidence to discard H0​.</p>
+<p>The decision to reject or fail to reject H0​ typically depends on the <strong>p-value</strong>, which is the probability of observing data at least as extreme as what we observed, given H0​. A <strong>small p-value</strong> (often &lt; 0.05) suggests that such data would be unlikely if H0​ were true, so we <strong>reject</strong> H0​ in favor of Ha. A <strong>larger p-value</strong> indicates insufficient evidence to reject H0​.</p>
+<ol>
+<li><strong>Assume</strong> H0​ is true.</li>
+<li><strong>Seek evidence</strong> that would be unlikely under H0​ (this underlies the p-value calculation).</li>
+<li><strong>Reject</strong> H0​ if the evidence is strong (i.e., p-value &lt; your chosen significance level), providing support for Ha​.</li>
+<li>If we <strong>cannot reject</strong> H0​, we are <strong>not</strong> proving it; we simply lack sufficient evidence to falsify it.<br>
+A Note on Bayesian Methods:</li>
+</ol>
+<p>By contrast, in <strong>Bayesian</strong> inference, probability reflects a <em>degree of belief</em>. Bayesian methods incorporate <strong>prior</strong> beliefs about parameters or hypotheses and then <strong>update</strong> those beliefs as data are observed, yielding a <strong>posterior</strong> probability of the hypothesis itself. Whereas frequentist methods focus on the probability of the <strong>data</strong> given H0​, Bayesian approaches directly quantify the probability of H0​ (or other hypotheses), given the data and prior. This leads to different ways of interpreting evidence but does not negate the utility of frequentist p-values as a widely used decision criterion.</p>
 <p>Example</p>
 <p>Simple A/B (Headache Medication) Test:</p>
 <p>Imagine you’ve developed a new headache medication. You gather 100 volunteers with chronic headaches and randomly assign 50 to receive the new medication and 50 to receive a placebo (sugar pill).</p>
-<p>- **Null Hypothesis (H0):** The new medication has **no** effect; pain relief in the treatment group is no different from that in the placebo group.<br>- **Alternative Hypothesis (Ha):** The new medication **does** relieve headaches more effectively than a placebo.<br>You measure each volunteer’s pain score after treatment and compute a p-value—i.e., the probability of observing such a difference (or a bigger one) **if** the new medication was no better than placebo.</p>
-<p>- If the **p-value** is very low (e.g., &lt; 0.05), you **reject** H0​, suggesting the medication is likely more effective than the placebo.<br>- If the **p-value** is not below your threshold, you **fail to reject** H0​. This doesn’t prove the medication is ineffective; it only means you lack enough evidence to conclude otherwise.<br>Two Other Notable Testing Methods:</p>
-<p>- **Multi-Armed Bandit**: Dynamic, adaptive allocation emphasizing regret minimization and continuous learning, rather than a single end-of-test analysis.<br>- **Multivariate/Orthogonal Array**: Systematic testing of multiple variables/factors at once, leveraging experimental design principles to detect main and interaction effects more efficiently than multiple separate A/B tests.</p></article></main>
+<ul>
+<li>
+<p><strong>Null Hypothesis (H0):</strong> The new medication has <strong>no</strong> effect; pain relief in the treatment group is no different from that in the placebo group.</p>
+</li>
+<li>
+<p><strong>Alternative Hypothesis (Ha):</strong> The new medication <strong>does</strong> relieve headaches more effectively than a placebo.<br>
+You measure each volunteer’s pain score after treatment and compute a p-value—i.e., the probability of observing such a difference (or a bigger one) <strong>if</strong> the new medication was no better than placebo.</p>
+</li>
+<li>
+<p>If the <strong>p-value</strong> is very low (e.g., &lt; 0.05), you <strong>reject</strong> H0​, suggesting the medication is likely more effective than the placebo.</p>
+</li>
+<li>
+<p>If the <strong>p-value</strong> is not below your threshold, you <strong>fail to reject</strong> H0​. This doesn’t prove the medication is ineffective; it only means you lack enough evidence to conclude otherwise.<br>
+Two Other Notable Testing Methods:</p>
+</li>
+<li>
+<p><strong>Multi-Armed Bandit</strong>: Dynamic, adaptive allocation emphasizing regret minimization and continuous learning, rather than a single end-of-test analysis.</p>
+</li>
+<li>
+<p><strong>Multivariate/Orthogonal Array</strong>: Systematic testing of multiple variables/factors at once, leveraging experimental design principles to detect main and interaction effects more efficiently than multiple separate A/B tests.</p>
+</li>
+</ul></article></main>
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>

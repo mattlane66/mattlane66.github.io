@@ -30,53 +30,68 @@ a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
 main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
 h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
 .body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}
-.body p{margin:0 0 1.1em}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
 .discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
 </head>
 <body data-note-category="ai">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
-<main class="wrap"><div class="meta">2025-03-16 · <span class="category-name">AI &amp; future work</span></div><h1>Internal Language to AI Prompt</h1><article class="body"><p>**1. Crafting Deterministic, Precise Prompts:**</p>
+<main class="wrap"><div class="meta">2025-03-16 · <span class="category-name">AI &amp; future work</span></div><h1>Internal Language to AI Prompt</h1><article class="body"><p><strong>1. Crafting Deterministic, Precise Prompts:</strong></p>
 <p>To instruct AI deterministically, follow these principles:</p>
 <p>• Explicit Clarity:</p>
 <p>Specify exactly what to do, how to do it, and clearly define expected outcomes.</p>
 <p>Example:</p>
 <p>Instead of:</p>
-<p>```<br>“Summarize this article”<br>```</p>
+<pre><code>“Summarize this article”
+</code></pre>
 <p>Say:</p>
-<p>```<br>“Summarize this article in exactly 100 words, focusing specifically on key facts and omitting opinions or speculation.”<br>```</p>
+<pre><code>“Summarize this article in exactly 100 words, focusing specifically on key facts and omitting opinions or speculation.”
+</code></pre>
 <p>• Structured Format:</p>
 <p>Break instructions into clearly labeled subsections or enumerated steps.</p>
 <p>Example:</p>
-<p>```<br>1. Read the provided text.<br>```</p>
-<p>```<br>2. Extract key points regarding X and Y.<br>```</p>
-<p>```<br>3. Present a numbered list of extracted points.<br>```</p>
-<p>```<br>4. Do not include commentary or interpretations.<br>```</p>
+<pre><code>1. Read the provided text.
+</code></pre>
+<pre><code>2. Extract key points regarding X and Y.
+</code></pre>
+<pre><code>3. Present a numbered list of extracted points.
+</code></pre>
+<pre><code>4. Do not include commentary or interpretations.
+</code></pre>
 <p>• Limit Ambiguity:</p>
 <p>Explicitly rule out unwanted behaviors.</p>
 <p>Example:</p>
-<p>```<br>“Do NOT include any interpretations, personal opinions, or additional suggestions beyond precisely summarizing the given text.”<br>```</p>
+<pre><code>“Do NOT include any interpretations, personal opinions, or additional suggestions beyond precisely summarizing the given text.”
+</code></pre>
 <p>• Context Specification:</p>
 <p>Clarify context explicitly if relevant to avoid misinterpretation.</p>
 <p>Example:</p>
-<p>```<br>“Assuming the audience is software engineers proficient in Python but unfamiliar with the TensorFlow library, provide instructions to install TensorFlow clearly step-by-step.”<br>```</p>
+<pre><code>“Assuming the audience is software engineers proficient in Python but unfamiliar with the TensorFlow library, provide instructions to install TensorFlow clearly step-by-step.”
+</code></pre>
 <p>• Use Constraints:</p>
 <p>Explicitly add constraints (length, style, tone, specifics).</p>
 <p>Example:</p>
-<p>```<br>“Answer this question precisely in one short paragraph of maximum 5 sentences, using plain English and no jargon.”<br>```</p>
-<p>**2. Converting Internal Understanding into Deterministic Instructions:**</p>
+<pre><code>“Answer this question precisely in one short paragraph of maximum 5 sentences, using plain English and no jargon.”
+</code></pre>
+<p><strong>2. Converting Internal Understanding into Deterministic Instructions:</strong></p>
 <p>• Formalization: The translation of internal or intuitive knowledge into explicit, logically rigorous, and unambiguous terms.</p>
 <p>• Disambiguation: Eliminating ambiguities inherent to human thought and language, ensuring each word or phrase maps directly and consistently to exactly one meaning or action.</p>
 <p>To do this effectively:</p>
 <p>• Formal Specification: Use formal logic or pseudocode to precisely describe instructions, especially beneficial for programming, automation, and AI interactions.</p>
 <p>Example (Pseudocode):</p>
-<p>```<br>For each sentence in document:<br>```</p>
-<p>```<br>    If sentence contains fact (dates, names, figures):<br>```</p>
-<p>```<br>        Add sentence to summary_list<br>```</p>
-<p>```<br>    Else:<br>```</p>
-<p>```<br>        Skip sentence<br>```</p>
-<p>```<br>Return summary_list ordered chronologically<br>```</p>
+<pre><code>For each sentence in document:
+</code></pre>
+<pre><code>    If sentence contains fact (dates, names, figures):
+</code></pre>
+<pre><code>        Add sentence to summary_list
+</code></pre>
+<pre><code>    Else:
+</code></pre>
+<pre><code>        Skip sentence
+</code></pre>
+<pre><code>Return summary_list ordered chronologically
+</code></pre>
 <p>• Controlled Natural Language (CNL): A simplified and restricted subset of natural language designed explicitly to remove ambiguity. CNL aims for deterministic interpretation by machines.</p>
 <p>• Operationalization: Clearly describe not what you internally think, but explicitly how to perform or identify a task step-by-step.</p>
 <p>• Iterative Refinement: Constantly revise your prompts based on the results you receive to further remove ambiguity, clarify intentions, and move towards determinism.</p></article></main>
