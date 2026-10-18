@@ -55,7 +55,7 @@ def main() -> None:
         "211335608": list(range(1, 7)),   # PC²UDA: nested unordered criticism
         "85797688": [1, 2, 3, 4],        # Perspective-taking
         "80202193": [1, 2, 3, 4],        # Product-work categories
-        "90731649": [1, 2, 3, 1],       # Three work rhythms + separate attachment
+        "90731649": [1, 2, 3],          # Three work rhythms (legacy attachment stripped)
     }
     for ident, numbers in expected.items():
         assert ident in notes, f"missing regression Note {ident}"
