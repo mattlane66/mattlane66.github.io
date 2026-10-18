@@ -24,9 +24,12 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+      - name: Install Notes Markdown dependencies
+        run: python -m pip install --disable-pip-version-check -r scripts/requirements-notes.txt
       - name: Validate and render draft content before checks
         run: |
           python scripts/validate_notes.py
+          python scripts/test_note_rendering.py
           python scripts/generate_note_pages.py
           python scripts/check_site.py
       - name: Compile site generation scripts
@@ -42,9 +45,12 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+      - name: Install Notes Markdown dependencies
+        run: python -m pip install --disable-pip-version-check -r scripts/requirements-notes.txt
       - name: Render candidate Notes and sitemap before browser tests
         run: |
           python scripts/validate_notes.py
+          python scripts/test_note_rendering.py
           python scripts/generate_note_pages.py
       - name: Install Playwright
         run: |
