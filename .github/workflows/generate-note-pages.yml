@@ -38,10 +38,11 @@ jobs:
           python scripts/test_note_rendering.py
           python scripts/test_article_rendering.py
           python scripts/generate_note_pages.py
+          python scripts/check_site_consistency.py
           python scripts/check_site.py
       - name: Confirm the published commit contains all generated output
         run: |
-          git diff --exit-code -- notes/index.html notes/n sitemap.xml planning-tools/index.html || {
+          git diff --exit-code -- index.html notes/index.html notes/n sitemap.xml planning-tools/index.html || {
             echo "::error::Generated pages differ from the merged commit. Publish only a reviewed PR containing generated output."
             exit 1
           }
