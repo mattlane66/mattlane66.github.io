@@ -206,6 +206,16 @@ def main() -> int:
 
                         # Core interactive smoke checks.
                         if name == "home":
+                            # Cross-page invariant: the visible homepage CTA represents
+                            # the active published collection before test-note injection.
+                            home_note_ctas = page.locator(".notes-actions a")
+                            if home_note_ctas.count() != 1 or not home_note_ctas.first.is_visible():
+                                failures.append(f"{viewport_name} /: Notes CTA missing or duplicated")
+                            elif home_note_ctas.first.inner_text().strip() != f"Browse all {expected_static_total} Notes →":
+                                failures.append(
+                                    f"{viewport_name} /: homepage Notes count does not match "
+                                    f"{expected_static_total} published Notes"
+                                )
                             # Check the ticker's actual rendered speed at desktop and phone widths,
                             # rather than just checking that the source contains a speed setting.
                             ticker = page.evaluate("""() => {
