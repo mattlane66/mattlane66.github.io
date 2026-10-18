@@ -30,7 +30,7 @@ a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
 main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
 h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
 .body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}
-.body p{margin:0 0 1.1em}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
 .discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
@@ -38,33 +38,109 @@ h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:
 <body data-note-category="judgment">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
 <main class="wrap"><div class="meta">2026-05-23 · <span class="category-name">Judgment &amp; knowledge</span></div><h1>How to write a problem statement to design well.</h1><article class="body"><p>DISCRETE SUB OPPORTUNITY</p>
-<p>&gt; ```<br>&gt; Dev shop owners need a way to keep project work moving toward billable milestones without manually chasing team members for updates. Under tight time pressure and uneven cash flow, even one completed task sitting unnoticed for days can delay the next step and push out client billing. The system should automatically notify the right person when work is ready to move forward.<br>&gt; ```<br>&gt; <br>&gt; ```<br>&gt; User: dev shop owner<br>&gt; ```<br>&gt; <br>&gt; ```<br>&gt; Struggle: keep project momentum visible<br>&gt; ```<br>&gt; <br>&gt; ```<br>&gt; Context: tight time pressure + uneven cash flow<br>&gt; ```<br>&gt; <br>&gt; ```<br>&gt; Current behavior: manual status chasing<br>&gt; ```<br>&gt; <br>&gt; ```<br>&gt; Breakdown: completed work sits idle unnoticed<br>&gt; ```<br>&gt; <br>&gt; ```<br>&gt; Consequence: billing milestone delayed<br>&gt; ```<br>&gt; <br>&gt; ```<br>&gt; Desired capability: notify the right person when work is ready for the next step<br>&gt; ```</p>
+<blockquote>
+<pre><code>Dev shop owners need a way to keep project work moving toward billable milestones without manually chasing team members for updates. Under tight time pressure and uneven cash flow, even one completed task sitting unnoticed for days can delay the next step and push out client billing. The system should automatically notify the right person when work is ready to move forward.
+</code></pre>
+<pre><code>User: dev shop owner
+</code></pre>
+<pre><code>Struggle: keep project momentum visible
+</code></pre>
+<pre><code>Context: tight time pressure + uneven cash flow
+</code></pre>
+<pre><code>Current behavior: manual status chasing
+</code></pre>
+<pre><code>Breakdown: completed work sits idle unnoticed
+</code></pre>
+<pre><code>Consequence: billing milestone delayed
+</code></pre>
+<pre><code>Desired capability: notify the right person when work is ready for the next step
+</code></pre>
+</blockquote>
 <p>————</p>
-<p>**Ineffective Design Language:**</p>
-<p>**Current situation:** Chase after people.</p>
-<p>**Current solution:** Kanban.</p>
-<p>**Desired outcome:** Hit milestones.</p>
-<p>**Why this is the bad structure:**</p>
+<p><strong>Ineffective Design Language:</strong></p>
+<p><strong>Current situation:</strong> Chase after people.</p>
+<p><strong>Current solution:</strong> Kanban.</p>
+<p><strong>Desired outcome:</strong> Hit milestones.</p>
+<p><strong>Why this is the bad structure:</strong></p>
 <p>This sounds reasonable at first, but it mixes up the levels.</p>
-<p>**“Chase after people” is not the current situation.** It is the old workaround. It is what the owner does because the real situation is uncomfortable: projects are under time pressure, cash flow is stop/start, and work needs to keep moving so the business can bill incrementally.</p>
-<p>**“Kanban” is not the current solution.** It is the requested new solution. The person is saying, “I think I need Kanban,” but that does not yet explain the actual progress they are trying to make.</p>
-<p>**“Hit milestones” is too broad as the desired outcome.** It is a business result, not the specific workflow progress the owner needs. The more precise outcome is something like: Get notified when work is ready for the next step, so I can bill clients incrementally and smooth out cash flow.</p>
+<p><strong>“Chase after people” is not the current situation.</strong> It is the old workaround. It is what the owner does because the real situation is uncomfortable: projects are under time pressure, cash flow is stop/start, and work needs to keep moving so the business can bill incrementally.</p>
+<p><strong>“Kanban” is not the current solution.</strong> It is the requested new solution. The person is saying, “I think I need Kanban,” but that does not yet explain the actual progress they are trying to make.</p>
+<p><strong>“Hit milestones” is too broad as the desired outcome.</strong> It is a business result, not the specific workflow progress the owner needs. The more precise outcome is something like: Get notified when work is ready for the next step, so I can bill clients incrementally and smooth out cash flow.</p>
 <p>————</p>
 <p>COMPRESSION (HUMAN-SPECIFIC CRITERIA)</p>
-<p>[constraint/anxieties/habits] Because this happens in the context of time pressure and highly sensitive, start-and-stop cash flow, a good solution must ensure **continuous, visible momentum on billable work** to smooth out revenue cycles.</p>
-<p>[pain/trigger/design misfit] Because the current approach breaks down when completed work sits idle for days because no one realizes it is ready to be advanced, a good solution must **eliminate handoff latency between team members**.</p>
-<p>[desired outcome] Because the person wants to get notified instantly when work is ready for the next step, a good solution must **proactively push status updates or alerts to the exact right person the moment a task state changes**.</p>
-<p>[current approach/workaround] Because the person currently relies on spending their own time and energy physically or digitally chasing people down for updates, a good solution must improve on it by decentralizing project status so the **owner is no longer the bottleneck or primary information router**.</p>
-<p>[rejected alternative or previous way] Because they rejected the habit of manual check-ins because it inevitably failed to catch idle work in real-time, a good solution must **avoid reliance on human memory or periodic management check-ins** and instead make work readiness immediately self-evident.</p>
-<p>There are various other types of criteria, e.g., various &#x27;-ilities&#x27;, costs, risks, compatibility and complexity, purpose-built, etc. These are the four key customer criteria to capture before defining and making trade-offs among alternative solution paths. You might use fit checks to judge your solution path aspects: [https://github.com/mattlane66/planning-skills-for-agents-and-humans/blob/main/skills/shaping/SKILL.md#fit-checks](https://github.com/mattlane66/planning-skills-for-agents-and-humans/blob/main/skills/shaping/SKILL.md#fit-checks) (a more precise approach if needed here: [https://github.com/mattlane66/fit-check-prioritizer/blob/main/skills/fit-check-topsis/SKILL.md](https://github.com/mattlane66/fit-check-prioritizer/blob/main/skills/fit-check-topsis/SKILL.md)</p>
-<p>_____</p>
-<p>**High-level summary of the approach to correctly collecting the opportunity data from the dev shop owner:**</p>
-<p>- Let’s assume we want to answer the question of how dev shops are organizing their work that’s in progress.<br>- Let’s assume the customer is the owner of a dev shop.<br>- The owner recently bought a Kanban software tool (Path X).<br>- We do not know Point A, and we do not know Point B.<br>- So, remember, we need to know Point A, which is in the past. So, we go back in time and ask the owner: “When did you buy the Kanban tool?” “When did you have the first thought that you might need something like this?”</p>
-<p>- Let’s say the owner responds that he needed it ~6 months earlier than he bought it.<br>- If 6 months went by from when he first thought he had a problem until when he bought the tool, there must have been some kind of struggle…something that was not sufficient in that period of time.<br>- We continue to investigate by asking the owner: “What were you doing in that period before adopting the Kanban tool?”</p>
-<p>- Let’s assume the owner says: “I was chasing after people trying to get status updates.”<br>- This sounds like the struggle. But actually, it is a substitute for the Kanban tool, and that sounds more like Path Y. It is not Point A yet.<br>- We need to ask the owner: “Why did you not just continue chasing people? It seemed to “work” for 6 months (between the thought of the problem and the adoption of the Kanban tool).“</p>
-<p>- Let’s assume the owner says: “A day came when I found a piece of work that had been sitting there for 3 days. If I had known sooner, I could have billed the client.”<br>- Once you find what seems to be the Point A situation, ask another question:  “What is bad about billing the client 3 days later?”</p>
-<p>- Let’s assume the owner says: “If I can only bill at the end of the project, cash is coming in at big starts and stops, but if I could hit incremental milestones along the way, then I can bill steadily in little bits and smooth out my cash flow.”<br>- Now we have Point A data: Time pressure and cash flow start/stop. This is different from what originally presented itself as the struggle, i.e., chasing people.<br>- Now we need Point B data.<br>- We cannot say this Kanban software is responsible for hitting these cash flow company milestones alone. Remember: Most solutions are not the sandwich; they are just the mustard. We need something specific. So, this is not Point B data yet.<br>- We have to ask the owner: “Before you used/bought the Kanban tool, what were you picturing would be different after you purchased it?”</p>
-<p>- Let’s assume the owner says: “I thought I would have a system in place so I could get notified when work is ready.”<br>- Ah! So, Point B, what the Kanban tool would enable, is to get notified when work is ready.<br>- To summarize our discovered frame: When the owner is under time pressure, and the company is not moving fast enough to hit its goals, a system is required to make sure the people on the team get notified whenever a piece of work is ready for them to do the next step.</p></article></main>
+<p>[constraint/anxieties/habits] Because this happens in the context of time pressure and highly sensitive, start-and-stop cash flow, a good solution must ensure <strong>continuous, visible momentum on billable work</strong> to smooth out revenue cycles.</p>
+<p>[pain/trigger/design misfit] Because the current approach breaks down when completed work sits idle for days because no one realizes it is ready to be advanced, a good solution must <strong>eliminate handoff latency between team members</strong>.</p>
+<p>[desired outcome] Because the person wants to get notified instantly when work is ready for the next step, a good solution must <strong>proactively push status updates or alerts to the exact right person the moment a task state changes</strong>.</p>
+<p>[current approach/workaround] Because the person currently relies on spending their own time and energy physically or digitally chasing people down for updates, a good solution must improve on it by decentralizing project status so the <strong>owner is no longer the bottleneck or primary information router</strong>.</p>
+<p>[rejected alternative or previous way] Because they rejected the habit of manual check-ins because it inevitably failed to catch idle work in real-time, a good solution must <strong>avoid reliance on human memory or periodic management check-ins</strong> and instead make work readiness immediately self-evident.</p>
+<p>There are various other types of criteria, e.g., various '-ilities', costs, risks, compatibility and complexity, purpose-built, etc. These are the four key customer criteria to capture before defining and making trade-offs among alternative solution paths. You might use fit checks to judge your solution path aspects: <a href="https://github.com/mattlane66/planning-skills-for-agents-and-humans/blob/main/skills/shaping/SKILL.md#fit-checks">https://github.com/mattlane66/planning-skills-for-agents-and-humans/blob/main/skills/shaping/SKILL.md#fit-checks</a> (a more precise approach if needed here: <a href="https://github.com/mattlane66/fit-check-prioritizer/blob/main/skills/fit-check-topsis/SKILL.md">https://github.com/mattlane66/fit-check-prioritizer/blob/main/skills/fit-check-topsis/SKILL.md</a></p>
+<hr>
+<p><strong>High-level summary of the approach to correctly collecting the opportunity data from the dev shop owner:</strong></p>
+<ul>
+<li>
+<p>Let’s assume we want to answer the question of how dev shops are organizing their work that’s in progress.</p>
+</li>
+<li>
+<p>Let’s assume the customer is the owner of a dev shop.</p>
+</li>
+<li>
+<p>The owner recently bought a Kanban software tool (Path X).</p>
+</li>
+<li>
+<p>We do not know Point A, and we do not know Point B.</p>
+</li>
+<li>
+<p>So, remember, we need to know Point A, which is in the past. So, we go back in time and ask the owner: “When did you buy the Kanban tool?” “When did you have the first thought that you might need something like this?”</p>
+<ul>
+<li>Let’s say the owner responds that he needed it ~6 months earlier than he bought it.</li>
+</ul>
+</li>
+<li>
+<p>If 6 months went by from when he first thought he had a problem until when he bought the tool, there must have been some kind of struggle…something that was not sufficient in that period of time.</p>
+</li>
+<li>
+<p>We continue to investigate by asking the owner: “What were you doing in that period before adopting the Kanban tool?”</p>
+<ul>
+<li>Let’s assume the owner says: “I was chasing after people trying to get status updates.”</li>
+</ul>
+</li>
+<li>
+<p>This sounds like the struggle. But actually, it is a substitute for the Kanban tool, and that sounds more like Path Y. It is not Point A yet.</p>
+</li>
+<li>
+<p>We need to ask the owner: “Why did you not just continue chasing people? It seemed to “work” for 6 months (between the thought of the problem and the adoption of the Kanban tool).“</p>
+<ul>
+<li>Let’s assume the owner says: “A day came when I found a piece of work that had been sitting there for 3 days. If I had known sooner, I could have billed the client.”</li>
+</ul>
+</li>
+<li>
+<p>Once you find what seems to be the Point A situation, ask another question:  “What is bad about billing the client 3 days later?”</p>
+<ul>
+<li>Let’s assume the owner says: “If I can only bill at the end of the project, cash is coming in at big starts and stops, but if I could hit incremental milestones along the way, then I can bill steadily in little bits and smooth out my cash flow.”</li>
+</ul>
+</li>
+<li>
+<p>Now we have Point A data: Time pressure and cash flow start/stop. This is different from what originally presented itself as the struggle, i.e., chasing people.</p>
+</li>
+<li>
+<p>Now we need Point B data.</p>
+</li>
+<li>
+<p>We cannot say this Kanban software is responsible for hitting these cash flow company milestones alone. Remember: Most solutions are not the sandwich; they are just the mustard. We need something specific. So, this is not Point B data yet.</p>
+</li>
+<li>
+<p>We have to ask the owner: “Before you used/bought the Kanban tool, what were you picturing would be different after you purchased it?”</p>
+<ul>
+<li>Let’s assume the owner says: “I thought I would have a system in place so I could get notified when work is ready.”</li>
+</ul>
+</li>
+<li>
+<p>Ah! So, Point B, what the Kanban tool would enable, is to get notified when work is ready.</p>
+</li>
+<li>
+<p>To summarize our discovered frame: When the owner is under time pressure, and the company is not moving fast enough to hit its goals, a system is required to make sure the people on the team get notified whenever a piece of work is ready for them to do the next step.</p>
+</li>
+</ul></article></main>
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>

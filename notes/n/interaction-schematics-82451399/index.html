@@ -30,7 +30,7 @@ a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
 main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
 h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
 .body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}
-.body p{margin:0 0 1.1em}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
 .discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
@@ -42,23 +42,75 @@ h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:
 <p>Wiring up affordances and places/screens this way early on communicates critical interaction patterns at the right level of abstraction. With a detailed flow (e.g., a Figma file), we just see boxes. When we zoom in, we see a lot of detail, but only about one place. With an Interaction Schematic, we can see all the parts and how they are connected, and easily iterate our way to the right circuit.</p>
 <p>You can use digital sticky notes with connection lines in an online collaborative whiteboard. You can use one color for screens/states (orange), another for affordances (yellow), and one more for system language (red).</p>
 <p>Two Advanced Techniques:</p>
-<p>Partials: Sometimes there are too many affordances to list under a single screen. When you need to list all the affordances on a screen, indicate that the same affordances repeat in each row, or distinguish the affordances for navigation from the topic row affordances, prepend the _affordance with an underscore (“_”).</p>
-<p>A solid line to separate alternate actions: For example, there&#x27;s only one login screen, but there are multiple possible actions (affordances) on that screen. The line appears above each additional affordance. Think of it as &quot;or&quot;. When there are multiple actions, the arrows point from an action to a new screen.</p>
-<p>**A NOTE ON SYSTEM LANGUAGE:**</p>
-<p>**Definition:** System Language is the internal vocabulary, logic, and structural naming used in a product’s implementation—how things are defined, composed, and rendered in the codebase or design system. Unlike user-facing text, System Language reflects the real architecture beneath the surface. It’s the raw material of product construction.</p>
-<p>**Purpose:** Using System Language during early-stage work, like shaping or framing, anchors abstract ideas in technical reality. It helps teams uncover hidden complexity, validate assumptions, and spot potential risks before metastasizing into late-breaking surprises or costly refactors. Let devs in a shaping session know they own those red cards for any given screen/state.</p>
-<p>**How It’s Used:**</p>
-<p>- **Affordance-to-implementation mapping:** For any new UI element or interaction, ask: *What does this correspond to in the current system?* Is it a known component, a new variant, or a fresh path in the logic?</p>
-<p>- For example:</p>
-<p>- UI affordance: “Tap to Pay”<br>          - System Language: `initiateApplePaySession(amount, breakdown, metadata)`<br>- **Probing for hidden complexity:** Use implementation-oriented questions to surface edge cases and integration risks. As questions like:</p>
-<p>- *How is this condition defined in code?*<br>    - *What data structures or states are involved?*<br>    - *Does this hook into existing flows or create new logic branches?*<br>- **Clarifying types of unknowns:** Distinguish between:</p>
-<p>- Questions you can answer in the room (e.g., by reading source or scanning schemas)<br>    - Questions that require follow-up (e.g., spiking, pairing, deeper investigation)<br>- **Moving beyond yes/no feasibility:** The goal isn&#x27;t just to ask *“Can we build this?”* but to arrive at a partial diagnosis: What’s known, what’s murky, and what needs work? Even rough findings inform better decisions than blind optimism.<br>**Why It Matters:** Bringing System Language into early discussions gives product, design, and engineering teams shared traction. It prevents wishful thinking, exposes integration risks early, and builds shared understanding of cost and structure, not just possibility. By grounding creative ideas in technical truth, teams shape work that’s not only ambitious but also executable.</p></article><section class="discussion"><h2>Discussion</h2><div class="body"><p>**Lightweight Text-Based Notation (Interaction Schematics)**</p>
-<p>**Key Idea:** Use a simple, text-oriented diagram of screens/pages/places along with lists of possible user actions (“affordances”) to show macro-level relationships.</p>
-<p>- **Decomposition:**</p>
-<p>- Breaks the interface or system into discrete “screens” (or states) and the *affordances* (actions) available on each.<br>    - Separates what the user sees (screen) from what the user can do (interaction options).<br>- **Abstraction:**</p>
-<p>- Avoids details of visual design or pixel-perfect layout; focuses on the *structure* of interactions.<br>    - Stays high-level, clarifying who does what and in which order, without over-specifying the interface.<br>- **Pattern Recognition:**</p>
-<p>- By mapping out screens and actions, you can *spot common flows* (e.g., “Most user journeys go from Screen A → B → C”).<br>    - Repeated or bottleneck interactions often stand out.<br>- **Algorithm/Procedure:**</p>
-<p>- Can lead to a formal **state machine** if you detail the transitions and conditions between screens.<br>    - Helps you define the logic of how users move through the system.</p></div></section></main>
+<p>Partials: Sometimes there are too many affordances to list under a single screen. When you need to list all the affordances on a screen, indicate that the same affordances repeat in each row, or distinguish the affordances for navigation from the topic row affordances, prepend the <em>affordance with an underscore (“</em>”).</p>
+<p>A solid line to separate alternate actions: For example, there's only one login screen, but there are multiple possible actions (affordances) on that screen. The line appears above each additional affordance. Think of it as &quot;or&quot;. When there are multiple actions, the arrows point from an action to a new screen.</p>
+<p><strong>A NOTE ON SYSTEM LANGUAGE:</strong></p>
+<p><strong>Definition:</strong> System Language is the internal vocabulary, logic, and structural naming used in a product’s implementation—how things are defined, composed, and rendered in the codebase or design system. Unlike user-facing text, System Language reflects the real architecture beneath the surface. It’s the raw material of product construction.</p>
+<p><strong>Purpose:</strong> Using System Language during early-stage work, like shaping or framing, anchors abstract ideas in technical reality. It helps teams uncover hidden complexity, validate assumptions, and spot potential risks before metastasizing into late-breaking surprises or costly refactors. Let devs in a shaping session know they own those red cards for any given screen/state.</p>
+<p><strong>How It’s Used:</strong></p>
+<ul>
+<li>
+<p><strong>Affordance-to-implementation mapping:</strong> For any new UI element or interaction, ask: <em>What does this correspond to in the current system?</em> Is it a known component, a new variant, or a fresh path in the logic?</p>
+<ul>
+<li>
+<p>For example:</p>
+<pre><code>- UI affordance: “Tap to Pay”
+- System Language: `initiateApplePaySession(amount, breakdown, metadata)`
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Probing for hidden complexity:</strong> Use implementation-oriented questions to surface edge cases and integration risks. As questions like:</p>
+<ul>
+<li><em>How is this condition defined in code?</em></li>
+<li><em>What data structures or states are involved?</em></li>
+<li><em>Does this hook into existing flows or create new logic branches?</em></li>
+</ul>
+</li>
+<li>
+<p><strong>Clarifying types of unknowns:</strong> Distinguish between:</p>
+<ul>
+<li>Questions you can answer in the room (e.g., by reading source or scanning schemas)</li>
+<li>Questions that require follow-up (e.g., spiking, pairing, deeper investigation)</li>
+</ul>
+</li>
+<li>
+<p><strong>Moving beyond yes/no feasibility:</strong> The goal isn't just to ask <em>“Can we build this?”</em> but to arrive at a partial diagnosis: What’s known, what’s murky, and what needs work? Even rough findings inform better decisions than blind optimism.<br>
+<strong>Why It Matters:</strong> Bringing System Language into early discussions gives product, design, and engineering teams shared traction. It prevents wishful thinking, exposes integration risks early, and builds shared understanding of cost and structure, not just possibility. By grounding creative ideas in technical truth, teams shape work that’s not only ambitious but also executable.</p>
+</li>
+</ul></article><section class="discussion"><h2>Discussion</h2><div class="body"><p><strong>Lightweight Text-Based Notation (Interaction Schematics)</strong></p>
+<p><strong>Key Idea:</strong> Use a simple, text-oriented diagram of screens/pages/places along with lists of possible user actions (“affordances”) to show macro-level relationships.</p>
+<ul>
+<li>
+<p><strong>Decomposition:</strong></p>
+<ul>
+<li>Breaks the interface or system into discrete “screens” (or states) and the <em>affordances</em> (actions) available on each.</li>
+<li>Separates what the user sees (screen) from what the user can do (interaction options).</li>
+</ul>
+</li>
+<li>
+<p><strong>Abstraction:</strong></p>
+<ul>
+<li>Avoids details of visual design or pixel-perfect layout; focuses on the <em>structure</em> of interactions.</li>
+<li>Stays high-level, clarifying who does what and in which order, without over-specifying the interface.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pattern Recognition:</strong></p>
+<ul>
+<li>By mapping out screens and actions, you can <em>spot common flows</em> (e.g., “Most user journeys go from Screen A → B → C”).</li>
+<li>Repeated or bottleneck interactions often stand out.</li>
+</ul>
+</li>
+<li>
+<p><strong>Algorithm/Procedure:</strong></p>
+<ul>
+<li>Can lead to a formal <strong>state machine</strong> if you detail the transitions and conditions between screens.</li>
+<li>Helps you define the logic of how users move through the system.</li>
+</ul>
+</li>
+</ul></div></section></main>
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>

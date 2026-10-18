@@ -30,35 +30,134 @@ a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
 main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
 h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
 .body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}
-.body p{margin:0 0 1.1em}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
 .discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
 </head>
 <body data-note-category="products">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
-<main class="wrap"><div class="meta">2025-03-31 · <span class="category-name">Products &amp; systems</span></div><h1>A Natural Order of Product Development</h1><article class="body"><p>Healthy product discovery and delivery involve **moving fluidly** between high‐level goals and lower‐level concrete decisions. Below is a way to read the diagram attached here through the lens of *Abstraction Hierarchy*:</p>
-<p>1. Wishing (High Abstraction)</p>
-<p>- **Submit raw ideas**</p>
-<p>- **Very high level**: The team is exploring the opportunity space and the seed of an idea without committing to specifics.<br>    - Here, you are primarily in “blue sky” thinking—what could we solve or build in an ideal world?<br>- **Time to frame / Pursue**</p>
-<p>- Still high‐level but a **slight move downward** to decide which ideas are worth exploring further.<br>    - You’re establishing criteria for “why this idea might matter” but not yet deeply concerned with execution details.<br>2. Framing (Broad, but Narrowing the Opportunity)</p>
-<p>- **Narrower opportunity &amp; outcome**</p>
-<p>- You step **down** one notch to clarify the real *push* behind your raw ideas.<br>    - “Narrower outcome” signals that you’re still somewhat abstract but you’re starting to converge on a direction.<br>- **Time to shape (Bet value risk $)**</p>
-<p>- A **pivot point**: you go back **up** briefly to weigh the bigger picture (risk, value, viability) before heading down into shaping solutions.<br>    - This ensures what you shape is still aligned with a larger purpose.<br>3. Shaping (Mid‐Level Abstraction)</p>
-<p>- **Shape / Viable technical paths**</p>
-<p>- Moving **down** the hierarchy by turning the framed outcome into a plausible solution approach.<br>    - You compare multiple technical or design paths, looking for feasibility and potential pitfalls.<br>- **Challenge / Spike / Unknowns / Knowledge of how things work**</p>
-<p>- You dip even **further down** here when you tackle “unknowns.”<br>    - **Spikes** and **proofs of concept** are very concrete experiments: you test an assumption at the technical level or do a design prototype to see if it stands up in reality.<br>    - “Knowledge of how things work” is the result of going down to the details and then **coming back up** with insights for the bigger picture.<br>- **Package**</p>
-<p>- Summarizes what’s been learned, bringing it **back up** one step: you create a coherent proposal or “package” to share with stakeholders that also functions as an input to the time-boxed build cycle.<br>4. Building (Concrete)</p>
-<p>- **Alignment on commitment / Commit**</p>
-<p>- A move **up** in abstraction again to align everyone on scope, budget, and schedule.<br>    - But “commit” signals the threshold to the most **concrete** phase: execution.<br>- **Fixed time to build, e.g., six weeks (Bet value risk: $)**</p>
-<p>- As soon as you set that time box, you’re heavily in the real constraints domain.<br>- **Break down, cluster, and sequence**</p>
-<p>- Another move **down** into the *mechanics* of how you will organize tasks.<br>    - Very execution‐focused: implementation tasks get populated.<br>- **Wire affordances to code**</p>
-<p>- Among the most **concrete** steps: actual implementation details, and connecting interface elements to real functionality.<br>5. Finishing (Lowest Abstraction, Tangible Outcome)</p>
-<p>- **Finish/Polish per vertical slice scope**</p>
-<p>- You remain at the **bottom** of the hierarchy, refining the actual product.<br>    - All the design polish and final touches happen here.<br>- **Finished experience**</p>
-<p>- The result is now **fully concrete**—a tangible product or feature in users’ hands.<br>Moving “Up and Down” Continuously</p>
+<main class="wrap"><div class="meta">2025-03-31 · <span class="category-name">Products &amp; systems</span></div><h1>A Natural Order of Product Development</h1><article class="body"><p>Healthy product discovery and delivery involve <strong>moving fluidly</strong> between high‐level goals and lower‐level concrete decisions. Below is a way to read the diagram attached here through the lens of <em>Abstraction Hierarchy</em>:</p>
+<ol>
+<li>Wishing (High Abstraction)</li>
+</ol>
+<ul>
+<li>
+<p><strong>Submit raw ideas</strong></p>
+<ul>
+<li><strong>Very high level</strong>: The team is exploring the opportunity space and the seed of an idea without committing to specifics.</li>
+<li>Here, you are primarily in “blue sky” thinking—what could we solve or build in an ideal world?</li>
+</ul>
+</li>
+<li>
+<p><strong>Time to frame / Pursue</strong></p>
+<ul>
+<li>Still high‐level but a <strong>slight move downward</strong> to decide which ideas are worth exploring further.</li>
+<li>You’re establishing criteria for “why this idea might matter” but not yet deeply concerned with execution details.</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>Framing (Broad, but Narrowing the Opportunity)</li>
+</ol>
+<ul>
+<li>
+<p><strong>Narrower opportunity &amp; outcome</strong></p>
+<ul>
+<li>You step <strong>down</strong> one notch to clarify the real <em>push</em> behind your raw ideas.</li>
+<li>“Narrower outcome” signals that you’re still somewhat abstract but you’re starting to converge on a direction.</li>
+</ul>
+</li>
+<li>
+<p><strong>Time to shape (Bet value risk $)</strong></p>
+<ul>
+<li>A <strong>pivot point</strong>: you go back <strong>up</strong> briefly to weigh the bigger picture (risk, value, viability) before heading down into shaping solutions.</li>
+<li>This ensures what you shape is still aligned with a larger purpose.</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>Shaping (Mid‐Level Abstraction)</li>
+</ol>
+<ul>
+<li>
+<p><strong>Shape / Viable technical paths</strong></p>
+<ul>
+<li>Moving <strong>down</strong> the hierarchy by turning the framed outcome into a plausible solution approach.</li>
+<li>You compare multiple technical or design paths, looking for feasibility and potential pitfalls.</li>
+</ul>
+</li>
+<li>
+<p><strong>Challenge / Spike / Unknowns / Knowledge of how things work</strong></p>
+<ul>
+<li>You dip even <strong>further down</strong> here when you tackle “unknowns.”</li>
+<li><strong>Spikes</strong> and <strong>proofs of concept</strong> are very concrete experiments: you test an assumption at the technical level or do a design prototype to see if it stands up in reality.</li>
+<li>“Knowledge of how things work” is the result of going down to the details and then <strong>coming back up</strong> with insights for the bigger picture.</li>
+</ul>
+</li>
+<li>
+<p><strong>Package</strong></p>
+<ul>
+<li>Summarizes what’s been learned, bringing it <strong>back up</strong> one step: you create a coherent proposal or “package” to share with stakeholders that also functions as an input to the time-boxed build cycle.</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li>Building (Concrete)</li>
+</ol>
+<ul>
+<li>
+<p><strong>Alignment on commitment / Commit</strong></p>
+<ul>
+<li>A move <strong>up</strong> in abstraction again to align everyone on scope, budget, and schedule.</li>
+<li>But “commit” signals the threshold to the most <strong>concrete</strong> phase: execution.</li>
+</ul>
+</li>
+<li>
+<p><strong>Fixed time to build, e.g., six weeks (Bet value risk: $)</strong></p>
+<ul>
+<li>As soon as you set that time box, you’re heavily in the real constraints domain.</li>
+</ul>
+</li>
+<li>
+<p><strong>Break down, cluster, and sequence</strong></p>
+<ul>
+<li>Another move <strong>down</strong> into the <em>mechanics</em> of how you will organize tasks.</li>
+<li>Very execution‐focused: implementation tasks get populated.</li>
+</ul>
+</li>
+<li>
+<p><strong>Wire affordances to code</strong></p>
+<ul>
+<li>Among the most <strong>concrete</strong> steps: actual implementation details, and connecting interface elements to real functionality.</li>
+</ul>
+</li>
+</ul>
+<ol start="5">
+<li>Finishing (Lowest Abstraction, Tangible Outcome)</li>
+</ol>
+<ul>
+<li>
+<p><strong>Finish/Polish per vertical slice scope</strong></p>
+<ul>
+<li>You remain at the <strong>bottom</strong> of the hierarchy, refining the actual product.</li>
+<li>All the design polish and final touches happen here.</li>
+</ul>
+</li>
+<li>
+<p><strong>Finished experience</strong></p>
+<ul>
+<li>The result is now <strong>fully concrete</strong>—a tangible product or feature in users’ hands.<br>
+Moving “Up and Down” Continuously</li>
+</ul>
+</li>
+</ul>
 <p>Although the diagram might look like a left‐to‐right flow, in practice you constantly:</p>
-<p>- Go **down** when you need more detail (technical or design specifics).<br>- Then go **up** if you need to revisit the broader picture or re‐align on outcomes.<br>That cyclical up/down motion is how you balance feasibility, usability, and viability. You never stay “purely abstract” or “purely concrete”—instead, you move up and down the abstraction levels to keep the right level of variation and focus at the right time within a range.</p></article></main>
+<ul>
+<li>Go <strong>down</strong> when you need more detail (technical or design specifics).</li>
+<li>Then go <strong>up</strong> if you need to revisit the broader picture or re‐align on outcomes.<br>
+That cyclical up/down motion is how you balance feasibility, usability, and viability. You never stay “purely abstract” or “purely concrete”—instead, you move up and down the abstraction levels to keep the right level of variation and focus at the right time within a range.</li>
+</ul></article></main>
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>

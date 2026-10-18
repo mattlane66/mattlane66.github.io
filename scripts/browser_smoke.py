@@ -334,6 +334,25 @@ def main() -> int:
                                 failures.append(
                                     f"{viewport_name} /notes/: directly added test note did not render"
                                 )
+                            # The archive modal must use the published semantic list HTML.
+                            page.evaluate("""() => openNote(NOTES.find(n => String(n.id) === '299848006'))""")
+                            page.locator("#dbody ol li").first.wait_for(timeout=15_000)
+                            actual_numbers = page.evaluate("""() => {
+                                const result = [];
+                                for (const list of document.querySelectorAll("#dbody ol")) {
+                                    let number = list.start || 1;
+                                    for (const item of list.children) {
+                                        if (item.tagName === "LI") result.push(number++);
+                                    }
+                                }
+                                return result;
+                            }""")
+                            if actual_numbers[:11] != list(range(1, 12)):
+                                failures.append(
+                                    f"{viewport_name} /notes/: published modal numbered "
+                                    f"{actual_numbers[:11]} instead of 1..11"
+                                )
+                            page.locator("#close").click()
                             leaked_removed = page.evaluate(
                                 "(ids) => NOTES.filter(n => ids.includes(String(n.id))).map(n => String(n.id))",
                                 sorted(removed_ids),

@@ -6,6 +6,7 @@ import json
 import re
 import shutil
 from pathlib import Path
+from markdown_it import MarkdownIt
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://mattlane66.github.io"
@@ -14,6 +15,8 @@ DIRECT = ROOT / "notes" / "direct-notes.json"
 REMOVED = ROOT / "notes" / "removed-note-ids.json"
 OUT = ROOT / "notes" / "n"
 GENERIC_IMAGE = SITE + "/assets/working-form-flow-crisp-v3.jpg"
+NOTE_MARKDOWN = MarkdownIt("default", {"html": False, "breaks": True}).enable("table")
+
 NOTE_CATEGORY_KEYS = {
     "AI & future work": "ai",
     "Products & systems": "products",
@@ -59,9 +62,14 @@ def seo_title(value: str) -> str:
     return (short or value[:63]).rstrip(" ,.;:—-") + "…"
 
 def render_body(value: str) -> str:
-    value = strip_substack_urls(value)
-    blocks = [b.strip() for b in re.split(r"\n\s*\n", value or "") if b.strip()]
-    return "\n".join("<p>" + html.escape(b).replace("\n", "<br>") + "</p>" for b in blocks)
+    """Render Notes with CommonMark semantics, retaining authored list numbers.
+
+    Explicit restarts (e.g. "1." in a second section) remain independent.
+    Nonconsecutive list fragments receive the authored <ol start="N"> value.
+    Raw HTML is disabled because Notes may include imported/untrusted content.
+    The archive modal reuses this rendered article, rather than reparsing Markdown.
+    """
+    return NOTE_MARKDOWN.render(strip_substack_urls(value).strip()).rstrip()
 
 
 def note_content(title: str, body: str) -> tuple[str, str]:
@@ -335,7 +343,7 @@ a{{color:inherit}}.wrap{{width:min(var(--max),calc(100% - 36px));margin:auto}}
 main{{padding:clamp(58px,9vw,110px) 0 100px}}.meta{{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}}
 h1{{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}}
 .body{{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}}
-.body p{{margin:0 0 1.1em}}.discussion{{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}}
+.body p{{margin:0 0 1.1em}}.body ol,.body ul{{padding-left:1.5em;margin:0 0 1.1em}}.body li{{padding-left:.1em;margin:.3em 0}}.body li p{{margin:.4em 0}}.body li>ul,.body li>ol{{margin:.35em 0}}.body img{{max-width:100%;height:auto}}.body pre{{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}}.body code{{overflow-wrap:anywhere}}.discussion{{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}}
 .discussion h2{{font-size:18px;letter-spacing:-.02em}}footer{{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}}
 </style>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
