@@ -27,6 +27,19 @@ PAGES = [
     ("/splice/", "splice"),
     ("/404.html", "404"),
 ]
+ARTICLE_SLUGS = (
+    "algorithm-for-doing-great-work",
+    "an-experimental-governance-model",
+    "design-as-functions",
+    "downward-causation",
+    "how-to-update-your-cognitive-and",
+    "on-writing-after-fluency",
+    "reality-is-relations-stabilizing",
+    "the-unvarnished-truth",
+    "utility-creates-value-meaning-shapes",
+    "what-human-practice-is-for",
+)
+PAGES.extend((f"/articles/{slug}/", f"article:{slug}") for slug in ARTICLE_SLUGS)
 VIEWPORTS = {
     "desktop": {"width": 1440, "height": 900},
     "phone": {"width": 390, "height": 844},
@@ -390,6 +403,14 @@ def main() -> int:
                                         f"{viewport_name} /notes/: displayed total {shown}, "
                                         f"expected {expected_notes_total}"
                                     )
+                            # A phrase occurring only at the end of a long Note
+                            # must still be searchable and shown in its card snippet.
+                            page.locator("#search").fill("unexamined preference")
+                            page.locator('[data-id="299848006"]').first.wait_for(timeout=10_000)
+                            card = page.locator('[data-id="299848006"]').first
+                            if "unexamined preference" not in card.locator(".excerpt").inner_text().lower():
+                                failures.append(f"{viewport_name} /notes/: full-body result lacks matching passage")
+                            page.locator("#search").fill("")
                             noisy_feed = page.evaluate("""() => NOTES.map(n => ({
                                 id: String(n.id),
                                 title: feedTitle(n),
