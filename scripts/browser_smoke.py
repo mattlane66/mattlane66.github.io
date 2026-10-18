@@ -27,6 +27,19 @@ PAGES = [
     ("/splice/", "splice"),
     ("/404.html", "404"),
 ]
+ARTICLE_SLUGS = (
+    "algorithm-for-doing-great-work",
+    "an-experimental-governance-model",
+    "design-as-functions",
+    "downward-causation",
+    "how-to-update-your-cognitive-and",
+    "on-writing-after-fluency",
+    "reality-is-relations-stabilizing",
+    "the-unvarnished-truth",
+    "utility-creates-value-meaning-shapes",
+    "what-human-practice-is-for",
+)
+PAGES.extend((f"/articles/{slug}/", f"article:{slug}") for slug in ARTICLE_SLUGS)
 VIEWPORTS = {
     "desktop": {"width": 1440, "height": 900},
     "phone": {"width": 390, "height": 844},
@@ -157,9 +170,9 @@ def main() -> int:
                         # Let deferred JS/layout settle without waiting for third-party network idleness.
                         page.wait_for_timeout(1500 if name != "planning-tools" else 3000)
 
-                        # Refresh is intentionally a reset: every standard content page starts at the top.
-                        # planning-tools is a separately bundled interactive artifact and is tested for runtime readiness below.
-                        if name not in ("planning-tools", "404"):
+                        # Preserve the existing refresh-to-top contract for the original site pages.
+                        # Standalone articles intentionally retain normal browser scroll restoration.
+                        if name not in ("planning-tools", "404") and not name.startswith("article:"):
                             page.evaluate("window.scrollTo(0, Math.min(700, Math.max(0, document.documentElement.scrollHeight - innerHeight)))")
                             page.wait_for_timeout(100)
                             page.reload(wait_until="domcontentloaded", timeout=60_000)
@@ -390,6 +403,14 @@ def main() -> int:
                                         f"{viewport_name} /notes/: displayed total {shown}, "
                                         f"expected {expected_notes_total}"
                                     )
+                            # A phrase occurring only at the end of a long Note
+                            # must still be searchable and shown in its card snippet.
+                            page.locator("#search").fill("unexamined preference")
+                            page.locator('[data-id="299848006"]').first.wait_for(timeout=10_000)
+                            card = page.locator('[data-id="299848006"]').first
+                            if "unexamined preference" not in card.locator(".excerpt").inner_text().lower():
+                                failures.append(f"{viewport_name} /notes/: full-body result lacks matching passage")
+                            page.locator("#search").fill("")
                             noisy_feed = page.evaluate("""() => NOTES.map(n => ({
                                 id: String(n.id),
                                 title: feedTitle(n),
