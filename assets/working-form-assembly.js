@@ -16,15 +16,26 @@
     [673,606,124,30,5.95,6.1,0],[566,643,310,285,6,6.24,1],[641,647,142,18,6.08,6.22,0],[611,647,171,113,6.12,6.32,1],[618,653,156,24,6.18,6.36,0],[621,680,150,20,6.28,6.44,0],[622,704,148,39,6.38,6.56,0],[623,743,145,12,6.5,6.7,0],[783,691,90,97,6.46,6.72,0],[608,767,153,18,6.62,6.78,0],[581,765,179,158,6.68,6.88,1],[589,771,164,24,6.74,6.92,0],[589,799,164,19,6.84,7,0],[590,822,162,32,6.94,7.14,0],[590,854,162,32,7.06,7.24,0],[592,889,158,26,7.18,7.36,0],
     [1351,196,104,36,7.45,7.6,0],[1241,228,284,515,7.52,7.78,1],[1283,244,208,166,7.64,7.82,1],[1288,249,199,26,7.7,7.88,0],[1289,276,197,28,7.8,7.98,0],[1289,306,198,67,7.94,8.16,0],[1290,374,196,28,8.08,8.26,0],[1282,409,208,155,8.18,8.36,1],[1287,414,199,26,8.24,8.42,0],[1289,441,197,28,8.34,8.52,0],[1289,470,198,57,8.46,8.68,0],[1290,528,196,28,8.6,8.78,0],[1290,574,206,161,8.7,8.88,1],[1295,579,198,26,8.76,8.94,0],[1296,606,197,28,8.86,9.04,0],[1296,635,198,63,8.98,9.2,0],[1296,699,196,28,9.12,9.3,0]
   ];
+  // Each route follows an actual connector in the original diagram.
+  // Never trace enclosing section borders as though they were wires.
+  // Coordinate adjustments were checked against the source diagram.
   const wires=[
-    ['M 319 182 H 391 V 67 H 511',2.32,2.96],['M 319 181 H 620',2.46,3.1],['M 499 20 V 229 H 1112',3.95,4.55],
-    ['M 321 253 H 499 V 315 H 526',4.2,4.82],['M 375 262 H 464 V 490 H 499',4.36,4.98],['M 878 345 H 918',5,5.22],
-    ['M 1186 356 H 1211 V 444 H 1282',5.7,6.1],['M 322 434 H 434 V 708 H 611',6.2,6.7],['M 322 461 H 453 V 729 H 612',6.34,6.84],
-    ['M 339 853 H 441 V 826 H 583',6.58,7.02],['M 342 880 H 455 V 724 H 583',6.72,7.2],
-    ['M 1113 162 H 1130 V 176 H 1139 M 1180 177 H 1260 V 280 H 1284',7.62,8.16],
-    ['M 499 380 V 492 H 1285',7.86,8.42],['M 876 711 H 1065 V 654 H 1289',8.06,8.56],
-    ['M 607 644 V 572 H 1279',8.22,8.72],['M 1494 232 V 22 H 1520 V 607 H 1492',8.42,8.96],
-    ['M 1242 228 H 1521 V 742 H 1242 V 228',8.58,9.12]
+    ['M 320 183 H 395 V 68 H 510',2.32,2.96],   // Table -> goal selection
+    ['M 320 183 H 620',2.46,3.10],            // Table -> individual goal
+    ['M 498 21 V 229 H 1111',3.95,4.55],     // Goal header return
+    ['M 319 259 H 499 V 315 H 526',4.20,4.82], // Table -> achievement
+    ['M 320 269 H 468 V 497 H 1283',7.55,8.30], // Table -> group history
+    ['M 875 345 H 913',5.00,5.22],           // Achievement -> coach
+    ['M 1187 357 H 1212 V 446 H 1284',5.70,6.10], // Coach -> history
+    ['M 323 438 H 439 V 706 H 614',6.20,6.70], // Athlete max row 1
+    ['M 323 465 H 456 V 716 H 612',6.34,6.84], // Athlete max row 2
+    ['M 339 863 H 442 V 826 H 584',6.58,7.02], // Group max row 1
+    ['M 339 891 H 456 V 725 H 614',6.72,7.20], // Group max row 2
+    ['M 1181 177 H 1259 V 282 H 1282',7.62,8.16], // Goal outcome -> ordered history
+    ['M 876 719 H 1065 V 661 H 1288',8.06,8.56], // Maxes -> pool history
+    ['M 614 644 V 579 H 1287',8.22,8.72], // Group rail -> pool view
+    ['M 1513 0 V 270 H 1479',8.42,8.96],  // History return, top
+    ['M 1540 0 V 606 H 1485',8.58,9.12]   // History return, pool
   ];
   const NS='http://www.w3.org/2000/svg';
   const add=(tag,attrs,parent)=>{
@@ -88,7 +99,8 @@
       id,maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse',
       x:0,y:0,width:1568,height:1003,'mask-type':'alpha'
     },defs);
-    const trace=add(tag,{...attributes,fill:'none',stroke:'#fff','stroke-width':8},mask);
+    const trace=add(tag,{...attributes,fill:'none',stroke:'#fff',
+      'stroke-width':tag==='path'?5.5:6},mask);
     add('use',{href:'#hero-assembly-source',mask:'url(#'+id+')'},parent);
     const length=tag==='rect'
       ? 2*(Number(attributes.width)+Number(attributes.height))
@@ -147,8 +159,9 @@
       }
     }
     for(const wire of paths){
-      wire.trace.style.strokeDashoffset=String(wire.length*(1-cubic(
-        (position-wire.start)/(wire.end-wire.start))));
+      // Constant-speed technical pen stroke, without slowdown at every elbow.
+      const progress=clamp((position-wire.start)/(wire.end-wire.start));
+      wire.trace.style.strokeDashoffset=String(wire.length*(1-progress));
     }
     for(const section of finishedSections){
       const p=clamp((position-section.after)/.16);
