@@ -79,6 +79,10 @@ a{color:inherit;text-decoration:none}
 .copy{max-width:900px}
 .copy p{font-size:clamp(18px,1.35vw,21px);line-height:1.45;letter-spacing:-.018em;margin:0 0 1.05em;max-width:46ch}
 .copy .turn{margin-top:1.7em}
+.guitar-audio-button{appearance:none;border:0;background:transparent;color:currentColor;display:inline-flex;align-items:center;justify-content:center;width:1.48em;height:1.48em;padding:0;margin:0 -.07em 0 .08em;vertical-align:-.3em;cursor:pointer;border-radius:100%}
+.guitar-audio-button svg{width:.92em;height:.92em;display:block;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.guitar-audio-button:hover,.guitar-audio-button.is-playing{color:var(--blue)}
+.guitar-audio-button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .music-divider{width:100%;border-top:1px solid #c8c6bc;margin:2.2em 0 1.7em}
 .photo-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
 .photo-thumb{appearance:none;border:0;padding:0;background:none;cursor:zoom-in}
@@ -129,7 +133,8 @@ a{color:inherit;text-decoration:none}
 
       <p>Then make it real.</p>
 
-      <p class="turn">I play guitar, go to live music and stand-up, read mostly older books, ride an enduro eMTB, and spend probably too much time making hand-brewed coffee.</p>
+      <p class="turn">I play guitar <button type="button" class="guitar-audio-button" id="guitar-audio-button" aria-label="Play a short guitar recording" title="Play guitar recording"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 9a5 5 0 0 1 0 6M18 6a9 9 0 0 1 0 12"/></svg></button>, go to live music and stand-up, read mostly older books, ride an enduro eMTB, and spend probably too much time making hand-brewed coffee.</p>
+      <audio id="guitar-audio" src="../assets/guitar-take.m4a" preload="none"></audio>
 
       <div class="music-divider" aria-hidden="true"></div>
       <p>In another life, I recorded and mixed these albums.</p>
@@ -159,6 +164,18 @@ a{color:inherit;text-decoration:none}
 </dialog>
 <script>
 (function(){
+  const guitarButton=document.getElementById('guitar-audio-button');
+  const guitarAudio=document.getElementById('guitar-audio');
+  guitarButton.addEventListener('click',function(){
+    guitarAudio.pause();
+    guitarAudio.currentTime=0;
+    const playback=guitarAudio.play();
+    if(playback&&playback.then){
+      playback.then(function(){guitarButton.classList.add('is-playing');}).catch(function(){guitarButton.classList.remove('is-playing');});
+    }
+  });
+  guitarAudio.addEventListener('ended',function(){guitarButton.classList.remove('is-playing');});
+  guitarAudio.addEventListener('pause',function(){guitarButton.classList.remove('is-playing');});
   const dialog=document.getElementById('photo-lightbox');
   const full=document.getElementById('photo-lightbox-image');
   const close=dialog.querySelector('.photo-lightbox-close');
