@@ -272,7 +272,7 @@ def main() -> int:
                                         ready: !!svg && !!ink,
                                         tiles: rects.length,
                                         finished: rects.length > 0 && rects.every(
-                                            r => Number(r.getAttribute('opacity')) >= .999
+                                            r => Number(getComputedStyle(r).opacity) >= .999
                                         )
                                     };
                                 }""")
