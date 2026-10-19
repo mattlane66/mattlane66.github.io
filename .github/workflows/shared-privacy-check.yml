@@ -1,0 +1,15 @@
+name: Shared privacy check
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  new-content-privacy:
+    uses: ./.github/workflows/reusable-privacy-guard.yml
+    permissions:
+      contents: read
