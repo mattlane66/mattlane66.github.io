@@ -37,6 +37,32 @@
   const defs=add('defs',{},svg);
   add('image',{id:'hero-assembly-source',href:fallback.currentSrc||fallback.src,
     x:0,y:0,width:1568,height:1003},defs);
+  // Extract only the original dark labels and lines. Panel shading is
+  // deliberately excluded; it is revealed later in each completion tile.
+  // The ink uses the source bitmap's own RGB, retaining antialiasing.
+  let inkUri;
+  try{
+    const canvas=document.createElement('canvas');
+    canvas.width=1568;canvas.height=1003;
+    const context=canvas.getContext('2d',{willReadFrequently:true});
+    if(!context)throw Error('Canvas 2D unavailable');
+    context.drawImage(fallback,0,0,1568,1003);
+    const pixels=context.getImageData(0,0,1568,1003);
+    const d=pixels.data;
+    for(let i=0;i<d.length;i+=4){
+      const lightness=.2126*d[i]+.7152*d[i+1]+.0722*d[i+2];
+      d[i+3]=Math.max(0,Math.min(255,Math.round((218-lightness)*16)));
+    }
+    context.clearRect(0,0,1568,1003);
+    context.putImageData(pixels,0,0);
+    inkUri=canvas.toDataURL('image/png');
+  }catch(_error){
+    // Fail closed to the fully readable original <img> instead of a broken
+    // or partially assembled hero, including in restrictive Safari contexts.
+    return;
+  }
+  add('image',{id:'hero-assembly-ink',href:inkUri,
+    x:0,y:0,width:1568,height:1003},defs);
   const image=mask=>{
     add('use',{href:'#hero-assembly-source',mask:'url(#'+mask+')'},svg);
   };
@@ -53,10 +79,12 @@
   const frameMask=makeMask('hero-frame-mask');
   const pieceMask=makeMask('hero-piece-mask');
   const wireMask=makeMask('hero-wire-mask');
+  const inkStageMask=makeMask('hero-ink-stage-mask');
   const exactFinishMask=makeMask('hero-exact-finish-mask');
   image('hero-frame-mask');
   image('hero-piece-mask');
   image('hero-wire-mask');
+  add('use',{href:'#hero-assembly-ink',mask:'url(#hero-ink-stage-mask)'},svg);
   image('hero-exact-finish-mask');
 
   const frameStrokes=[],parts=[];
@@ -122,7 +150,9 @@
     [1215,550,353,453,6.46]   // Finished History
   ].map(([x,y,width,height,start])=>({
     rect:add('rect',{x,y,width,height,fill:'#fff',opacity:0},exactFinishMask),
-    start
+    inkRect:add('rect',{x,y,width,height,fill:'#fff',opacity:0},inkStageMask),
+    start,
+    inkStart:start-.34
   }));
   let position=0,previous=null,visible=true;
   const duration=8.8,speed=1.5; // 5.9-second loop; user-selected fixed pace
@@ -139,8 +169,9 @@
       wire.stroke.style.strokeDashoffset=String(wire.length*(1-progress));
     }
     for(const tile of completionTiles){
-      const p=smooth((position-tile.start)/.16);
-      tile.rect.style.opacity=String(p);
+      // Finish the original dark pixels before each exact background wash.
+      tile.inkRect.style.opacity=String(smooth((position-tile.inkStart)/.2));
+      tile.rect.style.opacity=String(smooth((position-tile.start)/.16));
     }
   }
   function tick(now){
