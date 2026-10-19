@@ -244,6 +244,8 @@ def main() -> int:
                                                     f"at ({mx:.0f},{my:.0f}); expected exactly one"
                                                 )
                                 shots_dir = ROOT / "publication-preview" / "hero-frames"
+                                if (ROOT / "publication-preview").is_dir():
+                                    shots_dir.mkdir(parents=True, exist_ok=True)
                                 stages = [
                                     ("25", 1050), ("50", 1150),
                                     ("75", 1300), ("complete", 1600)
