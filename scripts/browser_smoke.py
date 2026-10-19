@@ -212,18 +212,38 @@ def main() -> int:
                             hero_errors: list[str] = []
                             probe.on("pageerror", lambda exc, bag=hero_errors: bag.append(str(exc)))
                             try:
-                                probe.goto(base + "/", wait_until="domcontentloaded", timeout=60_000)
-                                probe.wait_for_function(
-                                    "!!document.querySelector('.hero-map.is-assembling .hero-assembly')",
-                                    timeout=15_000,
-                                )
-                                rectangles = probe.evaluate("""() => {
-                                    const mask = document.querySelector('#hero-exact-finish-mask');
-                                    return mask ? Array.from(mask.querySelectorAll('rect')).map(r => ({
-                                        x:+r.getAttribute('x'), y:+r.getAttribute('y'),
-                                        w:+r.getAttribute('width'), h:+r.getAttribute('height')
-                                    })) : [];
-                                }""")
+                                # Each frame is frozen deterministically on localhost;
+                                # screenshots no longer alter the animation clock.
+                                shots_dir = ROOT / "publication-preview" / "hero-frames"
+                                if (ROOT / "publication-preview").is_dir():
+                                    shots_dir.mkdir(parents=True, exist_ok=True)
+                                stages = [
+                                    ("25", 1.55), ("50", 3.05),
+                                    ("75", 4.60), ("complete", 6.95),
+                                ]
+                                rectangles = []
+                                for label, frame_position in stages:
+                                    probe.goto(
+                                        base + f"/?hero_frame={frame_position}",
+                                        wait_until="domcontentloaded", timeout=60_000,
+                                    )
+                                    probe.wait_for_function(
+                                        "!!document.querySelector('.hero-map.is-assembling .hero-assembly')",
+                                        timeout=15_000,
+                                    )
+                                    if label == "complete":
+                                        rectangles = probe.evaluate("""() => {
+                                            const mask = document.querySelector('#hero-exact-finish-mask');
+                                            return mask ? [...mask.querySelectorAll('rect')].map(r => ({
+                                                x:+r.getAttribute('x'),y:+r.getAttribute('y'),
+                                                w:+r.getAttribute('width'),h:+r.getAttribute('height')
+                                            })) : [];
+                                        }""")
+                                    if shots_dir.is_dir():
+                                        probe.locator(".hero-map").screenshot(
+                                            path=str(shots_dir / f"{viewport_name}-{label}.png"),
+                                            timeout=15_000,
+                                        )
                                 if len(rectangles) != 14:
                                     failures.append(
                                         f"{viewport_name} /: hero must have 14 complete-image regions; "
@@ -243,34 +263,6 @@ def main() -> int:
                                                     f"{viewport_name} /: hero has {hits} regions "
                                                     f"at ({mx:.0f},{my:.0f}); expected exactly one"
                                                 )
-                                shots_dir = ROOT / "publication-preview" / "hero-frames"
-                                if (ROOT / "publication-preview").is_dir():
-                                    shots_dir.mkdir(parents=True, exist_ok=True)
-                                stages = [
-                                    ("25", 1050), ("50", 1150), ("75", 1300)
-                                ]
-                                for label, milliseconds in stages:
-                                    probe.wait_for_timeout(milliseconds)
-                                    if shots_dir.is_dir():
-                                        probe.locator(".hero-map").screenshot(
-                                            path=str(shots_dir / f"{viewport_name}-{label}.png"),
-                                            timeout=15_000,
-                                        )
-                                # Screenshot capture is not tied to RAF time. Wait for
-                                # all tiles to reach full opacity rather than guessing
-                                # how long the animated clock advanced.
-                                probe.wait_for_function("""() => {
-                                    const mask = document.querySelector('#hero-exact-finish-mask');
-                                    const rects = mask ? [...mask.querySelectorAll('rect')] : [];
-                                    return rects.length === 14 && rects.every(
-                                        r => Number(r.getAttribute('opacity')) >= .999
-                                    );
-                                }""", timeout=12_000)
-                                if shots_dir.is_dir():
-                                    probe.locator(".hero-map").screenshot(
-                                        path=str(shots_dir / f"{viewport_name}-complete.png"),
-                                        timeout=15_000,
-                                    )
                                 final_state = probe.evaluate("""() => {
                                     const mask = document.querySelector('#hero-exact-finish-mask');
                                     const ink = document.getElementById('hero-assembly-ink');
