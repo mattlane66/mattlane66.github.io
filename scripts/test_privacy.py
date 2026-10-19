@@ -27,6 +27,10 @@ class PrivacyTests(unittest.TestCase):
     def test_rejects_non_noreply_addresses(self):
         self.assertFalse(privacy.safe_source_email("person" + "@" + "inbox.net"))
 
+    def test_allows_github_system_noreply_merger(self):
+        self.assertTrue(privacy.safe_commit_email("noreply" + "@" + "github.com"))
+        self.assertFalse(privacy.safe_commit_email("real" + "@" + "myinbox.com"))
+
     def test_does_not_reject_plain_text_mention_of_mailto_in_docs(self):
         self.assertEqual([], privacy.issues_in_source("README.md", "Never use mailto" + ": links."))
 
