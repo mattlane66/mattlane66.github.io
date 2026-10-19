@@ -67,7 +67,7 @@ def check_tracked_files() -> list[str]:
 
 def safe_commit_email(address: str) -> bool:
     # GitHub itself uses this private committer identity for merge commits.
-    return address.lower() == "noreply@github.com" or address.rsplit("@", 1)[-1].lower() in SAFE_COMMIT_DOMAINS
+    return address.lower().split("@") == ["noreply", "github.com"] or address.rsplit("@", 1)[-1].lower() in SAFE_COMMIT_DOMAINS
 
 
 def check_new_commit_metadata(base: str, head: str) -> list[str]:
