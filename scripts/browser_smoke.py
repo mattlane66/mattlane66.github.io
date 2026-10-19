@@ -247,8 +247,7 @@ def main() -> int:
                                 if (ROOT / "publication-preview").is_dir():
                                     shots_dir.mkdir(parents=True, exist_ok=True)
                                 stages = [
-                                    ("25", 1050), ("50", 1150),
-                                    ("75", 1300), ("complete", 1600)
+                                    ("25", 1050), ("50", 1150), ("75", 1300)
                                 ]
                                 for label, milliseconds in stages:
                                     probe.wait_for_timeout(milliseconds)
@@ -257,6 +256,21 @@ def main() -> int:
                                             path=str(shots_dir / f"{viewport_name}-{label}.png"),
                                             timeout=15_000,
                                         )
+                                # Screenshot capture is not tied to RAF time. Wait for
+                                # all tiles to reach full opacity rather than guessing
+                                # how long the animated clock advanced.
+                                probe.wait_for_function("""() => {
+                                    const mask = document.querySelector('#hero-exact-finish-mask');
+                                    const rects = mask ? [...mask.querySelectorAll('rect')] : [];
+                                    return rects.length === 14 && rects.every(
+                                        r => Number(r.getAttribute('opacity')) >= .999
+                                    );
+                                }""", timeout=12_000)
+                                if shots_dir.is_dir():
+                                    probe.locator(".hero-map").screenshot(
+                                        path=str(shots_dir / f"{viewport_name}-complete.png"),
+                                        timeout=15_000,
+                                    )
                                 final_state = probe.evaluate("""() => {
                                     const mask = document.querySelector('#hero-exact-finish-mask');
                                     const ink = document.getElementById('hero-assembly-ink');
