@@ -63,7 +63,7 @@ jobs:
                       continue
                   for email in parts[1:]:
                       domain = email.rsplit("@", 1)[-1].lower()
-                      if domain not in allowed_domains and email.lower() != "noreply@github.com":
+                      if domain not in allowed_domains and email.lower().split("@") != ["noreply", "github.com"]:
                           problems["non-private commit identity"] += 1
 
               diff_spec = f"{base}...{head}" if is_pr else f"{base}..{head}"
@@ -90,7 +90,7 @@ jobs:
               for match in email_pattern.finditer(value):
                   address = match.group()
                   domain = address.rsplit("@", 1)[-1].lower()
-                  if domain not in allowed_examples | allowed_domains and address.lower() != "noreply@github.com":
+                  if domain not in allowed_examples | allowed_domains and address.lower().split("@") != ["noreply", "github.com"]:
                       problems["non-example email address added"] += 1
 
           if problems:
