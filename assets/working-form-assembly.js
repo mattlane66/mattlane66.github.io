@@ -1,4 +1,4 @@
-/* Assemble the homepage diagram at a fixed 2× rate. Image remains the fallback. */
+/* Pixel-faithful diagram construction, fixed 1.5×. Static original is the accessible fallback. */
 (() => {
   const mount=document.querySelector('.hero-map[data-assemble="working-form"]');
   const fallback=mount&&mount.querySelector('img');
@@ -19,158 +19,160 @@
   // Each route follows an actual connector in the original diagram.
   // Never trace enclosing section borders as though they were wires.
   // Coordinate adjustments were checked against the source diagram.
-  const wires=[
-    ['M 320 183 H 395 V 68 H 510',2.32,2.96],   // Table -> goal selection
-    ['M 320 183 H 620',2.46,3.10],            // Table -> individual goal
-    ['M 498 21 V 229 H 1111',3.95,4.55],     // Goal header return
-    ['M 319 259 H 499 V 315 H 526',4.20,4.82], // Table -> achievement
-    ['M 320 269 H 468 V 497 H 1283',7.55,8.30], // Table -> group history
-    ['M 875 345 H 913',5.00,5.22],           // Achievement -> coach
-    ['M 1187 357 H 1212 V 446 H 1284',5.70,6.10], // Coach -> history
-    ['M 323 438 H 439 V 706 H 614',6.20,6.70], // Athlete max row 1
-    ['M 323 465 H 456 V 716 H 612',6.34,6.84], // Athlete max row 2
-    ['M 339 863 H 442 V 826 H 584',6.58,7.02], // Group max row 1
-    ['M 339 891 H 456 V 725 H 614',6.72,7.20], // Group max row 2
-    ['M 1181 177 H 1259 V 282 H 1282',7.62,8.16], // Goal outcome -> ordered history
-    ['M 876 719 H 1065 V 661 H 1288',8.06,8.56], // Maxes -> pool history
-    ['M 614 644 V 579 H 1287',8.22,8.72], // Group rail -> pool view
-    ['M 1513 0 V 270 H 1479',8.42,8.96],  // History return, top
-    ['M 1540 0 V 606 H 1485',8.58,9.12]   // History return, pool
-  ];
+  // Measured straight connector segments from the original image (x1,y1,x2,y2).
+  // The actual image supplies the ink; these coordinates only advance the mask.
+  const wireSegments=[[396,67,501,67],[469,177,502,177],[1216,178,1275,178],[381,191,470,191],[381,259,415,259],[440,259,506,259],[405,269,469,269],[400,438,440,438],[505,497,1256,497],[614,579,1103,579],[1112,579,1256,579],[1076,660,1256,660],[468,706,574,706],[456,716,574,716],[888,719,1077,719],[461,732,574,732],[439,835,574,835],[464,854,574,854],[381,863,447,863],[381,891,462,891],[1512,0,1512,231],[1538,0,1538,231],[1556,0,1556,615],[395,68,395,181],[1274,178,1274,231],[398,212,398,251],[505,259,505,498],[468,269,468,707],[1225,360,1225,450],[439,438,439,836],[456,465,456,717],[614,579,614,650],[1076,660,1076,719],[461,732,461,853],[461,854,461,891]];
   const NS='http://www.w3.org/2000/svg';
   const add=(tag,attrs,parent)=>{
     const el=document.createElementNS(NS,tag);
-    Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v)));
-    parent.appendChild(el);return el;
-  };
-  const svg=document.createElementNS(NS,'svg');
-  Object.entries({viewBox:'0 0 1568 1003',preserveAspectRatio:'xMidYMid meet',class:'hero-assembly','aria-hidden':'true',focusable:'false'})
-    .forEach(([k,v])=>svg.setAttribute(k,v));
-  // Keep the underlying paper steady, but finish each section with its own
-  // gray wash after its fields, boxes, and labels have been assembled.
-  // The fills are behind the assembled details (not painted over them).
-  add('rect',{x:0,y:0,width:1568,height:1003,fill:'#f8f9fb'},svg);
-  const sectionBackgrounds=[
-    [44,144,333,827,2.64],   // Table completes
-    [495,20,617,211,4.20],   // Set Goal completes
-    [566,643,310,285,7.36], // Add Maxes completes
-    [1241,228,284,515,9.30] // History completes
-  ].map(([x,y,width,height,after])=>({
-    el:add('rect',{x,y,width,height,fill:'#e5e9ed',opacity:0},svg),
-    after:after*.68
-  }));
-  const defs=add('defs',{},svg);
-  add('image',{id:'hero-assembly-source',href:fallback.currentSrc||fallback.src,x:0,y:0,width:1568,height:1003},defs);
-  // Show exact bitmap pixels as elements assemble. Traced paths are used only
-  // as alpha masks; no temporary colored lines or softened substitutes.
-  const frames=add('g',{},svg), sections=add('g',{},svg);
-  const cables=add('g',{},svg), completed=add('g',{},svg);
-  const original=add('use',{href:'#hero-assembly-source',opacity:0},svg);
-  const clamp=v=>Math.max(0,Math.min(1,v));
-  const cubic=v=>1-Math.pow(1-clamp(v),3);
-  const snap=v=>{v=clamp(v);return v<.76?1-Math.pow(1-v/.76,5):1};
-  const bitmapClip=(id,x,y,width,height,parent)=>{
-    const clip=add('clipPath',{id,clipPathUnits:'userSpaceOnUse'},defs);
-    add('rect',{x,y,width,height},clip);
-    const el=add('g',{'clip-path':'url(#'+id+')',opacity:0},parent);
-    add('use',{href:'#hero-assembly-source'},el);
+    for(const [key,value] of Object.entries(attrs))el.setAttribute(key,String(value));
+    parent.appendChild(el);
     return el;
   };
-  // Mask geometry is intentionally non-rendered in browsers; querying
-  // SVGGeometryElement.getTotalLength() there throws in Chromium and Safari.
-  // All routes here are absolute orthogonal M/H/V moves, so measure directly.
-  const routeLength=d=>{
-    const tokens=d.match(/[MHV]|-?[0-9]+(?:[.][0-9]+)?/g)||[];
-    let x=0,y=0,distance=0;
-    for(let i=0;i<tokens.length;){
-      const cmd=tokens[i++];
-      if(cmd==='M'){
-        x=Number(tokens[i++]); y=Number(tokens[i++]);
-      }else if(cmd==='H'){
-        const nx=Number(tokens[i++]);distance+=Math.abs(nx-x);x=nx;
-      }else if(cmd==='V'){
-        const ny=Number(tokens[i++]);distance+=Math.abs(ny-y);y=ny;
-      }else throw Error('Unsupported wire path instruction');
+  const svg=add('svg',{
+    viewBox:'0 0 1568 1003',preserveAspectRatio:'xMidYMid meet',
+    class:'hero-assembly','aria-hidden':'true',focusable:'false'
+  },document.createDocumentFragment());
+  add('rect',{x:0,y:0,width:1568,height:1003,fill:'#f8f9fb'},svg);
+  const defs=add('defs',{},svg);
+  add('image',{id:'hero-assembly-source',href:fallback.currentSrc||fallback.src,
+    x:0,y:0,width:1568,height:1003},defs);
+  // Extract only the original dark labels and lines. Panel shading is
+  // deliberately excluded; it is revealed later in each completion tile.
+  // The ink uses the source bitmap's own RGB, retaining antialiasing.
+  let inkUri;
+  try{
+    const canvas=document.createElement('canvas');
+    canvas.width=1568;canvas.height=1003;
+    const context=canvas.getContext('2d',{willReadFrequently:true});
+    if(!context)throw Error('Canvas 2D unavailable');
+    context.drawImage(fallback,0,0,1568,1003);
+    const pixels=context.getImageData(0,0,1568,1003);
+    const d=pixels.data;
+    for(let i=0;i<d.length;i+=4){
+      const lightness=.2126*d[i]+.7152*d[i+1]+.0722*d[i+2];
+      d[i+3]=Math.max(0,Math.min(255,Math.round((218-lightness)*16)));
     }
-    return distance;
+    context.clearRect(0,0,1568,1003);
+    context.putImageData(pixels,0,0);
+    inkUri=canvas.toDataURL('image/png');
+  }catch(_error){
+    // Fail closed to the fully readable original <img> instead of a broken
+    // or partially assembled hero, including in restrictive Safari contexts.
+    return;
+  }
+  add('image',{id:'hero-assembly-ink',href:inkUri,
+    x:0,y:0,width:1568,height:1003},defs);
+  const image=mask=>{
+    add('use',{href:'#hero-assembly-source',mask:'url(#'+mask+')'},svg);
   };
-  const bitmapStroke=(id,tag,attributes,parent)=>{
-    const mask=add('mask',{
-      id,maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse',
-      x:0,y:0,width:1568,height:1003,'mask-type':'alpha'
-    },defs);
-    const trace=add(tag,{...attributes,fill:'none',stroke:'#fff',
-      'stroke-width':tag==='path'?5.5:6},mask);
-    add('use',{href:'#hero-assembly-source',mask:'url(#'+id+')'},parent);
-    const length=tag==='rect'
-      ? 2*(Number(attributes.width)+Number(attributes.height))
-      : routeLength(attributes.d);
-    trace.style.strokeDasharray=String(length);
-    trace.style.strokeDashoffset=String(length);
-    return {trace,length};
-  };
-  const fragments=pieces.map(([x,y,w,h,start,end,frame],i)=>{
-    start*=.68;end*=.68;
-    if(frame){
-      const {trace,length}=bitmapStroke('hero-frame-mask-'+i,'rect',
-        {x,y,width:w,height:h},frames);
-      return {trace,length,start,end,frame:true};
+  const makeMask=id=>add('mask',{
+    id,maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse',
+    x:0,y:0,width:1568,height:1003,'mask-type':'alpha'
+  },defs);
+  const clamp=x=>Math.max(0,Math.min(1,x));
+  const smooth=x=>{x=clamp(x);return x*x*(3-2*x);};
+  const fixedTime=(time)=>time*.68;
+
+  // One original-image draw per layer. Individual elements animate through
+  // the SVG mask, rather than creating 100+ duplicate bitmap draws.
+  const frameMask=makeMask('hero-frame-mask');
+  const pieceMask=makeMask('hero-piece-mask');
+  const wireMask=makeMask('hero-wire-mask');
+  const inkStageMask=makeMask('hero-ink-stage-mask');
+  const exactFinishMask=makeMask('hero-exact-finish-mask');
+  image('hero-frame-mask');
+  image('hero-piece-mask');
+  image('hero-wire-mask');
+  add('use',{href:'#hero-assembly-ink',mask:'url(#hero-ink-stage-mask)'},svg);
+  image('hero-exact-finish-mask');
+
+  const frameStrokes=[],parts=[];
+  for(const [x,y,width,height,from,to,isFrame] of pieces){
+    if(isFrame){
+      const stroke=add('rect',{x,y,width,height,fill:'none',stroke:'#fff',
+        'stroke-width':5,opacity:1},frameMask);
+      const length=2*(width+height);
+      stroke.style.strokeDasharray=String(length);
+      stroke.style.strokeDashoffset=String(length);
+      frameStrokes.push({stroke,length,start:fixedTime(from),end:fixedTime(to)});
+    }else{
+      const rect=add('rect',{x,y,width,height,fill:'#fff',opacity:0},pieceMask);
+      parts.push({rect,start:fixedTime(from),end:fixedTime(to)});
     }
-    return {
-      el:bitmapClip('hero-assembly-clip-'+i,x,y,w,h,sections),
-      start,end,frame:false
-    };
+  }
+
+  // Strokes are measured against the real diagram, and reveal its existing
+  // pixels with a narrow moving alpha mask (never a substitute blue line).
+  const wires=wireSegments.map(([x1,y1,x2,y2],index)=>{
+    const dx=x2-x1,dy=y2-y1,length=Math.abs(dx)+Math.abs(dy);
+    const stroke=add('path',{d:'M '+x1+' '+y1+' L '+x2+' '+y2,
+      fill:'none',stroke:'#fff','stroke-width':5,
+      'stroke-linejoin':'miter','stroke-linecap':'square'},wireMask);
+    stroke.style.strokeDasharray=String(length);
+    stroke.style.strokeDashoffset=String(length);
+    const mx=(x1+x2)/2,my=(y1+y2)/2;
+    let start;
+    if(mx>1500)start=5.95;
+    else if(mx>1215 && my<260)start=5.65;
+    else if(my<232)start=2.05;
+    else if(my<420 && mx<530)start=3.05;
+    else if(my<420 && mx>=900)start=4.15;
+    else if(my<420)start=3.55;
+    else if(my<550 && length>500)start=5.16;
+    else if(my<550 && mx<530)start=4.10;
+    else if(my<550)start=5.04;
+    else if(my<785)start=4.66;
+    else start=5.10;
+    start+=(index%3)*.06;
+    const end=start+Math.max(.18,Math.min(.70,length/1150));
+    return {stroke,length,start,end};
   });
-  const paths=wires.map(([d,start,end],i)=>{
-    const {trace,length}=bitmapStroke('hero-wire-mask-'+i,'path',
-      {d,'stroke-linecap':'square','stroke-linejoin':'miter'},cables);
-    return {trace,length,start:start*.68,end:end*.68};
-  });
-  // Once a section is finished, show the complete original pixels in its
-  // region. Its gray fill appears independently a moment beforehand. This
-  // prevents an abrupt jump from low-contrast construction to sharp raster.
-  const finishedSections=[
-    [44,144,333,827,2.64],     // Table
-    [495,20,617,211,4.20],     // Set Goal
-    [526,313,355,68,5.04],     // Log Achievement
-    [913,299,285,109,5.80],    // Notify Coach
-    [566,643,310,285,7.36],   // Add Maxes
-    [1241,228,284,515,9.30]   // History
-  ].map(([x,y,w,h,after],i)=>({
-    el:bitmapClip('hero-complete-clip-'+i,x,y,w,h,completed),
-    after:after*.68+(i===2||i===3?.05:.24)
+
+  // Complete each part of the image locally, soon after it has been built.
+  // The rectangles partition 100% of the original's 1568×1003 pixels:
+  // there is NO final full-image fade or focus switch. Each rectangle
+  // contains exact original pixels, including authentic section shading.
+  const completionTiles=[
+    [0,0,380,1003,1.84],        // Finished Table (gray arrives after its UI)
+    [380,0,122,233,3.00],       // Left goal connectors
+    [502,0,713,233,3.00],       // Finished Set Goal
+    [1215,0,353,233,5.68],      // Upper history routing and title
+    [380,233,122,317,3.80],     // Table -> achievement
+    [502,233,398,177,3.78],     // Finished Log Achievement
+    [502,410,398,140,5.73],     // Achievement/history long routing
+    [900,233,315,177,4.23],     // Finished Notify Coach
+    [900,410,315,140,5.77],     // Coach/history wiring
+    [1215,233,353,317,6.46],   // History gray only after the group is built
+    [380,550,122,453,5.42],    // Table -> Add Maxes lower routing
+    [502,550,398,453,5.42],    // Finished Add Maxes (actual gray pixels)
+    [900,550,315,453,5.84],    // Maxes -> pool history
+    [1215,550,353,453,6.46]   // Finished History
+  ].map(([x,y,width,height,start])=>({
+    rect:add('rect',{x,y,width,height,fill:'#fff',opacity:0},exactFinishMask),
+    inkRect:add('rect',{x,y,width,height,fill:'#fff',opacity:0},inkStageMask),
+    start,
+    inkStart:start-.34
   }));
   let position=0,previous=null,visible=true;
-  const duration=8.8,speed=1.5; // fixed pace: approximately 5.9 seconds per loop
+  const duration=8.8,speed=1.5; // 5.9-second loop; user-selected fixed pace
   function draw(){
-    // A section's gray background arrives only after its elements are placed.
-    for(const bg of sectionBackgrounds){
-      const progress=clamp((position-bg.after)/.24);
-      bg.el.style.opacity=String(progress*progress*(3-2*progress));
+    for(const part of parts){
+      part.rect.style.opacity=String(clamp((position-part.start)/(part.end-part.start)*5));
     }
-    for(const o of fragments){
-      const progress=(position-o.start)/(o.end-o.start);
-      if(o.frame){
-        // Reveal the frame's *actual* pixels along its perimeter.
-        o.trace.style.strokeDashoffset=String(o.length*(1-snap(progress)));
-      }else{
-        // Pixels are full-contrast as soon as a module snaps into place.
-        o.el.style.opacity=String(clamp(progress*5));
-      }
+    for(const frame of frameStrokes){
+      const progress=smooth((position-frame.start)/(frame.end-frame.start));
+      frame.stroke.style.strokeDashoffset=String(frame.length*(1-progress));
     }
-    for(const wire of paths){
-      // Constant-speed technical pen stroke, without slowdown at every elbow.
+    for(const wire of wires){
       const progress=clamp((position-wire.start)/(wire.end-wire.start));
-      wire.trace.style.strokeDashoffset=String(wire.length*(1-progress));
+      wire.stroke.style.strokeDashoffset=String(wire.length*(1-progress));
     }
-    for(const section of finishedSections){
-      const p=clamp((position-section.after)/.16);
-      section.el.style.opacity=String(p*p*(3-2*p));
+    for(const tile of completionTiles){
+      // Finish the original dark pixels before each exact background wash.
+      tile.inkRect.style.opacity=String(smooth((position-tile.inkStart)/.2));
+      tile.rect.style.opacity=String(smooth((position-tile.start)/.16));
     }
-    // Resolve the few pixels outside the explicit construction paths after
-    // the last section has finished; nothing changes sharpness at loop's end.
-    const finish=clamp((position-6.65)/.3);
-    original.style.opacity=String(finish*finish*(3-2*finish));
   }
   function tick(now){
     if(previous!==null&&visible&&!document.hidden){
@@ -183,6 +185,15 @@
     mount.appendChild(svg);
     mount.classList.add('is-assembling');
     draw();
+    // Deterministic QA frames exist only on localhost. Production always loops.
+    if(/^(localhost|127[.]0[.]0[.]1)$/.test(location.hostname)){
+      const requested=new URLSearchParams(location.search).get('hero_frame');
+      if(requested!==null && Number.isFinite(Number(requested))){
+        position=Math.max(0,Math.min(duration-.01,Number(requested)));
+        draw();
+        return;
+      }
+    }
     if('IntersectionObserver' in window){
       new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;previous=null;},{threshold:.01}).observe(mount);
     }

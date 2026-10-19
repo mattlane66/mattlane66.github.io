@@ -206,6 +206,90 @@ def main() -> int:
 
                         # Core interactive smoke checks.
                         if name == "home":
+                            # Regression: the workflow diagram must complete from exact
+                            # source-pixel regions, not a late full-image overlay.
+                            probe = browser.new_page(viewport=viewport)
+                            hero_errors: list[str] = []
+                            probe.on("pageerror", lambda exc, bag=hero_errors: bag.append(str(exc)))
+                            try:
+                                # Each frame is frozen deterministically on localhost;
+                                # screenshots no longer alter the animation clock.
+                                shots_dir = ROOT / "publication-preview" / "hero-frames"
+                                if (ROOT / "publication-preview").is_dir():
+                                    shots_dir.mkdir(parents=True, exist_ok=True)
+                                stages = [
+                                    ("25", 1.55), ("50", 3.05),
+                                    ("75", 4.60), ("complete", 6.95),
+                                ]
+                                rectangles = []
+                                for label, frame_position in stages:
+                                    probe.goto(
+                                        base + f"/?hero_frame={frame_position}",
+                                        wait_until="domcontentloaded", timeout=60_000,
+                                    )
+                                    probe.wait_for_function(
+                                        "!!document.querySelector('.hero-map.is-assembling .hero-assembly')",
+                                        timeout=15_000,
+                                    )
+                                    if label == "complete":
+                                        rectangles = probe.evaluate("""() => {
+                                            const mask = document.querySelector('#hero-exact-finish-mask');
+                                            return mask ? [...mask.querySelectorAll('rect')].map(r => ({
+                                                x:+r.getAttribute('x'),y:+r.getAttribute('y'),
+                                                w:+r.getAttribute('width'),h:+r.getAttribute('height')
+                                            })) : [];
+                                        }""")
+                                    if shots_dir.is_dir():
+                                        probe.locator(".hero-map").screenshot(
+                                            path=str(shots_dir / f"{viewport_name}-{label}.png"),
+                                            timeout=15_000,
+                                        )
+                                if len(rectangles) != 14:
+                                    failures.append(
+                                        f"{viewport_name} /: hero must have 14 complete-image regions; "
+                                        f"found {len(rectangles)}"
+                                    )
+                                else:
+                                    xs = sorted({0, 1568} | {v for r in rectangles for v in (r["x"], r["x"]+r["w"])})
+                                    ys = sorted({0, 1003} | {v for r in rectangles for v in (r["y"], r["y"]+r["h"])})
+                                    for i in range(len(xs)-1):
+                                        for j in range(len(ys)-1):
+                                            mx = (xs[i]+xs[i+1])/2
+                                            my = (ys[j]+ys[j+1])/2
+                                            hits = sum(r["x"] <= mx < r["x"]+r["w"] and
+                                                       r["y"] <= my < r["y"]+r["h"] for r in rectangles)
+                                            if hits != 1:
+                                                failures.append(
+                                                    f"{viewport_name} /: hero has {hits} regions "
+                                                    f"at ({mx:.0f},{my:.0f}); expected exactly one"
+                                                )
+                                final_state = probe.evaluate("""() => {
+                                    const mask = document.querySelector('#hero-exact-finish-mask');
+                                    const ink = document.getElementById('hero-assembly-ink');
+                                    const svg = document.querySelector('.hero-assembly');
+                                    const rects = mask ? [...mask.querySelectorAll('rect')] : [];
+                                    return {
+                                        ready: !!svg && !!ink,
+                                        tiles: rects.length,
+                                        finished: rects.length > 0 && rects.every(
+                                            r => Number(getComputedStyle(r).opacity) >= .999
+                                        )
+                                    };
+                                }""")
+                                if not final_state["ready"] or not final_state["finished"]:
+                                    failures.append(
+                                        f"{viewport_name} /: hero did not reach a complete, "
+                                        f"pixel-faithful state: {final_state}"
+                                    )
+                                if hero_errors:
+                                    failures.append(
+                                        f"{viewport_name} /: hero animation JS error(s): {hero_errors[:3]}"
+                                    )
+                            except PlaywrightTimeoutError:
+                                failures.append(f"{viewport_name} /: hero animation did not initialize")
+                            finally:
+                                probe.close()
+
                             # Cross-page invariant: the visible homepage CTA represents
                             # the active published collection before test-note injection.
                             home_note_ctas = page.locator(".notes-actions a")
