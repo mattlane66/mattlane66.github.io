@@ -19,7 +19,7 @@ TEXT_EXT = {
     ".webmanifest", ".csv", ".ts", ".tsx", ".jsx",
 }
 EMAIL = re.compile(r"(?<![\w.+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?![\w.-])")
-MAILTO = re.compile(r"mailto\s*:", re.IGNORECASE)
+MAILTO = re.compile(r"""(?:href\s*=\s*["']\s*|(?:window\.)?location(?:\.href)?\s*=\s*["']\s*)mailto\s*:""", re.IGNORECASE)
 EXAMPLE_DOMAINS = {"example.com", "example.net", "example.org", "example.test", "example.invalid"}
 SAFE_COMMIT_DOMAINS = {"users.noreply.github.com", "noreply.github.com"}
 SENSITIVE_NAMES = {
