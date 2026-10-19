@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><link rel="icon" href="../favicon.svg" type="image/svg+xml"/><link rel="canonical" href="https://mattlane66.github.io/roadmapping-as-a-decision-interface/"/><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/><title>Roadmapping as a Decision Interface | Independent Strategy Exercise</title><meta name="description" content="An independent, interactive portfolio example of progressive-disclosure product roadmapping: executive sequencing, bounded product bets, evidence gates and detailed shaping, using American Express Membership as a hypothetical setting."/>
+<style>
+:root{
+  --ink:#10213d;--muted:#617087;--line:#dfe6ef;--panel:#f7f9fc;--card:#fff;
+  --blue:#1768d2;--purple:#7654df;--green:#168b73;--gold:#c68a00;
+  --yellow:#fff2bd;--teal:#dff8f2;--cyan:#dff6fb;--soft:#eef4fb;--max:1400px;
+}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:#fff;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,select{font:inherit;min-height:44px}
+.wrap{width:min(var(--max),calc(100% - 28px));margin:auto;padding-left:max(0px,env(safe-area-inset-left));padding-right:max(0px,env(safe-area-inset-right))}
+header{padding:42px 0 24px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:clamp(2.1rem,5vw,4rem);line-height:1;letter-spacing:-.05em}
+header p{margin:12px 0 0;color:var(--muted);max-width:920px;font-size:1.03rem}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+.toolbar button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 13px;color:var(--ink);font-weight:750;cursor:pointer}
+.toolbar button:hover{background:var(--panel)}
+.summary{margin-left:auto;color:var(--muted);font-size:.9rem}
+
+main{padding:24px 0 50px}
+.rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:stretch;margin-bottom:18px}
+.step{
+  border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px;cursor:pointer;
+  text-align:left;position:relative;transition:.16s ease;min-width:0;
+}
+.step:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(16,33,61,.06)}
+.step.active{border-color:#b8d3f5;box-shadow:0 8px 22px rgba(23,104,210,.10);background:#fbfdff}
+.step-top{display:flex;gap:10px;align-items:flex-start}
+.badge{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;flex:0 0 auto}
+.step[data-theme="1"] .badge{background:var(--blue)} .step[data-theme="2"] .badge{background:var(--purple)} .step[data-theme="3"] .badge{background:var(--green)} .step[data-theme="4"] .badge{background:var(--gold)}
+.step h2{font-size:1rem;line-height:1.15;margin:0 0 2px;letter-spacing:-.02em}
+.step p{margin:0;color:var(--muted);font-size:.8rem}
+.step .total{margin-top:10px;font-size:.75rem;font-weight:800;color:#405069}
+.step .pill{display:inline-block;margin-top:8px;font-size:.69rem;font-weight:800;padding:5px 8px;border-radius:999px;background:var(--panel);color:#405069;border:1px solid var(--line)}
+
+.cluster-view{border:1px solid var(--line);background:#fff;border-radius:22px;overflow:hidden}
+.cluster-head{padding:18px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start;justify-content:space-between;background:#fcfdff}
+.cluster-head-left{display:flex;gap:12px;align-items:flex-start;min-width:0}
+.cluster-head .big-badge{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;flex:0 0 auto}
+.cluster-head[data-theme="1"] .big-badge{background:var(--blue)} .cluster-head[data-theme="2"] .big-badge{background:var(--purple)} .cluster-head[data-theme="3"] .big-badge{background:var(--green)} .cluster-head[data-theme="4"] .big-badge{background:var(--gold)}
+.cluster-head h2{margin:0;font-size:1.35rem;letter-spacing:-.03em}
+.cluster-head p{margin:4px 0 0;color:var(--muted);font-size:.92rem;max-width:740px}
+.cluster-meta{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.cluster-meta .chip{font-size:.73rem;font-weight:800;padding:6px 9px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:#405069}
+
+.units-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:14px;background:#fafbfd}
+.unit{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;min-width:0}
+.unit-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:13px}
+.unit-title strong{display:block;font-size:1rem;letter-spacing:-.02em}
+.unit-title small{display:block;color:var(--muted);font-size:.75rem;margin-top:2px}
+.unit-open{grid-column:1/-1;border:0;border-top:1px solid var(--line);background:#f7f9fc;color:var(--blue);padding:10px 12px;font-weight:800;text-align:left;cursor:pointer}
+.unit-open:hover{background:#f0f5fd}
+.unit-body{display:none;padding:12px;border-top:1px solid var(--line)}
+.unit.is-open .unit-body{display:block}
+
+.flow-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:stretch}
+.box{padding:11px 12px;border-radius:12px;background:#f5f6f8;min-width:0}
+.box.proposed{background:var(--yellow)}
+.box.desired{background:var(--teal)}
+.box.success-check{background:var(--cyan)}
+.box b{display:block;font-size:.67rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.box p{margin:0;font-size:.84rem;line-height:1.43;color:#33445f;overflow-wrap:anywhere}
+.meta-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:8px;margin-top:8px}
+.meta{border:1px solid var(--line);border-radius:12px;padding:11px;background:#fbfcfe}
+.meta h4{font-size:.69rem;margin:0 0 7px;color:var(--blue);text-transform:uppercase;letter-spacing:.07em}
+.meta ul{margin:0;padding-left:18px;color:#4a5870;font-size:.79rem;line-height:1.45}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips .chip{font-size:.73rem;border:1px solid var(--line);border-radius:999px;padding:6px 8px;background:#fff;color:#405069}
+.legend{margin-top:18px;color:var(--muted);font-size:.82rem;line-height:1.45}
+
+@media(max-width:1100px){
+  .rail{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .units-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .wrap{width:calc(100% - 20px)}
+  header{padding:28px 0 20px}
+  header p{font-size:.96rem}
+  .toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .toolbar button{width:100%}
+  .summary{grid-column:1/-1;margin-left:0;font-size:.82rem}
+  .rail{grid-template-columns:1fr;gap:10px}
+  .cluster-head{padding:14px;display:block}
+  .cluster-head-left{display:flex}
+  .cluster-meta{margin-top:10px;justify-content:flex-start}
+  .units-grid{padding:10px;gap:10px}
+  .unit-head{grid-template-columns:1fr}
+    .flow-row{grid-template-columns:1fr}
+  .meta-grid{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  .wrap{width:calc(100% - 16px)}
+  h1{font-size:2rem}
+  .toolbar{grid-template-columns:1fr}
+  .summary{grid-column:1}
+  .step{padding:12px}
+  .cluster-head h2{font-size:1.15rem}
+  .box p{font-size:.86rem}
+}
+
+@media(max-width:760px){
+  }
+
+
+.bet-meta{
+  display:flex;align-items:stretch;gap:6px;white-space:nowrap;
+}
+.bet-metric{
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  min-width:70px;padding:6px 9px;border-radius:10px;background:#f4f8fd;border:1px solid #dbe7f7;
+}
+.bet-label{
+  font-size:.61rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+}
+.bet-metric strong{font-size:.88rem;color:var(--blue);line-height:1.15}
+.rail-metrics{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+@media(max-width:760px){
+  .bet-meta{justify-content:flex-start;border-top:1px solid var(--line);padding-top:8px}
+  .bet-metric{flex:1;min-width:0}
+}
+
+
+@media(max-width:760px){
+    }
+
+
+@media(max-width:760px){
+  }
+
+
+.bet-metric small{display:block;color:var(--muted);font-size:.65rem;margin-top:2px}
+.execution-model{
+  margin-top:9px;border:1px solid #d7e1ee;border-radius:12px;padding:11px;background:#f8fbff
+}
+.execution-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.execution-title b{display:block;font-size:.8rem;color:var(--ink)}
+.execution-title span{display:block;font-size:.72rem;color:var(--muted);margin-top:2px}
+.execution-title .execution-badge{
+  flex:0 0 auto;margin-top:0;border:1px solid #cfe0f5;border-radius:999px;
+  padding:5px 8px;background:#fff;color:var(--blue);font-weight:800
+}
+.execution-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.exec-stat{padding:8px;border-radius:9px;background:#fff;border:1px solid var(--line)}
+.exec-stat span{display:block;color:var(--muted);font-size:.67rem}
+.exec-stat strong{display:block;margin-top:2px;font-size:.9rem;color:var(--ink)}
+.quality-floor{margin-top:8px;padding:9px 10px;border-radius:9px;background:#edf8f4;border:1px solid #cae5db}
+.quality-floor b{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:#16705a;margin-bottom:3px}
+.quality-floor span{font-size:.78rem;color:#33445f}
+.model-notes-body .model-stop-rule{margin-top:10px}
+@media(max-width:760px){
+  .execution-title{display:block}
+  .execution-title .execution-badge{display:inline-block;margin-top:7px}
+  .execution-grid{grid-template-columns:1fr}
+  }
+
+
+.model-notes{
+  margin-top:14px;max-width:980px;border:1px solid var(--line);border-radius:12px;background:#fbfcfe;overflow:hidden;
+}
+.model-notes summary{
+  list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 13px;cursor:pointer;font-weight:800;color:var(--ink);
+}
+.model-notes summary::-webkit-details-marker{display:none}
+.model-notes summary::after{
+  content:"▾";color:var(--muted);font-size:.9rem;transition:transform .15s ease;
+}
+.model-notes[open] summary::after{transform:rotate(180deg)}
+.model-notes-hint{
+  margin-left:auto;color:var(--muted);font-size:.74rem;font-weight:700;
+}
+.model-notes-body{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line);background:#fff;
+}
+.model-notes-body section{padding:13px}
+.model-notes-body section + section{border-left:1px solid var(--line)}
+.model-notes-body strong{display:block;font-size:.86rem;margin-bottom:4px}
+.model-notes-body p{margin:0;color:#4a5870;font-size:.83rem;line-height:1.48}
+@media(max-width:760px){
+  .model-notes summary{padding:10px 11px}
+  .model-notes-hint{display:none}
+  .model-notes-body{grid-template-columns:1fr}
+  .model-notes-body section + section{border-left:0;border-top:1px solid var(--line)}
+}
+
+
+.actual-outcome{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;padding:9px 12px;border:1px dashed var(--line);border-radius:10px;background:#fbfcfe}
+.actual-outcome b{font-size:.67rem;text-transform:uppercase;letter-spacing:.06em}
+.actual-outcome span{font-size:.8rem;color:var(--muted)}
+
+
+/* v11: Progressive-enhancement-free native interactions for Safari and file previews. */
+.milestone-choice,.all-choice{position:absolute;opacity:0;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.step{display:block;user-select:none;-webkit-tap-highlight-color:rgba(23,104,210,.08)}
+.step .step-top{display:flex}
+.step-copy{display:block;min-width:0}
+.step-heading{display:block;font-size:1rem;line-height:1.15;margin:0 0 3px;letter-spacing:-.02em}
+.step-subtitle{display:block;color:var(--muted);font-size:.8rem}
+.step .rail-metrics{display:flex}
+.roadmap-tabs #milestone-1:checked ~ .rail label[for="milestone-1"],
+.roadmap-tabs #milestone-2:checked ~ .rail label[for="milestone-2"],
+.roadmap-tabs #milestone-3:checked ~ .rail label[for="milestone-3"],
+.roadmap-tabs #milestone-4:checked ~ .rail label[for="milestone-4"]{border-color:#b8d3f5;box-shadow:0 8px 22px rgba(23,104,210,.10);background:#fbfdff}
+.milestone-choice:focus-visible ~ .rail .step{outline-offset:3px}
+#milestone-1:focus-visible ~ .rail label[for="milestone-1"],
+#milestone-2:focus-visible ~ .rail label[for="milestone-2"],
+#milestone-3:focus-visible ~ .rail label[for="milestone-3"],
+#milestone-4:focus-visible ~ .rail label[for="milestone-4"]{outline:3px solid var(--blue)}
+.milestone-views .cluster-view{display:none;margin-bottom:14px}
+#milestone-1:checked ~ .milestone-views [data-cluster="1"],
+#milestone-2:checked ~ .milestone-views [data-cluster="2"],
+#milestone-3:checked ~ .milestone-views [data-cluster="3"],
+#milestone-4:checked ~ .milestone-views [data-cluster="4"],
+#showAllMilestones:checked ~ .milestone-views .cluster-view{display:block}
+.toolbar-native-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 13px;color:var(--ink);font-weight:750;cursor:pointer;user-select:none}
+.toolbar-native-toggle .when-all{display:none}
+body:has(#showAllMilestones:checked) .toolbar-native-toggle .when-one{display:none}
+body:has(#showAllMilestones:checked) .toolbar-native-toggle .when-all{display:inline}
+/* Native unit accordions: usable even when JavaScript is disabled. */
+.unit summary{list-style:none;cursor:pointer;-webkit-tap-highlight-color:rgba(23,104,210,.08)}
+.unit summary::-webkit-details-marker{display:none}
+.unit summary::marker{content:""}
+.unit .unit-body{display:block}
+.unit:not([open]) .unit-body{display:none}
+.unit summary .unit-open{display:block;min-height:44px}
+.unit .when-open{display:none}
+.unit[open] .when-closed{display:none}
+.unit[open] .when-open{display:inline}
+.unit summary:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}
+.unit[open] .unit-open{background:#f0f5fd}
+.unit summary:hover .unit-open{background:#f0f5fd}
+.js-extra[hidden]{display:none!important}
+@media(max-width:760px){
+ .toolbar-native-toggle{width:100%}
+ .rail{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;gap:9px;padding:2px 1px 10px;grid-template-columns:none}
+ .step{flex:0 0 min(76%,285px);scroll-snap-align:start;min-height:114px}
+ .step-heading{font-size:.95rem}
+ .step-subtitle{font-size:.78rem}
+ .unit summary .unit-open{display:flex;align-items:center}
+}
+@media(max-width:380px){.step{flex-basis:84%}}
+
+.candidate-alternatives{margin-top:8px;padding:9px 11px;border:1px solid #eee3b4;border-radius:10px;background:#fffbeb;color:#4b5563;font-size:.78rem;line-height:1.45}
+.candidate-alternatives strong{color:#6b5000}
+
+/* Roadmap view */
+body{color:#172643}
+.step-heading{line-height:1.25}
+.step-subtitle{line-height:1.4}
+.research-ribbon{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;max-width:1040px}
+.research-ribbon span{font-size:.73rem;color:#44536b;background:#f3f6fa;padding:7px 10px;border:1px solid #dde5ef;border-radius:9px}
+.research-ribbon strong{color:#203554}
+.unit-head{gap:12px}
+.unit-title .unit-state{margin-top:7px}
+.unit-state{display:inline-block;max-width:max-content;font-size:.69rem;font-weight:800;border-radius:100px;padding:4px 8px;border:1px solid #dbe4ef;letter-spacing:.015em}
+.unit-state.status-test{background:#eaf4ff;color:#235589;border-color:#cfe3f9}
+.unit-state.status-hold{background:#f3f3f4;color:#626b78}
+.unassigned{align-self:start;min-width:113px;background:#f6f7f9;padding:7px 9px;border:1px solid #dce2eb;border-radius:9px;font-size:.63rem;font-weight:800;text-transform:uppercase;color:#607088}
+.unassigned strong{display:block;margin-top:2px;font-size:.86rem;color:#33465d;text-transform:none;white-space:nowrap}
+.decision-evidence{margin-bottom:13px;border:1px solid #dce5ef;background:#f9fbfd;border-radius:13px;padding:12px}
+.decision-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.decision-head strong{font-size:.81rem}
+.decision-head .status{font-size:.68rem;font-weight:900;padding:4px 8px;border-radius:999px;background:#e8f0fa;color:#2e618e}
+.decision-head .status-hold{background:#e8eaf0;color:#646b78}
+.decision-grade{color:#5a687b;font-size:.75rem;margin:4px 0 10px}
+.decision-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.decision-fields>div{min-width:0;padding:9px 10px;background:#fff;border:1px solid #e1e7ef;border-radius:9px}
+.decision-fields b{font-size:.71rem;letter-spacing:.01em;color:#344e73}
+.decision-fields p{font-size:.79rem;line-height:1.5;margin:4px 0 0;color:#37465d;overflow-wrap:break-word}
+.sources{font-size:.68rem;color:#66758a;margin-top:10px;line-height:1.5}
+.sources a{color:#1768d2;text-decoration:underline;text-underline-offset:2px}
+.sources span{color:#66758a}
+.model-notes-body{grid-template-columns:repeat(3,minmax(0,1fr))}
+.model-notes-body section:nth-child(3){border-left:1px solid #dfe6ef}
+.model-notes-body strong{font-size:.85rem}
+.cluster-meta .chip{font-size:.76rem}
+.roadmap-tabs .cluster-view{scroll-margin-top:20px}
+.unit-body{padding:14px}
+.quality-floor{margin-top:10px}
+@media(max-width:1100px){.units-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+ .model-notes-body{grid-template-columns:1fr}
+ 
+ .decision-fields{grid-template-columns:1fr}
+ .unit-head{grid-template-columns:1fr}
+ .step-heading{font-size:.91rem}
+ .rail{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;gap:9px;padding:3px 1px 12px}
+ .rail .step{min-width:218px;width:74%;max-width:264px;flex:0 0 auto;scroll-snap-align:start}
+ .unit-body{padding:10px}
+ .flow-row{grid-template-columns:1fr}
+ .box{padding:12px}
+ .box p{font-size:.88rem}
+ .research-ribbon{gap:5px}
+ .research-ribbon span{font-size:.71rem}
+ .decision-evidence{padding:10px}
+ .unit-head summary{cursor:pointer}
+}
+@media(max-width:365px){.rail .step{min-width:210px}.wrap{width:calc(100% - 16px)}.unit-title strong{font-size:.94rem}}
+
+
+/* Automatic Offers: a single additional header affordance, robust without JS */
+.unit-head .shaping-entry{grid-column:2;grid-row:1;display:inline-flex;justify-content:center;align-items:center;min-height:44px;padding:9px 13px;white-space:nowrap;border:1px solid #b9cee8;border-radius:10px;background:#eaf3ff;color:#175b99;font-weight:850;font-size:.83rem;text-decoration:none;position:relative;z-index:3;cursor:pointer}
+.unit-head .shaping-entry:hover,.unit-head .shaping-entry:focus-visible{background:#dbeaff;outline:2px solid transparent}
+.unit[data-unit="1.1"] .unit-head{grid-template-columns:minmax(0,1fr) auto auto}
+.unit[data-unit="1.1"] .bet-meta{grid-column:3;grid-row:1}
+.unit[data-unit="1.1"] .unit-title{grid-column:1;grid-row:1}
+.unit[data-unit="1.1"] .unit-open{grid-column:1/-1}
+/* CSS :target gives reliable in-file panel navigation when mobile file preview blocks JS. */
+.work-sheet{display:none;position:fixed;inset:0;z-index:99999;background:rgba(13,27,48,.32);padding:clamp(0px,2vw,20px);color:#172643}
+.work-sheet:target{display:block}
+.work-shell{display:flex;flex-direction:column;overflow:hidden;max-width:1100px;width:100%;height:100%;margin-left:auto;background:#fff;border:1px solid #cdd8e8;border-radius:18px;box-shadow:0 22px 70px rgba(7,23,48,.2)}
+.work-top{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 20px;border-bottom:1px solid #dfe6ef;background:#fff;flex:0 0 auto}
+.work-back{color:#1768d2;font-weight:850;text-decoration:none;padding:9px;border-radius:8px}
+.work-top-status{margin-left:auto;color:#63738c;font-size:.77rem;font-weight:750;text-align:right}
+.work-close{width:44px;height:44px;display:grid;place-items:center;flex:0 0 auto;border-radius:12px;background:#f1f4f8;color:#172643;text-decoration:none;font-weight:900}
+.work-scroll{overflow-y:auto;overscroll-behavior:contain;padding:22px clamp(16px,4vw,42px) 50px;min-height:0;scroll-behavior:smooth}
+.work-cover{border-bottom:1px solid #e2e8f1;padding-bottom:24px}
+.work-eyebrow{font-size:.72rem;font-weight:900;letter-spacing:.12em;color:#5172a5!important;margin:0 0 7px!important}
+.work-cover h2{font-size:clamp(2rem,4vw,3.2rem);letter-spacing:-.05em;line-height:1.06;margin:0 0 9px}
+.work-cover>p:not(.work-eyebrow){color:#5b697f;max-width:720px;margin:0;font-size:.98rem}
+.work-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.work-tags span{font-size:.73rem;font-weight:800;padding:6px 9px;background:#eef4fc;border:1px solid #dbe6f3;border-radius:999px;color:#365c88}
+
+
+.work-overview{padding:16px 20px;background:#f4f9fe;border:1px solid #dce9f6;border-radius:13px;margin:0 0 14px}
+.work-overview h3{margin:0 0 10px;font-size:1.13rem;letter-spacing:-.02em}
+.work-chapter{border:1px solid #dfe6ef;border-radius:13px;background:#fff;margin:10px 0;overflow:hidden}
+.work-chapter>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:15px 16px;min-height:58px;font-weight:850;font-size:1rem}
+.work-chapter>summary::-webkit-details-marker,.work-subsection>summary::-webkit-details-marker{display:none}
+.work-chapter-num{color:#386ba7;background:#eaf3ff;min-width:35px;height:35px;border-radius:10px;display:grid;place-items:center;font-size:.8rem}
+.work-chapter-chevron{margin-left:auto;font-size:1.15rem;color:#8394ab}
+.work-chapter[open] .work-chapter-chevron{transform:rotate(180deg)}
+.work-chapter-body{padding:0 18px 18px;border-top:1px solid #e1e8f0}
+.work-subsection{border:1px solid #e1e7ef;border-radius:10px;margin:10px 0;overflow:hidden}
+.work-subsection>summary{list-style:none;cursor:pointer;min-height:48px;padding:11px 14px;font-weight:800;display:flex;align-items:center;gap:8px;background:#f8fafc}
+.work-subsection>summary:after{content:'⌄';margin-left:auto;color:#8794a7}
+.work-subsection[open]>summary:after{transform:rotate(180deg)}
+.work-subsection>.md-content{padding:14px}
+.md-content{font-size:.88rem;line-height:1.58;overflow-wrap:break-word}
+.md-content h1{font-size:1.32rem;letter-spacing:-.025em;margin:14px 0 10px;line-height:1.25}
+.md-content h2{font-size:1.11rem;margin:14px 0 8px;letter-spacing:-.02em}
+.md-content h3{font-size:1rem;margin:11px 0 7px}
+.md-content p{margin:7px 0 12px;color:#394a64}
+.md-content p strong{color:#142c4a}
+.md-content ul,.md-content ol{padding-left:21px;margin:10px 0}
+.md-content li{margin:5px 0}
+.md-content a{color:#175aa5;text-underline-offset:2px}
+.md-content code{background:#edf3f8;border-radius:4px;padding:1px 4px;overflow-wrap:anywhere}
+.md-content blockquote{margin:12px 0;padding:9px 13px;border-left:3px solid #a6bfdf;background:#f6f9fd}
+.md-content table{border-collapse:collapse;width:100%;font-size:.76rem;line-height:1.36;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.md-content th,.md-content td{padding:9px;text-align:left;border:1px solid #dce4ed;vertical-align:top;min-width:80px}
+.md-content th{background:#edf3f9;position:sticky;top:0}
+.md-content th:first-child,.md-content td:first-child{min-width:48px}
+.md-content tr:nth-child(even) td{background:#fcfdff}
+.md-content hr{border:0;border-top:1px solid #e6edf5;margin:15px 0}
+.work-final{padding:18px;border:1px solid #e0e6ee;border-radius:12px;margin:22px 0 12px;background:#f7f9fc;font-size:.86rem;line-height:1.6;color:#4b5d76}
+.work-final strong{color:#243a5a}.work-final a{display:block;color:#1768d2;margin-top:7px}
+@media(max-width:760px){
+ .unit[data-unit="1.1"] .unit-head{grid-template-columns:minmax(0,1fr) auto;gap:8px}
+ .unit[data-unit="1.1"] .unit-title{grid-column:1/-1;grid-row:1}
+ .unit[data-unit="1.1"] .shaping-entry{grid-column:1;grid-row:2;align-self:stretch;justify-self:stretch;min-width:0;white-space:normal;text-align:center}
+ .unit[data-unit="1.1"] .bet-meta{grid-column:2;grid-row:2}
+ .unit[data-unit="1.1"] .unit-open{grid-column:1/-1;grid-row:3}
+ .work-sheet{padding:0;background:#fff}
+ .work-shell{max-width:none;border:none;border-radius:0;box-shadow:none;height:100dvh;height:100svh}
+ .work-top{min-height:58px;padding:7px 10px;gap:6px}
+ .work-back{font-size:.85rem;padding:8px}
+ .work-top-status{font-size:.64rem;max-width:120px}
+ .work-scroll{padding:18px 12px 36px}
+ 
+ .work-overview{padding:14px}
+ .work-chapter>summary{padding:12px;min-height:54px}
+ .work-chapter-body{padding:0 9px 11px}
+ .work-subsection>.md-content{padding:10px}
+ .md-content{font-size:.86rem}
+ .md-content table{font-size:.72rem}
+ .md-content th,.md-content td{padding:7px;min-width:105px}
+}
+@media(max-width:360px){.work-top-status{display:none}.unit[data-unit="1.1"] .shaping-entry{font-size:.78rem;padding:8px}.work-tags span{font-size:.67rem}}
+
+/* v16: Model notes are a reading aid, not three fixed desktop columns. */
+.model-notes-body{display:block;grid-template-columns:none}
+.model-notes-body section{padding:15px 17px}
+.model-notes-body section + section,
+.model-notes-body section:nth-child(3){border-left:0;border-top:1px solid var(--line)}
+.model-notes-body p{max-width:100ch;line-height:1.55}
+@media(max-width:760px){.model-notes-body section{padding:12px 13px}}
+
+/* v17: External-facing executive framing; no change to roadmap behavior. */
+header .roadmap-provenance{
+  margin:0 0 11px;font-size:.72rem;line-height:1.4;font-weight:800;
+  letter-spacing:.075em;text-transform:uppercase;color:#45688f;
+}
+header .roadmap-thesis{
+  max-width:940px;margin-top:17px;color:var(--ink);
+  font-size:clamp(1.2rem,2.4vw,1.65rem);font-weight:750;
+  line-height:1.29;letter-spacing:-.025em;
+}
+header .roadmap-deck{
+  max-width:880px;margin-top:9px;font-size:1rem;color:#44536b;line-height:1.5;
+}
+header .roadmap-method{
+  max-width:880px;margin-top:12px;font-size:.87rem;color:#65738a;line-height:1.52;
+}
+header .roadmap-independence{
+  max-width:880px;margin-top:11px;font-size:.79rem;color:#617087;line-height:1.5;
+}
+header .roadmap-independence strong{color:#42536b}
+@media(max-width:760px){
+  header .roadmap-provenance{font-size:.68rem}
+  header .roadmap-thesis{font-size:1.22rem;margin-top:16px}
+  header .roadmap-deck{font-size:.93rem}
+  header .roadmap-method{font-size:.81rem}
+  header .roadmap-independence{font-size:.76rem}
+}
+
+
+/* Portfolio framing: authored method up front, specimen preserved underneath. */
+:root{--ink:#16223a;--muted:#5c6a80;--line:#dfe5ed;--panel:#f7f9fb;--blue:#245bd6}
+header{background:linear-gradient(155deg,#f7faff 0%,#fff 57%,#fff 100%);padding:26px 0 15px}
+header .roadmap-provenance{display:inline-flex;align-items:center;gap:7px;border:1px solid #cbd8e9;background:#edf3fd;color:#294a83;border-radius:999px;padding:8px 12px;margin:0 0 13px;font-size:.67rem;line-height:1.2}
+header h1{max-width:1040px;font-size:clamp(2.2rem,4.45vw,4.4rem);line-height:1.035;letter-spacing:-.058em}
+header .roadmap-thesis{max-width:1000px;font-size:clamp(1.04rem,1.85vw,1.36rem);line-height:1.35;letter-spacing:-.02em;margin-top:11px;font-weight:680}
+header .roadmap-deck{max-width:970px;font-size:clamp(.93rem,1.12vw,1.03rem);line-height:1.56;margin-top:9px}
+header .roadmap-method{max-width:950px;font-size:.85rem;line-height:1.52;margin-top:8px}
+header .roadmap-independence{max-width:1010px;border-left:3px solid #86a2cb;padding:7px 0 7px 12px;background:linear-gradient(90deg,#f0f5fc,transparent);line-height:1.5;margin:10px 0 0;color:#55657c}
+.reading-path{margin:14px 0 9px;padding:9px 13px;border:1px solid #d8e2ef;background:#fff;border-radius:11px;display:flex;gap:18px;align-items:center}
+.reading-heading{flex:0 0 auto;margin:0;line-height:1.2}
+.reading-eyebrow,.roadmap-section-label{display:block;font-size:.67rem;letter-spacing:.095em;font-weight:850;color:#365f99}
+.reading-aside{display:none}
+.reading-steps{display:grid;flex:1;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.reading-steps>div{padding:4px 8px;border-left:1px solid #e6ebf2;min-width:0}
+.reading-index{font-size:.59rem;letter-spacing:.05em;color:#4770ac;font-weight:850;display:block}
+.reading-steps strong{display:block;margin:3px 0 0;font-size:.8rem;letter-spacing:-.01em}
+.reading-steps>div>span:last-child{display:none}
+.roadmap-opening{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;margin:0 0 11px}
+.roadmap-opening h2{margin:5px 0 0;letter-spacing:-.04em;font-size:clamp(1.3rem,2.2vw,1.95rem);line-height:1.16}
+.roadmap-opening p{max-width:580px;font-size:.87rem;color:#647187;line-height:1.56;margin:0}
+header .model-notes{margin-top:7px}
+header .toolbar{margin-top:9px}
+.cluster-head h2{letter-spacing:-.025em}
+.md-content .dossier-title{font-size:1.32rem;letter-spacing:-.025em;margin:14px 0 10px;line-height:1.25;color:#152a45}
+@media(max-width:900px){.reading-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.roadmap-opening{display:block}.roadmap-opening p{max-width:100%;margin:9px 0 0}}
+@media(max-width:760px){header{padding:21px 0 12px}header .roadmap-provenance{margin-bottom:13px;font-size:.61rem}header h1{font-size:clamp(2.15rem,9.5vw,3.35rem)}header .roadmap-thesis{font-size:1.12rem}header .roadmap-deck{font-size:.91rem}header .roadmap-method{font-size:.8rem}header .roadmap-independence{font-size:.75rem}.reading-path{display:block;padding:10px;margin:12px 0 8px}.reading-steps{gap:5px;margin-top:7px}.reading-steps>div{padding:3px 7px}.reading-steps strong{font-size:.75rem}.reading-steps>div>span:last-child{display:none}.roadmap-opening{margin-bottom:14px}.roadmap-opening p{font-size:.82rem}}
+@media(max-width:375px){.reading-steps{grid-template-columns:1fr 1fr}.reading-eyebrow{font-size:.65rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.step{transition:none}}
+</style></head>
+<body><header>
+<div class="wrap">
+<p class="roadmap-provenance">METHOD IN PRACTICE <span aria-hidden="true">·</span> INDEPENDENT PORTFOLIO EXERCISE</p>
+<h1>Roadmapping as a<br class="desktop-title-break"/> Decision Interface</h1>
+<p class="roadmap-thesis">Show the decision. Reveal the reasoning when it matters.</p>
+<p class="roadmap-deck">An independent American Express Membership scenario showing how I communicate an executive roadmap: four proposed milestones, eight candidate bets, and deeper shaping available on demand.</p>
+<p class="roadmap-method">Start with the customer struggle, not a feature. Group bets by what they might unlock. Fix <strong>appetite</strong> (time × team); adjust scope to fit. No candidate bet exceeds six weeks.</p>
+<p class="roadmap-independence"><strong>Independent portfolio example.</strong> I have not worked for or been commissioned by American Express. This is not an Amex strategy, internal document, or endorsed presentation. All bets, priorities, staffing, budgets, TEST/HOLD designations, and assumed efficiencies are illustrative—not company decisions or measured outcomes.</p>
+<div class="reading-path" role="group" aria-label="How the roadmap progressively reveals detail">
+ <div class="reading-heading"><span class="reading-eyebrow">HOW TO READ THIS</span><span class="reading-aside">An executive overview, with the detail available on demand</span></div>
+ <div class="reading-steps">
+  <div><span class="reading-index">01 · DIRECTION</span><strong>See the sequence</strong><span>Why these problems, in this order?</span></div>
+  <div><span class="reading-index">02 · INVESTMENT</span><strong>Choose a bet</strong><span>What is it worth learning or solving?</span></div>
+  <div><span class="reading-index">03 · JUDGMENT</span><strong>Inspect the case</strong><span>Current struggle, alternatives and success check</span></div>
+  <div><span class="reading-index">04 · SHAPING</span><strong>Go one level deeper</strong><span>Scope, risks and the decisions still open</span></div>
+ </div>
+ </div>
+<details class="model-notes">
+<summary>
+<span>Model notes</span>
+<span class="model-notes-hint">Appetite + candidate shapes</span>
+</summary>
+<div class="model-notes-body">
+<section>
+<strong>Appetite = fixed time × talent budget.</strong>
+<p>Appetite is a judgment about how much team time the problem is worth, not a delivery estimate. Fix time and team, then adjust scope to fit. The total on this roadmap includes only bets with a draft appetite; unassigned work is not silently budgeted.</p>
+<p class="model-stop-rule"><b>Stop rule:</b> clear the quality floor with the least human review. As the cap approaches, cut optional scope, verify what matters, preserve state, and land. At the cap, stop. More capacity is a new bet.</p>
+</section>
+<section>
+<strong>Candidate shapes, not specifications.</strong>
+<p>The yellow candidate shape is one raw mechanism for illustrating the struggle. It is not a selected design, product commitment, or promise of effectiveness. Keep the situation and desired outcome distinct from the mechanism. No observed outcomes are claimed here.</p>
+</section>
+</div>
+</details>
+
+</div>
+</header>
+<main>
+<div class="wrap roadmap-tabs" id="roadmap">
+ <div class="roadmap-opening">
+  <div><span class="roadmap-section-label">THE EXECUTIVE VIEW</span><h2>What to pursue, in what order, and why.</h2></div>
+  <p>Select a milestone to inspect the candidate bets. Open any bet for its problem, proposed response, trade-offs, evidence and delivery boundaries. The deeper Automatic Offers shaping example is optional.</p>
+ </div>
+<input checked="" class="milestone-choice" id="milestone-1" name="milestone" type="radio"/>
+<input class="milestone-choice" id="milestone-2" name="milestone" type="radio"/>
+<input class="milestone-choice" id="milestone-3" name="milestone" type="radio"/>
+<input class="milestone-choice" id="milestone-4" name="milestone" type="radio"/>
+<input class="all-choice" id="showAllMilestones" type="checkbox"/>
+<nav aria-label="Milestone sequence" class="rail" id="rail"><label class="step" data-theme="1" for="milestone-1">
+<span class="step-top"><span class="badge">1</span><span class="step-copy"><strong class="step-heading">Realize &amp; Verify Membership Value</strong><span class="step-subtitle">Make promised value usable and reliably delivered.</span></span></span>
+<span class="rail-metrics"><span class="pill">2 candidates</span><span class="pill">9 person-wks draft</span><span class="pill">1 appetite TBD</span></span>
+</label><label class="step" data-theme="2" for="milestone-2">
+<span class="step-top"><span class="badge">2</span><span class="step-copy"><strong class="step-heading">Make Better, Verifiable Choices</strong><span class="step-subtitle">Use Membership only when it can change a real decision.</span></span></span>
+<span class="rail-metrics"><span class="pill">2 tests</span><span class="pill">30 person-wks draft</span></span>
+</label><label class="step" data-theme="3" for="milestone-3">
+<span class="step-top"><span class="badge">3</span><span class="step-copy"><strong class="step-heading">Resolve &amp; Recover Outcomes</strong><span class="step-subtitle">Move from understanding to bounded, reversible help.</span></span></span>
+<span class="rail-metrics"><span class="pill">1 test · 2 hold</span><span class="pill">12 person-wks draft</span></span>
+</label><label class="step" data-theme="4" for="milestone-4">
+<span class="step-top"><span class="badge">4</span><span class="step-copy"><strong class="step-heading">Expand Proven Patterns</strong><span class="step-subtitle">Enter new experiences only when a distinct struggle is evidenced.</span></span></span>
+<span class="rail-metrics"><span class="pill">1 hold</span><span class="pill">No appetite assigned</span></span>
+</label></nav>
+<div class="toolbar">
+<button class="js-extra" hidden="" id="expandAll" type="button">Expand all units in current milestone</button>
+<button class="js-extra" hidden="" id="collapseAll" type="button">Collapse all units</button>
+<label class="toolbar-native-toggle" for="showAllMilestones">
+<span class="when-one">Show all milestones</span><span class="when-all">Show one milestone</span>
+</label>
+<span class="summary" id="summary">4 proposed milestones · 51 illustrative person-wks across sized bets</span>
+</div>
+<div aria-label="Milestone detail view" class="milestone-views" id="views"><section class="cluster-view" data-cluster="1" id="cluster-1">
+<div class="cluster-head" data-theme="1">
+<div class="cluster-head-left"><div class="big-badge">1</div>
+<div><h2>Milestone 1 · Realize &amp; Verify Membership Value</h2><p>Make promised value usable and reliably delivered.</p><p style="margin-top:8px"><strong>Why here: </strong>Start with current benefits, not new autonomy. Test purchase-time incrementality and whether failed benefit outcomes justify intervention.</p></div>
+</div>
+<div class="cluster-meta"><span class="chip">2 test</span><span class="chip">9 person-wks draft</span><span class="chip">1 appetite TBD</span></div>
+</div>
+<div class="units-grid"><details class="unit" data-appetite-weeks="3" data-team="3" data-unit="1.1" id="automatic-offers-entry">
+<summary class="unit-head">
+<span class="unit-title"><strong>1.1 · Automatic Offers</strong><small>Purchase decision • in-context Membership value</small><span class="unit-state status-test">TEST · evidence bet</span></span>
+<a aria-label="Open Automatic Offers shaping and v1 dossier" class="shaping-entry" href="#automatic-offers-work">Shaping &amp; v1 ↗</a><span class="bet-meta"><span class="bet-metric"><span class="bet-label">Draft appetite</span><strong>3 wks × 3</strong><small>9 person-wks</small></span></span>
+<span class="unit-open"><span class="when-closed">Show Frame + Candidate Shape</span><span class="when-open">Hide Frame + Candidate Shape</span></span>
+</summary>
+<div class="unit-body">
+<div class="flow-row">
+<div class="box"><b>Struggling moment · x</b><p>When I am about to pay and an Amex Offer may apply, I cannot tell in time which benefit is eligible, which Card to use, or whether activation is required.</p></div>
+<div class="box"><b>Current approach · f₀(x)</b><p>Check Offers beforehand, interpret merchant and Card terms, add the right Offer, then remember it at checkout—or miss the step.</p></div>
+<div class="box"><b>Current result · y₀</b><p>I either spend effort hunting for discounts or miss value that may already be available to me.</p></div>
+</div>
+<div class="flow-row" style="margin-top:8px">
+<div class="box proposed"><b>Candidate shape · fᵢ(x)</b><p>A permissioned Amex assistant surfaces the applicable Offer at the point of purchase and handles allowed activation, otherwise requesting explicit action. It never treats every eligible discount as economically incremental.</p></div>
+<div class="box desired"><b>Desired outcome · y</b><p>Relevant, legitimate Membership value is realized at the moment of choice without requiring a separate coupon-management task.</p></div>
+<div class="box success-check"><b>Success check</b><p>Against current Amex and CardPointers workflows, did net incremental merchant-valued purchases and Card Member value rise after subsidy, cannibalization and service costs?</p></div>
+</div><div class="candidate-alternatives"><strong>Other candidate options: </strong>Amex app, permitted browser integration, checkout, and optional location-aware surfacing. A customer-invoked personal AI agent is another potential approved surface for Offer discovery or eligibility checks; enrollment remains governed by program terms and explicit permission. Local Membership Layer is merged here as a possible context—not another funded bet.</div>
+
+<div class="meta-grid">
+<div class="meta"><h4>M · What must be true</h4><ul><li>Amex can determine Offer, merchant and Card eligibility, terms and activation state.</li><li>At least one approved surface can detect purchase context with consent.</li><li>Merchant campaign rules and baseline redemption economics are accessible for a controlled test.</li><li>Consent is revocable and any enrollment/action is auditable.</li></ul></div>
+<div class="meta"><h4>R · What any better way must do</h4><div class="chips"><span class="chip">Timely value</span><span class="chip">Eligible and compliant</span><span class="chip">Bounded consent</span><span class="chip">Minimal effort</span><span class="chip">Verified incremental economics</span></div></div>
+</div><section aria-label="Evidence and business decision for 1.1" class="decision-evidence" data-evidence-ids="E001,E002,E003,E004,E005">
+<div class="decision-head"><strong>Business-value case</strong><span class="status status-test">TEST</span></div>
+<p class="decision-grade">Medium–high, conditional · strategic potential, not forecast revenue</p>
+<div class="decision-fields">
+<div><b>How Amex might benefit</b><p>Incremental merchant-campaign contribution, realized customer value and Card preference—not redemption count alone.</p></div>
+<div><b>Business result to measure</b><p>Incremental contribution per exposed eligible purchase, net of merchant incentives, baseline redemptions, agent and servicing cost.</p></div>
+<div><b>What might break this bet</b><p>Most purchases would happen anyway; subsidies rise; third-party tools already solve the pain.</p></div>
+<div><b>Next evidence / decision gate</b><p>Run consented purchase-context holdout against current Amex / CardPointers-like baseline. Stop if only activation/redemption volume grows.</p></div>
+</div><div class="sources"><b>Research trail:</b><a href="https://www.americanexpress.com/en-us/newsroom/articles/financial-news/2026-chairman-s-letter-to-shareholders.html" rel="noopener noreferrer" target="_blank">E001</a>, <a href="https://www.americanexpress.com/en-us/merchant/digital-media/" rel="noopener noreferrer" target="_blank">E002</a>, <a href="https://www.americanexpress.com/en-us/benefits/offers/" rel="noopener noreferrer" target="_blank">E003</a>, <a href="https://www.reddit.com/r/amex/comments/1j4y7ou/updated_automated_way_to_add_all_your_offers/" rel="noopener noreferrer" target="_blank">E004</a>, <a href="https://cardpointers.com/extension/" rel="noopener noreferrer" target="_blank">E005</a></div>
+</section>
+<div class="execution-model">
+<div class="execution-title"><div><b>Execution budget</b><span>Illustrative conversion at 40 hrs/person-week, 2× agent production and 25% review; not an approved execution cap.</span></div><span class="execution-badge">9 person-wks</span></div>
+<div class="execution-grid">
+<div class="exec-stat"><span>Human-equivalent capacity</span><strong>360 hrs</strong></div>
+<div class="exec-stat"><span>Machine cap @ 2×</span><strong>180 agent-hrs</strong></div>
+<div class="exec-stat"><span>Human review @ 25%</span><strong>90 hrs</strong></div>
+</div>
+<div class="quality-floor"><b>Quality floor</b><span>Eligibility and activation rules are respected; the Card Member controls permission; relevant value is displayed correctly at purchase time; valid use can be verified.</span></div>
+</div>
+</div>
+</details><details class="unit" data-team="3" data-unit="1.2">
+<summary class="unit-head">
+<span class="unit-title"><strong>1.2 · Benefit Outcome Assurance</strong><small>After purchase • credits, benefits, exceptions &amp; agent handoffs</small><span class="unit-state status-test">TEST · evidence bet</span></span>
+<span class="unassigned">Appetite <strong>Not assigned</strong></span>
+<span class="unit-open"><span class="when-closed">Show Frame + Candidate Shape</span><span class="when-open">Hide Frame + Candidate Shape</span></span>
+</summary>
+<div class="unit-body">
+<div class="flow-row">
+<div class="box"><b>Struggling moment · x</b><p>After I use a benefit I believe applies, the promised credit, access or protection does not appear—or the transaction is classified in a way that seems to disqualify it.</p></div>
+<div class="box"><b>Current approach · f₀(x)</b><p>Recheck eligibility terms, find the transaction, contact support, supply evidence and follow up until someone explains or resolves the discrepancy.</p></div>
+<div class="box"><b>Current result · y₀</b><p>I spend time proving what I expected Membership to deliver and may never learn whether the benefit was valid, delayed or truly denied.</p></div>
+</div>
+<div class="flow-row" style="margin-top:8px">
+<div class="box proposed"><b>Candidate shape · fᵢ(x)</b><p>An authorized Amex assistant checks benefit terms and transaction context, explains the discrepancy, assembles a case and routes eligible exceptions for human-reviewed resolution. As an optional approved pathway, a Card Member’s personal agent could request the authoritative explanation, initiate a scoped case handoff and receive verified status without making the Member repeat the issue.</p></div>
+<div class="box desired"><b>Desired outcome · y</b><p>Eligible benefits arrive reliably; when something fails, I get an accurate explanation and a justified remedy without repeatedly rebuilding the case.</p></div>
+<div class="box success-check"><b>Success check</b><p>Did valid unresolved benefits, repeated contacts and time-to-correct-resolution decrease without granting ineligible credits or creating excess cost? For an external-agent handoff, did repeated effort and net cost also fall versus current Amex servicing?</p></div>
+</div><div class="candidate-alternatives"><strong>Other candidate options: </strong>Proactive credit-status tracking, intelligible benefit eligibility explanations, case evidence packaging, and controlled servicing escalation. External-agent access is a candidate delivery surface, not a separately funded bet.</div>
+
+<div class="meta-grid">
+<div class="meta"><h4>M · What must be true</h4><ul><li>Authoritative transaction, benefit and offer rules can be joined for an eligible case.</li><li>Existing service/dispute processes can surface a reason and permitted remedy.</li><li>An agent cannot adjudicate insurance coverage or override policy without authority.</li><li>Case outcomes and handling costs can be measured against a baseline.</li><li>Any external-agent handoff requires an approved host surface, verified Card Member identity, scoped and revocable authority, secure source-of-truth access, traceable case status and escalation. ACE commerce capabilities alone do not establish servicing rights.</li></ul></div>
+<div class="meta"><h4>R · What any better way must do</h4><div class="chips"><span class="chip">Correct eligibility</span><span class="chip">Explainable decisions</span><span class="chip">Timely case progress</span><span class="chip">Recoverable</span><span class="chip">Human-approved exceptions</span><span class="chip">Safe delegated handoff</span></div></div>
+</div><section aria-label="Evidence and business decision for 1.2" class="decision-evidence" data-evidence-ids="E001,E008,E015,E017,E021">
+<div class="decision-head"><strong>Business-value case</strong><span class="status status-test">TEST</span></div>
+<p class="decision-grade">Potentially high; not yet sized · strategic potential, not forecast revenue</p>
+<div class="decision-fields">
+<div><b>How Amex might benefit</b><p>Lower repeat-contact and handling costs, increased realized value, and fewer frustrating Membership failures that may harm retention.</p></div>
+<div><b>Business result to measure</b><p>Valid benefit resolution, avoidable contacts and net service cost per eligible case. For an external-agent pathway, measure added handoff completion and repeated effort against existing service; causal retention impact remains unmeasured.</p></div>
+<div><b>What might break this bet</b><p>Most complaints are valid ineligibility, already resolved efficiently, or require legally constrained adjudication. External-agent invocation, account access or servicing rights may not be approved.</p></div>
+<div><b>Next evidence / decision gate</b><p>Audit declined/missing-benefit cases and shadow-test eligibility explanation + case packaging. Test one approved external-agent handoff against current support, checking demand, invocation rights, identity, consent, case status and resolution quality. Assign appetite only after the service gap and quality floor are evidenced.</p></div>
+</div><div class="sources"><b>Research trail:</b><a href="https://www.americanexpress.com/en-us/newsroom/articles/financial-news/2026-chairman-s-letter-to-shareholders.html" rel="noopener noreferrer" target="_blank">E001</a>, <a href="https://www.americanexpress.com/en-us/newsroom/articles/innovation/american-express-debuts-agentic-commerce-experiences--ace--devel.html" rel="noopener noreferrer" target="_blank">E015</a>, <a href="https://www.reddit.com/r/AmexPlatinum/comments/1no3v26/resy_credit_denied_restaurant_registered_as/" rel="noopener noreferrer" target="_blank">E008</a>, <a href="https://www.reddit.com/r/AmexPlatinum/comments/1woi9gt/updated_resy_benefit_no_longer_includes_all_resy/" rel="noopener noreferrer" target="_blank">E017</a>, <a href="https://www.americanexpress.com/us/customer-service/faq.dispute-status.html" rel="noopener noreferrer" target="_blank">E021</a></div>
+</section>
+</div>
+</details></div>
+</section><section class="cluster-view" data-cluster="2" id="cluster-2">
+<div class="cluster-head" data-theme="2">
+<div class="cluster-head-left"><div class="big-badge">2</div>
+<div><h2>Milestone 2 · Make Better, Verifiable Choices</h2><p>Use Membership only when it can change a real decision.</p><p style="margin-top:8px"><strong>Why here: </strong>Compare feasible dining access and total trip economics with credible current/generic alternatives. Reject manufactured Membership advantages.</p></div>
+</div>
+<div class="cluster-meta"><span class="chip">2 test</span><span class="chip">30 person-wks draft</span></div>
+</div>
+<div class="units-grid"><details class="unit" data-appetite-weeks="4" data-team="3" data-unit="2.1">
+<summary class="unit-head">
+<span class="unit-title"><strong>2.1 · Verified Dining Access</strong><small>Time-specific reservation • feasible Membership advantage</small><span class="unit-state status-test">TEST · evidence bet</span></span>
+<span class="bet-meta"><span class="bet-metric"><span class="bet-label">Draft appetite</span><strong>4 wks × 3</strong><small>12 person-wks</small></span></span>
+<span class="unit-open"><span class="when-closed">Show Frame + Candidate Shape</span><span class="when-open">Hide Frame + Candidate Shape</span></span>
+</summary>
+<div class="unit-body">
+<div class="flow-row">
+<div class="box"><b>Struggling moment · x</b><p>When I need a table for a specific occasion and date, the available reservations do not fit my constraints, and I cannot tell whether an Amex access benefit actually changes what I can book.</p></div>
+<div class="box"><b>Current approach · f₀(x)</b><p>Search Resy and other providers, change times or locations, check eligibility separately and compare access with ordinary availability.</p></div>
+<div class="box"><b>Current result · y₀</b><p>I may settle for a poorer time or venue despite Membership access—or waste time pursuing tables that are not really available.</p></div>
+</div>
+<div class="flow-row" style="margin-top:8px">
+<div class="box proposed"><b>Candidate shape · fᵢ(x)</b><p>Within an approved Resy / Amex pathway, compare live, actually reservable tables for a specific brief against a generic/current search, explain eligible access and recommend feasible alternatives.</p></div>
+<div class="box desired"><b>Desired outcome · y</b><p>I see a genuinely better feasible restaurant choice when Membership makes a real difference—not a prettier list of the same options.</p></div>
+<div class="box success-check"><b>Success check</b><p>Does Membership reveal more usable options or change the best feasible choice versus existing Resy experiences, including in-chat booking, and generic search?</p></div>
+</div>
+<div class="candidate-alternatives"><strong>Other candidate options: </strong>A verified access comparison panel or concierge-assisted search, including invocation by an approved personal agent. Already available in-chat Resy booking is a baseline, not a new benefit. Automated booking beyond approved flows is a separate, permission-gated hypothesis.</div>
+<div class="meta-grid">
+<div class="meta"><h4>M · What must be true</h4><ul><li>Approved provider access returns live, actually reservable options.</li><li>Membership eligibility and incremental access can be checked reliably.</li><li>A current/generic baseline and actual booking outcomes can be compared.</li><li>Rate limits and provider rules prevent unauthorized agent behavior.</li></ul></div>
+<div class="meta"><h4>R · What any better way must do</h4><div class="chips"><span class="chip">Real availability</span><span class="chip">Intent-fit</span><span class="chip">Decision-changing</span><span class="chip">Honest explanation</span><span class="chip">Provider-approved</span></div></div>
+</div><section aria-label="Evidence and business decision for 2.1" class="decision-evidence" data-evidence-ids="E006,E007,E016,E019,E023">
+<div class="decision-head"><strong>Business-value case</strong><span class="status status-test">TEST</span></div>
+<p class="decision-grade">Medium; conditional · strategic potential, not forecast revenue</p>
+<div class="decision-fields">
+<div><b>How Amex might benefit</b><p>Resy engagement, Member preference and partner value if exclusive access changes a real booking outcome.</p></div>
+<div><b>Business result to measure</b><p>Increase in verified feasible options or satisfied bookings causally attributable to Amex access.</p></div>
+<div><b>What might break this bet</b><p>Inventory is identical, eligibility does not help, or existing Resy integration already removes the friction.</p></div>
+<div><b>Next evidence / decision gate</b><p>Blind matched-task experiment using verified date/party availability versus current Resy/Claude, Resy/ChatGPT and generic discovery/booking. Isolate any incremental Membership access from interface convenience.</p></div>
+</div><div class="sources"><b>Research trail:</b><a href="https://blog.resy.com/newsroom/resy-restaurants-claude-anthropic/" rel="noopener noreferrer" target="_blank">E006</a>, <a href="https://www.businessinsider.com/resy-suspends-vcs-account-ai-agent-reservation-attempt-2026-9" rel="noopener noreferrer" target="_blank">E007</a>, <a href="https://www.reddit.com/r/AmexPlatinum/comments/1pl13kn/resy_global_access_dining/" rel="noopener noreferrer" target="_blank">E016</a>, <a href="https://www.americanexpress.com/en-us/newsroom/articles/travel-and-dining/resy-announces-next-phase-of-its-reservation-and-dining-platform.html" rel="noopener noreferrer" target="_blank">E019</a>, <a href="https://blog.resy.com/newsroom/resy-launches-reservations-in-chatgpt/" rel="noopener noreferrer" target="_blank">E023</a></div>
+</section>
+<div class="execution-model">
+<div class="execution-title"><div><b>Execution budget</b><span>Illustrative conversion at 40 hrs/person-week, 2× agent production and 25% review; not an approved execution cap.</span></div><span class="execution-badge">12 person-wks</span></div>
+<div class="execution-grid">
+<div class="exec-stat"><span>Human-equivalent capacity</span><strong>480 hrs</strong></div>
+<div class="exec-stat"><span>Machine cap @ 2×</span><strong>240 agent-hrs</strong></div>
+<div class="exec-stat"><span>Human review @ 25%</span><strong>120 hrs</strong></div>
+</div>
+<div class="quality-floor"><b>Quality floor</b><span>Only verified, live, policy-compliant inventory is recommended, and the comparison accurately identifies whether Membership changes a feasible choice.</span></div>
+</div>
+</div>
+</details><details class="unit" data-appetite-weeks="6" data-team="3" data-unit="2.2">
+<summary class="unit-head">
+<span class="unit-title"><strong>2.2 · Verified Total Trip Value</strong><small>Before booking • compare like-for-like total value</small><span class="unit-state status-test">TEST · evidence bet</span></span>
+<span class="bet-meta"><span class="bet-metric"><span class="bet-label">Draft appetite</span><strong>6 wks × 3</strong><small>18 person-wks</small></span></span>
+<span class="unit-open"><span class="when-closed">Show Frame + Candidate Shape</span><span class="when-open">Hide Frame + Candidate Shape</span></span>
+</summary>
+<div class="unit-body">
+<div class="flow-row">
+<div class="box"><b>Struggling moment · x</b><p>When the same flight or hotel seems to have different prices, rewards, credits and restrictions across booking channels, I cannot confidently tell which complete option is actually better for my trip.</p></div>
+<div class="box"><b>Current approach · f₀(x)</b><p>Compare several booking sites, estimate point values and credits, interpret cancellation and upgrade terms, then reconcile rate differences by hand.</p></div>
+<div class="box"><b>Current result · y₀</b><p>I may pay more for a nominal benefit, miss a valid advantage, or book an inferior rate because the comparison is not like-for-like.</p></div>
+</div>
+<div class="flow-row" style="margin-top:8px">
+<div class="box proposed"><b>Candidate shape · fᵢ(x)</b><p>An Amex-aware comparison explains like-for-like total trip cost and eligible value across Amex Travel and direct/other channels, discloses uncertainty and recommends whichever genuinely fits best.</p></div>
+<div class="box desired"><b>Desired outcome · y</b><p>I make a confident, defensible choice based on total value and trip fit—not misleading credit arithmetic or channel preference.</p></div>
+<div class="box success-check"><b>Success check</b><p>On identical travel requirements, does verified total-value comparison reduce wrong choices and improve net customer value against ordinary manual/current Amex comparison?</p></div>
+</div>
+<div class="candidate-alternatives"><strong>Other candidate options: </strong>Value audit at search, independent itinerary comparison, or side-by-side rate-condition explainer. An approved Amex service could also answer a customer-owned travel agent’s specific eligibility, benefits and terms questions. Autonomous booking is not required.</div>
+<div class="meta-grid">
+<div class="meta"><h4>M · What must be true</h4><ul><li>Matched inventory and rate terms can be compared accurately across channels.</li><li>Membership credits, points, eligibility and restrictions are current and representable.</li><li>A fair generic/manual comparator and post-booking outcomes can be measured.</li></ul></div>
+<div class="meta"><h4>R · What any better way must do</h4><div class="chips"><span class="chip">Like-for-like prices</span><span class="chip">Real eligible value</span><span class="chip">Honest uncertainty</span><span class="chip">Customer-best choice</span><span class="chip">Explainable tradeoffs</span></div></div>
+</div><section aria-label="Evidence and business decision for 2.2" class="decision-evidence" data-evidence-ids="E001,E009,E020">
+<div class="decision-head"><strong>Business-value case</strong><span class="status status-test">TEST</span></div>
+<p class="decision-grade">Medium–high, conditional · strategic potential, not forecast revenue</p>
+<div class="decision-fields">
+<div><b>How Amex might benefit</b><p>Trust, appropriate Amex Travel participation, realized benefits and durable Card preference if recommendations are demonstrably honest.</p></div>
+<div><b>Business result to measure</b><p>Improvement in verified total customer value and choice quality, net of advisory cost and forgone channel contribution.</p></div>
+<div><b>What might break this bet</b><p>Direct booking frequently wins, Amex pricing dominates the benefit or the data are not comparable.</p></div>
+<div><b>Next evidence / decision gate</b><p>Conduct blinded, timestamped matched-rate comparisons and observe decisions; do not reward only Amex-channel conversion.</p></div>
+</div><div class="sources"><b>Research trail:</b><a href="https://www.americanexpress.com/en-us/newsroom/articles/financial-news/2026-chairman-s-letter-to-shareholders.html" rel="noopener noreferrer" target="_blank">E001</a>, <a href="https://www.reddit.com/r/AmexPlatinum/comments/1oplr7p/price_increase_for_fhr_washes_out_300_credit/" rel="noopener noreferrer" target="_blank">E009</a>, <a href="https://www.reddit.com/r/AmexPlatinum/comments/1kz3j92/booking_via_fhr_vs_direct/" rel="noopener noreferrer" target="_blank">E020</a></div>
+</section>
+<div class="execution-model">
+<div class="execution-title"><div><b>Execution budget</b><span>Illustrative conversion at 40 hrs/person-week, 2× agent production and 25% review; not an approved execution cap.</span></div><span class="execution-badge">18 person-wks</span></div>
+<div class="execution-grid">
+<div class="exec-stat"><span>Human-equivalent capacity</span><strong>720 hrs</strong></div>
+<div class="exec-stat"><span>Machine cap @ 2×</span><strong>360 agent-hrs</strong></div>
+<div class="exec-stat"><span>Human review @ 25%</span><strong>180 hrs</strong></div>
+</div>
+<div class="quality-floor"><b>Quality floor</b><span>Only genuinely comparable prices/rates are compared; eligibility, points valuation and major restrictions are correct; the system is allowed to recommend a non-Amex channel.</span></div>
+</div>
+</div>
+</details></div>
+</section><section class="cluster-view" data-cluster="3" id="cluster-3">
+<div class="cluster-head" data-theme="3">
+<div class="cluster-head-left"><div class="big-badge">3</div>
+<div><h2>Milestone 3 · Resolve &amp; Recover Outcomes</h2><p>Move from understanding to bounded, reversible help.</p><p style="margin-top:8px"><strong>Why here: </strong>Start with travel disruption diagnosis and case preparation. Preserve delegated booking and itinerary management as conditional options, not funded follow-ons.</p></div>
+</div>
+<div class="cluster-meta"><span class="chip">1 test</span><span class="chip">2 hold</span><span class="chip">12 person-wks draft</span></div>
+</div>
+<div class="units-grid"><details class="unit" data-appetite-weeks="4" data-team="3" data-unit="3.1">
+<summary class="unit-head">
+<span class="unit-title"><strong>3.1 · Travel Disruption Resolution</strong><small>In-trip • immediate, bounded recovery</small><span class="unit-state status-test">TEST · evidence bet</span></span>
+<span class="bet-meta"><span class="bet-metric"><span class="bet-label">Draft appetite</span><strong>4 wks × 3</strong><small>12 person-wks</small></span></span>
+<span class="unit-open"><span class="when-closed">Show Frame + Candidate Shape</span><span class="when-open">Hide Frame + Candidate Shape</span></span>
+</summary>
+<div class="unit-body">
+<div class="flow-row">
+<div class="box"><b>Struggling moment · x</b><p>When a flight is canceled, a room disappears or another disruption hits during a trip, I urgently need a valid remedy, but the accountable provider, eligible coverage and fastest safe next action are unclear.</p></div>
+<div class="box"><b>Current approach · f₀(x)</b><p>Contact several providers, repeat the case, locate receipts, interpret benefit coverage, and pursue claims or alternatives under time pressure.</p></div>
+<div class="box"><b>Current result · y₀</b><p>I lose trip time, accept avoidable uncertainty and may miss remedies or incur expenses before I know who will support me.</p></div>
+</div>
+<div class="flow-row" style="margin-top:8px">
+<div class="box proposed"><b>Candidate shape · fᵢ(x)</b><p>Start with an Amex-assisted, read-only case coordinator: identify provider ownership, verify booking/coverage, assemble evidence, suggest authorized remedies and seek human approval for consequential contacts or changes.</p></div>
+<div class="box desired"><b>Desired outcome · y</b><p>The issue is diagnosed and routed quickly, my options are accurate, and legitimate remedies proceed with less coordination and clear control.</p></div>
+<div class="box success-check"><b>Success check</b><p>In actual disruption cases, did coordination and time to a valid remedy improve without unauthorized contacts, wrong coverage advice or added case costs?</p></div>
+</div>
+<div class="candidate-alternatives"><strong>Other candidate options: </strong>Evidence preparation, proactive status updates, or a scoped handoff between a customer-owned agent and Amex for authoritative case status after identity, provider rights and escalation are demonstrated. Full autonomous rebooking is not the opening shape.</div>
+<div class="meta-grid">
+<div class="meta"><h4>M · What must be true</h4><ul><li>Booking and transaction records can be retrieved with revocable consent.</li><li>The right provider, claims path and relevant benefit terms are identifiable.</li><li>Provider actions require a supported integration or human-mediated handoff.</li><li>Escalation and liability boundaries can be enforced.</li></ul></div>
+<div class="meta"><h4>R · What any better way must do</h4><div class="chips"><span class="chip">Fast valid diagnosis</span><span class="chip">Correct entitlements</span><span class="chip">Explicit authority</span><span class="chip">Transparent status</span><span class="chip">Recoverable and human-reviewable</span></div></div>
+</div><section aria-label="Evidence and business decision for 3.1" class="decision-evidence" data-evidence-ids="E010,E011,E012,E013,E014">
+<div class="decision-head"><strong>Business-value case</strong><span class="status status-test">TEST</span></div>
+<p class="decision-grade">High severity; uncertain frequency/economics · strategic potential, not forecast revenue</p>
+<div class="decision-fields">
+<div><b>How Amex might benefit</b><p>Lower support handling burden, faster successful resolution, premium Member trust and possible retention upside.</p></div>
+<div><b>Business result to measure</b><p>Valid-resolution time, net case-handling costs, error rate and repeat contacts; measured against existing Amex service.</p></div>
+<div><b>What might break this bet</b><p>Supplier/insurer controls limit useful action or agent complexity exceeds savings.</p></div>
+<div><b>Next evidence / decision gate</b><p>Start with shadow-mode case classification and evidence capture; authorize provider contact only after entitlement and error gates pass.</p></div>
+</div><div class="sources"><b>Research trail:</b><a href="https://www.reddit.com/r/AmexPlatinum/comments/1ibaumx/beware_trip_cancelationinterruptiondelay_insurance/" rel="noopener noreferrer" target="_blank">E010</a>, <a href="https://www.reddit.com/r/AmexPlatinum/comments/1v8jnc4/travel_insurance_works/" rel="noopener noreferrer" target="_blank">E011</a>, <a href="https://www.reddit.com/r/AmexPlatinum/comments/1q47tvp/concierge_hold_times_are_out_of_control/" rel="noopener noreferrer" target="_blank">E012</a>, <a href="https://www.americanexpress.com/en-us/account/get-started/platinum/" rel="noopener noreferrer" target="_blank">E013</a>, <a href="https://www.19pine.ai/travel-assistance" rel="noopener noreferrer" target="_blank">E014</a></div>
+</section>
+<div class="execution-model">
+<div class="execution-title"><div><b>Execution budget</b><span>Illustrative conversion at 40 hrs/person-week, 2× agent production and 25% review; not an approved execution cap.</span></div><span class="execution-badge">12 person-wks</span></div>
+<div class="execution-grid">
+<div class="exec-stat"><span>Human-equivalent capacity</span><strong>480 hrs</strong></div>
+<div class="exec-stat"><span>Machine cap @ 2×</span><strong>240 agent-hrs</strong></div>
+<div class="exec-stat"><span>Human review @ 25%</span><strong>120 hrs</strong></div>
+</div>
+<div class="quality-floor"><b>Quality floor</b><span>Real disruption cases receive a correct, documented classification and authorized next action; uncertain coverage stays uncertain; the traveler can escalate, reverse or take over.</span></div>
+</div>
+</div>
+</details><details class="unit" data-team="3" data-unit="3.2">
+<summary class="unit-head">
+<span class="unit-title"><strong>3.2 · Dining Delegate</strong><small>Deferred • only if approved booking handoff still fails</small><span class="unit-state status-hold">HOLD · deferred option</span></span>
+<span class="unassigned">Appetite <strong>Not assigned</strong></span>
+<span class="unit-open"><span class="when-closed">Show Frame + Candidate Shape</span><span class="when-open">Hide Frame + Candidate Shape</span></span>
+</summary>
+<div class="unit-body">
+<div class="flow-row">
+<div class="box"><b>Struggling moment · x</b><p>When I have found a genuinely eligible, available reservation, I still lose the table or have to repeat my constraints while completing the booking through a separate approved provider flow.</p></div>
+<div class="box"><b>Current approach · f₀(x)</b><p>Follow booking links, re-enter details, wait for confirmations and retry if availability changes.</p></div>
+<div class="box"><b>Current result · y₀</b><p>The booking may fail or the intended time/party constraints are lost, despite a feasible recommendation.</p></div>
+</div>
+<div class="flow-row" style="margin-top:8px">
+<div class="box proposed"><b>Candidate shape · fᵢ(x)</b><p>An explicitly authorized Amex/Resy agent completes the reservation through an approved provider interface, confirms critical details and returns a durable record.</p></div>
+<div class="box desired"><b>Desired outcome · y</b><p>A viable table is booked successfully without rework or loss of intent.</p></div>
+<div class="box success-check"><b>Success check</b><p>Is the booking-handoff abandonment rate material, and would approved delegated completion improve it without errors or new restrictions?</p></div>
+</div>
+<div class="candidate-alternatives"><strong>Other candidate options: </strong>Simpler deep linking, prefilled confirmation or guided handoff may resolve the same problem without booking delegation.</div>
+<div class="meta-grid">
+<div class="meta"><h4>M · What must be true</h4><ul><li>A real, repeated and material handoff drop-off exists after feasible discovery.</li><li>An Amex-approved booking interface permits scoped agency.</li><li>Cost, cancellation and privacy risk are acceptable.</li></ul></div>
+<div class="meta"><h4>R · What any better way must do</h4><div class="chips"><span class="chip">Approved integration</span><span class="chip">Correct booking</span><span class="chip">Explicit authority</span><span class="chip">Easy cancellation</span><span class="chip">Measured incremental completion</span></div></div>
+</div><section aria-label="Evidence and business decision for 3.2" class="decision-evidence" data-evidence-ids="E006,E007,E019,E022">
+<div class="decision-head"><strong>Business-value case</strong><span class="status status-hold">HOLD</span></div>
+<p class="decision-grade">Low–medium incremental upside pending proof · strategic potential, not forecast revenue</p>
+<div class="decision-fields">
+<div><b>How Amex might benefit</b><p>More valid completed bookings, fewer abandonment losses and additional service convenience only if current handoff underperforms.</p></div>
+<div><b>Business result to measure</b><p>Incremental, error-free completions net of liability, API and service costs.</p></div>
+<div><b>What might break this bet</b><p>Current flows already work or unapproved bots are blocked; handoff friction is too small.</p></div>
+<div><b>Next evidence / decision gate</b><p>Prove current drop-off and approved provider capability before assigning appetite; otherwise fold into dining flow.</p></div>
+</div><div class="sources"><b>Research trail:</b><a href="https://blog.resy.com/newsroom/resy-restaurants-claude-anthropic/" rel="noopener noreferrer" target="_blank">E006</a>, <a href="https://www.businessinsider.com/resy-suspends-vcs-account-ai-agent-reservation-attempt-2026-9" rel="noopener noreferrer" target="_blank">E007</a>, <a href="https://www.americanexpress.com/en-us/newsroom/articles/travel-and-dining/resy-announces-next-phase-of-its-reservation-and-dining-platform.html" rel="noopener noreferrer" target="_blank">E019</a>, <a href="https://www.foodandwine.com/artificial-intelligence-restaurant-reservations-12074489" rel="noopener noreferrer" target="_blank">E022</a></div>
+</section>
+</div>
+</details><details class="unit" data-team="3" data-unit="3.3">
+<summary class="unit-head">
+<span class="unit-title"><strong>3.3 · Travel Delegate</strong><small>Deferred • multi-supplier autonomy</small><span class="unit-state status-hold">HOLD · deferred option</span></span>
+<span class="unassigned">Appetite <strong>Not assigned</strong></span>
+<span class="unit-open"><span class="when-closed">Show Frame + Candidate Shape</span><span class="when-open">Hide Frame + Candidate Shape</span></span>
+</summary>
+<div class="unit-body">
+<div class="flow-row">
+<div class="box"><b>Struggling moment · x</b><p>When several linked travel bookings need to be coordinated or changed, no single party manages the resulting dependencies while preserving my choices and protections.</p></div>
+<div class="box"><b>Current approach · f₀(x)</b><p>Book each part through separate tools, reconcile terms and benefits, track confirmations, and manually make routine changes.</p></div>
+<div class="box"><b>Current result · y₀</b><p>I spend significant time coordinating the itinerary, with opportunities for missed value, conflicting details, or avoidable errors.</p></div>
+</div>
+<div class="flow-row" style="margin-top:8px">
+<div class="box proposed"><b>Candidate shape · fᵢ(x)</b><p>A scoped Amex agent handles one bounded booking or modification job at a time, with explicit approval, escalation and verified supplier integration; wider autonomy is conditional.</p></div>
+<div class="box desired"><b>Desired outcome · y</b><p>My itinerary is booked and managed coherently with less effort, relevant Membership value, and clear control over consequential decisions.</p></div>
+<div class="box success-check"><b>Success check</b><p>Did bounded trip delegation reduce coordination and errors while preserving intended choices, control, and value?</p></div>
+</div>
+<div class="candidate-alternatives"><strong>Other candidate options: </strong>Start with a narrow cancellation, change alert or approved itinerary reconciliation task. Do not treat end-to-end autonomy as the first build.</div>
+<div class="meta-grid">
+<div class="meta"><h4>M · What must be true</h4><ul><li>Independent provider booking/change interfaces support explicit delegation.</li><li>Error liability and recovery obligations are understood.</li><li>Smaller planning and disruption bets demonstrate material value.</li><li>The Card Member can approve and revoke consequential action.</li></ul></div>
+<div class="meta"><h4>R · What any better way must do</h4><div class="chips"><span class="chip">Narrow authority</span><span class="chip">Provider support</span><span class="chip">Accurate terms</span><span class="chip">Escalatable</span><span class="chip">No adverse surprise</span></div></div>
+</div><section aria-label="Evidence and business decision for 3.3" class="decision-evidence" data-evidence-ids="E001,E013,E015">
+<div class="decision-head"><strong>Business-value case</strong><span class="status status-hold">HOLD</span></div>
+<p class="decision-grade">Potentially high, unproven · strategic potential, not forecast revenue</p>
+<div class="decision-fields">
+<div><b>How Amex might benefit</b><p>Reduced coordination effort and possibly more complete trip services, but negative-error exposure and cost may dominate.</p></div>
+<div><b>Business result to measure</b><p>Net value of error-free authorized jobs and retention/servicing effects less liability and AI costs.</p></div>
+<div><b>What might break this bet</b><p>Rights/access absent, costly failures, limited adoption, or ordinary tools already sufficient.</p></div>
+<div><b>Next evidence / decision gate</b><p>Decompose into proven narrow tasks after travel-value and recovery tests; obtain contracts and risk review first.</p></div>
+</div><div class="sources"><b>Research trail:</b><a href="https://www.americanexpress.com/en-us/newsroom/articles/financial-news/2026-chairman-s-letter-to-shareholders.html" rel="noopener noreferrer" target="_blank">E001</a>, <a href="https://www.americanexpress.com/en-us/account/get-started/platinum/" rel="noopener noreferrer" target="_blank">E013</a>, <a href="https://www.americanexpress.com/en-us/newsroom/articles/innovation/american-express-debuts-agentic-commerce-experiences--ace--devel.html" rel="noopener noreferrer" target="_blank">E015</a></div>
+</section>
+</div>
+</details></div>
+</section><section class="cluster-view" data-cluster="4" id="cluster-4">
+<div class="cluster-head" data-theme="4">
+<div class="cluster-head-left"><div class="big-badge">4</div>
+<div><h2>Milestone 4 · Expand Proven Patterns</h2><p>Enter new experiences only when a distinct struggle is evidenced.</p><p style="margin-top:8px"><strong>Why here: </strong>Do not treat Events or local discovery as automatic next steps. Keep Events on hold; local discovery is a candidate surface in the Offers bet.</p></div>
+</div>
+<div class="cluster-meta"><span class="chip">1 hold</span><span class="chip">No appetite assigned</span></div>
+</div>
+<div class="units-grid"><details class="unit" data-team="3" data-unit="4.1">
+<summary class="unit-head">
+<span class="unit-title"><strong>4.1 · Events &amp; Experiences</strong><small>Deferred • distinctive access, not generic discovery</small><span class="unit-state status-hold">HOLD · deferred option</span></span>
+<span class="unassigned">Appetite <strong>Not assigned</strong></span>
+<span class="unit-open"><span class="when-closed">Show Frame + Candidate Shape</span><span class="when-open">Hide Frame + Candidate Shape</span></span>
+</summary>
+<div class="unit-body">
+<div class="flow-row">
+<div class="box"><b>Struggling moment · x</b><p>When a limited event or access window opens for something I would attend, I learn too late whether a genuinely better Amex-eligible option is available.</p></div>
+<div class="box"><b>Current approach · f₀(x)</b><p>Check ticket and event sites, monitor releases, and separately search for Amex presales, access, or Offers.</p></div>
+<div class="box"><b>Current result · y₀</b><p>I may discover an event or eligible access too late, miss availability, or pay more than I needed to.</p></div>
+</div>
+<div class="flow-row" style="margin-top:8px">
+<div class="box proposed"><b>Candidate shape · fᵢ(x)</b><p>An Amex-aware assistant verifies meaningful access eligibility and timing, and surfaces the option while it can still be used; the scope is limited to supply genuinely differentiated by Membership.</p></div>
+<div class="box desired"><b>Desired outcome · y</b><p>I get more relevant experiences and can use the Membership value attached to them.</p></div>
+<div class="box success-check"><b>Success check</b><p>Do real Members obtain a feasible experience they could not reasonably secure using the current discovery and access channels?</p></div>
+</div>
+<div class="candidate-alternatives"><strong>Other candidate options: </strong>A timely eligible-access alert, event-specific inventory panel or customer-invoked agent check for eligible access before any approved purchase flow. Commercial conversion requires a customer-requested task, appropriate permissions and its own incremental-economics test; no unsolicited agent selling.</div>
+<div class="meta-grid">
+<div class="meta"><h4>M · What must be true</h4><ul><li>A first-person repeated missed-access struggle can be reconstructed.</li><li>Unique and available Amex-eligible inventory exists beyond generic event search.</li><li>Consent-based timing and notifications work without excess noise.</li></ul></div>
+<div class="meta"><h4>R · What any better way must do</h4><div class="chips"><span class="chip">Verified eligibility</span><span class="chip">Distinctive access</span><span class="chip">Time-sensitive</span><span class="chip">Low noise</span><span class="chip">Useful outcome</span></div></div>
+</div><section aria-label="Evidence and business decision for 4.1" class="decision-evidence" data-evidence-ids="E001,E016">
+<div class="decision-head"><strong>Business-value case</strong><span class="status status-hold">HOLD</span></div>
+<p class="decision-grade">Plausible, weak direct evidence · strategic potential, not forecast revenue</p>
+<div class="decision-fields">
+<div><b>How Amex might benefit</b><p>Exclusive access utilization, partner engagement and Membership preference if supply actually differs.</p></div>
+<div><b>Business result to measure</b><p>Verified incremental attendance/access use and any attributable Member economic effect.</p></div>
+<div><b>What might break this bet</b><p>Inventory is not distinctive or notifications do not change behavior.</p></div>
+<div><b>Next evidence / decision gate</b><p>Collect observed missed-window episodes and confirm actual Member-only inventory before making it an independent bet.</p></div>
+</div><div class="sources"><b>Research trail:</b><a href="https://www.americanexpress.com/en-us/newsroom/articles/financial-news/2026-chairman-s-letter-to-shareholders.html" rel="noopener noreferrer" target="_blank">E001</a>, <a href="https://www.reddit.com/r/AmexPlatinum/comments/1pl13kn/resy_global_access_dining/" rel="noopener noreferrer" target="_blank">E016</a></div>
+</section>
+</div>
+</details></div>
+</section></div>
+<div class="legend"><p><strong>How to read it:</strong> A thematic sequence of candidate problems, not a committed calendar plan. TEST means investigate through a bounded evidence move; HOLD is not authorized scope. Each card preserves the problem frame, one illustrative candidate shape, success check, eventual actual result, M, R, quality floor, and a research-informed business case. The four existing draft TEST appetites sum to 51 person-weeks; the new Benefit Outcome Assurance appetite remains to be judged. Local Membership Layer has been merged into the Offers candidate surfaces.</p></div>
+</div>
+</main><section aria-label="Automatic Offers shaping and v1 dossier" class="work-sheet" id="automatic-offers-work">
+<div class="work-shell">
+<div class="work-top"><a class="work-back" href="#automatic-offers-entry">← Roadmap</a><span class="work-top-status">1.1 · Working research &amp; shaping</span><a aria-label="Close Automatic Offers work" class="work-close" href="#automatic-offers-entry">✕</a></div>
+<div class="work-scroll">
+<div class="work-cover"><p class="work-eyebrow">AUTOMATIC OFFERS · 1.1</p><h2>Shaping &amp; v1</h2><p>Comprehensive candidate shaping, with explicit decision gates. Nothing here changes the status or budget of the roadmap bet.</p>
+<div class="work-tags"><span>3 wks × 3 · Draft</span><span>9 person-wks</span><span>R0–R7 · Working</span><span>Shapes A / B / C</span><span>Not selected</span></div></div>
+
+<section class="work-overview"><h3>Executive decision</h3><div class="md-content"><p><strong>Current state:</strong> <strong>Working frame + Working R/Appetite + unselected candidate shapes.</strong> Current recommendation: <strong>run a bounded test</strong>, not an authorized build. <strong>3 weeks × 3 people = 9 person-weeks</strong> is a <em>draft</em> appetite.</p>
+<p><strong>Most important finding:</strong> Current Amex terms require pre-purchase enrollment on the eligible Card and prohibit unauthorized automated enrollment. A first-party approved action <em>may</em> be possible, but its specific permission/API and merchant economics have not been verified. The design must not silently assume this capability.</p>
+<p><strong>Recommended next evidence:</strong> Verify an approved enrollment pathway (<strong>SP1</strong>) and whether an incremental-contribution controlled trial is feasible (<strong>SP3</strong>). If either fails, <strong>do not force a v1 enrollment build</strong>. Do not use CardPointers-style existing functionality as a novelty claim.</p>
+<p><strong>Result:</strong> Frame (x → ? → y), R0–R7 working criteria, CURRENT/A/B/C alternatives, working binary Fit Check, Rotated Fit, appetite cuts, candidate B breadboard and conditional v1 examples. <strong>Selected shape: none. Build authority: none.</strong></p>
+</div></section><details class="work-chapter" id="work-frame"><summary><span class="work-chapter-num">01</span><span>Problem &amp; frame</span><span class="work-chapter-chevron">⌄</span></summary><div class="work-chapter-body"><div class="md-content lead-doc"><h3 class="dossier-title">Automatic Offers 1.1 — Frame</h3>
+</div><details class="work-subsection"><summary>Purpose &amp; boundaries</summary><div class="md-content"><p><strong>Use when:</strong> judging any shape for the purchase-time Offers struggle. <strong>Must preserve:</strong> exact triggering moment, current Amex enrollment requirements, difference between benefit realization and merchant incrementality, consent and merchant restrictions. <strong>Do not treat:</strong> a candidate automation mechanism, a customer forum post, or program scale as approved product intent or causal demand evidence.</p>
+</div></details><details class="work-subsection"><summary>Source — kept separate from interpretation</summary><div class="md-content"><ul>
+<li><strong>S1 · This roadmap / 1.1:</strong> The current working struggle, illustrative candidate, operating conditions, criteria, quality floor and 3-week × 3-person draft appetite. This is a planning hypothesis, not observed customer behavior.</li>
+<li><strong>S2 · U.S. Amex Offers Program Terms, July 2026:</strong> Enrollment precedes a qualifying purchase, normally on the same eligible Card; automated enrollment by unauthorized tools is prohibited; account and merchant eligibility, exclusions, caps, expiration, and fulfillment conditions matter. <a href="https://www.americanexpress.com/en-us/benefits/offers/partner-terms/">Official terms</a>.</li>
+<li><strong>S3 · Amex merchant program:</strong> 2025 $21B U.S. / $24B worldwide in Offer-associated merchant spend and 464M U.S. enrollments. <strong>Neither indicates incremental spend or unique active people.</strong> <a href="https://www.americanexpress.com/en-us/merchant/digital-media/">Merchant source</a>.</li>
+<li><strong>S4 · Existing competing workaround:</strong> CardPointers offers browser/safari contextual surfacing and automated syncing / adding, including newer in-app syncing. Claimed functionality is supplier evidence, not proof that its practices are approved under Amex terms or that it improves economics. <a href="https://cardpointers.com/extension/">Extension</a>, <a href="https://help.cardpointers.com/article/85-in-app-offer-syncing">newer in-app syncing</a>.</li>
+<li><strong>S5 · Open business questions for this bet:</strong> How often do people miss eligible Offers, can timely guidance change purchases rather than simply increase discount use, and will the result improve net contribution after costs? These remain to be tested.</li>
+</ul>
+</div></details><details class="work-subsection"><summary>Pre-work / competing problem directions</summary><div class="md-content"><p>The adjacent <strong>Benefit Outcome Assurance</strong> bet begins <em>after</em> an eligible transaction or benefit fails to materialize; it is not this work's scope. Local relevance is one possible context for the purchase-time struggle, not another automatically funded feature. The immediate decision is whether the purchase-time gap merits a limited causal test against current Amex and third-party workarounds.</p>
+</div></details><details class="work-subsection"><summary>Current situation · x</summary><div class="md-content"><ul>
+<li><strong>Who:</strong> U.S. consumer Card Member targeted for an Offer who is approaching a purchase decision; frequency and reachability are <strong>UNKNOWN</strong>.</li>
+<li><strong>Trigger:</strong> At or shortly before payment at a potentially qualifying merchant, on a channel in which purchase context could be detected with permission.</li>
+<li><strong>Current approach:</strong> Check the Amex app or online Offers portal, interpret merchant terms, enroll in a targeted Offer on the right Card <em>before the purchase</em>, then remember to pay with that Card. Alternatively, use an existing third-party reminder/offer-management workflow.</li>
+<li><strong>Current result:</strong> Some customers spend attention on searching and remembering; others can miss eligible value. <strong>We do not yet know</strong> how frequently this happens, how much value is missed, or which alternatives they already use.</li>
+<li><strong>Breakdown:</strong> The moment of decision is separated from the moment of discovery, eligibility determination, enrollment, and Card choice.</li>
+</ul>
+</div></details><details class="work-subsection"><summary>Frame transformation</summary><div class="md-content"><p><strong>x → f() → y</strong>, with <strong>f() intentionally UNSPECIFIED</strong>.</p>
+<p><strong>Desired outcome · y:</strong> At the relevant purchase decision, a person can confidently realize legitimate, applicable Membership value with less manual coordination, without inaccurate eligibility claims or unexpected enrollment, and without Amex destroying net merchant/member economics.</p>
+<p><strong>Gap:</strong> timely usable value, compliant action where permitted, and verifiable real-world impact must come together instead of separate remembering and guesswork.</p>
+</div></details><details class="work-subsection"><summary>Problem</summary><div class="md-content"><p>The system places the burden of finding, interpreting, enrolling and remembering targeted value on the Card Member at a moment when the benefit may matter. We have <strong>not</strong> established that an agent or auto-enrollment is the best answer or that more enrollment creates incremental spend.</p>
+</div></details><details class="work-subsection"><summary>Operating model · M (Working)</summary><div class="md-content"><ul>
+<li><strong>M1 · VERIFIED external condition:</strong> Current published U.S. terms require enrollment before the qualifying transaction, on the eligible Card, and restrict unauthorized automated enrollment. Source S2.</li>
+<li><strong>M2 · VERIFIED external condition:</strong> Offer eligibility, merchant terms, exclusions, expiration, merchant coding and redemption recognition can vary. Source S2.</li>
+<li><strong>M3 · VERIFIED program scale, not outcome effect:</strong> Amex reports Offer-associated spend and enrollments; campaign incrementality cannot be inferred. Source S3.</li>
+<li><strong>M4 · VERIFIED competing behavior available, not regulatory permission:</strong> CardPointers surfaces offers contextually and offers auto-sync; the incremental unsolved gap needs direct comparison. Source S4.</li>
+<li><strong>M5 · ASSUMPTION / INTERNAL CONFIRMATION NEEDED:</strong> Amex can provide approved merchant-context signals, first-party offer eligibility/enrollment status, auditable permission and experiment-level economics within one pilot surface.</li>
+<li><strong>M6 · ASSUMPTION / INTERNAL CONFIRMATION NEEDED:</strong> A safe trial can randomize or otherwise validly identify incremental outcomes net of subsidy, cannibalization and servicing cost.</li>
+<li><strong>Staleness triggers:</strong> revised U.S. terms, Amex first-party capabilities, merchant campaign contracts, competitor functionality, privacy policies or account targeting policies.</li>
+</ul>
+</div></details><details class="work-subsection"><summary>Outcome and boundaries</summary><div class="md-content"><p><strong>Success at effect altitude:</strong> verified incremental merchant-valued outcomes and/or meaningful Card Member savings/effort reduction <strong>relative to matched current flows</strong>, with no hidden eligibility, consent, budget or recourse regression. Do not assert effect without randomized or defensible controlled evidence.</p>
+<p><strong>Less about:</strong> bulk adding everything; new coupon catalog; universal browser extension; scraping credential-protected screens; assumed AI autonomy; click-through or gross redemption counts as proof of value.</p>
+<p><strong>More about:</strong> purchase timing; accurate and explainable eligibility; first-party permissions and merchant terms; Card Member control; causal incremental contribution; reversible errors and clear uncertainty.</p>
+</div></details><details class="work-subsection"><summary>Preliminary criteria candidates</summary><div class="md-content"><p>R0 outcome realized; R1 term and Card correctness; R2 purchase-time relevance; R3 permitted action; R4 user control; R5 truthful non-intrusive explanation; R6 traceable outcomes; R7 causal net economic test. All are <strong>Working</strong>, not accepted.</p>
+</div></details><details class="work-subsection"><summary>What is unknown and could falsify this frame</summary><div class="md-content"><ul>
+<li>How many eligible purchases feature a genuinely overlooked relevant Offer, vs an already-enrolled offer? <strong>Unknown.</strong></li>
+<li>Whether CardPointers or Amex improvements have already substantially solved the pain for the pilot segment. <strong>Unknown.</strong></li>
+<li>Whether most Offer-associated purchases would have occurred anyway. <strong>Unknown; fatal to an incremental-spend claim if yes.</strong></li>
+<li>Which Amex-owned surface has approved timing and enrollment rights. <strong>Unknown.</strong></li>
+<li>Whether an intervention causes excessive alerts, mistrust, wrong-Card payment or higher subsidy. <strong>Unknown.</strong></li>
+</ul>
+<p><strong>Authority:</strong> Working candidate frame. A human must accept/revise the boundary before shape selection or approved build scope.</p>
+</div></details></div></details><details class="work-chapter" id="work-shaping"><summary><span class="work-chapter-num">02</span><span>Requirements, appetite &amp; shapes</span><span class="work-chapter-chevron">⌄</span></summary><div class="work-chapter-body"><div class="md-content lead-doc"><h3 class="dossier-title">Automatic Offers 1.1 — Comprehensive Shaping</h3>
+</div><details class="work-subsection"><summary>Purpose &amp; boundaries</summary><div class="md-content"><p><strong>Governing rule:</strong> Exploration is fluid. Commitment is gated. <strong>Status:</strong> collaborative S-first + evidence-first shaping; human selection NOT made. <strong>Must preserve:</strong> R0–R7 identities and source origins, three different candidate families, the draft 3-week/3-person appetite, rejected/unknown parts, and the distinction between design fit and effect evidence. <strong>Never treat</strong> these working tables as implementation scope.</p>
+</div></details><details class="work-subsection"><summary>Frame reference</summary><div class="md-content"><p><code>automatic-offers-frame.md</code> · Working. <code>x</code>: a potentially eligible purchase approaching checkout, value hidden behind an earlier enrollment + Card choice. <code>f()</code>: UNSPECIFIED at frame altitude. <code>y</code>: confidently realized relevant value with reduced effort and valid economics. <code>M</code>: M1–M6 (official terms vs uncertain internal rights). Scope: U.S. consumer Amex Offers, one approved pilot channel and narrow cohort if authorized.</p>
+</div></details><details class="work-subsection"><summary>Requirements (Working; not accepted)</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requirement (mechanism-free)</th>
+<th>Status</th>
+<th>Authority</th>
+<th>Origin</th>
+<th>Evidence / constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R0</td>
+<td>At the relevant purchase moment, Card Member can realize valid Membership value without a separate search-and-remember task.</td>
+<td>Core goal</td>
+<td>Working</td>
+<td>FROM_Y</td>
+<td>S1, S5; effect unproven</td>
+</tr>
+<tr>
+<td>R1</td>
+<td>Any surfaced offer/value must be accurately eligible for the merchant, Card, account, terms and purchase timing; unknown means no promise.</td>
+<td>Must-have</td>
+<td>Working</td>
+<td>FROM_M</td>
+<td>S2</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>Relevant help must arrive with enough time to take a permitted action before purchase, without material noise.</td>
+<td>Must-have</td>
+<td>Working</td>
+<td>FROM_X</td>
+<td>S1; timing feasibility unknown</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>The product cannot take an enrollment or other consequential action without a channel authorized by Amex and an appropriate, bounded grant.</td>
+<td>Must-have</td>
+<td>Working</td>
+<td>FROM_BOUNDARY</td>
+<td>S2</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>The person controls which Card/Offer is acted on, can decline, and can withdraw any standing permission.</td>
+<td>Must-have</td>
+<td>Working</td>
+<td>FROM_BOUNDARY</td>
+<td>S2; user-control design implication</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>The experience clearly distinguishes confirmed eligibility, tentative match, enrollment status, and unavailable/expired conditions.</td>
+<td>Must-have</td>
+<td>Working</td>
+<td>FROM_GAP</td>
+<td>S2</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>Actions and their outcomes can be traced, including failure, no-action, and later verification where data permits.</td>
+<td>Must-have</td>
+<td>Working</td>
+<td>FROM_Y</td>
+<td>S2; audit/recovery inference</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>The intervention can be compared with current and strong third-party baselines on incremental member and merchant value <strong>net of</strong> subsidies, displacement, tool and servicing cost.</td>
+<td>Must-have</td>
+<td>Working</td>
+<td>FROM_Y</td>
+<td>S3–S5; causal data needed</td>
+</tr>
+</tbody>
+</table>
+<p>No requirement prescribes a browser extension, enrollment endpoint, model, UI framework, or agent.</p>
+</div></details><details class="work-subsection"><summary>Appetite, team, cut line</summary><div class="md-content"><ul>
+<li><strong>Authority:</strong> Working / provisional, inherited from roadmap; <strong>not human-accepted.</strong></li>
+<li><strong>Product appetite:</strong> <strong>3 calendar working weeks × 3 people = 9 person-weeks</strong>; value judgment to be ratified by a decision owner, <strong>not</strong> an effort estimate.</li>
+<li><strong>Review:</strong> end of the bounded bet, with early stop at SP1/SP2 if no approved surface or data. Machine execution/review translation is optional and needs actual observed production/review factors; don't treat 2× and 25% as commitments.</li>
+<li><strong>Keep above cut line only if supported:</strong> one approved channel, one bounded cohort/merchant offer family, truthful pre-purchase matching, user-authorized next action, status and instrumentation, defensible holdout readout.</li>
+<li><strong>Cut first:</strong> multi-merchant coverage, cross-device sync, geo detection, autonomous card choice, background enrollment, broad notification system, merchant onboarding console, personalized ranking beyond confirmed simple relevance.</li>
+<li><strong>Never cut to fit:</strong> eligibility and same-Card constraints; official authorizations; honesty of state; consent; audit evidence; quality floor; economic falsification.</li>
+<li><strong>Accepted uncertainty:</strong> impact size and desirability may remain unknown at beginning of a nontransactional pilot.</li>
+<li><strong>Must-resolve before transactional B/C:</strong> contract-approved first-party action, cohort access, merchant budget controls, error/recovery plan and experiment design.</li>
+<li><strong>Revisit:</strong> human changes outcome/hurdle; no authorized surface; economic test not feasible; CardPointers/current baseline erases differential; 3-week cap approached.</li>
+</ul>
+</div></details><details class="work-subsection"><summary>CURRENT — baseline and comparator</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Mechanism / reality</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CURRENT1</td>
+<td>Amex targeted Offer appears in designated Amex channels</td>
+<td>Source S2</td>
+</tr>
+<tr>
+<td>CURRENT2</td>
+<td>Member adds to one eligible Card before purchase</td>
+<td>Source S2</td>
+</tr>
+<tr>
+<td>CURRENT3</td>
+<td>Same Card and applicable transaction terms determine fulfillment</td>
+<td>Source S2</td>
+</tr>
+<tr>
+<td>CURRENT4</td>
+<td>Third-party products can auto-add/sync and remind at merchants</td>
+<td>Source S4; authorization of a particular behavior NOT established</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="work-subsection"><summary>A — First-party contextual guide (no delegated enrollment)</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Mechanism</th>
+<th>Flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1</td>
+<td>Receive approved purchase-context indication for eligible pilot channel</td>
+<td>⚠️ internal signal existence</td>
+</tr>
+<tr>
+<td>A2</td>
+<td>Match potential offers and Card; show eligibility/uncertainty and key terms</td>
+<td>⚠️ internal eligibility data</td>
+</tr>
+<tr>
+<td>A3</td>
+<td>Present clear pre-payment reminder, with link to the existing Amex enrollment channel</td>
+<td>Working</td>
+</tr>
+<tr>
+<td>A4</td>
+<td>Track exposure, confirmed enrollment if available, opt-outs and controlled business outcome</td>
+<td>⚠️ internal metric access</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Advantage:</strong> least new authority, plausible low-risk shadow or simulated test. <strong>Against:</strong> still requires a separate manual enrollment step; may fail R0; competitor already offers reminders. <strong>Cut:</strong> no extension and no background actions.</p>
+</div></details><details class="work-subsection"><summary>B — First-party just-in-time enrollment (explicit bounded instruction)</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Mechanism</th>
+<th>Flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B1</td>
+<td>First-party approved shopping/context entry → secure Amex session</td>
+<td>⚠️ approved signal/path</td>
+</tr>
+<tr>
+<td>B2</td>
+<td>Validate targeted offer, eligible Card, merchant/transaction restrictions and enrollment state</td>
+<td>⚠️ product data and real-time certainty</td>
+</tr>
+<tr>
+<td>B3</td>
+<td>Show offer terms, expected conditional value, precise Card, and explicit confirmation</td>
+<td>Working</td>
+</tr>
+<tr>
+<td>B4</td>
+<td>Invoke <strong>Amex-authorized first-party</strong> enrollment on that Card; never third-party credentials/bot</td>
+<td>⚠️ internal action rights and approval</td>
+</tr>
+<tr>
+<td>B5</td>
+<td>Return success / pending / failed / already enrolled / unavailable, with no false promise of credit</td>
+<td>⚠️ state/settlement visibility</td>
+</tr>
+<tr>
+<td>B6</td>
+<td>Create a consent-and-event record with experiment assignment, limited retention, no sensitive merchant leakage</td>
+<td>⚠️ governance / analytics</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Advantage:</strong> could eliminate the actual last-mile activation chore at checkout. <strong>Against:</strong> may not be permitted in proposed pilot surface; instant enrollment guarantee and merchant match remain unknown; likely too much for 3 weeks absent existing sanctioned APIs. <strong>Cut:</strong> any unapproved enrollment and all autonomous bulk activation.</p>
+</div></details><details class="work-subsection"><summary>C — First-party standing enrollment rule (pre-purchase opt-in)</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Mechanism</th>
+<th>Flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td>Member defines limited rule for permitted targeted Offers / Cards</td>
+<td>⚠️ policy fit</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>First-party Amex rule evaluator enrolls qualifying targeted Offers before transactions</td>
+<td>⚠️ contract/policy, capacity, enrollment caps</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Member views history, suppresses or revokes policy, receives suitable alerts</td>
+<td>⚠️ governance and audit</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>Economic guardrails stop campaign overspend / nonincremental enrollment</td>
+<td>⚠️ data and causal validity</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Advantage:</strong> eliminates remembered action entirely. <strong>Against:</strong> much broader authorization/economic exposure; technically resembles already available third-party automation, but with first-party advantages unproven; likely beyond 3-week evidence appetite. <strong>Cut:</strong> not v1 unless separate approval and a new bet.</p>
+<p><strong>Rejected non-serious direction:</strong> automatic post-transaction credit without prior enrollment contradicts present terms (S2), unless terms are explicitly changed. Do not make it a silent v1 behavior.</p>
+</div></details><details class="work-subsection"><summary>Working Fit Check — Requirements × candidate shapes</summary><div class="md-content"><p><strong>Evaluation:</strong> design-conformance hypothesis only. ✅ means the drawn mechanisms plausibly address R; ❌ includes unknown/unverified prerequisites. No shape is selected or decision-ready. The frame and relevant M are held stable.</p>
+<table>
+<thead>
+<tr>
+<th>Req</th>
+<th>Requirement shorthand</th>
+<th style="text-align:center">CURRENT</th>
+<th style="text-align:center">A</th>
+<th style="text-align:center">B</th>
+<th style="text-align:center">C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R0</td>
+<td>Value without separate search/remember</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">✅</td>
+<td style="text-align:center">✅</td>
+</tr>
+<tr>
+<td>R1</td>
+<td>Proven eligibility, same Card, terms</td>
+<td style="text-align:center">✅</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>Pre-purchase contextual timing</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>Authorized consequential action</td>
+<td style="text-align:center">✅</td>
+<td style="text-align:center">✅</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>Person control / decline / revoke</td>
+<td style="text-align:center">✅</td>
+<td style="text-align:center">✅</td>
+<td style="text-align:center">✅</td>
+<td style="text-align:center">❌</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>Clear eligibility and status, including unknown</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">✅</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>Evidence of actions and outcomes</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>Measurable incremental net value</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center">❌</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why so many ❌:</strong> B has attractive mechanism coverage but no verified rights, eligibility freshness, settlement and outcome instrumentation. A's ability to route to enrollment does not fulfill the no-separate-task requirement. The zero passes in R7 reflect missing experiment data, not proof of zero value. Unknown must not be upgraded to a pass. Fit never proves realized customer or business effect.</p>
+</div></details><details class="work-subsection"><summary>Rotated Fit Check — B parts × requirements (Working, NOT selected)</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Mechanism</th>
+<th>Claims to serve</th>
+<th style="text-align:center">Justified conceptually?</th>
+<th>Open issue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B1</td>
+<td>Approved purchase trigger</td>
+<td>R0,R2</td>
+<td style="text-align:center">✅</td>
+<td>channel feasibility unknown</td>
+</tr>
+<tr>
+<td>B2</td>
+<td>Check merchant/Card/offer eligibility</td>
+<td>R1,R5</td>
+<td style="text-align:center">✅</td>
+<td>insufficient live data possible</td>
+</tr>
+<tr>
+<td>B3</td>
+<td>Explain terms, request confirmation</td>
+<td>R3,R4,R5</td>
+<td style="text-align:center">✅</td>
+<td>whether amount/qualifying purchase known</td>
+</tr>
+<tr>
+<td>B4</td>
+<td>First-party enrollment call</td>
+<td>R0,R3</td>
+<td style="text-align:center">✅</td>
+<td><strong>critical overloaded risk</strong>: rights, latency, state</td>
+</tr>
+<tr>
+<td>B5</td>
+<td>Display truthful resulting state</td>
+<td>R5,R6</td>
+<td style="text-align:center">✅</td>
+<td>later redemption not equivalent to enrollment</td>
+</tr>
+<tr>
+<td>B6</td>
+<td>Consent and experiment trace</td>
+<td>R4,R6,R7</td>
+<td style="text-align:center">✅</td>
+<td>privacy governance and lift metric absent</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reverse-fit issues:</strong> B4 carries outsized compliance/technical responsibility. B2 and B5 may duplicate eligibility/status decisions; choose a canonical source if selected. R7 requires an independent holdout/outcome measurement capability—not merely B6 event logging. R1 is <strong>not</strong> established by listing B2. No unjustified feature should be smuggled in as “AI.”</p>
+</div></details><details class="work-subsection"><summary>Appetite fit (Working / conditional)</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Shape</th>
+<th style="text-align:center">Within 3-week × 3-person appetite?</th>
+<th>Required cuts</th>
+<th>Needed spike / decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td style="text-align:center">❌</td>
+<td>One pilot channel, no extension; still needs measurable business readout</td>
+<td>SP1, SP2, SP3; currently no evidence of access or full R0 fit</td>
+</tr>
+<tr>
+<td>B</td>
+<td style="text-align:center">❌</td>
+<td>Single authorized merchant/offer family, explicit confirmation only</td>
+<td>SP1, SP2, SP3; approved enrollment + data must exist</td>
+</tr>
+<tr>
+<td>C</td>
+<td style="text-align:center">❌</td>
+<td>Standing rules would be removed, changing the shape</td>
+<td>New policy/economic bet required</td>
+</tr>
+</tbody>
+</table>
+<p>No ✅ until access, outcome measurement, safety and capacity are established. <strong>If no shape fits:</strong> investigate, reduce to a separately accepted evidence-only bet, revise appetite through a human decision, or stop. Never silently rebrand a guidance-only test as complete automatic enrollment.</p>
+</div></details><details class="work-subsection"><summary>Generation-omission check</summary><div class="md-content"><p>Families considered: guidance (A), approved just-in-time action (B), preauthorized standing action (C). Existing comparator (CURRENT) includes CardPointers. A missing family is network/merchant-driven automatic application at settlement; present published enrollment-before-purchase terms make it non-viable <strong>under present assumptions</strong>. Another is a purchase receipt scanner after payment, which cannot cure lack of prior enrollment. Omission risk: <strong>material</strong> until internal Amex capabilities/terms are inventoried.</p>
+</div></details><details class="work-subsection"><summary>Focused spikes and test-return contracts</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Narrow investigation</th>
+<th>Trigger</th>
+<th>Minimum result / stop</th>
+<th>Planning consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SP1</td>
+<td>Confirm first-party Offer-enrollment authorization, allowed surfaces, merchant constraints, post-action state API</td>
+<td>B4, R1,R3</td>
+<td>Written yes/no/conditional policy and engineering owner; if unavailable, B/C fail</td>
+<td>Refit B/C; do not code unapproved action</td>
+</tr>
+<tr>
+<td>SP2</td>
+<td>Verify available real-time merchant-context, Card eligibility, data latency and opt-in consent</td>
+<td>A1/B1/B2, R1,R2</td>
+<td>One documented source and failure modes, or infeasible verdict</td>
+<td>Refit A/B + M5</td>
+</tr>
+<tr>
+<td>SP3</td>
+<td>Obtain randomized/control and contribution measurement design with merchant funding, baseline spend, cannibalization and cost</td>
+<td>R7, B6</td>
+<td>Named analytics/merchant owner, feasible eligible cohort, leading + lagging measures</td>
+<td>Decide whether evidence-only bet has value</td>
+</tr>
+<tr>
+<td>SP4</td>
+<td>Validate offer status, failed/pending paths and later settlement truth</td>
+<td>B5, R5,R6</td>
+<td>Source for enrollment state and defined unknown/recovery behavior</td>
+<td>Refit B and candidate breadboard</td>
+</tr>
+</tbody>
+</table>
+<p>Spikes gather facts. They do <strong>not</strong> choose the shape; stop when the named question is answered or bounded.</p>
+</div></details><details class="work-subsection"><summary>Decision and human gate</summary><div class="md-content"><ul>
+<li><strong>Status:</strong> EXPLORING / not decision-ready; <strong>chosen direction: NONE</strong>.</li>
+<li><strong>Before shape selection:</strong> human must accept/revise frame, R0–R7, 3-week × 3-person appetite and cut line; SP1–SP3 must provide enough evidence to compare honestly; then explicit human choice A/B/C, iteration or stop.</li>
+<li><strong>After selection:</strong> reconcile candidate breadboard into <code>selected-design</code>, human accept; only then derive implementation vertical slices / Dumplink / context packet. No task-group or slice is authorized by this document.</li>
+<li><strong>Next useful move:</strong> SP1 and SP3 in parallel if owners and access exist; if their fatal gates fail, stop transactional B rather than filling the remainder with speculative UI work.</li>
+</ul>
+</div></details></div></details><details class="work-chapter" id="work-breadboard"><summary><span class="work-chapter-num">03</span><span>Candidate breadboard</span><span class="work-chapter-chevron">⌄</span></summary><div class="work-chapter-body"><div class="md-content lead-doc"><h3 class="dossier-title">Automatic Offers — Candidate Breadboard B (exploratory)</h3>
+</div><details class="work-subsection"><summary>Candidate status &amp; limits</summary><div class="md-content"><ul>
+<li><strong>Mode:</strong> <code>candidate-shape</code>, NEVER <code>selected-design</code>.</li>
+<li><strong>Candidate:</strong> B · first-party just-in-time enrollment; parts B1–B6.</li>
+<li><strong>Question:</strong> Can one first-party shopping signal lead to a truthful, permitted pre-payment enrollment/result without unauthorized automation or misleading eligibility?</li>
+<li><strong>Requirements / appetite:</strong> Working R0–R7; Working 3 weeks × 3 people. Candidate only. The tables are illustrative and contain unresolved gaps.</li>
+<li><strong>Authority:</strong> shaping comparison only. No build/slicing permission.</li>
+</ul>
+</div></details><details class="work-subsection"><summary>Places</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Authority</th>
+<th>Shape part</th>
+<th>Place</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>candidate</td>
+<td>B1</td>
+<td>Approved purchase context</td>
+<td>An authorized first-party purchase-intent surface, <strong>not</strong> arbitrary browser scraping</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>candidate</td>
+<td>B2,B3</td>
+<td>Amex Offer decision</td>
+<td>Show matched targeted eligibility, terms, Card and confirmation</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>candidate</td>
+<td>B4,B5</td>
+<td>Amex Offer enrollment service</td>
+<td>Sanctioned enrollment action and accurate resulting status</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>candidate</td>
+<td>B6</td>
+<td>Trial instrumentation</td>
+<td>Consented exposure and action/outcome trace, controlled measurement</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="work-subsection"><summary>UI affordances</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Place</th>
+<th>Part</th>
+<th>User-facing affordance</th>
+<th>Wires out</th>
+<th>Returns / observable consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U1</td>
+<td>P1</td>
+<td>B1</td>
+<td>"Possible offer for this purchase" or silent no-match</td>
+<td>N1</td>
+<td>U2 or no nudge</td>
+</tr>
+<tr>
+<td>U2</td>
+<td>P2</td>
+<td>B2,B3</td>
+<td>Merchant, eligible Card, limitations, tentative status</td>
+<td>U3 / N2</td>
+<td>Accurate explanation or unavailable</td>
+</tr>
+<tr>
+<td>U3</td>
+<td>P2</td>
+<td>B3</td>
+<td>Explicit "Add this Offer to this Card" / decline</td>
+<td>N3</td>
+<td>U4 or dismiss</td>
+</tr>
+<tr>
+<td>U4</td>
+<td>P2</td>
+<td>B5</td>
+<td>Confirmed enrollment / pending / failed / unavailable / already enrolled</td>
+<td>—</td>
+<td>no promise of redemption</td>
+</tr>
+<tr>
+<td>U5</td>
+<td>P2</td>
+<td>B5</td>
+<td>"View conditions / check status"</td>
+<td>N5</td>
+<td>truthful status and support route</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="work-subsection"><summary>Non-UI affordances</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Place</th>
+<th>Part</th>
+<th>Consequential behavior</th>
+<th>Wires out</th>
+<th>Returns to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N1</td>
+<td>P1</td>
+<td>B1</td>
+<td>Validate consented purchase-context / merchant match</td>
+<td>N2</td>
+<td>U1</td>
+</tr>
+<tr>
+<td>N2</td>
+<td>P2</td>
+<td>B2</td>
+<td>Lookup current targeted Offer, Card, restrictions, expiry, enrollment</td>
+<td>S1,S2 / N3</td>
+<td>U2</td>
+</tr>
+<tr>
+<td>N3</td>
+<td>P2</td>
+<td>B3</td>
+<td>Enforce allowed enrollment and explicit scoped confirmation</td>
+<td>N4 or stop</td>
+<td>U3/U4</td>
+</tr>
+<tr>
+<td>N4</td>
+<td>P3</td>
+<td>B4</td>
+<td>Request sanctioned first-party enrollment before payment</td>
+<td>S2 / N5</td>
+<td>U4</td>
+</tr>
+<tr>
+<td>N5</td>
+<td>P3</td>
+<td>B5</td>
+<td>Reconcile returned status; preserve unknown if inconsistent</td>
+<td>S2 / N6</td>
+<td>U4/U5</td>
+</tr>
+<tr>
+<td>N6</td>
+<td>P4</td>
+<td>B6</td>
+<td>Record only permitted exposure, cohort, action and result</td>
+<td>S4</td>
+<td>analysis result (not automatic product truth)</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="work-subsection"><summary>Stores</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Place</th>
+<th>Status</th>
+<th>Data and writer/reader</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td>P2</td>
+<td>⚠️ UNKNOWN interface</td>
+<td>First-party targeted Offer terms/eligibility; N2 reads</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>P3</td>
+<td>⚠️ UNKNOWN interface</td>
+<td>First-party enrollment/status; N4 writes only if sanctioned, N2/N5 read</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>P2</td>
+<td>⚠️ UNKNOWN governance</td>
+<td>Customer consent/decline; N3 reads, explicit customer action writes; revocation behavior needs confirmation</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>P4</td>
+<td>⚠️ UNKNOWN analytics</td>
+<td>Consent-safe experiment and audit trace; N6 writes, analytics reads</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="work-subsection"><summary>Product-relevant branches</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Trigger / decision</th>
+<th>Consequence</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No matched targeted Offer or uncertain merchant</td>
+<td>No offer promise; optionally no nudge</td>
+<td>Working</td>
+</tr>
+<tr>
+<td>Offer shown but Member declines</td>
+<td>No enrollment; no inferred standing permission</td>
+<td>Working</td>
+</tr>
+<tr>
+<td>Wrong Card / expired / targeted limit exhausted</td>
+<td>No action; reason given where safe/known</td>
+<td>Working</td>
+</tr>
+<tr>
+<td>Approved enrollment returns pending</td>
+<td>Display pending; do not claim success or later statement credit</td>
+<td>Working</td>
+</tr>
+<tr>
+<td>Enrollment fails, times out, or loses signal</td>
+<td>Non-success state, safe retry only if sanctioned and idempotency defined</td>
+<td>GAP — SP4</td>
+</tr>
+<tr>
+<td>Enrollment confirmed, later purchase does not qualify</td>
+<td>Explain separate transaction-term checks and support path</td>
+<td>GAP — benefit-assurance boundary</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="work-subsection"><summary>Behavior traces (IDs are structural only; not test results)</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Entry and control</th>
+<th>Consequence / unresolved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BT1 · valid path</td>
+<td>P1 U1 → N1 → N2 → P2 U2 → U3 → N3 → P3 N4 → N5 → U4 → N6</td>
+<td>Conditional confirmed pre-payment enrollment; <strong>authorization and status API unresolved</strong></td>
+</tr>
+<tr>
+<td>BT2 · not eligible</td>
+<td>P1 U1 → N1 → N2 → U2 "not eligible / unknown"</td>
+<td>No enrollment, no misleading value promise</td>
+</tr>
+<tr>
+<td>BT3 · decline</td>
+<td>P1 U1 → N1 → N2 → U2 → U3 decline → N6</td>
+<td>No action; no standing consent inferred</td>
+</tr>
+<tr>
+<td>BT4 · timeout</td>
+<td>U3 confirm → N3 → N4 timeout → N5 → U4 pending/error</td>
+<td>Idempotency/retry, audit and reconciliation remain gap</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="work-subsection"><summary>Candidate visual / causal rail</summary><div class="md-content"><p><code>P1 Authorized purchase signal → P2 Confirm eligibility and explicit permission → P3 Sanctioned enrollment (or no action) → P4 Audit + controlled outcome</code>, with a local branch at P2 for unknown, declined, wrong Card or expiry.</p>
+</div></details><details class="work-subsection"><summary>Breadboard → shaping implications</summary><div class="md-content"><ul>
+<li><strong>R1,R3,R5 must remain hard constraints.</strong> Read-only guidance A is a separate family; do not silently reclassify an enrollment failure as completed automation.</li>
+<li><strong>B4 is an overloaded boundary:</strong> permission, merchant terms, race with checkout and state reporting. Split interface understanding (SP1/SP4) before any claim of appetite fit.</li>
+<li><strong>R7 is not implemented by an event log alone:</strong> independent causal assignment, net contribution definitions and merchant budget rules are needed.</li>
+<li><strong>M5 remains unverified:</strong> if no approved context signal or enrollment action, B is not a viable v1.</li>
+<li><strong>No selected-design acceptance, committed task group or executable contract.</strong> Stop and return to shaping after SP1/SP2/SP3.</li>
+</ul>
+</div></details></div></details><details class="work-chapter" id="work-v1"><summary><span class="work-chapter-num">04</span><span>Conditional v1 proposal</span><span class="work-chapter-chevron">⌄</span></summary><div class="work-chapter-body"><div class="md-content lead-doc"><h3 class="dossier-title">Automatic Offers — v1 Candidate Specification (not build authority)</h3>
+</div><details class="work-subsection"><summary>Authority and purpose</summary><div class="md-content"><p><strong>Not a selected v1.</strong> This document is a comparative and behaviorally concrete v1 candidate so the team can make a human shape decision. Per the planning repository, a committed v1 with vertical slices, interfaces, statechart and execution handoff requires accepted frame, R, appetite, explicit selected shape, reconciled accepted selected-design breadboard and selected slice. Those gates are <strong>not</strong> met.</p>
+<p><strong>Purpose of a bounded v1:</strong> determine whether correctly timed, approved Amex-specific help creates incremental business outcome and lower member effort relative to current Amex and robust third-party comparators, not merely more redemptions. The current roadmap's 3-week × 3-person appetite is a <strong>draft value judgment</strong>, not guaranteed build feasibility.</p>
+</div></details><details class="work-subsection"><summary>Decision branch: which v1 is even legal and feasible?</summary><div class="md-content"><ul>
+<li><strong>Route V1-B / conditional:</strong> an Amex-owned, approved first-party signal and sanctioned Offer-enrollment API both exist, real-time eligibility/status and treatment/control metrics are available, and SP1–SP3 clear. Show a single context-relevant targeted Offer and request <strong>explicit authorization</strong> to enroll on one selected eligible Card before purchase; show resulting state. No merchant checkout or payment action by agent.</li>
+<li><strong>Route V1-A / narrower evidence-only:</strong> if enrollment rights fail but data + approved surface exist, test the nontransactional purchase-time contextual guidance against existing Amex and CardPointers-like behavior. <strong>V1-A does not fully meet R0</strong>; the human must explicitly revise the v1 promise or stop. Never label it "automatic enrollment".</li>
+<li><strong>STOP:</strong> no authorized purchase-context signal; eligibility accuracy unverifiable; no controlled measurement; no responsible budget/legal approver; no consent/recovery path. Do not substitute scraping/credentials or fake economics.</li>
+</ul>
+</div></details><details class="work-subsection"><summary>Proposed v1-B boundary (strictly conditional)</summary><div class="md-content"><p><strong>In:</strong> one Amex-approved channel; one small targeted cohort; one verified merchant/Offer family; one eligible U.S. consumer Card; before-purchase context; clear terms; explicit per-action enrollment; consent-safe event trail; outcome measurement; no promise that a qualifying credit posts.</p>
+<p><strong>Out:</strong> universal browser extension, bulk enrollment, auto-choosing a payment card, transaction initiation, location surveillance, multi-card auto-apportionment, supplier-side API scraping, cross-domain shopping history, hidden standing authority, claim automation, AI recommendations based on unverified merchant economics, multi-merchant catalog and paid promotions untested by holdout.</p>
+<p><strong>Possible demo (conditional, sandbox/pilot):</strong> At a supported merchant, a consented Card Member with a qualifying targeted Offer sees an accurate notice; reviews exact Card and terms; explicitly consents; Amex-authorized enrollment returns a true status before payment. With expired, uncertain or wrong-Card terms, no action occurs. All branches produce independently auditable pilot events.</p>
+</div></details><details class="work-subsection"><summary>Actors and permissions</summary><div class="md-content"><ul>
+<li>Card Member: can view, confirm or decline; grants bounded Offer-specific permission; sees accurate result, can stop/withdraw standing context access where applicable.</li>
+<li>Amex first-party Offers system: authority on eligibility, enrollment and terms. <strong>Permissions not yet verified.</strong></li>
+<li>Merchant campaign owner / legal / compliance: approve campaign constraints, funding/caps, eligible test and policy controls.</li>
+<li>Experiment owner: specifies randomization, comparator, net economics and safety thresholds; can halt test.</li>
+<li>Shopping context provider: explicit approved pilot channel only; avoid unapproved extensions/credential harvest.</li>
+</ul>
+</div></details><details class="work-subsection"><summary>Proposed visible behavior (V1-B)</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Ref</th>
+<th>Moment</th>
+<th>Visible behavior</th>
+<th>Guard</th>
+<th>Consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V1-01</td>
+<td>Purchase-context detected</td>
+<td>Either no notice or "A possible Amex Offer may apply"</td>
+<td>context permitted; specific merchant match verified</td>
+<td>view U1 or no-action</td>
+</tr>
+<tr>
+<td>V1-02</td>
+<td>Review</td>
+<td>Merchant, Offer wording, eligible Card, expiry, restrictions and status</td>
+<td>targeted eligibility currently verifiable</td>
+<td>show U2; no generalized promise</td>
+</tr>
+<tr>
+<td>V1-03</td>
+<td>Confirm</td>
+<td>One-off action "Add Offer to Card ending ••••"</td>
+<td>exact Card, terms acceptance, valid permission and official action path</td>
+<td>authorized N4 or explicit no-action</td>
+</tr>
+<tr>
+<td>V1-04</td>
+<td>Result</td>
+<td>"Enrolled", "Already enrolled", "Pending", "Failed" or "Not available"</td>
+<td>truthful first-party response</td>
+<td>U4; never claim purchase qualified</td>
+</tr>
+<tr>
+<td>V1-05</td>
+<td>Purchase</td>
+<td>Card Member checks out independently</td>
+<td>same Card and transaction terms apply</td>
+<td>no agent payment or card switch</td>
+</tr>
+<tr>
+<td>V1-06</td>
+<td>Follow through</td>
+<td>Offer status check if first-party data available</td>
+<td>no fabricated settlement/credit certainty</td>
+<td>audit/receipt or explicit unknown</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="work-subsection"><summary>Negative and edge-case fixtures (planned checks, not executed tests)</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Setup</th>
+<th>Required result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EX1</td>
+<td>Matching merchant, eligible Offer/Card, explicit confirmation, authorized action</td>
+<td>correct Card enrolled pre-purchase; receipt shows enrollment only</td>
+</tr>
+<tr>
+<td>EX2</td>
+<td>Offer targeted to another Card / expired / enrollment cap</td>
+<td>no action; no incorrect reward estimate</td>
+</tr>
+<tr>
+<td>EX3</td>
+<td>Merchant alias or payment processor cannot be verified</td>
+<td>uncertainty state; no claim that payment qualifies</td>
+</tr>
+<tr>
+<td>EX4</td>
+<td>Customer declines, consent is absent or revoked</td>
+<td>do not enroll or retry</td>
+</tr>
+<tr>
+<td>EX5</td>
+<td>Enrollment timeout / duplicate submit / response ambiguity</td>
+<td>no double action; pending/error with supported recovery; unresolved until SP4</td>
+</tr>
+<tr>
+<td>EX6</td>
+<td>Enrolled Offer, later purchase fails merchant terms</td>
+<td>enrollment success must not masquerade as reward success; benefit assurance distinct</td>
+</tr>
+<tr>
+<td>EX7</td>
+<td>Control/holdout eligible event</td>
+<td>collect only approved comparator/assignment data; no intervention</td>
+</tr>
+<tr>
+<td>EX8</td>
+<td>Multiple Offers could apply, ranking economics unknown</td>
+<td>no invented "best offer" label; present a narrow verified choice or no recommendation</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="work-subsection"><summary>Quality floor — mandatory, not a best-case target</summary><div class="md-content"><ul>
+<li>Zero unapproved enrollment; no unauthorized bot, credential automation or merchant data exfiltration.</li>
+<li>No false eligibility, false Card, false enrollment, false fulfillment or false savings claims in checked fixtures.</li>
+<li>Human-visible control before consequential action, with no inferred broad permission.</li>
+<li>Every relevant error/timeout/unavailable condition yields safe and comprehensible no-action/pending behavior.</li>
+<li>Independent ability to attribute intervention and measure meaningful pilot outcomes under agreed privacy/campaign limits.</li>
+<li>Guardrail violations pause the test; failure to meet the floor is NOT repaired by adding weeks.</li>
+</ul>
+</div></details><details class="work-subsection"><summary>Business experiment / causal readout contract (proposed)</summary><div class="md-content"><ul>
+<li><strong>Unit:</strong> eligible purchase decision or targeted Offer/merchant opportunity, with clearly defined randomization and attribution. Not all Amex cardholders.</li>
+<li><strong>Primary:</strong> incremental net contribution per eligible purchase opportunity, comparing intervention and control, after merchant-funded discount/subsidy, cannibalized organic purchases, campaign expense, tooling and human service/error costs. Internal accounting owner must agree inclusion/exclusion.</li>
+<li><strong>Card Member effect:</strong> verified savings realized where eligible, effort/time reduction, wrong-Card and incorrect-discount incidents, complaint rate; no fabricated survey result.</li>
+<li><strong>Safety/quality:</strong> authorized-action breaches, eligibility misclassifications, unwanted enrollment, support escalation, merchant limits, false promises; explicit preapproved stop thresholds needed.</li>
+<li><strong>Comparators:</strong> current Amex app/web behavior and a strong third-party workaround (CardPointers-style) where ethically and feasibly comparable; do not assume comparator has equivalent access/rights.</li>
+<li><strong>Cannot claim:</strong> $21B associated U.S. spend as causal uplift; 464M enrollments as unique people; increased enrollment/redemptions as proof of contribution; a hypothetical scenario as measured conversion data.</li>
+<li><strong>Statistical plan:</strong> define treatment population, sample adequacy and power from internal baseline; avoid inventing conversion, lift or significance here. Randomize at a contamination-resistant unit per analytics review. No pre-registered metric/threshold is available yet.</li>
+</ul>
+</div></details><details class="work-subsection"><summary>Scope cut and stop protocol</summary><div class="md-content"><ol>
+<li>Cut personalization, ranking and surface expansion first; keep rules/eligibility correct.</li>
+<li>If merchant context is unreliable, restrict to explicit declared merchant intent (human revision may be required if value proposition changes).</li>
+<li>If first-party enrollment authority fails, stop B; only explore A with <strong>separate human approval</strong> and honest new goal.</li>
+<li>If controlled incremental economics cannot be observed, stop calling it a validated economic test; return to the business-value assessment.</li>
+<li>At the <strong>approved</strong> appetite cap, stop, verify what is true, preserve state and request a new bet if more capacity is desired.</li>
+</ol>
+</div></details><details class="work-subsection"><summary>Unresolved human decisions required for v1 approval</summary><div class="md-content"><table>
+<thead>
+<tr>
+<th>Gate</th>
+<th>Who decides</th>
+<th>Required outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G1</td>
+<td>Product sponsor</td>
+<td>Accept/revise frame and bounded outcome, including who benefits</td>
+</tr>
+<tr>
+<td>G2</td>
+<td>Product + risk + merchant/legal</td>
+<td>Accept R0–R7 and actual authorized action/surface</td>
+</tr>
+<tr>
+<td>G3</td>
+<td>Product sponsor + delivery team</td>
+<td>Accept 3-week × 3-person appetite, cut line and review point, or revise budget</td>
+</tr>
+<tr>
+<td>G4</td>
+<td>Product owner</td>
+<td>Select A, B, C or stop based on working fit after SP1–SP3</td>
+</tr>
+<tr>
+<td>G5</td>
+<td>Product + design + engineering</td>
+<td>Reconcile <strong>selected-design</strong> breadboard; accept concrete behavior and error semantics</td>
+</tr>
+<tr>
+<td>G6</td>
+<td>Product + analytics</td>
+<td>Approve test power, quality thresholds, and causal / P&amp;L readout</td>
+</tr>
+<tr>
+<td>G7</td>
+<td>Human owner</td>
+<td>Approve vertical slice / Dumplink groups after selected design; no implementation before this gate</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Status at delivery:</strong> G1–G7 NOT RECORDED AS ACCEPTED; human review needed. No production code, committed task decomposition, contract or selected-design statechart generated by this exercise.</p>
+</div></details></div></details>
+<div class="work-final"><strong>Human gate remains open.</strong> No direction was selected for you. Review the frame, requirement authority, budget and what we must learn before selecting a shape or authorizing v1 implementation. <a href="#automatic-offers-entry">Return to the roadmap ↑</a></div>
+</div>
+</div>
+</section>
+<script>
+(() => {
+  try {
+    const root=document.getElementById('roadmap');
+    const all=document.getElementById('showAllMilestones');
+    const expand=document.getElementById('expandAll');
+    const collapse=document.getElementById('collapseAll');
+    function visibleUnits(){return Array.from(root.querySelectorAll('.cluster-view')).filter(x=>getComputedStyle(x).display!=='none').flatMap(x=>Array.from(x.querySelectorAll('details.unit')));}
+    [expand,collapse].forEach(b=>b.hidden=false);
+    expand.addEventListener('click',()=>visibleUnits().forEach(d=>d.open=true));
+    collapse.addEventListener('click',()=>visibleUnits().forEach(d=>d.open=false));
+    root.querySelectorAll('.milestone-choice').forEach(r=>r.addEventListener('change',()=>{
+      if(all.checked)all.checked=false;
+      // On small screens, bring the selected milestone within reach.
+      if(matchMedia('(max-width:760px)').matches){
+        const first=root.querySelector('.milestone-views');
+        if(first)first.scrollIntoView({behavior:'auto',block:'start'});
+      }
+    }));
+  }catch(e){/* Native controls remain usable without enhancements. */}
+})();
+</script>
+</body></html>
