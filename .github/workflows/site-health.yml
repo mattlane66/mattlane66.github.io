@@ -28,7 +28,7 @@ jobs:
       - name: Prevent email and credential disclosure
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-          HEAD_SHA: ${{ github.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           python scripts/test_privacy.py
           python scripts/check_privacy.py --base "$BASE_SHA" --head "$HEAD_SHA"
