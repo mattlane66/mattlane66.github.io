@@ -185,6 +185,15 @@
     mount.appendChild(svg);
     mount.classList.add('is-assembling');
     draw();
+    // Deterministic QA frames exist only on localhost. Production always loops.
+    if(/^(localhost|127[.]0[.]0[.]1)$/.test(location.hostname)){
+      const requested=new URLSearchParams(location.search).get('hero_frame');
+      if(requested!==null && Number.isFinite(Number(requested))){
+        position=Math.max(0,Math.min(duration-.01,Number(requested)));
+        draw();
+        return;
+      }
+    }
     if('IntersectionObserver' in window){
       new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;previous=null;},{threshold:.01}).observe(mount);
     }
