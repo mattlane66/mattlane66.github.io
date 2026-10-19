@@ -20,10 +20,18 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+      - name: Prevent email and credential disclosure
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python scripts/test_privacy.py
+          python scripts/check_privacy.py --base "$BASE_SHA" --head "$HEAD_SHA"
       - name: Install Notes Markdown dependencies
         run: python -m pip install --disable-pip-version-check -r scripts/requirements-notes.txt
       - name: Validate and render draft content before checks
