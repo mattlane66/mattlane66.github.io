@@ -65,6 +65,24 @@
     add('use',{href:'#hero-assembly-source'},el);
     return el;
   };
+  // Mask geometry is intentionally non-rendered in browsers; querying
+  // SVGGeometryElement.getTotalLength() there throws in Chromium and Safari.
+  // All routes here are absolute orthogonal M/H/V moves, so measure directly.
+  const routeLength=d=>{
+    const tokens=d.match(/[MHV]|-?\\d+(?:\\.\\d+)?/g)||[];
+    let x=0,y=0,distance=0;
+    for(let i=0;i<tokens.length;){
+      const cmd=tokens[i++];
+      if(cmd==='M'){
+        x=Number(tokens[i++]); y=Number(tokens[i++]);
+      }else if(cmd==='H'){
+        const nx=Number(tokens[i++]);distance+=Math.abs(nx-x);x=nx;
+      }else if(cmd==='V'){
+        const ny=Number(tokens[i++]);distance+=Math.abs(ny-y);y=ny;
+      }else throw Error('Unsupported wire path instruction');
+    }
+    return distance;
+  };
   const bitmapStroke=(id,tag,attributes,parent)=>{
     const mask=add('mask',{
       id,maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse',
@@ -72,8 +90,9 @@
     },defs);
     const trace=add(tag,{...attributes,fill:'none',stroke:'#fff','stroke-width':8},mask);
     add('use',{href:'#hero-assembly-source',mask:'url(#'+id+')'},parent);
-    const length=trace.getTotalLength ? trace.getTotalLength() :
-      2*(Number(attributes.width)+Number(attributes.height));
+    const length=tag==='rect'
+      ? 2*(Number(attributes.width)+Number(attributes.height))
+      : routeLength(attributes.d);
     trace.style.strokeDasharray=String(length);
     trace.style.strokeDashoffset=String(length);
     return {trace,length};
