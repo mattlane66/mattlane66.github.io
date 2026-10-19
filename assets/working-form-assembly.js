@@ -50,66 +50,95 @@
   }));
   const defs=add('defs',{},svg);
   add('image',{id:'hero-assembly-source',href:fallback.currentSrc||fallback.src,x:0,y:0,width:1568,height:1003},defs);
-  const ghosts=add('g',{},svg), frames=add('g',{},svg), sections=add('g',{},svg), cables=add('g',{},svg);
+  // Show exact bitmap pixels as elements assemble. Traced paths are used only
+  // as alpha masks; no temporary colored lines or softened substitutes.
+  const frames=add('g',{},svg), sections=add('g',{},svg);
+  const cables=add('g',{},svg), completed=add('g',{},svg);
   const original=add('use',{href:'#hero-assembly-source',opacity:0},svg);
   const clamp=v=>Math.max(0,Math.min(1,v));
   const cubic=v=>1-Math.pow(1-clamp(v),3);
   const snap=v=>{v=clamp(v);return v<.76?1-Math.pow(1-v/.76,5):1};
+  const bitmapClip=(id,x,y,width,height,parent)=>{
+    const clip=add('clipPath',{id,clipPathUnits:'userSpaceOnUse'},defs);
+    add('rect',{x,y,width,height},clip);
+    const el=add('g',{'clip-path':'url(#'+id+')',opacity:0},parent);
+    add('use',{href:'#hero-assembly-source'},el);
+    return el;
+  };
+  const bitmapStroke=(id,tag,attributes,parent)=>{
+    const mask=add('mask',{
+      id,maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse',
+      x:0,y:0,width:1568,height:1003,'mask-type':'alpha'
+    },defs);
+    const trace=add(tag,{...attributes,fill:'none',stroke:'#fff','stroke-width':8},mask);
+    add('use',{href:'#hero-assembly-source',mask:'url(#'+id+')'},parent);
+    const length=trace.getTotalLength ? trace.getTotalLength() :
+      2*(Number(attributes.width)+Number(attributes.height));
+    trace.style.strokeDasharray=String(length);
+    trace.style.strokeDashoffset=String(length);
+    return {trace,length};
+  };
   const fragments=pieces.map(([x,y,w,h,start,end,frame],i)=>{
     start*=.68;end*=.68;
     if(frame){
-      const el=add('rect',{x,y,width:w,height:h,stroke:'#8fa0b4','stroke-width':1.55,fill:'none',opacity:0},frames);
-      const length=2*(w+h);
-      el.style.strokeDasharray=String(length);el.style.strokeDashoffset=String(length);
-      return {el,length,start,end,frame:true};
+      const {trace,length}=bitmapStroke('hero-frame-mask-'+i,'rect',
+        {x,y,width:w,height:h},frames);
+      return {trace,length,start,end,frame:true};
     }
-    const clipId='hero-assembly-clip-'+i;
-    const clip=add('clipPath',{id:clipId,clipPathUnits:'userSpaceOnUse'},defs);
-    add('rect',{x,y,width:w,height:h},clip);
-    const el=add('g',{'clip-path':'url(#'+clipId+')',opacity:0},sections);
-    add('use',{href:'#hero-assembly-source'},el);
-    return {el,x,y,w,h,start,end,frame:false};
+    return {
+      el:bitmapClip('hero-assembly-clip-'+i,x,y,w,h,sections),
+      start,end,frame:false
+    };
   });
-  const paths=wires.map(([d,start,end])=>{
-    const ghost=add('path',{d,stroke:'#eef3f8','stroke-width':4.5,fill:'none',opacity:0},ghosts);
-    const line=add('path',{d,stroke:'#7f94ab','stroke-width':2.6,fill:'none','stroke-linecap':'square','stroke-linejoin':'miter',opacity:0},cables);
-    const length=line.getTotalLength();
-    line.style.strokeDasharray=String(length);line.style.strokeDashoffset=String(length);
-    return {ghost,line,length,start:start*.68,end:end*.68};
+  const paths=wires.map(([d,start,end],i)=>{
+    const {trace,length}=bitmapStroke('hero-wire-mask-'+i,'path',
+      {d,'stroke-linecap':'square','stroke-linejoin':'miter'},cables);
+    return {trace,length,start:start*.68,end:end*.68};
   });
+  // Once a section is finished, show the complete original pixels in its
+  // region. Its gray fill appears independently a moment beforehand. This
+  // prevents an abrupt jump from low-contrast construction to sharp raster.
+  const finishedSections=[
+    [44,144,333,827,2.64],     // Table
+    [495,20,617,211,4.20],     // Set Goal
+    [526,313,355,68,5.04],     // Log Achievement
+    [913,299,285,109,5.80],    // Notify Coach
+    [566,643,310,285,7.36],   // Add Maxes
+    [1241,228,284,515,9.30]   // History
+  ].map(([x,y,w,h,after],i)=>({
+    el:bitmapClip('hero-complete-clip-'+i,x,y,w,h,completed),
+    after:after*.68+(i===2||i===3?.05:.24)
+  }));
   let position=0,previous=null,visible=true;
   const duration=8.8,speed=1.5; // fixed pace: approximately 5.9 seconds per loop
   function draw(){
-    // Fill each gray section shortly after its final component lands.
-    // Ease in quickly but independently, so no gray flashes at the finale.
+    // A section's gray background arrives only after its elements are placed.
     for(const bg of sectionBackgrounds){
       const progress=clamp((position-bg.after)/.24);
       bg.el.style.opacity=String(progress*progress*(3-2*progress));
     }
     for(const o of fragments){
-      const progress=(position-o.start)/(o.end-o.start), snapProgress=snap(progress);
+      const progress=(position-o.start)/(o.end-o.start);
       if(o.frame){
-        o.el.style.opacity=String(clamp(snapProgress*1.2));
-        o.el.style.strokeDashoffset=String(o.length*(1-snapProgress));
+        // Reveal the frame's *actual* pixels along its perimeter.
+        o.trace.style.strokeDashoffset=String(o.length*(1-snap(progress)));
       }else{
-        const cx=o.x+o.w/2,cy=o.y+o.h/2;
-        const shift=(1-snapProgress);
-        const scale=.996+.004*cubic(progress);
-        o.el.style.opacity=String(clamp(progress*1.22));
-        o.el.setAttribute('transform','translate('+(cx+shift*1.1)+' '+(cy+shift*2.2)+') scale('+scale+') translate('+(-cx)+' '+(-cy)+')');
+        // Pixels are full-contrast as soon as a module snaps into place.
+        o.el.style.opacity=String(clamp(progress*5));
       }
     }
-    for(const p of paths){
-      const progress=cubic((position-p.start)/(p.end-p.start));
-      p.line.style.opacity=String(clamp((position-p.start)/(p.end-p.start)*1.25));
-      p.line.style.strokeDashoffset=String(p.length*(1-progress));
-      p.ghost.style.opacity=String(.22*(1-progress));
+    for(const wire of paths){
+      wire.trace.style.strokeDashoffset=String(wire.length*(1-cubic(
+        (position-wire.start)/(wire.end-wire.start))));
     }
-    const finish=clamp((position-6.45)/.7);
-    const solid=finish*finish*(3-2*finish);
-    const fade=position>duration-.42?1-clamp((position-duration+.42)/.42):1;
-    original.style.opacity=String(solid*fade);
-    [ghosts,frames,sections,cables].forEach(g=>g.style.opacity=String(fade));
+    for(const section of finishedSections){
+      const p=clamp((position-section.after)/.16);
+      section.el.style.opacity=String(p*p*(3-2*p));
+    }
+    // Resolve the few pixels outside the explicit construction paths after
+    // the last section has finished; nothing changes sharpness at loop's end.
+    const finish=clamp((position-6.65)/.3);
+    original.style.opacity=String(finish*finish*(3-2*finish));
   }
   function tick(now){
     if(previous!==null&&visible&&!document.hidden){
