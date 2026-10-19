@@ -35,6 +35,18 @@
   const svg=document.createElementNS(NS,'svg');
   Object.entries({viewBox:'0 0 1568 1003',preserveAspectRatio:'xMidYMid meet',class:'hero-assembly','aria-hidden':'true',focusable:'false'})
     .forEach(([k,v])=>svg.setAttribute(k,v));
+  // The diagram's paper and light-gray section backgrounds are part of the
+  // static canvas from frame one; only boxes, labels and connections assemble.
+  // Without this, the original bitmap's gray washes flash in at the finale.
+  add('rect',{x:0,y:0,width:1568,height:1003,fill:'#f8f9fb'},svg);
+  [
+    [44,144,333,827,'#e5e9ed'],   // Table
+    [495,20,617,211,'#e5e9ed'],   // Set Goal
+    [566,643,310,285,'#e5e9ed'], // Add Maxes
+    [1241,228,284,515,'#e5e9ed'] // History
+  ].forEach(([x,y,width,height,fill])=>{
+    add('rect',{x,y,width,height,fill},svg);
+  });
   const defs=add('defs',{},svg);
   add('image',{id:'hero-assembly-source',href:fallback.currentSrc||fallback.src,x:0,y:0,width:1568,height:1003},defs);
   const ghosts=add('g',{},svg), frames=add('g',{},svg), sections=add('g',{},svg), cables=add('g',{},svg);
@@ -65,7 +77,7 @@
     return {ghost,line,length,start:start*.68,end:end*.68};
   });
   let position=0,previous=null,visible=true;
-  const duration=8.8,speed=2; // always twice normal speed: 4.4-second loop
+  const duration=8.8,speed=1.5; // fixed pace: approximately 5.9 seconds per loop
   function draw(){
     for(const o of fragments){
       const progress=(position-o.start)/(o.end-o.start), snapProgress=snap(progress);
@@ -86,7 +98,7 @@
       p.line.style.strokeDashoffset=String(p.length*(1-progress));
       p.ghost.style.opacity=String(.22*(1-progress));
     }
-    const finish=clamp((position-6.75)/.5);
+    const finish=clamp((position-6.45)/.7);
     const solid=finish*finish*(3-2*finish);
     const fade=position>duration-.42?1-clamp((position-duration+.42)/.42):1;
     original.style.opacity=String(solid*fade);
