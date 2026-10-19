@@ -69,7 +69,7 @@
   // SVGGeometryElement.getTotalLength() there throws in Chromium and Safari.
   // All routes here are absolute orthogonal M/H/V moves, so measure directly.
   const routeLength=d=>{
-    const tokens=d.match(/[MHV]|-?\\d+(?:\\.\\d+)?/g)||[];
+    const tokens=d.match(/[MHV]|-?[0-9]+(?:[.][0-9]+)?/g)||[];
     let x=0,y=0,distance=0;
     for(let i=0;i<tokens.length;){
       const cmd=tokens[i++];
