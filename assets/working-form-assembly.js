@@ -35,18 +35,19 @@
   const svg=document.createElementNS(NS,'svg');
   Object.entries({viewBox:'0 0 1568 1003',preserveAspectRatio:'xMidYMid meet',class:'hero-assembly','aria-hidden':'true',focusable:'false'})
     .forEach(([k,v])=>svg.setAttribute(k,v));
-  // The diagram's paper and light-gray section backgrounds are part of the
-  // static canvas from frame one; only boxes, labels and connections assemble.
-  // Without this, the original bitmap's gray washes flash in at the finale.
+  // Keep the underlying paper steady, but finish each section with its own
+  // gray wash after its fields, boxes, and labels have been assembled.
+  // The fills are behind the assembled details (not painted over them).
   add('rect',{x:0,y:0,width:1568,height:1003,fill:'#f8f9fb'},svg);
-  [
-    [44,144,333,827,'#e5e9ed'],   // Table
-    [495,20,617,211,'#e5e9ed'],   // Set Goal
-    [566,643,310,285,'#e5e9ed'], // Add Maxes
-    [1241,228,284,515,'#e5e9ed'] // History
-  ].forEach(([x,y,width,height,fill])=>{
-    add('rect',{x,y,width,height,fill},svg);
-  });
+  const sectionBackgrounds=[
+    [44,144,333,827,2.64],   // Table completes
+    [495,20,617,211,4.20],   // Set Goal completes
+    [566,643,310,285,7.36], // Add Maxes completes
+    [1241,228,284,515,9.30] // History completes
+  ].map(([x,y,width,height,after])=>({
+    el:add('rect',{x,y,width,height,fill:'#e5e9ed',opacity:0},svg),
+    after:after*.68
+  }));
   const defs=add('defs',{},svg);
   add('image',{id:'hero-assembly-source',href:fallback.currentSrc||fallback.src,x:0,y:0,width:1568,height:1003},defs);
   const ghosts=add('g',{},svg), frames=add('g',{},svg), sections=add('g',{},svg), cables=add('g',{},svg);
@@ -79,6 +80,12 @@
   let position=0,previous=null,visible=true;
   const duration=8.8,speed=1.5; // fixed pace: approximately 5.9 seconds per loop
   function draw(){
+    // Fill each gray section shortly after its final component lands.
+    // Ease in quickly but independently, so no gray flashes at the finale.
+    for(const bg of sectionBackgrounds){
+      const progress=clamp((position-bg.after)/.24);
+      bg.el.style.opacity=String(progress*progress*(3-2*progress));
+    }
     for(const o of fragments){
       const progress=(position-o.start)/(o.end-o.start), snapProgress=snap(progress);
       if(o.frame){
