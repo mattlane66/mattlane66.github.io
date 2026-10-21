@@ -81,17 +81,24 @@ jobs:
                       or filename.endswith((".pem", ".p12", ".pfx", ".key"))):
                   problems["sensitive filename added"] += 1
 
+          # Git diff can mark an entire large generated-data line as replaced.
+          # Count exact newly added matches, not matches also present in removed text.
+          removed_keys, added_keys = Counter(), Counter()
           for line in added.splitlines():
+              if line.startswith("-") and not line.startswith("---"):
+                  removed_keys.update(key_pattern.findall(line[1:]))
+                  continue
               if not line.startswith("+") or line.startswith("+++"):
                   continue
               value = line[1:]
-              if key_pattern.search(value):
-                  problems["credential-like content added"] += 1
+              added_keys.update(key_pattern.findall(value))
               for match in email_pattern.finditer(value):
                   address = match.group()
                   domain = address.rsplit("@", 1)[-1].lower()
                   if domain not in allowed_examples | allowed_domains and address.lower().split("@") != ["noreply", "github.com"]:
                       problems["non-example email address added"] += 1
+
+          problems["credential-like content added"] += sum((added_keys - removed_keys).values())
 
           if problems:
               for category, count in sorted(problems.items()):
