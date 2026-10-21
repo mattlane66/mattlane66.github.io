@@ -98,7 +98,9 @@ jobs:
                   if domain not in allowed_examples | allowed_domains and address.lower().split("@") != ["noreply", "github.com"]:
                       problems["non-example email address added"] += 1
 
-          problems["credential-like content added"] += sum((added_keys - removed_keys).values())
+          new_credentials = sum((added_keys - removed_keys).values())
+          if new_credentials:
+              problems["credential-like content added"] += new_credentials
 
           if problems:
               for category, count in sorted(problems.items()):
