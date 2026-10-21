@@ -9,25 +9,18 @@
 <p>If we know what we're testing, what evidence would change our minds, and can afford to be wrong, set a time limit and ship.</p>
 <p>When we don't yet know which behavior matters or what would count as a useful result, a time limit only limits the cost of guessing.</p>
 <p>That's when research earns its place: to narrow uncertainty enough to make a worthwhile bet.</p>
-<p>Simulation can help us decide what to ship. It can expose plausible responses, unintended consequences, and questions worth testing. But simulated behavior isn't observed behavior. Use it to sharpen the experiment, then learn from what real people do. For help, see the <a href="https://github.com/mattlane66/behavioral-simulation-for-agents-and-humans" target="_blank" rel="noopener noreferrer">Behavioral Simulation toolkit</a>.</p>
+<p>Simulation can help us decide what to ship. It can expose plausible responses, unintended consequences, and questions worth testing. But simulated behavior isn't observed behavior. Use it to sharpen the experiment, then learn from what real people do.</p>
 <p>Not every opportunity begins with an existing problem. Sometimes a new capability makes something possible that people have never experienced. We can't discover all its potential by studying what people do today.</p>
 <p>In those cases, make the possibility tangible. Let people try it. Observe what changes, what improves, and what doesn't.</p>
 <p>What people do today is evidence. It isn't a limit on what they might value tomorrow.</p>
+<p>For emerging demand, study people already facing conditions others may encounter later. Look at what they've adapted or invented, then test whether the underlying need extends beyond those unusual cases. An early signal of demand is not evidence of its eventual size.</p>
 <h2 id="why-asking-why-isn-t-enough">Why asking why isn't enough</h2>
-<p>In one of Michael Gazzaniga's experiments, a patient whose cerebral hemispheres had been surgically disconnected saw a chicken claw with one hemisphere and a snowy scene with the other.</p>
-<p>Asked to select related pictures, the patient chose a chicken and a shovel.</p>
-<p>When asked why, the speaking hemisphere explained that the shovel was for cleaning a chicken shed. It hadn't received the snowy scene that explained the choice.</p>
-<p>The explanation made sense. It wasn't what caused him to choose the shovel.</p>
-<p>Gazzaniga called the system that constructs such explanations the <strong>left-hemisphere interpreter</strong>.</p>
-<p>The experiment revealed how the brain can produce a coherent account of behavior without access to all the information that caused it.</p>
-<p>Research by Richard Nisbett, Timothy Wilson, and others has shown related limits in people's ability to explain their own decisions. Petter Johansson's choice-blindness experiments demonstrated that people sometimes justify choices they didn't make.</p>
-<p>But self-reports aren't worthless. Research by K. Anders Ericsson and Herbert Simon helps explain why people can provide useful accounts of information they attended to while performing a task. Later split-brain research has also complicated simple interpretations of the original findings.</p>
-<p>Remembering an event isn't the same as observing it. Memories can be incomplete or reconstructed. That's why important accounts need corroboration, and why uncertainty must remain visible.</p>
-<p>The practical lesson is this:</p>
-<p><strong>A person's explanation of a decision is not necessarily an accurate account of what caused it.</strong></p>
-<p>That doesn't mean we should never ask why. It means we shouldn't treat the answer as proof.</p>
-<p>We need to reconstruct what people experienced and did, examine the circumstances, and test our explanations against other evidence.</p>
-<p>Here's how.</p>
+<p>A person's explanation of a decision is not necessarily an accurate account of what caused it.</p>
+<p>In a split-brain experiment associated with Michael Gazzaniga, a patient saw a chicken claw with one hemisphere and a snowy scene with the other. The patient selected a chicken and a shovel. Asked why, the speaking hemisphere explained that the shovel was for cleaning a chicken shed. It hadn't received the snowy scene that informed the choice.</p>
+<p>The explanation made sense. It didn't account for the information behind the selection.</p>
+<p>Research by Nisbett and Wilson identified limits in people's ability to explain their own decisions. Johansson's choice-blindness studies showed that people sometimes justified choices they didn't make. But reports aren't worthless: Ericsson and Simon examined conditions under which people can give useful accounts of information they attended to. Later split-brain research also complicates simple interpretations of the original experiments.</p>
+<p>Memory can be reconstructed. Reasons stated afterward may not match what mattered at the time. Treat explanations as reports to examine, not proof of causes.</p>
+<p>Reconstruct what people experienced and did. Compare their accounts with independent evidence. Test competing explanations.</p>
 <h2 id="frame-the-inquiry">1. Frame the inquiry</h2>
 <p>Start with what you want to understand, not what you want to build.</p>
 <p>&quot;Would product teams use an AI planning tool?&quot; begins with our solution.</p>
@@ -51,10 +44,6 @@
 <p>Write down what you want to learn. These are your internal research questions, not an interview script.</p>
 <p>Recruit people who have recently performed the task or faced the decision. For adoption research, include people who acted and those who didn't.</p>
 <p>The inquiry should be narrow enough to investigate and open enough to prove your assumptions wrong.</p>
-<h3 id="when-demand-is-emerging">When demand is emerging</h3>
-<p>When a need is emerging, begin with the trend that could make it matter. Look for people already facing conditions others may encounter later, especially those who have much to gain from a solution. Study what they've tried, modified, or invented. Follow referrals toward people further ahead, and look for the same problem under more demanding conditions in other fields.</p>
-<p>An unusual case can reveal a possible future need. It cannot establish how widespread that need will become. Separate the need from the person's solution, and consider whether the underlying problem would matter beyond their particular circumstances.</p>
-<p>For help applying this approach, see the <a href="https://github.com/mattlane66/planning-skills-for-agents-and-humans/tree/main/lead-user-research" target="_blank" rel="noopener noreferrer">Lead User Research toolkit</a>.</p>
 <h2 id="reconstruct-a-real-experience">2. Reconstruct a real experience</h2>
 <p>Begin with a specific event.</p>
 <p>For task research, ask about a recent occasion when someone performed the work. For adoption research, investigate an actual purchase, switch, rejection, or decision to continue as before.</p>
@@ -63,32 +52,32 @@
 <p><strong>The governing rule: Reconstruct what people remember experiencing and doing. Treat explanations as reports, not proof of causes. Check important claims against records, observations, contrasting cases, and tests.</strong></p>
 <h3 id="the-six-questions">The six questions</h3>
 <p><strong>1. When did you last do X, or when did you first buy or start using X?</strong></p>
-<p>Anchor an actual event, preferably a recent one.</p>
-<ul><li>Walk me through what happened.</li><li>Where were you? What was going on?</li><li>Who else was involved?</li><li>What happened immediately before and afterward?</li></ul>
+<p>Anchor a specific, preferably recent event.</p>
+<ul><li>Walk me through what happened.</li><li>Where were you, and who else was involved?</li><li>What happened immediately before and afterward?</li></ul>
 <p><strong>2. What was happening before that?</strong></p>
-<p>Understand the circumstances leading up to the event.</p>
-<ul><li>What were you trying to accomplish?</li><li>What had been happening around that time?</li><li>Had you considered doing something differently?</li><li>If so, do you remember when that first came up?</li><li>Did you search for anything, talk to anyone, or take another step?</li></ul>
-<p>Don't assume there was a particular trigger or even a desire to change.</p>
+<p>Understand the circumstances without assuming a trigger or a desire to change.</p>
+<ul><li>What were you trying to accomplish?</li><li>What else was happening then?</li><li>Do you remember considering, searching for, or discussing another approach?</li></ul>
 <p><strong>3. How were you handling this before?</strong></p>
-<p>Understand the previous approach.</p>
-<ul><li>Walk me through a specific occasion.</li><li>What did you actually do or use?</li><li>What worked? What didn't, if anything?</li><li>What workarounds had you developed?</li><li>What time, money, or effort did it require?</li></ul>
+<p>Reconstruct the previous approach, including its strengths.</p>
+<ul><li>Walk me through a specific occasion.</li><li>What did you use or do, and what worked or didn't?</li><li>What workarounds, time, money, or effort did it require?</li></ul>
 <p><strong>4. What happened between that earlier situation and the action you took?</strong></p>
-<p>Reconstruct the sequence without assuming there was a decisive turning point.</p>
-<ul><li>What did you do next?</li><li>What alternatives did you encounter or try?</li><li>Did you consider continuing as you were?</li><li>Were there occasions when you considered changing but didn't?</li><li>What information, people, or circumstances were involved?</li><li>What happened around the time you acted?</li></ul>
-<p>For routine tasks, follow the actual steps rather than assuming there was a switching decision.</p>
+<p>Recover the sequence rather than inventing a decisive turning point.</p>
+<ul><li>What did you do next?</li><li>What alternatives did you encounter, try, or postpone?</li><li>What happened around the time you acted?</li></ul>
+<p>For routine tasks, follow the steps without assuming a switching decision.</p>
 <p><strong>5. What did staying with the existing approach or trying something else involve at the time?</strong></p>
-<p>Understand the trade-offs without asking the person to invent their causes.</p>
-<ul><li>What did you know about the available options then?</li><li>What did the existing approach let you keep doing?</li><li>What would changing have required in time, money, effort, or cooperation?</li><li>Do you remember particular concerns or uncertainties arising?</li><li>What circumstances made the action possible or difficult?</li><li>Can you recall when any of these considerations came up?</li></ul>
+<p>Examine the trade-offs, not just the sequence.</p>
+<ul><li>What did the existing approach let you keep doing?</li><li>What would a change have required in effort, money, or cooperation?</li><li>Do you remember concerns or conditions that made either path easier or harder?</li></ul>
 <p><strong>6. Before you acted, what did you expect would happen—and what happened afterward?</strong></p>
-<p>Separate expectations at the time from interpretations formed later.</p>
-<ul><li>What were you hoping to accomplish?</li><li>How did you expect to recognize an improvement?</li><li>Did you write, search for, or tell anyone anything about those expectations?</li><li>What actually happened?</li><li>What changed? What didn't?</li><li>Did you continue using the approach?</li><li>What have you done in similar situations since?</li></ul>
-<p>For someone who didn't change, investigate what they expected from continuing as before and what happened afterward.</p>
+<p>Separate expectations at the time from interpretations made later.</p>
+<ul><li>What outcome did you expect, and how would you recognize it?</li><li>What actually changed, if anything?</li><li>What did you do in similar situations afterward?</li></ul>
+<p>For someone who didn't change, investigate what they expected from staying as they were and what happened next.</p>
 <h3 id="five-probes-to-use-throughout">Five probes to use throughout</h3>
 <p>When an answer becomes general or explanatory, return to the experience.</p>
 <ol><li><strong>&quot;Can you remember a specific time that happened?&quot;</strong> Move from general claims to an actual occasion.</li><li><strong>&quot;What happened immediately before and after?&quot;</strong> Recover the sequence.</li><li><strong>&quot;What did you actually do, see, hear, or consider at that moment?&quot;</strong> Separate remembered experience from later interpretation.</li><li><strong>&quot;Is there anything from that time we could look at?&quot;</strong> With permission, examine messages, searches, receipts, or other records.</li><li><strong>&quot;Can you remember another occasion when things went differently?&quot;</strong> Find exceptions that might challenge the explanation.</li></ol>
 <p>Ask one question at a time. Listen. Follow unexpected details.</p>
 <p>Don't suggest answers or insist on precise memories. Accept &quot;I don't remember.&quot;</p>
 <p>A detailed recollection isn't necessarily accurate. Even the wording of a question can influence what someone remembers.</p>
+<p>A <a href="https://jobstobedone.org/radio/the-mattress-interview-part-one/" target="_blank" rel="noopener noreferrer">published mattress switch interview</a> shows why the sequence matters. A mattress bought during a routine Costco visit could look like an impulse purchase. The participant instead describes about a year of poor sleep, attempts to adjust the old mattress, months of online research, and concerns about buying another one. His wife examines a foam sample before they decide to buy. These are reported episodes, not independently verified causes. Nor does purchasing the mattress establish that it improved his sleep: during the interview, he says the problem remains unresolved.</p>
 <h2 id="investigate-doing-nothing">3. Investigate doing nothing</h2>
 <p>An important alternative to adopting something new is continuing as before.</p>
 <p>People postpone tasks, abandon attempts, tolerate inconvenience, rely on workarounds, or decide something isn't worth doing.</p>
@@ -102,13 +91,12 @@
 <p><strong>Doing nothing is behavior worth studying. It isn't proof of unmet demand.</strong></p>
 <p>Sometimes the opportunity is to make progress possible with less effort. Sometimes the current approach is already good enough.</p>
 <p>Research must allow either answer.</p>
-<h2 id="trace-the-actual-work">4. TRACE the actual work</h2>
-<p>The interview helps us understand how someone arrived at an approach and what they expected from it.</p>
-<p>We also need to see how that approach works in practice.</p>
-<p>Before asking what to build, fit-oriented design looks for mismatches between the current approach and the circumstances in which people use it.</p>
-<p><strong>Where does that approach fail to fit, and what change would help the whole work better?</strong></p>
-<p>TRACE helps answer that question.</p>
-<h3 id="how-to-trace">How to TRACE</h3>
+<h2 id="trace-the-actual-work">4. Trace the actual work</h2>
+<p>The interview helps us understand how someone arrived at an approach and what they expected from it. We also need to see how that approach works in practice.</p>
+<p>In fit-oriented design, an approach fits when its parts and the conditions of use work together to achieve the desired outcome. Before asking what to build, look for consequential mismatches.</p>
+<p><strong>Where does the current approach fail to fit, and what change might improve the whole?</strong></p>
+<p>Tracing the work helps answer that question.</p>
+<h3 id="how-to-trace">How to trace</h3>
 <p><strong>1. Observe a real use case.</strong></p>
 <p>Watch someone perform a task for a genuine purpose, ideally in their usual environment.</p>
 <p>Observe it live, study a recording, or reconstruct a recent occasion through an interview.</p>
@@ -129,20 +117,10 @@
 <p>A step can be inconvenient without harming the overall result. Removing it may sacrifice flexibility, control, or a useful safeguard.</p>
 <p>The goal isn't to eliminate friction indiscriminately. It's to improve how the person, task, tools, and circumstances work together.</p>
 <p>The most consequential mismatches become hypotheses for further investigation and design.</p>
-<h3 id="tracing-nonconsumption">Tracing nonconsumption</h3>
-<p>Return to the hypothetical budgeting example.</p>
-<p>A trace might be:</p>
-<p><em>Statement arrives → person opens it → notices a large balance → closes it → continues their usual spending routine → receives another statement the following month.</em></p>
-<p>That's the sequence we would try to observe or corroborate.</p>
-<p>Suppose the person says budgeting feels like too much work. We might suspect that the expected effort discourages action.</p>
-<p>But we haven't established that explanation.</p>
-<p>A possible test would be to provide a useful spending summary without requiring setup.</p>
-<p>Would the person use it? Would they change anything afterward?</p>
-<p>TRACE helps us find a possible mismatch. Testing tells us whether changing it matters.</p>
 <h2 id="analyze-the-evidence">5. Analyze the evidence</h2>
 <p>After the interviews and observations, reconstruct two things:</p>
 <ul><li><strong>The history:</strong> How did the person arrive at the current approach?</li><li><strong>The task:</strong> What actually happened when they used it—or didn't?</li></ul>
-<p>Then examine the forces around the behavior. This draws on Jobs-to-be-Done thinking associated with <a href="https://www.christenseninstitute.org/theory/jobs-to-be-done/" target="_blank" rel="noopener noreferrer">Clayton Christensen and Bob Moesta</a>, particularly the switch interviews and <a href="https://jobstobedone.org/radio/the-mattress-interview-part-one/" target="_blank" rel="noopener noreferrer">Forces of Progress work of Moesta and Chris Spiek</a>.</p>
+<p>Then examine the forces around the behavior. This draws on <a href="https://www.christenseninstitute.org/theory/jobs-to-be-done/" target="_blank" rel="noopener noreferrer">Jobs-to-be-Done thinking</a> associated with Clayton Christensen, and the switch-interview and Forces of Progress work of Bob Moesta and Chris Spiek.</p>
 <div class="table-wrap"><table><thead><tr><th>Force</th><th>What to look for</th></tr></thead><tbody><tr><td><strong>Push</strong></td><td>Circumstances making the existing approach less satisfactory</td></tr><tr><td><strong>Pull</strong></td><td>Expected benefits of another approach</td></tr><tr><td><strong>Habit</strong></td><td>Familiarity, investment, and advantages of continuing</td></tr><tr><td><strong>Anxiety and cost</strong></td><td>Risks, uncertainty, effort, and expense</td></tr><tr><td><strong>Enabling conditions</strong></td><td>Timing, access, resources, information, or approval that made action possible</td></tr></tbody></table></div>
 <p>These are ways to examine the evidence, not causes that must appear in every decision.</p>
 <p>A person may have several goals at once. Saving time, avoiding mistakes, keeping control, and satisfying another person's expectations may all matter.</p>
@@ -161,22 +139,28 @@
 <p>A team may use elaborate planning software for a major launch but a notebook for smaller projects.</p>
 <p>The difference in circumstances may tell us more than the job titles of the people involved.</p>
 <p><strong>Useful segments can be defined by recurring situations, not just kinds of people.</strong></p>
-<p>For larger sets of decision interviews, I've made a <a href="https://github.com/mattlane66/scaled-interview-data-assistant" target="_blank" rel="noopener noreferrer">Scaled Interview Data Assistant</a>. It helps organize transcripts into evidence-linked decision episodes, code recurring patterns, examine relationships, and produce auditable syntheses.</p>
-<p>It's intended for past decision episodes, not general usability observation. Its calculations can help organize evidence, but they cannot establish whether an interpretation is true. Researchers still need to review the findings and contradictions.</p>
 <p>Repeated patterns across interviews are useful. They don't establish how common those patterns are across a population or prove their causes.</p>
 <h2 id="test-the-explanation">6. Test the explanation</h2>
 <p>Interviews and traces can suggest causes. They don't establish causation by themselves.</p>
-<p>Turn the strongest explanations into predictions.</p>
-<p>For example:</p>
-<p><em>When people receive a useful spending summary without having to set up a budget, they will be more likely to take an observable step toward managing spending than under the existing approach.</em></p>
-<p>We can test that prediction against an appropriate comparison.</p>
+<p>Turn the strongest explanations into predictions. Specify what you would expect to observe if one explanation mattered more than its alternatives, then choose an appropriate comparison.</p>
 <p>Look for actual use, changed decisions, and continued behavior—not just stated interest.</p>
 <p>If nothing changes, the explanation may be wrong. But first check whether the intervention actually tested it. A faulty implementation, an inadequate measure, or a mistaken assumption about the conditions could also explain the result.</p>
-<p>If behavior changes, we have evidence that the intervention matters. Further investigation may still be needed to determine which part of it produced the change.</p>
+<p>If behavior changes, we have evidence that the intervention matters. We may still need to determine which part of it produced the change.</p>
 <p>Experiments aren't always necessary or possible. Observation, comparisons, and operational data can also help. Choose evidence strong enough for the decision you're making.</p>
-<p>Remember that even asking people questions about their future behavior can sometimes change what they later do. Interviews are not always neutral measurements.</p>
-<p>The purpose of testing isn't to defend an idea.</p>
-<p>It's to discover what changes the outcome.</p>
+<p>Asking about future intentions can itself influence later behavior. That is a different risk from how a question affects someone's memory of the past.</p>
+<p>The purpose of testing isn't to defend an idea. It's to discover what changes the outcome.</p>
+<h3 id="worked-example-budgeting">Worked example: the credit-card statement</h3>
+<p><strong>Hypothetical illustration—not observed research findings or completed experiment results.</strong></p>
+<p>A person opens a credit-card statement, sees a larger balance than expected, and closes it. The next month, they do the same. We ask about the last occasion, what preceded it, how they usually track spending, what they did afterward, the alternatives available, the costs of changing, and what they expected from continuing as before. These six lines of inquiry recover a history, not a cause.</p>
+<p><strong>Trace:</strong> Statement arrives → person opens it → notices the balance → closes it → continues their usual routine. The stopping point is visible; its explanation is not.</p>
+<div class="table-wrap"><table><thead><tr><th>Evidence status</th><th>Hypothetical finding</th></tr></thead><tbody>
+<tr><td>Reported</td><td>The person recalls wanting more control but says setting up a budget felt like too much work.</td></tr>
+<tr><td>Corroborated</td><td>With consent, an observation on a later occasion shows the person opening and closing the statement without further action. This corroborates the behavior then, not the reason given.</td></tr>
+<tr><td>Inferred</td><td>Expected setup effort may be discouraging action.</td></tr>
+<tr><td>Unknown</td><td>Whether the greater obstacle is effort, anxiety about the balance, low perceived benefit, or satisfaction with another approach.</td></tr>
+</tbody></table></div>
+<p><strong>Forces:</strong> The unexpectedly high balance could push toward change. Better visibility might pull. A familiar routine favors staying. Setup effort may create anxiety or cost. An automatic summary is a possible enabling condition, not yet a finding.</p>
+<p><strong>Test:</strong> In an appropriate group, compare the existing statement with two otherwise comparable spending summaries: one available immediately, one requiring setup. Observe whether people consult the information, take a meaningful spending action, and return to it the following month. A difference between the two summaries would support the importance of setup effort, though not prove it is the only cause. No difference would require checking the intervention and measurement before discarding the explanation.</p>
 <h2 id="frame-the-opportunity">7. Frame the opportunity</h2>
 <p>The research should leave us with an account of the situation, not a list of requested features.</p>
 <p>A useful opportunity frame contains:</p>
@@ -195,22 +179,41 @@
 <p>&quot;People repeat the same edit across hundreds of records, sometimes changing the wrong ones&quot; describes a situation worth investigating.</p>
 <p>Bulk editing might help. So might a reusable rule, a different workflow, or removing the repeated task altogether.</p>
 <p>The frame keeps those possibilities open.</p>
-<p>It also helps us judge whether the opportunity is worth pursuing. How often does the situation occur? How much does it matter? What might improve? What would it cost to investigate and change?</p>
-<p>Not every problem deserves a new product or feature.</p>
-<p>A real need doesn't necessarily mean a viable market. People may struggle with something without being willing or able to pay for a solution. They may prefer their current approach, or be too difficult to reach economically. Before making a substantial commitment, investigate the cost of the problem, available budgets, willingness to pay, adoption, and reachability. Evidence of a problem is not evidence of a business.</p>
-<p>For help evaluating an opportunity, see the <a href="https://github.com/mattlane66/opportunity-underwriting-for-agents-and-humans" target="_blank" rel="noopener noreferrer">Opportunity Underwriting toolkit</a>.</p>
-<p>To carry an opportunity into design, see <a href="/articles/design-as-functions/">Design as Functions</a>. It shows how to derive requirements, compare alternative solutions, and distinguish design fit from actual effect. The <a href="/fit-check/">interactive Fit Check</a> lets you work through the comparisons.</p>
+<h3 id="before-choosing-what-to-build">Before choosing what to build</h3>
+<p>Can you answer these questions in plain language?</p>
+<ul>
+<li><strong>Behavior:</strong> What are people doing today, or what emerging need are we investigating?</li>
+<li><strong>Baseline:</strong> What happens today, and what does that outcome cost?</li>
+<li><strong>Opportunity:</strong> Who experiences this, how often, and is the need growing?</li>
+<li><strong>Value:</strong> What meaningful improvement could we create for users and the business?</li>
+<li><strong>Uncertainty:</strong> What are we assuming, and what evidence could prove us wrong?</li>
+<li><strong>Priority:</strong> Why does this matter now? What happens if we do nothing?</li>
+<li><strong>Appetite:</strong> How much time and effort is it worth investing to learn more or make a change?</li>
+</ul>
+<p>You don't need complete answers. You need to distinguish what you know from what you're assuming, and what you still need to learn. For emerging demand, opportunity size and growth may remain unknown.</p>
+<p>If you can't do that, more shipping may only produce more guesses.</p>
+<p>Prioritize opportunities by their expected value to users and the business, the evidence supporting them, and the cost of pursuing them. Evaluate solutions by how well they fit the desired outcome, context, and constraints.</p>
+<p>A real need isn't necessarily a viable market. Before a substantial commitment, investigate adoption, available budgets, willingness to pay, and whether the people affected can be reached economically.</p>
+<p><strong>Ship to learn something specific. Don't mistake shipping for learning.</strong></p>
 <h2 id="the-method-in-practice">The method in practice</h2>
-<p><strong>Frame the inquiry → Reconstruct the experience → TRACE the work → Analyze the evidence → Test the causes → Frame the opportunity.</strong></p>
+<p><strong>Frame the inquiry → Reconstruct the experience → Trace the work → Analyze the evidence → Test the causes → Frame the opportunity.</strong></p>
 <p>Return to earlier steps whenever new evidence changes your understanding.</p>
-<p>This research is part of a larger <a href="/notes/n/opportunity-judgment-loop-opportunity-judgment-loop-20261002/">Opportunity Judgment Loop</a>: notice a signal, understand the forces behind it, decide what ought to change, test that judgment, and revise it against reality.</p>
 <p>The method isn't meant to turn messy behavior into a tidy story. It's meant to keep us from mistaking that story for an explanation.</p>
 <p>People's choices depend on their circumstances, the alternatives available, what they've experienced before, and what they hope will happen next.</p>
 <p>We can ask about those things. We can observe what they do. We can compare cases and test our explanations.</p>
 <p>Then we can decide what deserves to change.</p>
-<p><strong>Understand the current approach before trying to replace it.</strong></p>
+<p><strong>Understand what people do today. Test what they might value tomorrow.</strong></p>
 <hr>
+<h3 id="tools-and-further-reading">Tools and further reading</h3>
+<ul>
+<li><a href="https://github.com/mattlane66/behavioral-simulation-for-agents-and-humans" target="_blank" rel="noopener noreferrer">Behavioral Simulation toolkit</a> — Explore possible responses and sharpen experiments; simulations aren't observations.</li>
+<li><a href="https://github.com/mattlane66/planning-skills-for-agents-and-humans/tree/main/lead-user-research" target="_blank" rel="noopener noreferrer">Lead User Research toolkit</a> — Investigate emerging needs among people confronting conditions earlier than others.</li>
+<li><a href="https://github.com/mattlane66/scaled-interview-data-assistant" target="_blank" rel="noopener noreferrer">Scaled Interview Data Assistant</a> — Organize decision episodes across interviews; patterns still require interpretation.</li>
+<li><a href="https://github.com/mattlane66/opportunity-underwriting-for-agents-and-humans" target="_blank" rel="noopener noreferrer">Opportunity Underwriting toolkit</a> — Evaluate whether a problem is an opportunity worth pursuing.</li>
+<li><a href="/articles/design-as-functions/">Design as Functions</a> and the <a href="/fit-check/">interactive Fit Check</a> — Derive requirements, compare alternative designs, and test their fit.</li>
+<li><a href="/notes/n/opportunity-judgment-loop-opportunity-judgment-loop-20261002/">Opportunity Judgment Loop</a> — Connect research to judgments, tests, and revisions.</li>
+</ul>
 <h3 id="research-background">Research background</h3>
 <p>This approach draws on research about the left-hemisphere interpreter, the limits and value of verbal reports, memory, observation, and behavioral research.</p>
 <ul><li><a href="https://doi.org/10.1093/brain/123.7.1293" target="_blank" rel="noopener noreferrer">Michael S. Gazzaniga — <em>Cerebral Specialization and Interhemispheric Communication</em></a>, 2000. The left-hemisphere interpreter hypothesis.</li><li><a href="https://academic.oup.com/brain/article/140/7/2051/3892700" target="_blank" rel="noopener noreferrer">Volz &amp; Gazzaniga — <em>Interaction in Isolation</em></a>, 2017. A review including the chicken-and-shovel experiment.</li><li><a href="https://doi.org/10.1037/0033-295X.84.3.231" target="_blank" rel="noopener noreferrer">Nisbett &amp; Wilson — <em>Telling More Than We Can Know</em></a>, 1977. Limits of introspective explanations.</li><li><a href="https://doi.org/10.1037/0033-295X.87.3.215" target="_blank" rel="noopener noreferrer">Ericsson &amp; Simon — <em>Verbal Reports as Data</em></a>, 1980. When reports of remembered and attended information can be informative.</li><li><a href="https://pubmed.ncbi.nlm.nih.gov/16210542/" target="_blank" rel="noopener noreferrer">Johansson et al. — <em>Failure to Detect Mismatches Between Intention and Outcome</em></a>, 2005. Choice blindness.</li><li><a href="https://doi.org/10.1016/S0022-5371%2874%2980011-3" target="_blank" rel="noopener noreferrer">Loftus &amp; Palmer — <em>Reconstruction of Automobile Destruction</em></a>, 1974. The influence of question wording on memory.</li><li><a href="https://pubmed.ncbi.nlm.nih.gov/13177800/" target="_blank" rel="noopener noreferrer">Flanagan — <em>The Critical Incident Technique</em></a>, 1954. Investigating specific consequential episodes.</li><li><a href="https://doi.org/10.1287/mnsc.32.7.791" target="_blank" rel="noopener noreferrer">Eric von Hippel — <em>Lead Users: A Source of Novel Product Concepts</em></a>, 1986. Discovering needs ahead of wider adoption.</li><li><a href="https://www.christenseninstitute.org/theory/jobs-to-be-done/" target="_blank" rel="noopener noreferrer">Christensen &amp; Moesta — <em>Jobs to Be Done</em></a>. Understanding progress sought in particular circumstances.</li><li><a href="https://jobstobedone.org/radio/the-mattress-interview-part-one/" target="_blank" rel="noopener noreferrer">Moesta &amp; Spiek — <em>The Jobs-to-be-Done Mattress Interview</em></a>. Reconstructing purchase decisions and identifying the Forces of Progress.</li><li><a href="https://www.sciencedirect.com/topics/computer-science/contextual-interview" target="_blank" rel="noopener noreferrer">Holtzblatt &amp; Beyer — <em>Contextual Design, Second Edition</em></a>, 2017. Observing work in its actual context.</li><li><a href="https://pubmed.ncbi.nlm.nih.gov/26162771/" target="_blank" rel="noopener noreferrer">Wood et al. — <em>The Impact of Asking Intention or Self-Prediction Questions on Subsequent Behavior</em></a>, 2016. Evidence of a small question–behavior effect.</li></ul>
-<p>The principles are research-informed. The six questions and TRACE procedure are practical research tools, not independently validated instruments for establishing causation.</p><nav class="endnav"><a href="/#writing">← All writing</a><a href="/">Matt Lane →</a></nav></main></body></html>
+<p>The principles are research-informed. The six questions and tracing procedure are practical research tools, not independently validated instruments for establishing causation.</p><nav class="endnav"><a href="/#writing">← All writing</a><a href="/">Matt Lane →</a></nav></main></body></html>
