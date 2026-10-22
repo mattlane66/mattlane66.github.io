@@ -5,7 +5,7 @@ from html.parser import HTMLParser
 import json
 import re
 
-from generate_note_pages import NOTES_HTML, DIRECT, REMOVED, render_body, note_slug
+from generate_note_pages import NOTES_HTML, DIRECT, REMOVED, render_body, note_slug, note_content
 
 
 class ListNumbers(HTMLParser):
@@ -78,6 +78,8 @@ def main() -> None:
         assert n["title"] == headline, ident
         assert note_slug(n) == permalink, ident
         assert str(n["body"]).startswith(opening), ident
+        # The heading is independent of the authored first paragraph/quote.
+        assert note_content(n["title"], n["body"]) == (headline, n["body"].strip()), ident
 
     # Arbitrarily spaced lists must show authored numbers, not restart at one.
     assert rendered_numbers("1. First\n\nDetail\n\n2. Second\n\n3. Third").top_level == [1, 2, 3]
