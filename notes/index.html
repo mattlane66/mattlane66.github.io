@@ -161,6 +161,14 @@ function resultExcerpt(n,title){
 function render(){const a=filtered();document.getElementById("surprise").disabled=!a.length;count.innerHTML='<b>'+a.length+'</b> note'+(a.length===1?'':'s')+(active!=="All"?' · '+active:'');grid.innerHTML=a.slice(0,limit).map(n=>{const title=feedTitle(n),excerpt=resultExcerpt(n,title);return '<a class="note '+cls(n)+'" data-category="'+categoryKey(n.category)+'" data-id="'+n.id+'" href="'+noteHref(n)+'"><div><div class="date">'+n.date+'</div><p class="quote">'+escapeHtml(title)+'</p>'+(n.words>=24&&excerpt?'<p class="excerpt">'+escapeHtml(excerpt)+'</p>':'')+'</div><div class="foot"><span>'+escapeHtml(n.category)+'</span><span>'+(n.relation?'<span class="rel">related ↗</span>':'open →')+'</span></div></a>'}).join('')||'<p class="no-results">No notes match this search or category. Try another term or filter.</p>';load.hidden=a.length<=limit}
 CATS.forEach(c=>{const b=document.createElement("button");b.className="chip"+(c==="All"?" on":"");b.textContent=c;b.dataset.category=categoryKey(c);b.onclick=()=>{active=c;limit=72;[...chips.children].forEach(x=>x.classList.toggle("on",x===b));render()};chips.appendChild(b)});document.getElementById("search").addEventListener("input",e=>{query=e.target.value;limit=72;render()});load.onclick=()=>{limit+=72;render()};document.getElementById("surprise").onclick=()=>{const a=filtered();openNote(a[Math.floor(Math.random()*a.length)])};grid.onclick=e=>{const b=e.target.closest("[data-id]");if(b){e.preventDefault();openNote(NOTES.find(n=>n.id===b.dataset.id))}};
 const dlg=document.getElementById("dialog");
+// Only the active same-origin constellation frame may request dismissal.
+window.addEventListener("message",event=>{
+  const frame=document.getElementById("interactive-note-frame");
+  if(event.origin!==location.origin || event.source!==frame.contentWindow)return;
+  if(event.data?.type==="comedy-constellation:close-modal" && dlg.open && dlg.classList.contains("interactive-open")){
+    dlg.close();
+  }
+});
 const publishedNoteCache=new Map();
 let activeNoteRequest=0;
 function publishedNote(n){
