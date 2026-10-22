@@ -295,9 +295,9 @@ def main() -> None:
     NOTES_HTML.write_text(text, encoding="utf-8")
     sync_home_note_count(len(notes))
 
-    # Preserve authored interactive Notes while rebuilding the generated archive.
-    # Their pages must exist in the repository; never silently replace them
-    # with Markdown-only output and destroy their working interactions.
+    # Preserve authored interactive Notes while rebuilding generated pages.
+    # Fail closed when a marked custom page is missing, rather than replacing
+    # its interactions with a Markdown-only document.
     custom_pages: dict[str, str] = {}
     for n in notes:
         if n.get("custom_html"):
@@ -318,6 +318,13 @@ def main() -> None:
         folder = OUT / slug
         folder.mkdir()
         url = f"{SITE}/notes/n/{slug}/"
+        # This note has a hand-authored interactive HTML source rather than Markdown.
+        # Copy it after rebuilding the Notes tree so future publications preserve it.
+        if ident == "192543364":
+            template = ROOT / "notes" / "custom" / "192543364.html"
+            (folder / "index.html").write_text(template.read_text(encoding="utf-8"), encoding="utf-8")
+            note_urls.append((url, "2026-10-22"))
+            continue
         title = strip_substack_urls(str(n.get("title") or "")).strip() or "Untitled note"
         desc = description(n)
         source_body = str(n.get("body") or "")
