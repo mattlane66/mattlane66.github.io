@@ -306,6 +306,13 @@ def main() -> None:
         folder = OUT / slug
         folder.mkdir()
         url = f"{SITE}/notes/n/{slug}/"
+        # This note has a hand-authored interactive HTML source rather than Markdown.
+        # Copy it after rebuilding the Notes tree so future publications preserve it.
+        if ident == "192543364":
+            template = ROOT / "notes" / "custom" / "192543364.html"
+            (folder / "index.html").write_text(template.read_text(encoding="utf-8"), encoding="utf-8")
+            note_urls.append((url, "2026-10-22"))
+            continue
         title = strip_substack_urls(str(n.get("title") or "")).strip() or "Untitled note"
         desc = description(n)
         source_body = str(n.get("body") or "")
