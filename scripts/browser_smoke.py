@@ -492,6 +492,19 @@ def main() -> int:
                                 failures.append(f"{viewport_name} /notes/: modal iframe is not responsive: {embedded_metrics}")
                             if embedded_metrics["hash"] != "#note-192543364":
                                 failures.append(f"{viewport_name} /notes/: opening guide did not preserve modal permalink hash")
+                            # Enlarging and collapsing the text equivalent must resize the frame
+                            # both ways, without stranding a huge blank region in the modal.
+                            initial_height = embedded_metrics["height"]
+                            frame.locator("#all-models summary").click()
+                            page.wait_for_function(
+                                "(before) => document.querySelector('#territoryGuideFrame')?.getBoundingClientRect().height > before + 500",
+                                arg=initial_height, timeout=8_000,
+                            )
+                            frame.locator("#all-models summary").click()
+                            page.wait_for_function(
+                                "(before) => document.querySelector('#territoryGuideFrame')?.getBoundingClientRect().height < before + 120",
+                                arg=initial_height, timeout=8_000,
+                            )
                             page.locator("#close").click()
                             page.wait_for_function("() => !document.querySelector('#territoryGuideFrame') && !location.hash", timeout=5_000)
                             if page.locator("#territoryGuideFrame").count() or page.evaluate("location.hash"):
