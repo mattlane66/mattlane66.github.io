@@ -67,6 +67,18 @@ def main() -> None:
     assert code_note["title"] == "How to Learn to Read Code Well"
     assert note_slug(code_note) == "the-fastest-path-to-reading-code-well-is-usually-1-265799263"
 
+    # Revised headings should not repeat the opening argument or quotation,
+    # and their existing standalone URLs must remain valid.
+    renamed_notes = {
+        "151458914": ("Can Moral Rules Be Universal?", "if-a-moral-rule-is-grounded-in-shared-human-cognition-reflected-in-cross-151458914", "**If** a moral rule"),
+        "83454329": ("The Mad Ones — Jack Kerouac", "the-only-people-for-me-are-the-mad-ones-the-ones-who-are-mad-to-live-mad-83454329", "> [...]the only people"),
+    }
+    for ident, (headline, permalink, opening) in renamed_notes.items():
+        n = notes[ident]
+        assert n["title"] == headline, ident
+        assert note_slug(n) == permalink, ident
+        assert str(n["body"]).startswith(opening), ident
+
     # Arbitrarily spaced lists must show authored numbers, not restart at one.
     assert rendered_numbers("1. First\n\nDetail\n\n2. Second\n\n3. Third").top_level == [1, 2, 3]
     assert rendered_numbers("1. First\n\n    - Nested detail\n\n2. Second").top_level == [1, 2]
