@@ -484,6 +484,12 @@ def main() -> int:
                                 )
                             except PlaywrightTimeoutError:
                                 failures.append(f"{viewport_name} /notes/: constellation iframe was not unloaded")
+                            # Escape while focus is inside the iframe must also
+                            # dismiss the parent dialog, not merely reset the map.
+                            page.locator('[data-id="comedy-constellation-20261022"]').first.click()
+                            atlas.locator("#search").focus()
+                            atlas.locator("#search").press("Escape")
+                            page.locator("#dialog[open]").wait_for(state="hidden", timeout=8_000)
                             leaked_removed = page.evaluate(
                                 "(ids) => NOTES.filter(n => ids.includes(String(n.id))).map(n => String(n.id))",
                                 sorted(removed_ids),
