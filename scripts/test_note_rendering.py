@@ -5,7 +5,7 @@ from html.parser import HTMLParser
 import json
 import re
 
-from generate_note_pages import NOTES_HTML, DIRECT, REMOVED, render_body
+from generate_note_pages import NOTES_HTML, DIRECT, REMOVED, render_body, note_slug
 
 
 class ListNumbers(HTMLParser):
@@ -61,6 +61,11 @@ def main() -> None:
         assert ident in notes, f"missing regression Note {ident}"
         got = rendered_numbers(notes[ident]["body"]).top_level
         assert got[:len(numbers)] == numbers, (ident, numbers, got)
+
+    # Editing a Note headline must not invalidate its previously published URL.
+    code_note = notes["265799263"]
+    assert code_note["title"] == "How to Learn to Read Code Well"
+    assert note_slug(code_note) == "the-fastest-path-to-reading-code-well-is-usually-1-265799263"
 
     # Arbitrarily spaced lists must show authored numbers, not restart at one.
     assert rendered_numbers("1. First\n\nDetail\n\n2. Second\n\n3. Third").top_level == [1, 2, 3]
