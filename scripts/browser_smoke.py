@@ -493,6 +493,7 @@ def main() -> int:
                             if embedded_metrics["hash"] != "#note-192543364":
                                 failures.append(f"{viewport_name} /notes/: opening guide did not preserve modal permalink hash")
                             page.locator("#close").click()
+                            page.wait_for_function("() => !document.querySelector('#territoryGuideFrame') && !location.hash", timeout=5_000)
                             if page.locator("#territoryGuideFrame").count() or page.evaluate("location.hash"):
                                 failures.append(f"{viewport_name} /notes/: guide modal did not close cleanly")
                             leaked_removed = page.evaluate(
