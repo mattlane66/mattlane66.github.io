@@ -295,6 +295,18 @@ def main() -> None:
     NOTES_HTML.write_text(text, encoding="utf-8")
     sync_home_note_count(len(notes))
 
+    # Preserve authored interactive Notes while rebuilding generated pages.
+    # Fail closed when a marked custom page is missing, rather than replacing
+    # its interactions with a Markdown-only document.
+    custom_pages: dict[str, str] = {}
+    for n in notes:
+        if n.get("custom_html"):
+            slug = f"{slugify(str(n.get('title','')))}-{n['id']}"
+            custom_path = OUT / slug / "index.html"
+            if not custom_path.is_file():
+                raise RuntimeError(f"Custom interactive Note page is missing: {custom_path}")
+            custom_pages[slug] = custom_path.read_text(encoding="utf-8")
+
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True)
@@ -383,6 +395,8 @@ h1{{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin
 </html>"""
         if re.search(r'https?://[^"\'<>\s]*substack', page, flags=re.I):
             raise RuntimeError(f"Substack URL leaked into generated page: {slug}")
+        if slug in custom_pages:
+            page = custom_pages[slug]
         (folder / "index.html").write_text(page, encoding="utf-8")
         note_urls.append((url, str(n.get("date") or "")))
 
