@@ -1865,6 +1865,14 @@ function wire(){
  document.querySelectorAll('.trail').forEach(b=>b.addEventListener('click',()=>chooseTrail(b.dataset.trail)));
 }
 wire();
+// Escape from a focused iframe cannot reach its parent <dialog> directly.
+// Relay the user's keyboard dismissal only in embedded mode.
+document.addEventListener('keydown',event=>{
+ if(event.key!=='Escape' || !document.documentElement.classList.contains('embedded-note') || window.parent===window)return;
+ event.preventDefault();
+ event.stopImmediatePropagation();
+ window.parent.postMessage({type:'comedy-constellation:close-modal'},location.origin);
+},true);
 
 </script>
 </body></html>
