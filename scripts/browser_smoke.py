@@ -477,7 +477,12 @@ def main() -> int:
                             page.locator("#close").click()
                             if page.locator("#dialog[open]").count():
                                 failures.append(f"{viewport_name} /notes/: constellation dialog did not close")
-                            if page.locator("#interactive-note-frame").get_attribute("src"):
+                            try:
+                                page.wait_for_function(
+                                    "() => !document.getElementById('interactive-note-frame').getAttribute('src')",
+                                    timeout=5_000,
+                                )
+                            except PlaywrightTimeoutError:
                                 failures.append(f"{viewport_name} /notes/: constellation iframe was not unloaded")
                             leaked_removed = page.evaluate(
                                 "(ids) => NOTES.filter(n => ids.includes(String(n.id))).map(n => String(n.id))",
