@@ -41,6 +41,10 @@ def slugify(value: str) -> str:
     value = re.sub(r"[^a-z0-9]+", "-", value).strip("-") or "note"
     return value[:72].rstrip("-")
 
+def note_slug(n: dict) -> str:
+    """Keep explicit permalinks stable when a note headline is revised."""
+    return str(n.get("permalink") or f"{slugify(str(n.get('title', '')))}-{n['id']}")
+
 def strip_md(value: str) -> str:
     value = strip_substack_urls(value)
     value = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", value or "")
@@ -170,7 +174,7 @@ def note_card_class(n: dict) -> str:
 
 def render_archive_card(n: dict) -> str:
     ident = str(n["id"])
-    slug = f"{slugify(str(n.get('title','')))}-{ident}"
+    slug = note_slug(n)
     href = f"./n/{slug}/"
     title = feed_title(n)
     excerpt = feed_excerpt(n, title)
@@ -301,7 +305,7 @@ def main() -> None:
     custom_pages: dict[str, str] = {}
     for n in notes:
         if n.get("custom_html"):
-            slug = f"{slugify(str(n.get('title','')))}-{n['id']}"
+            slug = note_slug(n)
             custom_path = OUT / slug / "index.html"
             if not custom_path.is_file():
                 raise RuntimeError(f"Custom interactive Note page is missing: {custom_path}")
@@ -314,7 +318,7 @@ def main() -> None:
     note_urls: list[tuple[str, str]] = []
     for n in notes:
         ident = str(n["id"])
-        slug = f"{slugify(str(n.get('title','')))}-{ident}"
+        slug = note_slug(n)
         folder = OUT / slug
         folder.mkdir()
         url = f"{SITE}/notes/n/{slug}/"
