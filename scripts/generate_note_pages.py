@@ -168,28 +168,30 @@ def note_card_class(n: dict) -> str:
     return ""
 
 
-def render_archive_card(n: dict) -> str:
+def render_archive_card(n: dict, favorite_ids: set[str]) -> str:
     ident = str(n["id"])
     slug = f"{slugify(str(n.get('title','')))}-{ident}"
     href = f"./n/{slug}/"
     title = feed_title(n)
     excerpt = feed_excerpt(n, title)
     words = note_word_count(n)
-    css_class = note_card_class(n)
+    favorite = ident in favorite_ids
+    css_class = note_card_class(n) + (" favorite" if favorite else "")
+    star = '<span class="favorite-star" aria-label="Favorite note" title="One of my favorites">★</span>' if favorite else ""
     category = str(n.get("category") or "")
     relation = '<span class="rel">related ↗</span>' if n.get("relation") else "open →"
     excerpt_html = f'<p class="excerpt">{html.escape(excerpt)}</p>' if words >= 24 and excerpt else ""
     return (
         f'<a class="note {css_class}" data-category="{NOTE_CATEGORY_KEYS.get(category, "other")}" data-id="{html.escape(ident, quote=True)}" '
         f'href="{html.escape(href, quote=True)}">'
-        f'<div><div class="date">{html.escape(str(n.get("date") or ""))}</div>'
+        f'<div><div class="date">{html.escape(str(n.get("date") or ""))}</div>{star}'
         f'<p class="quote">{html.escape(title)}</p>{excerpt_html}</div>'
         f'<div class="foot"><span>{html.escape(category)}</span><span>{relation}</span></div></a>'
     )
 
 
-def render_static_archive(text: str, notes: list[dict]) -> str:
-    cards = "".join(render_archive_card(n) for n in notes)
+def render_static_archive(text: str, notes: list[dict], favorite_ids: set[str]) -> str:
+    cards = "".join(render_archive_card(n, favorite_ids) for n in notes)
     block = f"<!-- STATIC_NOTES_START -->{cards}<!-- STATIC_NOTES_END -->"
     pattern = r'(<section class="grid" id="grid" aria-live="polite">)[\s\S]*?(</section>)'
     if not re.search(pattern, text):
@@ -290,8 +292,18 @@ def main() -> None:
     removed_ids = {str(x) for x in json.loads(REMOVED.read_text(encoding="utf-8"))}
     by_id = {ident: n for ident, n in by_id.items() if ident not in removed_ids}
     notes = sorted(by_id.values(), key=lambda n: (str(n.get("date","")), str(n.get("id",""))), reverse=True)
+    favorite_match = re.search(r"const FAVORITE_NOTE_IDS=new Set\((\[[^;]*\])\);", text)
+    if not favorite_match:
+        raise SystemExit("Could not locate curated Favorite Note IDs")
+    favorite_list = json.loads(favorite_match.group(1))
+    if not isinstance(favorite_list, list) or not all(isinstance(ident, str) for ident in favorite_list) or len(favorite_list) != len(set(favorite_list)):
+        raise SystemExit("Favorite Note IDs must be a list of unique strings")
+    favorite_ids = set(favorite_list)
+    missing_favorites = favorite_ids - set(by_id)
+    if missing_favorites:
+        raise SystemExit(f"Favorite Notes missing from archive: {sorted(missing_favorites)}")
 
-    text = render_static_archive(text, notes)
+    text = render_static_archive(text, notes, favorite_ids)
     NOTES_HTML.write_text(text, encoding="utf-8")
     sync_home_note_count(len(notes))
 
