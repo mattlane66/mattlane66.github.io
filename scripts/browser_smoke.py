@@ -460,6 +460,36 @@ def main() -> int:
                                     f"{actual_numbers[:11]} instead of 1..11"
                                 )
                             page.locator("#close").click()
+                            # Interactive Notes must open in the same dialog, with their
+                            # script running inside the isolated frame (also on phones).
+                            page.locator('[data-id="comedy-constellation-20261022"]').first.click()
+                            page.locator("#dialog[open].interactive-open").wait_for(timeout=15_000)
+                            atlas = page.frame_locator("#interactive-note-frame")
+                            atlas.locator("#compare").wait_for(timeout=25_000)
+                            atlas.locator("#compare").click()
+                            atlas.locator("#compare-builder").wait_for(state="visible", timeout=10_000)
+                            atlas.locator("#compare-first").select_option("p0")
+                            atlas.locator("#compare-second").select_option("p1")
+                            if atlas.locator("#count-people").inner_text().strip() != "44":
+                                failures.append(f"{viewport_name} /notes/: embedded constellation lost its data")
+                            if page.evaluate("location.hash") != "#note-comedy-constellation-20261022":
+                                failures.append(f"{viewport_name} /notes/: embedded note did not retain modal hash")
+                            page.locator("#close").click()
+                            if page.locator("#dialog[open]").count():
+                                failures.append(f"{viewport_name} /notes/: constellation dialog did not close")
+                            try:
+                                page.wait_for_function(
+                                    "() => !document.getElementById('interactive-note-frame').getAttribute('src')",
+                                    timeout=5_000,
+                                )
+                            except PlaywrightTimeoutError:
+                                failures.append(f"{viewport_name} /notes/: constellation iframe was not unloaded")
+                            # Escape while focus is inside the iframe must also
+                            # dismiss the parent dialog, not merely reset the map.
+                            page.locator('[data-id="comedy-constellation-20261022"]').first.click()
+                            atlas.locator("#search").focus()
+                            atlas.locator("#search").press("Escape")
+                            page.locator("#dialog[open]").wait_for(state="hidden", timeout=8_000)
                             leaked_removed = page.evaluate(
                                 "(ids) => NOTES.filter(n => ids.includes(String(n.id))).map(n => String(n.id))",
                                 sorted(removed_ids),
