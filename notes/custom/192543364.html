@@ -23,10 +23,12 @@ if(new URLSearchParams(location.search).get("embed")==="1"){
     if(window.parent===window)return;
     let last=0;
     const report=()=>{
-      const height=Math.ceil(Math.max(document.body.scrollHeight,document.documentElement.scrollHeight));
+      // Intrinsic content height, not scrollHeight (which is pinned to the iframe viewport on collapse).
+      const content=document.querySelector("main.page")||document.body;
+      const height=Math.ceil(content.getBoundingClientRect().height);
       if(height!==last&&height>0){last=height;window.parent.postMessage({type:"territory-guide-height",height},location.origin);}
     };
-    if("ResizeObserver" in window)new ResizeObserver(report).observe(document.body);
+    if("ResizeObserver" in window)new ResizeObserver(report).observe(document.querySelector("main.page")||document.body);
     window.addEventListener("load",report);
     document.addEventListener("click",()=>requestAnimationFrame(report));
     document.addEventListener("change",()=>requestAnimationFrame(report));
