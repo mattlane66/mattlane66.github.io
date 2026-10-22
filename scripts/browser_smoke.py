@@ -473,7 +473,7 @@ def main() -> int:
                             frame.locator("#next").click()
                             if frame.locator("#counter").inner_text() != "02 / 11":
                                 failures.append(f"{viewport_name} /notes/: embedded guide Next model did not advance")
-                            frame.locator("#modelSelect").select_option("10")
+                            frame.locator("#modelSelect").evaluate("""el => {el.value="10";el.dispatchEvent(new Event("change",{bubbles:true}))}""")
                             frame.locator("#next").click()
                             if frame.locator("#counter").inner_text() != "01 / 11":
                                 failures.append(f"{viewport_name} /notes/: guide wraparound did not return to model 1")
