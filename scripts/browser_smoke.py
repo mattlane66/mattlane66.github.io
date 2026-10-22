@@ -460,6 +460,41 @@ def main() -> int:
                                     f"{actual_numbers[:11]} instead of 1..11"
                                 )
                             page.locator("#close").click()
+                            # Regression: this one interactive Note must use the same modal
+                            # as every other Note, not navigate to its permalink.
+                            page.evaluate("""() => openNote(NOTES.find(n => String(n.id) === '192543364'))""")
+                            page.locator("#dialog[open] #territoryGuideFrame").wait_for(timeout=15_000)
+                            frame = page.frame_locator("#territoryGuideFrame")
+                            frame.locator("#modelName").wait_for(timeout=15_000)
+                            page.wait_for_function(
+                                "() => document.querySelector('#territoryGuideFrame')?.getBoundingClientRect().height > 800",
+                                timeout=15_000,
+                            )
+                            frame.locator("#next").click()
+                            if frame.locator("#counter").inner_text() != "02 / 11":
+                                failures.append(f"{viewport_name} /notes/: embedded guide Next model did not advance")
+                            frame.locator("#modelSelect").select_option("10")
+                            frame.locator("#next").click()
+                            if frame.locator("#counter").inner_text() != "01 / 11":
+                                failures.append(f"{viewport_name} /notes/: guide wraparound did not return to model 1")
+                            if frame.locator(".model-button[aria-pressed='true']").count() != 1:
+                                failures.append(f"{viewport_name} /notes/: guide selected-model indicator is wrong")
+                            embedded_metrics = page.evaluate("""() => {
+                                const f=document.querySelector('#territoryGuideFrame');
+                                return {
+                                    embedded:f.contentDocument.documentElement.classList.contains('embed-guide'),
+                                    overflow:f.contentDocument.documentElement.scrollWidth-f.contentDocument.documentElement.clientWidth,
+                                    height:f.getBoundingClientRect().height,
+                                    hash:location.hash
+                                };
+                            }""")
+                            if not embedded_metrics["embedded"] or embedded_metrics["overflow"] > 4:
+                                failures.append(f"{viewport_name} /notes/: modal iframe is not responsive: {embedded_metrics}")
+                            if embedded_metrics["hash"] != "#note-192543364":
+                                failures.append(f"{viewport_name} /notes/: opening guide did not preserve modal permalink hash")
+                            page.locator("#close").click()
+                            if page.locator("#territoryGuideFrame").count() or page.evaluate("location.hash"):
+                                failures.append(f"{viewport_name} /notes/: guide modal did not close cleanly")
                             leaked_removed = page.evaluate(
                                 "(ids) => NOTES.filter(n => ids.includes(String(n.id))).map(n => String(n.id))",
                                 sorted(removed_ids),
