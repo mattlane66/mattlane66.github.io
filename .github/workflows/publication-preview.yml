@@ -41,7 +41,9 @@ jobs:
       - name: Install Chromium
         run: |
           python -m pip install --disable-pip-version-check playwright
-          python -m playwright install --with-deps chromium
+          # Ubuntu GitHub-hosted runners already include Chromium runtime libraries.
+          # Avoid apt downloads, which can stall and time out the browser check.
+          python -m playwright install chromium
       - name: Capture real HTML desktop and phone previews
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
