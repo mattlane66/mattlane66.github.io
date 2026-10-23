@@ -172,28 +172,30 @@ def note_card_class(n: dict) -> str:
     return ""
 
 
-def render_archive_card(n: dict) -> str:
+def render_archive_card(n: dict, favorite_ids: set[str]) -> str:
     ident = str(n["id"])
     slug = note_slug(n)
     href = f"./n/{slug}/"
     title = feed_title(n)
     excerpt = feed_excerpt(n, title)
     words = note_word_count(n)
-    css_class = note_card_class(n)
+    favorite = ident in favorite_ids
+    css_class = note_card_class(n) + (" favorite" if favorite else "")
+    star = '<span class="favorite-star" aria-label="Favorite note" title="One of my favorites">★</span>' if favorite else ""
     category = str(n.get("category") or "")
     relation = '<span class="rel">related ↗</span>' if n.get("relation") else "open →"
     excerpt_html = f'<p class="excerpt">{html.escape(excerpt)}</p>' if words >= 24 and excerpt else ""
     return (
         f'<a class="note {css_class}" data-category="{NOTE_CATEGORY_KEYS.get(category, "other")}" data-id="{html.escape(ident, quote=True)}" '
         f'href="{html.escape(href, quote=True)}">'
-        f'<div><div class="date">{html.escape(str(n.get("date") or ""))}</div>'
+        f'<div><div class="date">{html.escape(str(n.get("date") or ""))}</div>{star}'
         f'<p class="quote">{html.escape(title)}</p>{excerpt_html}</div>'
         f'<div class="foot"><span>{html.escape(category)}</span><span>{relation}</span></div></a>'
     )
 
 
-def render_static_archive(text: str, notes: list[dict]) -> str:
-    cards = "".join(render_archive_card(n) for n in notes)
+def render_static_archive(text: str, notes: list[dict], favorite_ids: set[str]) -> str:
+    cards = "".join(render_archive_card(n, favorite_ids) for n in notes)
     block = f"<!-- STATIC_NOTES_START -->{cards}<!-- STATIC_NOTES_END -->"
     pattern = r'(<section class="grid" id="grid" aria-live="polite">)[\s\S]*?(</section>)'
     if not re.search(pattern, text):
@@ -284,6 +286,21 @@ def main() -> None:
     notes = json.loads(match.group(1))
 
     direct = json.loads(DIRECT.read_text(encoding="utf-8"))
+    if not isinstance(direct, list):
+        raise SystemExit("direct-notes.json must contain a JSON list")
+    # Keep the complete direct-Notes fallback available before any network request.
+    # It lets Favorites include direct notes immediately and remain usable offline.
+    fallback = "const DIRECT_NOTES_FALLBACK=" + json.dumps(
+        direct, ensure_ascii=False, separators=(",", ":")
+    ).replace("<", r"\u003c").replace("sk-", r"sk\u002d") + ";"
+    text, fallback_count = re.subn(
+        r"const DIRECT_NOTES_FALLBACK=\[[^\n]*\];",
+        lambda _: fallback,
+        text,
+        count=1,
+    )
+    if fallback_count != 1:
+        raise SystemExit("Could not locate embedded direct Notes fallback")
     by_id = {str(n["id"]): n for n in notes}
     for i, n in enumerate(direct):
         if not isinstance(n, dict) or not n.get("title") or not n.get("date"):
@@ -294,8 +311,18 @@ def main() -> None:
     removed_ids = {str(x) for x in json.loads(REMOVED.read_text(encoding="utf-8"))}
     by_id = {ident: n for ident, n in by_id.items() if ident not in removed_ids}
     notes = sorted(by_id.values(), key=lambda n: (str(n.get("date","")), str(n.get("id",""))), reverse=True)
+    favorite_match = re.search(r"const FAVORITE_NOTE_IDS=new Set\((\[[^;]*\])\);", text)
+    if not favorite_match:
+        raise SystemExit("Could not locate curated Favorite Note IDs")
+    favorite_list = json.loads(favorite_match.group(1))
+    if not isinstance(favorite_list, list) or not all(isinstance(ident, str) for ident in favorite_list) or len(favorite_list) != len(set(favorite_list)):
+        raise SystemExit("Favorite Note IDs must be a list of unique strings")
+    favorite_ids = set(favorite_list)
+    missing_favorites = favorite_ids - set(by_id)
+    if missing_favorites:
+        raise SystemExit(f"Favorite Notes missing from archive: {sorted(missing_favorites)}")
 
-    text = render_static_archive(text, notes)
+    text = render_static_archive(text, notes, favorite_ids)
     NOTES_HTML.write_text(text, encoding="utf-8")
     sync_home_note_count(len(notes))
 
@@ -385,7 +412,7 @@ a{{color:inherit}}.wrap{{width:min(var(--max),calc(100% - 36px));margin:auto}}
 .brand{{font-weight:800;text-decoration:none;letter-spacing:-.02em}}.back{{font-size:12px;color:var(--muted);text-decoration:none}}
 main{{padding:clamp(58px,9vw,110px) 0 100px}}.meta{{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}}
 h1{{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}}
-.body{{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px}}
+.body{{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px;overflow-wrap:anywhere}}
 .body p{{margin:0 0 1.1em}}.body ol,.body ul{{padding-left:1.5em;margin:0 0 1.1em}}.body li{{padding-left:.1em;margin:.3em 0}}.body li p{{margin:.4em 0}}.body li>ul,.body li>ol{{margin:.35em 0}}.body img{{max-width:100%;height:auto}}.body pre{{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}}.body code{{overflow-wrap:anywhere}}.discussion{{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}}
 .discussion h2{{font-size:18px;letter-spacing:-.02em}}footer{{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}}
 </style>

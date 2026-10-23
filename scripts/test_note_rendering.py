@@ -5,7 +5,7 @@ from html.parser import HTMLParser
 import json
 import re
 
-from generate_note_pages import NOTES_HTML, DIRECT, REMOVED, render_body, note_slug, note_content
+from generate_note_pages import NOTES_HTML, DIRECT, REMOVED, render_body, note_slug, note_content, strip_md
 
 
 class ListNumbers(HTMLParser):
@@ -91,6 +91,73 @@ def main() -> None:
     assert automation_note["body"] == ""
     assert note_slug(automation_note) == "what-you-can-t-automate-is-to-know-what-you-should-be-trying-to-do-80206153"
     assert note_content(automation_note["title"], automation_note["body"]) == (automation_note["title"], "")
+
+    # The original one-paragraph memory must be displayed below a short title,
+    # never truncated into a headline or repeated as a summary paragraph.
+    summer_note = notes["227585143"]
+    summer_opening = "2013, the summer of my life. The summer I fell in love."
+    assert summer_note["title"] == "Derya, 2013"
+    assert summer_note["body"].startswith(summer_opening)
+    assert summer_note["body"].endswith("she made me laugh.")
+    assert summer_note["body"].count(summer_opening) == 1
+    assert note_slug(summer_note) == "2013-the-summer-of-my-life-the-summer-i-fell-in-love-the-first-time-we-m-227585143"
+    assert note_content(summer_note["title"], summer_note["body"]) == (summer_note["title"], summer_note["body"])
+    summer_page = (NOTES_HTML.parent / "n" / note_slug(summer_note) / "index.html").read_text(encoding="utf-8")
+    assert "<h1>Derya, 2013</h1>" in summer_page
+    assert f'<article class="body"><p>{summer_note["body"]}</p></article>' in summer_page
+    assert summer_page.count(summer_note["body"]) == 1
+
+    # Whole-archive presentation audit: check what readers see, not merely
+    # source-text overlap. Many titles legitimately appear in the source body,
+    # but note_content should remove them from the displayed article.
+    def presentation_text(text: str) -> str:
+        plain = re.sub(r"[\W_]+", " ", strip_md(text).casefold())
+        return re.sub(r"\s+", " ", plain).strip()
+
+    presentation_errors = []
+    for ident, note in notes.items():
+        raw_title = str(note.get("title") or "")
+        source_body = str(note.get("body") or "")
+        if not render_body(source_body):
+            fallback = str(note.get("summary") or note.get("excerpt") or "")
+            if strip_md(fallback).casefold() != strip_md(raw_title).casefold():
+                source_body = fallback
+        shown_title, shown_body = note_content(raw_title, source_body)
+        title_normalized = presentation_text(shown_title)
+        body_normalized = presentation_text(shown_body)
+        if len(title_normalized) >= 18 and (
+            body_normalized == title_normalized or
+            body_normalized.startswith(title_normalized + " ")
+        ):
+            presentation_errors.append(f"{ident}: headline repeated in article opening")
+        if len(shown_title) > 230:
+            presentation_errors.append(f"{ident}: headline contains an entire paragraph")
+        if re.search(r"&(x27|quot);", str(note.get("summary") or "")):
+            presentation_errors.append(f"{ident}: malformed/encoded text in summary")
+    assert not presentation_errors, "\\n".join(presentation_errors)
+
+    # Distinct headlines must retain the existing published URLs.
+    restored = {
+        "336302261": "judgment-framework-epistemically-examine-the-principles-336302261",
+        "211335608": "my-modified-ooda-loop-the-pc-uda-loop-1-211335608",
+        "81369757": "note-81369757",
+        "80229568": "every-piece-of-evidence-that-affects-our-confidence-in-an-outcome-change-80229568",
+        "80239952": "we-should-expect-to-receive-rewards-and-benefits-for-using-our-skills-an-80239952",
+    }
+    for ident, old_slug in restored.items():
+        assert note_slug(notes[ident]) == old_slug, ident
+    assert notes["336302261"]["title"] == "Judgment Framework"
+    assert notes["211335608"]["body"].startswith("1. Problem:")
+    assert notes["81369757"]["title"] == "Chesterton’s Fence"
+    assert "https://fs.blog/chestertons-fence/" in notes["81369757"]["body"]
+    # Keep directly authored Notes consistent with their rendered archive copies.
+    for ident, headline in {
+        "appetite-agent-budgeting-20261002": "Appetite Is a Value Judgment",
+        "product-judgment-agentic-era-20261002": "Product Judgment in the Agentic Era",
+    }.items():
+        assert notes[ident]["title"] == headline, ident
+        assert notes[ident].get("permalink"), ident
+
 
     # Arbitrarily spaced lists must show authored numbers, not restart at one.
     assert rendered_numbers("1. First\n\nDetail\n\n2. Second\n\n3. Third").top_level == [1, 2, 3]
