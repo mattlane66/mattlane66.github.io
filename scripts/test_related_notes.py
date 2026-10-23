@@ -5,7 +5,7 @@ from html.parser import HTMLParser
 from urllib.parse import urlsplit
 
 from check_site_consistency import active_notes
-from generate_note_pages import NOTES_HTML, OUT, note_slug
+from generate_note_pages import NOTES_HTML, OUT, note_slug, augment_custom_note
 from related_notes import related_notes
 
 class RelatedLinks(HTMLParser):
@@ -41,6 +41,13 @@ def main() -> None:
         {"id": "y", "title": "Enterprise audit billing architecture", "body": "Different database design and contracts.", "category": "Products & systems"},
     ]
     assert related_notes(lonely) == {}
+
+    # A regenerated custom interactive page must not accumulate duplicate UI.
+    template = "<html><head></head><body><main>Content</main></body></html>"
+    relation = '<aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul><li><a href="/notes/n/example/">Example</a></li></ul></aside>'
+    once = augment_custom_note(template, relation)
+    assert augment_custom_note(once, relation) == once
+    assert augment_custom_note(once, "") == template
 
     linked = 0
     for ident, note in notes.items():
