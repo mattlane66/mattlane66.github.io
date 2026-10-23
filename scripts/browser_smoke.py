@@ -89,6 +89,7 @@ def main() -> int:
         "title": "CI direct note sync test",
         "body": "This temporary note verifies direct Notes loading.",
         "category": "Writing & craft",
+        "related_note_ids": [],
     })
     DIRECT_NOTES.write_text(json.dumps(direct_notes, ensure_ascii=False), encoding="utf-8")
     # A direct note replaces the archive entry with the same ID; it is not
@@ -441,7 +442,26 @@ def main() -> int:
                                 failures.append(
                                     f"{viewport_name} /notes/: directly added test note did not render"
                                 )
-                            # The archive modal must use the published semantic list HTML.
+                            # Related links must actually navigate between Notes
+                            # within the existing dialog, on desktop and phone.
+                            page.evaluate("""() => openNote(NOTES.find(n => String(n.id) === 'requirements-are-design-work-20261021'))""")
+                            related = page.locator("#dbody .related-thinking a")
+                            related.first.wait_for(timeout=15_000)
+                            if related.count() < 1 or "shaping" not in related.first.inner_text().lower():
+                                failures.append(f"{viewport_name} /notes/: related links absent or unexpectedly ordered")
+                            else:
+                                related.first.click()
+                                page.wait_for_function(
+                                    "() => document.getElementById('dtitle').textContent === 'Shaping Is Finding a Buildable Path'",
+                                    timeout=10_000,
+                                )
+                                if not page.locator("#dialog[open]").count():
+                                    failures.append(f"{viewport_name} /notes/: related navigation closed the modal")
+                                if page.evaluate("location.hash") != "#note-shaping-a-buildable-path-20261019":
+                                    failures.append(f"{viewport_name} /notes/: related navigation lost the note hash")
+                            # Switch within the still-open dialog, matching how
+                            # related-note navigation works for readers.
+                            # The normal close behavior is checked separately below.
                             page.evaluate("""() => openNote(NOTES.find(n => String(n.id) === '299848006'))""")
                             page.locator("#dbody ol li").first.wait_for(timeout=15_000)
                             actual_numbers = page.evaluate("""() => {

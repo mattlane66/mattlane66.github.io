@@ -45,11 +45,28 @@ GitHub documents that commits made by a workflow with its default `GITHUB_TOKEN`
 
 Each Notes build refreshes up to three **Related thinking** links on individual
 Note pages. `scripts/related_notes.py` contains an intentionally small set of
-editorially checked pairs and a strict, deterministic fallback for newly added
-Notes. A shared category or vague topical resemblance never creates a link;
-Notes without sufficient evidence stay unlinked. The generated links also
+editorially checked pairs and a strict lexical fallback for legacy Notes.
+A shared category or vague topical resemblance never creates a link.
+Newly authored Notes require an explicit relevance review, not an algorithmic
+guess; an empty reviewed list prevents speculative lexical links. The generated links also
 appear in the existing Notes modal without changing filters or Starred.
 
-`scripts/test_related_notes.py` checks every generated page, valid destinations,
-and repeated generation of interactive custom pages. Keep reviewed pairs tied
-to stable Note IDs rather than mutable titles.
+**Every time a new Note is published:** review its meaning alongside the
+existing archive. If one to three genuinely related Notes exist, put their
+stable IDs in its `related_note_ids` array in `notes/direct-notes.json`, e.g.
+`"related_note_ids": ["shaping-a-buildable-path-20261019"]`.
+Do not fill these slots just to increase linking. Set
+`"related_note_ids": []` when there is no convincing relationship.
+**The field is required on every directly authored Note:** a missing field
+fails validation, so the review cannot accidentally be skipped. The generator
+creates reciprocal links on older Notes automatically, subject to the three-link
+display cap. Newly reviewed links take precedence over existing suggestions.
+
+`scripts/validate_notes.py` checks the shape of the author-supplied list;
+`scripts/test_related_notes.py` checks every generated page, destination,
+and repeated generation of interactive custom pages. A missing, deleted,
+duplicate, self-referential, or malformed editorial destination must fail
+the build—not become an invented or broken link. The browser smoke test
+also clicks a related-note link inside the existing Notes modal at desktop
+and mobile widths. Keep reviewed pairs tied to stable Note IDs rather than
+mutable titles.

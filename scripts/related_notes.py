@@ -89,7 +89,8 @@ def related_notes(notes: list[dict], limit: int = 3) -> dict[str, list[str]]:
     The matching rule deliberately favors precision over recall. Automatic
     links require TWO uncommon words in both headlines, supporting overlap in
     the bodies, and contextual agreement. A generic category match never
-    qualifies. Reviewed pairs are preferred, still capped by limit.
+    qualifies. Explicit reviewed IDs take precedence over global reviewed pairs,
+    then lexical fallback. All results are capped by limit.
     """
     by_id = {str(n["id"]): n for n in notes}
     ids = sorted(by_id)
@@ -110,10 +111,36 @@ def related_notes(notes: list[dict], limit: int = 3) -> dict[str, list[str]]:
     for priority, (a, b) in enumerate(REVIEWED_PAIRS):
         record(a, b, 1000.0 - priority)
 
+    # New notes can declare a small number of human-reviewed relationships.
+    # Source metadata is authoritative over old reviewed pairs and lexical
+    # suggestions. Links are reciprocal; no second edit to an old note is needed.
+    for source in ids:
+        note = by_id[source]
+        if "related_note_ids" not in note:
+            continue
+        destinations = note["related_note_ids"]
+        if not isinstance(destinations, list) or len(destinations) > limit:
+            raise ValueError(f"{source}: related_note_ids must be a list of at most {limit} note IDs")
+        if any(not isinstance(target, str) or not target.strip() for target in destinations):
+            raise ValueError(f"{source}: related_note_ids must contain nonempty string IDs")
+        if len(set(destinations)) != len(destinations):
+            raise ValueError(f"{source}: duplicate related_note_ids")
+        for priority, target in enumerate(destinations):
+            if target == source:
+                raise ValueError(f"{source}: a Note cannot link to itself")
+            if target not in by_id:
+                raise ValueError(f"{source}: related Note ID {target!r} does not exist")
+            record(source, target, 2000.0 - priority)
+
     # A strict lexical fallback, not an attempt to infer semantic similarity
     # from generic words like "design", "human", or "product".
     for offset, a in enumerate(ids):
         for b in ids[offset + 1:]:
+            # A publication-time editorial review is authoritative. Even an
+            # empty list means "no verified relation": do not invent one from
+            # lexical overlap. Reviewed global pairs still apply above.
+            if "related_note_ids" in by_id[a] or "related_note_ids" in by_id[b]:
+                continue
             shared_title = headlines[a] & headlines[b] & unusual
             if len(shared_title) < 2:
                 continue
