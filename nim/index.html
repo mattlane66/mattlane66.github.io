@@ -211,8 +211,10 @@
   document.addEventListener('keydown', event => {
     const onCell=event.target instanceof Element && event.target.closest('.cell');
     if (event.key === 'Escape' && pending.length) {pending=[];render();event.preventDefault();}
-    if (event.key === 'Enter' && !onCell && !event.repeat && !(event.target instanceof Element && event.target.closest('a,button,summary'))) {
-      if (pending.length) {event.preventDefault();confirmMove();}
+    if (event.key === 'Enter' && !event.repeat && pending.length &&
+        (onCell || !(event.target instanceof Element && event.target.closest('a,button,summary')))) {
+      event.preventDefault();
+      confirmMove();
     }
   });
   render();
