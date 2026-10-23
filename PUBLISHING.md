@@ -45,9 +45,10 @@ GitHub documents that commits made by a workflow with its default `GITHUB_TOKEN`
 
 Each Notes build refreshes up to three **Related thinking** links on individual
 Note pages. `scripts/related_notes.py` contains an intentionally small set of
-editorially checked pairs and a strict, deterministic fallback for newly added
-Notes. A shared category or vague topical resemblance never creates a link;
-Notes without sufficient evidence stay unlinked. The generated links also
+editorially checked pairs and a strict lexical fallback for legacy Notes.
+A shared category or vague topical resemblance never creates a link.
+Newly authored Notes require an explicit relevance review, not an algorithmic
+guess; an empty reviewed list prevents speculative lexical links. The generated links also
 appear in the existing Notes modal without changing filters or Starred.
 
 **Every time a new Note is published:** review its meaning alongside the
