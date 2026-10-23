@@ -49,6 +49,16 @@ def main() -> int:
         cat = n.get("category")
         if isinstance(cat, str) and cat not in CATEGORIES:
             errors.append(f"{label}: unknown category {cat!r}")
+        if "related_note_ids" in n:
+            related = n["related_note_ids"]
+            if not isinstance(related, list) or len(related) > 3:
+                errors.append(f"{label}: related_note_ids must be a list of at most three IDs")
+            elif any(not isinstance(other, str) or not other.strip() for other in related):
+                errors.append(f"{label}: related_note_ids must contain nonempty string IDs")
+            elif len(related) != len(set(related)):
+                errors.append(f"{label}: duplicate related_note_ids")
+            elif ident in related:
+                errors.append(f"{label}: cannot reference itself in related_note_ids")
     for problem in errors:
         print("ERROR:", problem)
     if errors:
