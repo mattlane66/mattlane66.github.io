@@ -59,6 +59,17 @@ def main() -> None:
     assert from_review[future["id"]][0] == "shaping-a-buildable-path-20261019"
     assert future["id"] in from_review["shaping-a-buildable-path-20261019"]
 
+    # An explicit no-match review must not be overridden by similarity alone.
+    # This synthetic note deliberately copies an existing note word for word.
+    source = notes["requirements-are-design-work-20261021"]
+    abstained = {
+        **source,
+        "id": "audit-reviewed-no-match",
+        "related_note_ids": [],
+    }
+    no_match = related_notes([*notes.values(), abstained])
+    assert abstained["id"] not in no_match
+
     # Bad editorial references are publication failures, never silently
     # dropped or converted into broken links.
     for invalid in (
