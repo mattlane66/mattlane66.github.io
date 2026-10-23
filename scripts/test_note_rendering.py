@@ -111,8 +111,8 @@ def main() -> None:
     # source-text overlap. Many titles legitimately appear in the source body,
     # but note_content should remove them from the displayed article.
     def presentation_text(text: str) -> str:
-        plain = re.sub(r"[\\W_]+", " ", strip_md(text).casefold())
-        return re.sub(r"\\s+", " ", plain).strip()
+        plain = re.sub(r"[\W_]+", " ", strip_md(text).casefold())
+        return re.sub(r"\s+", " ", plain).strip()
 
     presentation_errors = []
     for ident, note in notes.items():
