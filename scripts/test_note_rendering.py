@@ -150,6 +150,14 @@ def main() -> None:
     assert notes["211335608"]["body"].startswith("1. Problem:")
     assert notes["81369757"]["title"] == "Chesterton’s Fence"
     assert "https://fs.blog/chestertons-fence/" in notes["81369757"]["body"]
+    # Keep directly authored Notes consistent with their rendered archive copies.
+    for ident, headline in {
+        "appetite-agent-budgeting-20261002": "Appetite Is a Value Judgment",
+        "product-judgment-agentic-era-20261002": "Product Judgment in the Agentic Era",
+    }.items():
+        assert notes[ident]["title"] == headline, ident
+        assert notes[ident].get("permalink"), ident
+
 
     # Arbitrarily spaced lists must show authored numbers, not restart at one.
     assert rendered_numbers("1. First\n\nDetail\n\n2. Second\n\n3. Third").top_level == [1, 2, 3]
