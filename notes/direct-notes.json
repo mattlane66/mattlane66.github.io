@@ -125,7 +125,7 @@
   {
     "id": "appetite-agent-budgeting-20261002",
     "date": "2026-10-02",
-    "title": "Shape Up’s appetite is a value judgment, not an estimate.",
+    "title": "Appetite Is a Value Judgment",
     "summary": "Shape Up’s appetite is a value judgment, not an estimate.",
     "sourceCategory": "Product strategy and development",
     "category": "Products & systems",
@@ -135,7 +135,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "Shape Up’s appetite is a value judgment, not an estimate: decide how much team time a problem is worth, then shape scope to fit that creative constraint. Agents keep that principle, but now you have to budget machine execution and human review separately. Before the work starts, set: • Appetite: what the problem is…",
-    "words": 205
+    "words": 205,
+    "permalink": "shape-up-s-appetite-is-a-value-judgment-not-an-estimate-appetite-agent-budgeting-20261002"
   },
   {
     "id": "opportunity-judgment-loop-20261002",
@@ -155,7 +156,7 @@
   {
     "id": "product-judgment-agentic-era-20261002",
     "date": "2026-10-02",
-    "title": "Product judgment is the learned ability to make good decisions under ambiguity.",
+    "title": "Product Judgment in the Agentic Era",
     "summary": "Product judgment is the learned ability to make good decisions under ambiguity.",
     "sourceCategory": "Judgment, decisions, and problem-solving",
     "category": "Judgment & knowledge",
@@ -165,7 +166,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "Product judgment is the learned ability to make good decisions under ambiguity about what software should do, for whom, how simply it can do it, and whether the resulting artifact is actually good. In the agentic era, that matters even more. When AI agents handle more of the implementation, the scarce skill is no…",
-    "words": 151
+    "words": 151,
+    "permalink": "product-judgment-is-the-learned-ability-to-make-good-decisions-under-amb-product-judgment-agentic-era-20261002"
   },
   {
     "id": "opportunity-scoping-questions-20261002",
