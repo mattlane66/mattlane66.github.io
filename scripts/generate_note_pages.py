@@ -306,11 +306,11 @@ def augment_custom_note(source: str, related: str) -> str:
     # Custom pages may be preserved from the previous generated output.
     # Remove only our marked generated pieces before applying new links.
     source = re.sub(
-        r'<style id="generated-related-style">[\\s\\S]*?</style>', "", source, flags=re.I,
+        r'<style id="generated-related-style">.*?</style>', "", source, flags=re.I | re.S,
     )
     source = re.sub(
-        r'<aside class="related-thinking" aria-label="Related thinking">[\\s\\S]*?</aside>',
-        "", source, flags=re.I,
+        r'<aside class="related-thinking" aria-label="Related thinking">.*?</aside>',
+        "", source, flags=re.I | re.S,
     )
     if not related:
         return source
