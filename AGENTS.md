@@ -6,7 +6,7 @@ This is the source for https://mattlane66.github.io. Read `ARCHITECTURE.md` and 
 
 "Add this to my Notes: [text]", "Turn this into an article: [manuscript]", or "Add this case study: [materials]" is enough. Do not ask for a category, slug, filename, date, SEO summary, or template when these can be inferred from the content and repository. Check comparable existing pages first. Ask only when a genuinely consequential ambiguity remains.
 
-- **Note:** Edit `notes/direct-notes.json`, infer the existing category, supply a stable unique ID and today's date unless another publication date is specified. Preserve the supplied prose. Generate archive, individual page and sitemap using `scripts/generate_note_pages.py`.
+- **Note:** Edit `notes/direct-notes.json`, infer the existing category, supply a stable unique ID and today's date unless another publication date is specified. Preserve the supplied prose. Generate archive, individual page and sitemap using `scripts/generate_note_pages.py`. For each new Note, review genuinely related existing ideas and set up to three validated `related_note_ids` when warranted; otherwise leave them out. The generator makes the relationships reciprocal and updates older Note pages.
 - **Article:** Author `articles/<slug>/index.html` using the existing articles' editorial design and `assets/site-theme.css`. Update home-page Writing links if necessary, and regenerate the sitemap.
 - **Case study or other page:** Use the site's established standalone layouts and relevant navigation, assets and metadata. Do not force case studies into the article template.
 
