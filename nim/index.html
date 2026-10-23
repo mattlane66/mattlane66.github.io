@@ -21,7 +21,8 @@
     .eyebrow,.tiny {font:700 11px/1.4 Inter,"Helvetica Neue",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}
     .eyebrow {color:var(--orange)} .tiny {color:var(--muted)}
     h1 {font-size:clamp(88px,16vw,188px);letter-spacing:-.095em;line-height:.83;margin:15px 0 28px}
-    .intro {max-width:620px;font-size:clamp(17px,2.1vw,22px);line-height:1.38;letter-spacing:-.025em;margin:0 0 54px}
+    .intro {max-width:620px;font-size:clamp(17px,2.1vw,22px);line-height:1.38;letter-spacing:-.025em;margin:0 0 14px}
+    .rational-aside {max-width:620px;font-size:15px;line-height:1.5;color:var(--muted);margin:0 0 54px}
     .game {background:var(--panel);border:1px solid var(--ink);box-shadow:12px 12px 0 rgba(22,22,29,.075)}
     .game-top {display:flex;align-items:stretch;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
     .turn {display:flex;align-items:center;gap:14px;padding:24px 26px;min-width:255px}
@@ -70,7 +71,7 @@
     footer {border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:12px}
     @media(max-width:680px) {
       .wrap {width:calc(100% - 32px)} .nav {min-height:57px} main{padding:57px 0 64px}
-      h1{margin-bottom:22px}.intro{margin-bottom:35px}
+      h1{margin-bottom:22px}.intro{margin-bottom:13px}.rational-aside{margin-bottom:35px}
       .turn{padding:17px 18px;gap:12px;min-width:0}.avatar{width:50px;height:50px;font-size:29px}
       .metric{padding:15px 18px;min-width:100px}
       .board-zone{padding:23px 17px 22px}.board-head{align-items:start;flex-direction:column;gap:5px}.board-hint{text-align:left}
@@ -87,6 +88,7 @@
   <div class="eyebrow">Two players · One board · Perfect information</div>
   <h1>NIM.</h1>
   <p class="intro">Choose your cells. Think a few moves ahead. Whoever claims the last empty cell wins.</p>
+  <p class="rational-aside">Only the rational player wins. Unless both players are rational. Then who really wins? ;)</p>
   <section class="game" aria-label="NIM game">
     <div class="game-top">
       <div class="turn"><div class="avatar" id="avatar" aria-hidden="true">X</div><div><span class="turn-caption" id="turn-caption">Up next</span><p class="turn-name" id="turn-name">Player X</p></div></div>
