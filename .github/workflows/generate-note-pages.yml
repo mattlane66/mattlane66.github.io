@@ -9,6 +9,8 @@ on:
       - "notes/removed-note-ids.json"
       - "notes/n/**"
       - "scripts/generate_note_pages.py"
+      - "scripts/related_notes.py"
+      - "scripts/test_related_notes.py"
       - ".github/workflows/generate-note-pages.yml"
   workflow_dispatch:
 
