@@ -42,6 +42,41 @@ def main() -> None:
     ]
     assert related_notes(lonely) == {}
 
+    # A realistic future draft is conceptually related but does not share
+    # enough rare headline words to qualify for lexical matching alone.
+    # A publication-time editorial choice must create reciprocal links.
+    future = {
+        "id": "audit-future-shaping-note",
+        "title": "Working with agents under uncertainty",
+        "body": (
+            "Before agents implement software, make judgments about needs, "
+            "appetite, design constraints, and the smallest buildable outcome."
+        ),
+        "category": "Products & systems",
+        "related_note_ids": ["shaping-a-buildable-path-20261019"],
+    }
+    from_review = related_notes([*notes.values(), future])
+    assert from_review[future["id"]][0] == "shaping-a-buildable-path-20261019"
+    assert future["id"] in from_review["shaping-a-buildable-path-20261019"]
+
+    # Bad editorial references are publication failures, never silently
+    # dropped or converted into broken links.
+    for invalid in (
+        ["missing-destination"],
+        [future["id"]],
+        ["shaping-a-buildable-path-20261019"] * 2,
+        ["a", "b", "c", "d"],
+        "shaping-a-buildable-path-20261019",
+        None,
+    ):
+        sample = {**future, "related_note_ids": invalid}
+        try:
+            related_notes([*notes.values(), sample])
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"Invalid related_note_ids accepted: {invalid!r}")
+
     # A regenerated custom interactive page must not accumulate duplicate UI.
     template = "<html><head></head><body><main>Content</main></body></html>"
     relation = '<aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul><li><a href="/notes/n/example/">Example</a></li></ul></aside>'
