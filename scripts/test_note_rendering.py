@@ -81,6 +81,17 @@ def main() -> None:
         # The heading is independent of the authored first paragraph/quote.
         assert note_content(n["title"], n["body"]) == (headline, n["body"].strip()), ident
 
+    # A title-only Note must not render its imported, entity-corrupted
+    # summary as a second paragraph with the same text.
+    automation_note = notes["80206153"]
+    assert automation_note["title"] == "What you can't automate is to know what you should be trying to do."
+    assert automation_note["summary"] == automation_note["title"]
+    assert "&x27;" not in automation_note["summary"]
+    assert render_body(automation_note["body"]) == ""
+    assert automation_note["body"] == ""
+    assert note_slug(automation_note) == "what-you-can-t-automate-is-to-know-what-you-should-be-trying-to-do-80206153"
+    assert note_content(automation_note["title"], automation_note["body"]) == (automation_note["title"], "")
+
     # Arbitrarily spaced lists must show authored numbers, not restart at one.
     assert rendered_numbers("1. First\n\nDetail\n\n2. Second\n\n3. Third").top_level == [1, 2, 3]
     assert rendered_numbers("1. First\n\n    - Nested detail\n\n2. Second").top_level == [1, 2]
