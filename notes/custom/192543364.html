@@ -34,6 +34,11 @@ h1{font-size:clamp(39px,5.4vw,64px);line-height:1.03;letter-spacing:-.058em;marg
 @media(max-width:650px){.page{padding-top:35px}.intro{font-size:18px}.shell-head{padding:13px 15px}.stage{padding:21px 15px}.comparison{grid-template-columns:1fr;gap:11px}.panel{padding:16px}.panel h3{margin-top:8px}.maincopy{font-size:19px;margin-bottom:15px}.decision{margin-top:20px}.choice-row{grid-template-columns:1fr}.answer{padding:15px}.mobile-picker{flex-direction:column;align-items:stretch;gap:8px}.mobile-picker select{width:100%;max-width:none}.foot p{max-width:190px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 .text-list{max-width:840px;margin-top:30px;border-top:1px solid var(--line);padding-top:17px;font-family:Inter,"Helvetica Neue",Helvetica,Arial,sans-serif}.text-list summary{font-size:13px;font-weight:750;cursor:pointer;display:list-item;list-style-position:inside}.text-list ol{padding-left:28px}.text-list li{padding:18px 0;border-bottom:1px solid var(--line)}.text-list h3{font-size:19px;letter-spacing:-.02em;margin:0 0 10px}.text-list li p{font-size:14px;line-height:1.6;margin:7px 0}.plain-note{color:var(--muted);font-size:13px;line-height:1.6}
+
+/* Parent Notes dialog owns navigation and dismissal in embed mode. */
+.embedded-note .site-header,.embedded-note .footer{display:none}
+.embedded-note .page{width:min(1100px,calc(100% - 32px));padding:24px 0 54px}
+@media(max-width:650px){.embedded-note .page{width:calc(100% - 24px);padding:18px 0 35px}}
 </style>
 <meta property="og:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
 <meta property="og:image:alt" content="Matt Lane product strategy and interaction map">
@@ -42,6 +47,7 @@ h1{font-size:clamp(39px,5.4vw,64px);line-height:1.03;letter-spacing:-.058em;marg
 <meta name="twitter:description" content="Eleven mental models, their territory checks, warning signals, and the judgment that follows.">
 <meta name="twitter:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","@id":"https://mattlane66.github.io/notes/n/all-the-following-mental-models-are-handy-but-when-the-map-and-the-terri-192543364/#article","headline":"When the map and the territory disagree, trust the territory.","description":"Eleven mental models, their territory checks, warning signals, and the judgment that follows.","url":"https://mattlane66.github.io/notes/n/all-the-following-mental-models-are-handy-but-when-the-map-and-the-terri-192543364/","datePublished":"2025-12-28","dateModified":"2026-10-22","author":{"@type":"Person","@id":"https://mattlane66.github.io/#person","name":"Matt Lane","url":"https://mattlane66.github.io/"},"mainEntityOfPage":"https://mattlane66.github.io/notes/n/all-the-following-mental-models-are-handy-but-when-the-map-and-the-terri-192543364/"}</script>
+<script>if(new URLSearchParams(location.search).get("embed")==="1")document.documentElement.classList.add("embedded-note");</script>
 </head>
 <body>
 <header class="site-header"><div class="bar"><a class="brand" href="https://mattlane66.github.io/notes/">Matt Lane · Notes</a><a class="back" href="https://mattlane66.github.io/notes/#note-192543364">← All notes</a></div></header>
@@ -75,6 +81,13 @@ const navButtons=[...list.children];
 function showChoice(){const isCheck=choice==='check',m=models[current];$('fitChoice').setAttribute('aria-pressed',String(!isCheck));$('checkChoice').setAttribute('aria-pressed',String(isCheck));$('answerLabel').textContent=isCheck?'Better move · Territory check':'Better move · Rule fits';$('move').textContent=isCheck?m.better:m.good;}
 function loadModel(i){current=(i+models.length)%models.length;choice='check';const m=models[current];for(const field of ['rule','fits','territory','signal'])$(field).textContent=m[field];$('modelName').textContent=m.name;$('domain').textContent=m.domain;$('test').textContent=m.test;$('counter').textContent=`${String(current+1).padStart(2,'0')} / ${models.length}`;select.value=String(current);navButtons.forEach((b,j)=>b.setAttribute('aria-pressed',String(current===j)));showChoice();}
 $('fitChoice').addEventListener('click',()=>{choice='fit';showChoice();});$('checkChoice').addEventListener('click',()=>{choice='check';showChoice();});select.addEventListener('change',e=>loadModel(Number(e.target.value)));$('next').addEventListener('click',()=>loadModel(current+1));loadModel(0);
+// Allow Escape to dismiss the parent Notes modal while the iframe has focus.
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Escape' || !document.documentElement.classList.contains('embedded-note') || window.parent===window)return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  window.parent.postMessage({type:'mental-models:close-modal'},location.origin);
+},true);
 </script>
 </body>
 </html>
