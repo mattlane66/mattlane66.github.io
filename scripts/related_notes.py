@@ -7,7 +7,6 @@ No external APIs, embeddings or publishing-time network calls.
 """
 from __future__ import annotations
 
-import math
 import re
 import unicodedata
 from collections import Counter
@@ -31,7 +30,6 @@ REVIEWED_PAIRS = [["requirements-are-design-work-20261021","shaping-a-buildable-
     ["ai-language-defaults-20261002","188294577"],
     ["ai-language-defaults-20261002","product-judgment-agentic-era-20261002"],
     ["compounding-value-model-20261023","opportunity-judgment-loop-20261002"],
-    ["compounding-value-model-20261023","beauty-of-fit-20261018"],
     ["beauty-of-fit-20261018","80202998"],
     ["beauty-of-fit-20261018","96766775"],
     ["299848006","taste-20261001"],
@@ -60,7 +58,6 @@ REVIEWED_PAIRS = [["requirements-are-design-work-20261021","shaping-a-buildable-
     ["223396370","248651582"],
     ["106101095","85797688"],
     ["345298325","coding-vs-product-20261002"],
-    ["coding-vs-product-20261002","265799263"],
     ["80202193","90731649"],
     ["192543364","340781018"],
     ["80206153","188294577"],
@@ -110,8 +107,8 @@ def related_notes(notes: list[dict], limit: int = 3) -> dict[str, list[str]]:
         scores[a][b] = max(scores[a].get(b, 0), score)
         scores[b][a] = max(scores[b].get(a, 0), score)
 
-    for a, b in REVIEWED_PAIRS:
-        record(a, b, 100.0)
+    for priority, (a, b) in enumerate(REVIEWED_PAIRS):
+        record(a, b, 1000.0 - priority)
 
     # A strict lexical fallback, not an attempt to infer semantic similarity
     # from generic words like "design", "human", or "product".
