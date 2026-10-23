@@ -87,6 +87,12 @@ dialog.interactive-open .dbody{display:none}
   }
   .interactive-note-tools{padding:7px 12px}
 }
+
+.related-thinking{border-top:1px solid var(--line,#cfccc1);margin-top:30px;padding-top:20px}
+.related-thinking h2{font-family:Inter,Arial,sans-serif;font-size:12px;letter-spacing:.11em;text-transform:uppercase;margin:0 0 14px;color:var(--muted,#666)}
+.related-thinking ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.related-thinking li{padding:0;margin:0}
+.related-thinking a{color:inherit;text-underline-offset:3px}
 </style><noscript><style>.controls,.load{display:none!important}</style></noscript>
 <link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
 </head><body>
@@ -164,6 +170,15 @@ function resultExcerpt(n,title){
 function render(){const a=filtered();document.getElementById("surprise").disabled=!a.length;count.innerHTML='<b>'+a.length+'</b> note'+(a.length===1?'':'s')+(active!=="All"?' · '+active:'');grid.innerHTML=a.slice(0,limit).map(n=>{const title=feedTitle(n),excerpt=resultExcerpt(n,title),favorite=FAVORITE_NOTE_IDS.has(String(n.id));return '<a class="note '+cls(n)+(favorite?' favorite':'')+'" data-category="'+categoryKey(n.category)+'" data-id="'+n.id+'" href="'+noteHref(n)+'"><div><div class="date">'+n.date+'</div>'+(favorite?'<span class="favorite-star" aria-label="Favorite note" title="One of my favorites">★</span>':'')+'<p class="quote">'+escapeHtml(title)+'</p>'+(n.words>=24&&excerpt?'<p class="excerpt">'+escapeHtml(excerpt)+'</p>':'')+'</div><div class="foot"><span>'+escapeHtml(n.category)+'</span><span>'+(n.relation?'<span class="rel">related ↗</span>':'open →')+'</span></div></a>'}).join('')||'<p class="no-results">No notes match this search or category. Try another term or filter.</p>';load.hidden=a.length<=limit}
 CATS.forEach(c=>{const b=document.createElement("button");b.className="chip"+(c==="All"?" on":"")+(c==="Starred"?" favorites":"");b.textContent=c==="Starred"?"★ Starred":c;b.dataset.category=c==="Starred"?"favorites":categoryKey(c);b.setAttribute("aria-pressed",c==="All"?"true":"false");b.onclick=()=>{active=c;limit=72;[...chips.children].forEach(x=>{x.classList.toggle("on",x===b);x.setAttribute("aria-pressed",String(x===b))});render()};chips.appendChild(b)});document.getElementById("search").addEventListener("input",e=>{query=e.target.value;limit=72;render()});load.onclick=()=>{limit+=72;render()};document.getElementById("surprise").onclick=()=>{const a=filtered();openNote(a[Math.floor(Math.random()*a.length)])};grid.onclick=e=>{const b=e.target.closest("[data-id]");if(b){e.preventDefault();openNote(NOTES.find(n=>n.id===b.dataset.id))}};
 const dlg=document.getElementById("dialog");
+dlg.addEventListener("click",event=>{
+  const anchor=event.target.closest?.(".related-thinking a");
+  if(!anchor)return;
+  const destination=new URL(anchor.href,location.href).pathname;
+  const match=NOTES.find(note=>new URL(noteHref(note),location.href).pathname===destination);
+  if(!match)return;
+  event.preventDefault();
+  openNote(match);
+});
 // Only the active same-origin constellation frame may request dismissal.
 window.addEventListener("message",event=>{
   const frame=document.getElementById("interactive-note-frame");
@@ -195,7 +210,8 @@ function publishedNote(n){
         }
       }
       const discussion=doc.querySelector(".discussion .body");
-      return {body:article.innerHTML,discussion:discussion?discussion.innerHTML:""};
+      const related=doc.querySelector(".related-thinking");
+      return {body:article.innerHTML,discussion:discussion?discussion.innerHTML:"",related:related?related.outerHTML:""};
     });
     publishedNoteCache.set(url,promise);
     promise.catch(()=>publishedNoteCache.delete(url));
@@ -245,8 +261,8 @@ function openNote(n){
   const request=++activeNoteRequest;
   publishedNote(n).then(rendered=>{
     if(request!==activeNoteRequest||!dlg.open)return;
-    body.innerHTML=rendered.body;
-    body.hidden=!rendered.body;
+    body.innerHTML=rendered.body+(rendered.related||"");
+    body.hidden=!(rendered.body||rendered.related);
     if(n.discussion&&rendered.discussion)comments.innerHTML=rendered.discussion;
   }).catch(err=>{
     if(request!==activeNoteRequest||!dlg.open)return;

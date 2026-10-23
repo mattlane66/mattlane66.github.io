@@ -41,3 +41,15 @@ GitHub documents that commits made by a workflow with its default `GITHUB_TOKEN`
 
 **Privacy warning:** This is a *public repository*. A draft branch or PR is not private: unpublished manuscript text placed on GitHub may be visible before the homepage changes. For confidential drafts, prepare and inspect a local ChatGPT HTML preview first and commit only with informed approval.
 
+## Related thinking links
+
+Each Notes build refreshes up to three **Related thinking** links on individual
+Note pages. `scripts/related_notes.py` contains an intentionally small set of
+editorially checked pairs and a strict, deterministic fallback for newly added
+Notes. A shared category or vague topical resemblance never creates a link;
+Notes without sufficient evidence stay unlinked. The generated links also
+appear in the existing Notes modal without changing filters or Starred.
+
+`scripts/test_related_notes.py` checks every generated page, valid destinations,
+and repeated generation of interactive custom pages. Keep reviewed pairs tied
+to stable Note IDs rather than mutable titles.

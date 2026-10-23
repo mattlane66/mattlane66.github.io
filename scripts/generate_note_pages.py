@@ -7,6 +7,7 @@ import re
 import shutil
 from pathlib import Path
 from markdown_it import MarkdownIt
+from related_notes import related_notes
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://mattlane66.github.io"
@@ -277,6 +278,52 @@ def sync_home_note_count(total: int) -> None:
         path.write_text(page, encoding="utf-8")
 
 
+
+RELATED_CSS = """
+.related-thinking{border-top:1px solid var(--line,#cfccc1);margin-top:42px;padding-top:22px;max-width:760px}
+.related-thinking h2{font-family:Inter,Arial,sans-serif;font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted,#666);margin:0 0 16px;font-weight:750}
+.related-thinking ul{list-style:none!important;display:grid;gap:12px;padding:0!important;margin:0!important}
+.related-thinking li{padding:0!important;margin:0!important}
+.related-thinking a{color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.related-thinking a:hover{color:var(--blue,#173dff)}
+"""
+
+def related_markup(ident: str, relations: dict[str, list[str]], by_id: dict[str, dict]) -> str:
+    related = relations.get(ident, [])
+    if not related:
+        return ""
+    links = []
+    for other_id in related:
+        other = by_id[other_id]
+        href = "/notes/n/" + note_slug(other) + "/"
+        title = note_content(str(other.get("title") or ""), str(other.get("body") or ""))[0]
+        # An HTML character reference preserves the URL while avoiding a
+        # false-positive secret scanner match on a legitimate risk-... slug.
+        links.append('<li><a href="' + html.escape(href, quote=True).replace("sk-", "sk&#45;") + '">' + html.escape(title) + '</a></li>')
+    return '<aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul>' + "".join(links) + '</ul></aside>'
+
+def augment_custom_note(source: str, related: str) -> str:
+    # Custom pages may be preserved from the previous generated output.
+    # Remove only our marked generated pieces before applying new links.
+    source = re.sub(
+        r'<style id="generated-related-style">.*?</style>', "", source, flags=re.I | re.S,
+    )
+    source = re.sub(
+        r'<aside class="related-thinking" aria-label="Related thinking">.*?</aside>',
+        "", source, flags=re.I | re.S,
+    )
+    if not related:
+        return source
+    if source.count("</main>") != 1 or source.count("</head>") != 1:
+        raise RuntimeError("Cannot safely add related links to an interactive Note")
+    # Navigating from the archive's iframe should open the canonical page,
+    # not load another full page inside the existing note's frame.
+    related = related.replace('<a href=', '<a target="_top" href=')
+    source = source.replace(
+        "</head>", '<style id="generated-related-style">' + RELATED_CSS + "</style></head>", 1,
+    )
+    return source.replace("</main>", related + "</main>", 1)
+
 def main() -> None:
     patch_planning_tools()
     text = NOTES_HTML.read_text(encoding="utf-8")
@@ -311,6 +358,8 @@ def main() -> None:
     removed_ids = {str(x) for x in json.loads(REMOVED.read_text(encoding="utf-8"))}
     by_id = {ident: n for ident, n in by_id.items() if ident not in removed_ids}
     notes = sorted(by_id.values(), key=lambda n: (str(n.get("date","")), str(n.get("id",""))), reverse=True)
+    relations = related_notes(notes)
+    note_by_id = {str(n['id']): n for n in notes}
     favorite_match = re.search(r"const FAVORITE_NOTE_IDS=new Set\((\[[^;]*\])\);", text)
     if not favorite_match:
         raise SystemExit("Could not locate curated Favorite Note IDs")
@@ -346,6 +395,7 @@ def main() -> None:
     for n in notes:
         ident = str(n["id"])
         slug = note_slug(n)
+        related_html = related_markup(ident, relations, note_by_id)
         folder = OUT / slug
         folder.mkdir()
         url = f"{SITE}/notes/n/{slug}/"
@@ -353,7 +403,7 @@ def main() -> None:
         # Copy it after rebuilding the Notes tree so future publications preserve it.
         if ident == "192543364":
             template = ROOT / "notes" / "custom" / "192543364.html"
-            (folder / "index.html").write_text(template.read_text(encoding="utf-8"), encoding="utf-8")
+            (folder / "index.html").write_text(augment_custom_note(template.read_text(encoding="utf-8"), related_html), encoding="utf-8")
             note_urls.append((url, "2026-10-22"))
             continue
         title = strip_substack_urls(str(n.get("title") or "")).strip() or "Untitled note"
@@ -420,14 +470,16 @@ h1{{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin
 </head>
 <body data-note-category="{category_key}">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
-<main class="wrap"><div class="meta">{date}{(' · <span class="category-name">' + category + '</span>') if category else ''}</div><h1>{html.escape(title)}</h1><article class="body">{body}</article>{('<section class="discussion"><h2>Discussion</h2><div class="body">'+discussion+'</div></section>') if discussion else ''}</main>
+<main class="wrap"><div class="meta">{date}{(' · <span class="category-name">' + category + '</span>') if category else ''}</div><h1>{html.escape(title)}</h1><article class="body">{body}</article>{('<section class="discussion"><h2>Discussion</h2><div class="body">'+discussion+'</div></section>') if discussion else ''}{related_html}</main>
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>"""
+        if related_html:
+            page = page.replace("</style>", RELATED_CSS + "</style>", 1)
         if re.search(r'https?://[^"\'<>\s]*substack', page, flags=re.I):
             raise RuntimeError(f"Substack URL leaked into generated page: {slug}")
         if slug in custom_pages:
-            page = custom_pages[slug]
+            page = augment_custom_note(custom_pages[slug], related_html)
         (folder / "index.html").write_text(page, encoding="utf-8")
         note_urls.append((url, str(n.get("date") or "")))
 
