@@ -4,14 +4,16 @@
     "date": "2026-10-23",
     "title": "The AI-Native Manifesto",
     "category": "Products & systems",
-    "body": "AI agents can turn instructions into software. A working result can still be the wrong result.\n\nWe have come to value:\n\n**Human collaboration and accountable judgment** over autonomous execution\n\n**Value demonstrated in use** over software produced\n\n**Behavior verified against shared intent** over instructions followed\n\n**Changing course when evidence changes** over carrying out a plan\n\nThe things on the right matter when they serve the things on the left.\n\n## Twelve Principles\n\n1. **Make a difference worth making.** Meet a need or reveal a new possibility.\n2. **Learn from real people.** Simulations cannot establish demand.\n3. **Deliver early.** Build small, complete experiences that teach you something.\n4. **Build less.** Every feature, dependency, and agent must earn its place.\n5. **Bound the investment.** Set an appetite, limit human and machine costs, and protect quality.\n6. **Work together around shared intent.** Discuss uncertainty directly. Give people room to challenge decisions. Keep the resulting intent visible to teammates and agents.\n7. **Control autonomy.** Bound agents' authority and make consequential actions recoverable.\n8. **Verify independently.** Match the rigor of testing to the risk of being wrong.\n9. **Measure what matters.** Value and learning are progress. Generated output is not.\n10. **Improve the whole flow.** Account for review, recovery, and work in progress.\n11. **Design for lasting use.** Consider adoption, support, reliability, and economics.\n12. **Follow the evidence.** Revise, simplify, or stop when reality demands it."
+    "body": "AI agents can turn instructions into software. A working result can still be the wrong result.\n\nWe have come to value:\n\n**Human collaboration and accountable judgment** over autonomous execution\n\n**Value demonstrated in use** over software produced\n\n**Behavior verified against shared intent** over instructions followed\n\n**Changing course when evidence changes** over carrying out a plan\n\nThe things on the right matter when they serve the things on the left.\n\n## Twelve Principles\n\n1. **Make a difference worth making.** Meet a need or reveal a new possibility.\n2. **Learn from real people.** Simulations cannot establish demand.\n3. **Deliver early.** Build small, complete experiences that teach you something.\n4. **Build less.** Every feature, dependency, and agent must earn its place.\n5. **Bound the investment.** Set an appetite, limit human and machine costs, and protect quality.\n6. **Work together around shared intent.** Discuss uncertainty directly. Give people room to challenge decisions. Keep the resulting intent visible to teammates and agents.\n7. **Control autonomy.** Bound agents' authority and make consequential actions recoverable.\n8. **Verify independently.** Match the rigor of testing to the risk of being wrong.\n9. **Measure what matters.** Value and learning are progress. Generated output is not.\n10. **Improve the whole flow.** Account for review, recovery, and work in progress.\n11. **Design for lasting use.** Consider adoption, support, reliability, and economics.\n12. **Follow the evidence.** Revise, simplify, or stop when reality demands it.",
+    "related_note_ids": []
   },
   {
     "id": "compounding-value-model-20261023",
     "date": "2026-10-23",
     "title": "The Compounding Value Model",
     "category": "Products & systems",
-    "body": "People don't always know what they want. Sometimes they recognize a problem. Sometimes a new possibility changes what they want.\n\nA product can answer existing demand or reveal demand that wasn't apparent before.\n\n## 1. How value compounds\n\n**1. Find or create an opportunity.**\n\nUnderstand what people struggle to do, want to experience, or have yet to imagine.\n\n**2. Make something worth choosing.**\n\nDeliver an outcome or experience people value more than the available alternatives, including doing nothing.\n\n**3. Look for evidence of demand.**\n\n- They return.\n- They'd miss it.\n- They tell others.\n- They pay.\n\nWhat people do tells us more than what they say. No single signal proves demand.\n\n**4. Make the economics work.**\n\nCreate more value than you charge for. Capture enough to cover the costs of acquiring, serving, and retaining customers.\n\n**5. Build advantages that grow with use.**\n\nEach cycle can leave something valuable behind: deeper integration, a stronger network, better knowledge, or lower unit costs.\n\nAn advantage becomes a moat only when competitors struggle to reproduce or overcome it.\n\n**6. Turn those advantages into more value.**\n\nUse what accumulates to improve the product or its economics. Better value can attract more demand. More demand can strengthen the advantage.\n\nThe loop compounds when each turn makes the next one stronger.\n\n## 2. How to cause what matters\n\n| What matters | What to do |\n|---|---|\n| **They return.** | Deliver value reliably whenever the occasion arises. |\n| **They'd miss it.** | Become meaningfully better than what they could use instead. |\n| **They tell others.** | Create an experience or result worth sharing, and make sharing easy. |\n| **They pay.** | Make the value worth its price. Test that belief through actual purchases. |\n| **Switching costs.** | Build useful integrations, context, and capabilities that become costly to replace. |\n| **Network effects.** | Make each additional participant increase the value others receive. |\n| **Learning effects.** | Turn feedback from real outcomes into improvements competitors cannot easily replicate. |\n| **Economies of scale.** | Build operations that lower unit costs as volume grows. |\n\n## The principle\n\n**Make value compound.**\n\nCreate something people choose, return to, recommend, and willingly pay for.\n\nMake the economics sustainable.\n\nMake success strengthen the product and the business.\n\nMake that advantage difficult to copy.\n\n**Growth makes a business bigger. Compounding makes it stronger as it grows.**"
+    "body": "People don't always know what they want. Sometimes they recognize a problem. Sometimes a new possibility changes what they want.\n\nA product can answer existing demand or reveal demand that wasn't apparent before.\n\n## 1. How value compounds\n\n**1. Find or create an opportunity.**\n\nUnderstand what people struggle to do, want to experience, or have yet to imagine.\n\n**2. Make something worth choosing.**\n\nDeliver an outcome or experience people value more than the available alternatives, including doing nothing.\n\n**3. Look for evidence of demand.**\n\n- They return.\n- They'd miss it.\n- They tell others.\n- They pay.\n\nWhat people do tells us more than what they say. No single signal proves demand.\n\n**4. Make the economics work.**\n\nCreate more value than you charge for. Capture enough to cover the costs of acquiring, serving, and retaining customers.\n\n**5. Build advantages that grow with use.**\n\nEach cycle can leave something valuable behind: deeper integration, a stronger network, better knowledge, or lower unit costs.\n\nAn advantage becomes a moat only when competitors struggle to reproduce or overcome it.\n\n**6. Turn those advantages into more value.**\n\nUse what accumulates to improve the product or its economics. Better value can attract more demand. More demand can strengthen the advantage.\n\nThe loop compounds when each turn makes the next one stronger.\n\n## 2. How to cause what matters\n\n| What matters | What to do |\n|---|---|\n| **They return.** | Deliver value reliably whenever the occasion arises. |\n| **They'd miss it.** | Become meaningfully better than what they could use instead. |\n| **They tell others.** | Create an experience or result worth sharing, and make sharing easy. |\n| **They pay.** | Make the value worth its price. Test that belief through actual purchases. |\n| **Switching costs.** | Build useful integrations, context, and capabilities that become costly to replace. |\n| **Network effects.** | Make each additional participant increase the value others receive. |\n| **Learning effects.** | Turn feedback from real outcomes into improvements competitors cannot easily replicate. |\n| **Economies of scale.** | Build operations that lower unit costs as volume grows. |\n\n## The principle\n\n**Make value compound.**\n\nCreate something people choose, return to, recommend, and willingly pay for.\n\nMake the economics sustainable.\n\nMake success strengthen the product and the business.\n\nMake that advantage difficult to copy.\n\n**Growth makes a business bigger. Compounding makes it stronger as it grows.**",
+    "related_note_ids": []
   },
   {
     "id": "comedy-constellation-20261022",
@@ -24,42 +26,48 @@
     "excerpt": "Different comedians can arrive at similar comic moves by entirely different routes. Explore 44 creators, 88 examples, and the craft lenses connecting them in an interactive constellation.",
     "words": 70,
     "source": "https://mattlane66.github.io/notes/n/how-laughter-works-comedy-constellation-20261022/",
-    "custom_html": true
+    "custom_html": true,
+    "related_note_ids": []
   },
   {
     "id": "requirements-are-design-work-20261021",
     "date": "2026-10-21",
     "title": "Requirements Are Design Work",
     "category": "Products & systems",
-    "body": "A team watches someone repeat the same edit across 200 records. The requirement becomes: “Add bulk editing.”\n\nBut that's a proposed solution, not yet a justified requirement.\n\nThe person needs to make the intended changes accurately, without affecting other records, and with less repetitive effort. Bulk editing might accomplish that. So might a reusable rule, an import, or a different workflow that eliminates the repetition.\n\nThe distinction matters because requirements shape which solutions we consider. **How we frame the problem shapes which requirements we consider necessary.**\n\nToo often, teams collect feature requests, call them requirements, and hand them to builders. They specify too much, distinguish too little, and mistake the length of the list for the quality of the thinking.\n\nGood requirements follow from an understanding of the situation, a judgment about what should improve, and the conditions a solution must respect. Each should have a reason: a need to satisfy, an outcome to achieve, or a constraint to honor. Different designs may satisfy the same requirements. Some may make the original problem disappear.\n\nThis isn't merely documentation. It's design work. It requires understanding causes, deciding what matters, considering alternatives, making trade-offs, and testing whether the chosen design produces the intended change. Following a proposed design through real situations can reveal missing requirements, unintended consequences, and better ways to solve the problem.\n\nA product can satisfy every stated requirement and still fail. Sometimes the implementation is wrong. Sometimes the requirements were. Sometimes the team chose the wrong problem.\n\nTwo related articles develop the reasoning: [Uncovering the Causes of Demand](https://mattlane66.github.io/articles/uncovering-the-causes-of-demand/) examines how we understand the situation and identify opportunities. [Design as Functions](https://mattlane66.github.io/articles/design-as-functions/) examines how we derive requirements, evaluate candidate designs, and test whether they work.\n\n**The point isn't to write more requirements. It's to make better judgments about what must be true, and why.**"
+    "body": "A team watches someone repeat the same edit across 200 records. The requirement becomes: “Add bulk editing.”\n\nBut that's a proposed solution, not yet a justified requirement.\n\nThe person needs to make the intended changes accurately, without affecting other records, and with less repetitive effort. Bulk editing might accomplish that. So might a reusable rule, an import, or a different workflow that eliminates the repetition.\n\nThe distinction matters because requirements shape which solutions we consider. **How we frame the problem shapes which requirements we consider necessary.**\n\nToo often, teams collect feature requests, call them requirements, and hand them to builders. They specify too much, distinguish too little, and mistake the length of the list for the quality of the thinking.\n\nGood requirements follow from an understanding of the situation, a judgment about what should improve, and the conditions a solution must respect. Each should have a reason: a need to satisfy, an outcome to achieve, or a constraint to honor. Different designs may satisfy the same requirements. Some may make the original problem disappear.\n\nThis isn't merely documentation. It's design work. It requires understanding causes, deciding what matters, considering alternatives, making trade-offs, and testing whether the chosen design produces the intended change. Following a proposed design through real situations can reveal missing requirements, unintended consequences, and better ways to solve the problem.\n\nA product can satisfy every stated requirement and still fail. Sometimes the implementation is wrong. Sometimes the requirements were. Sometimes the team chose the wrong problem.\n\nTwo related articles develop the reasoning: [Uncovering the Causes of Demand](https://mattlane66.github.io/articles/uncovering-the-causes-of-demand/) examines how we understand the situation and identify opportunities. [Design as Functions](https://mattlane66.github.io/articles/design-as-functions/) examines how we derive requirements, evaluate candidate designs, and test whether they work.\n\n**The point isn't to write more requirements. It's to make better judgments about what must be true, and why.**",
+    "related_note_ids": []
   },
   {
     "id": "shaping-a-buildable-path-20261019",
     "date": "2026-10-19",
     "title": "Shaping Is Finding a Buildable Path",
     "category": "Products & systems",
-    "body": "A team reaches the middle of a project and discovers that a simple interface change needs a new permission model. It looks like an engineering delay. But the costly question was there before anyone started building.\n\nShaping is the work between deciding an opportunity matters and committing a team to build. It turns a rough idea into a coherent, buildable solution path without creating the finished design or code.\n\nBegin with a **frame**: where people struggle, what they do today, what happens as a result, and what they want to be different. Then set an **appetite**: the amount of team time the opportunity is worth, often two to six weeks. The appetite is a budget to design within, not a prediction of how long an unlimited solution will take.\n\nBring together people who understand the user, the design, and the system. A shaping session is not a status meeting, a brainstorming exercise, or a spec review. It is a few hours of working on the same problem, making and discarding provisional ideas, and deciding what belongs together.\n\n1. **Lay out the parts.** Put the important screens, states, actions, rules, and constraints on a shared board. Some will not have a place yet.\n\n2. **Find different paths.** Connect those parts into two or three plausible ways the product could work. Use an interaction schematic to show the screens or states, the actions people can take, and what changes when they act. This exposes the whole interaction before anyone worries about pixels.\n\n3. **Bring the system into view.** Under the visible actions, name the permissions, data, functions, and services they depend on. A button labeled “Share” might require a new access rule, an invitation record, and a notification. This is where engineering knowledge reveals what an innocent-looking interface conceals.\n\n4. **Sketch and investigate selectively.** If the arrangement of elements matters, draw a rough focal sketch of that part—not a finished mockup of every screen. If a technical, design, legal, or performance question could change the path, run a small spike and return with what you learned.\n\n5. **Check the fit.** Compare the paths against the original struggle, desired outcome, appetite, cost, complexity, risks, and existing system. Identify what fits, what is weak, and what blocks a path. Move between the whole design and its troublesome details until the trade-offs are clear.\n\nThe point is not to remove every unknown. It is to find a way the parts can work together, expose the expensive surprises before implementation, and leave capable builders room to make the remaining decisions.\n\nStop when the team can explain the path, what is in and out, why it fits the appetite, which risks have been resolved, and where implementation still has latitude.\n\nThen package the result in an Input Design Document so people who were not in the room can understand the same concept and build it without constant direction.\n\nPut the method to work in the [Shaping Board](https://mattlane66.github.io/planning-skills-for-agents-and-humans/shaping-board/), or use the [Figma playing field template](https://www.figma.com/community/file/1490786031847199566/shaping-session-playing-field-copy-me-template) for a collaborative shaping session.\n\n**The document records the shaping. It does not do the shaping.**"
+    "body": "A team reaches the middle of a project and discovers that a simple interface change needs a new permission model. It looks like an engineering delay. But the costly question was there before anyone started building.\n\nShaping is the work between deciding an opportunity matters and committing a team to build. It turns a rough idea into a coherent, buildable solution path without creating the finished design or code.\n\nBegin with a **frame**: where people struggle, what they do today, what happens as a result, and what they want to be different. Then set an **appetite**: the amount of team time the opportunity is worth, often two to six weeks. The appetite is a budget to design within, not a prediction of how long an unlimited solution will take.\n\nBring together people who understand the user, the design, and the system. A shaping session is not a status meeting, a brainstorming exercise, or a spec review. It is a few hours of working on the same problem, making and discarding provisional ideas, and deciding what belongs together.\n\n1. **Lay out the parts.** Put the important screens, states, actions, rules, and constraints on a shared board. Some will not have a place yet.\n\n2. **Find different paths.** Connect those parts into two or three plausible ways the product could work. Use an interaction schematic to show the screens or states, the actions people can take, and what changes when they act. This exposes the whole interaction before anyone worries about pixels.\n\n3. **Bring the system into view.** Under the visible actions, name the permissions, data, functions, and services they depend on. A button labeled “Share” might require a new access rule, an invitation record, and a notification. This is where engineering knowledge reveals what an innocent-looking interface conceals.\n\n4. **Sketch and investigate selectively.** If the arrangement of elements matters, draw a rough focal sketch of that part—not a finished mockup of every screen. If a technical, design, legal, or performance question could change the path, run a small spike and return with what you learned.\n\n5. **Check the fit.** Compare the paths against the original struggle, desired outcome, appetite, cost, complexity, risks, and existing system. Identify what fits, what is weak, and what blocks a path. Move between the whole design and its troublesome details until the trade-offs are clear.\n\nThe point is not to remove every unknown. It is to find a way the parts can work together, expose the expensive surprises before implementation, and leave capable builders room to make the remaining decisions.\n\nStop when the team can explain the path, what is in and out, why it fits the appetite, which risks have been resolved, and where implementation still has latitude.\n\nThen package the result in an Input Design Document so people who were not in the room can understand the same concept and build it without constant direction.\n\nPut the method to work in the [Shaping Board](https://mattlane66.github.io/planning-skills-for-agents-and-humans/shaping-board/), or use the [Figma playing field template](https://www.figma.com/community/file/1490786031847199566/shaping-session-playing-field-copy-me-template) for a collaborative shaping session.\n\n**The document records the shaping. It does not do the shaping.**",
+    "related_note_ids": []
   },
   {
     "id": "progress-isnt-always-getting-closer-20261019",
     "date": "2026-10-19",
     "title": "Progress isn't always getting closer to where you intended to go.",
     "category": "Judgment & knowledge",
-    "body": "Progress isn't always getting closer to where you intended to go. Sometimes it's discovering somewhere better to go. Never make your next decision merely because it was part of your previous plan. Make it because, given what you now know, it's still the best decision."
+    "body": "Progress isn't always getting closer to where you intended to go. Sometimes it's discovering somewhere better to go. Never make your next decision merely because it was part of your previous plan. Make it because, given what you now know, it's still the best decision.",
+    "related_note_ids": []
   },
   {
     "id": "beauty-of-fit-20261018",
     "date": "2026-10-18",
     "title": "The Beauty of Fit",
     "category": "Judgment & knowledge",
-    "body": "A thing can be simple and still fail, or complex and work beautifully. What matters is how its parts fit together and how the whole serves its purpose.\n\nThere are two dimensions to this fitness. Structural fit: the parts form a coherent whole. Functional fit: the whole suits what it is meant to do. When the two reinforce each other, we may experience that coherence as beauty.\n\nAbstract reasoning helps us discover and create this fit. It allows us to look beyond a thing's existing form, identify the relationships that matter, and imagine how they might be arranged differently.\n\nSometimes the breakthrough isn't a better part, but a better relationship between parts.\n\nBeauty may reveal fitness, but it cannot prove it. What appears coherent must still work in reality."
+    "body": "A thing can be simple and still fail, or complex and work beautifully. What matters is how its parts fit together and how the whole serves its purpose.\n\nThere are two dimensions to this fitness. Structural fit: the parts form a coherent whole. Functional fit: the whole suits what it is meant to do. When the two reinforce each other, we may experience that coherence as beauty.\n\nAbstract reasoning helps us discover and create this fit. It allows us to look beyond a thing's existing form, identify the relationships that matter, and imagine how they might be arranged differently.\n\nSometimes the breakthrough isn't a better part, but a better relationship between parts.\n\nBeauty may reveal fitness, but it cannot prove it. What appears coherent must still work in reality.",
+    "related_note_ids": []
   },
   {
     "id": "questions-that-never-change-20261016",
     "date": "2026-10-16",
     "title": "The questions I keep returning to",
     "category": "Judgment & knowledge",
-    "body": "The questions I keep returning to in my work never change:\n\n**How do we perceive what matters, discover the relationships that govern it, decide what ought to exist, give that judgment a working form, and recognize when reality proves us wrong?**"
+    "body": "The questions I keep returning to in my work never change:\n\n**How do we perceive what matters, discover the relationships that govern it, decide what ought to exist, give that judgment a working form, and recognize when reality proves us wrong?**",
+    "related_note_ids": []
   },
   {
     "id": "articulate-vs-scan-20261015",
@@ -67,14 +75,16 @@
     "title": "When to articulate. When to scan.",
     "category": "Products & systems",
     "also": "AI, automation, and future work",
-    "body": "Some things are easier to describe than to find. Others are easier to recognize than to describe.\n\nReordering groceries may take one sentence. Choosing a chair may require seeing twenty. Reviewing an agent's changes may require a visual comparison of what existed before and what exists now.\n\nThe mistake is to assume that conversation should replace the graphical interface. Conversation reduces the effort of navigation but introduces the effort of articulation. Which is easier depends on what the person knows, what the task requires, and what remains uncertain.\n\nAn agent can do the work without making every judgment for us. We may need to explore before we can specify a goal, delegate steps we don't know how to perform, or inspect a result before we can accept it.\n\nThe design problem is not choosing between conversation and graphical interfaces. It is making the next judgment easier.\n\nLet people articulate what is easier to say, scan what is easier to recognize, delegate what is easier to execute on their behalf, and inspect what they need to judge."
+    "body": "Some things are easier to describe than to find. Others are easier to recognize than to describe.\n\nReordering groceries may take one sentence. Choosing a chair may require seeing twenty. Reviewing an agent's changes may require a visual comparison of what existed before and what exists now.\n\nThe mistake is to assume that conversation should replace the graphical interface. Conversation reduces the effort of navigation but introduces the effort of articulation. Which is easier depends on what the person knows, what the task requires, and what remains uncertain.\n\nAn agent can do the work without making every judgment for us. We may need to explore before we can specify a goal, delegate steps we don't know how to perform, or inspect a result before we can accept it.\n\nThe design problem is not choosing between conversation and graphical interfaces. It is making the next judgment easier.\n\nLet people articulate what is easier to say, scan what is easier to recognize, delegate what is easier to execute on their behalf, and inspect what they need to judge.",
+    "related_note_ids": []
   },
   {
     "id": "art-of-seeing-20261013",
     "date": "2026-10-13",
     "title": "The Art of Seeing",
     "category": "Judgment & knowledge",
-    "body": "Someone glances toward the door. We notice the glance. We infer impatience. We may be wrong.\n\nThe art of seeing is learning to distinguish what we observe from what we make of it. We cannot know reality directly, but we can improve our ability to notice what matters, interpret what we notice, and recognize when we are mistaken.\n\nWe must become observationists.\n\nFour abilities we can cultivate\n\nAttention — What am I noticing, and what am I missing?\n\nLearn to direct attention deliberately. What stands out is not necessarily what matters.\n\nDiscrimination — What differences can I detect?\n\nLearn to perceive distinctions you once missed. A musician develops an ear for subtle changes in timing, tension, and harmony.\n\nInterpretation — What might explain what I observe?\n\nLook for patterns, relationships, and causes. Keep what you observe distinct from what you think it means. An explanation is not an observation.\n\nCalibration — What would show me that I'm wrong?\n\nTest your interpretations against independent evidence. Notice when expectations fail. Revise your understanding when the evidence demands it.\n\nIt is not enough to think differently. We must learn to see differently."
+    "body": "Someone glances toward the door. We notice the glance. We infer impatience. We may be wrong.\n\nThe art of seeing is learning to distinguish what we observe from what we make of it. We cannot know reality directly, but we can improve our ability to notice what matters, interpret what we notice, and recognize when we are mistaken.\n\nWe must become observationists.\n\nFour abilities we can cultivate\n\nAttention — What am I noticing, and what am I missing?\n\nLearn to direct attention deliberately. What stands out is not necessarily what matters.\n\nDiscrimination — What differences can I detect?\n\nLearn to perceive distinctions you once missed. A musician develops an ear for subtle changes in timing, tension, and harmony.\n\nInterpretation — What might explain what I observe?\n\nLook for patterns, relationships, and causes. Keep what you observe distinct from what you think it means. An explanation is not an observation.\n\nCalibration — What would show me that I'm wrong?\n\nTest your interpretations against independent evidence. Notice when expectations fail. Revise your understanding when the evidence demands it.\n\nIt is not enough to think differently. We must learn to see differently.",
+    "related_note_ids": []
   },
   {
     "id": "inevitability-before-revelation-20261005",
@@ -89,7 +99,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "Try to see inevitability before revelation. What is hard to see coming, then impossible to see any other way. How we see changes what we make. What we make changes what there is to see.",
-    "words": 35
+    "words": 35,
+    "related_note_ids": []
   },
   {
     "id": "ideas-arent-cheap-guesses-20261005",
@@ -104,7 +115,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "Notions are cheap. Insights are scarce. A coherent concept is hard-won. Ideas aren’t cheap. Guesses are.",
-    "words": 16
+    "words": 16,
+    "related_note_ids": []
   },
   {
     "id": "ai-language-defaults-20261002",
@@ -119,7 +131,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "People who use AI without enough language risk becoming products of its defaults. If you can’t name what you mean, what’s missing, or why something is wrong, the model starts supplying not just your answers, but your ways of thinking.",
-    "words": 40
+    "words": 40,
+    "related_note_ids": []
   },
   {
     "id": "ai-native-critical-path-20261002",
@@ -134,7 +147,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "An AI-native product means the features on the critical path require intelligence.",
-    "words": 12
+    "words": 12,
+    "related_note_ids": []
   },
   {
     "id": "appetite-agent-budgeting-20261002",
@@ -150,7 +164,8 @@
     "replyCount": 0,
     "excerpt": "Shape Up’s appetite is a value judgment, not an estimate: decide how much team time a problem is worth, then shape scope to fit that creative constraint. Agents keep that principle, but now you have to budget machine execution and human review separately. Before the work starts, set: • Appetite: what the problem is…",
     "words": 205,
-    "permalink": "shape-up-s-appetite-is-a-value-judgment-not-an-estimate-appetite-agent-budgeting-20261002"
+    "permalink": "shape-up-s-appetite-is-a-value-judgment-not-an-estimate-appetite-agent-budgeting-20261002",
+    "related_note_ids": []
   },
   {
     "id": "opportunity-judgment-loop-20261002",
@@ -165,7 +180,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "Opportunity Judgment Loop 1. Sense — notice a signal in the world. Look for anomalies, workarounds/misfits, unmet needs, changing behavior, or new capabilities that make previously impossible things possible. Treat need-signals and capability-signals differently: a new capability is an opportunity hypothesis, not…",
-    "words": 339
+    "words": 339,
+    "related_note_ids": []
   },
   {
     "id": "product-judgment-agentic-era-20261002",
@@ -181,7 +197,8 @@
     "replyCount": 0,
     "excerpt": "Product judgment is the learned ability to make good decisions under ambiguity about what software should do, for whom, how simply it can do it, and whether the resulting artifact is actually good. In the agentic era, that matters even more. When AI agents handle more of the implementation, the scarce skill is no…",
     "words": 151,
-    "permalink": "product-judgment-is-the-learned-ability-to-make-good-decisions-under-amb-product-judgment-agentic-era-20261002"
+    "permalink": "product-judgment-is-the-learned-ability-to-make-good-decisions-under-amb-product-judgment-agentic-era-20261002",
+    "related_note_ids": []
   },
   {
     "id": "opportunity-scoping-questions-20261002",
@@ -196,7 +213,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "High-value questions to ask when scoping which opportunities and desired outcomes to prioritize: Is this a proven behavior or a new one? How large is the opportunity, and at what rate is it growing? What are the baseline outcomes today? What assumptions are we making? Does this problem/opportunity recur? What…",
-    "words": 92
+    "words": 92,
+    "related_note_ids": []
   },
   {
     "id": "intent-discover-align-execute-20261002",
@@ -211,7 +229,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "Intent–Discover–Align–Execute Method Begin with intent, not commands. Explain the outcome you want, your current understanding, and the relevant context. Ask the gen AI model/LLM interface to challenge the framing, surface assumptions and unknowns, identify blind spots, and explore alternative approaches. Use that…",
-    "words": 143
+    "words": 143,
+    "related_note_ids": []
   },
   {
     "id": "distribution-in-ftux-20261002",
@@ -226,7 +245,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "Distribution should not sit outside the product as a later marketing problem. It has to be designed into the first use and proven from the beginning. The moment a user gets value, the product should naturally create something worth sharing, inviting others into, or building on. Otherwise, the company is not running…",
-    "words": 92
+    "words": 92,
+    "related_note_ids": []
   },
   {
     "id": "coding-vs-product-20261002",
@@ -241,7 +261,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "Coding is the production of software. Product is the ongoing selection, shaping, coordination, and evolution of software under changing conditions. That is why “build” has two meanings. Sometimes you build to learn. Sometimes you build for quality, reliability, and scale.",
-    "words": 40
+    "words": 40,
+    "related_note_ids": []
   },
   {
     "id": "director-navigator-loop-20261002",
@@ -256,7 +277,8 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "A director is a navigator who has learned to leave the first-person view without abandoning what the first-person view knows. The navigator encounters the system from inside it. Friction is not theoretical there. A beautiful design can still be frustrating. A coherent strategy can fall apart in use. A feature can…",
-    "words": 308
+    "words": 308,
+    "related_note_ids": []
   },
   {
     "id": "taste-20261001",
@@ -271,7 +293,7 @@
     "discussion": "",
     "replyCount": 0,
     "excerpt": "You lack taste when you can tell something is off but cannot say precisely what, why it matters, or what you would change. Taste closes that gap.",
-    "words": 156
+    "words": 156,
+    "related_note_ids": []
   }
 ]
-
