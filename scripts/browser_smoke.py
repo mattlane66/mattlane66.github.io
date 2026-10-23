@@ -89,6 +89,7 @@ def main() -> int:
         "title": "CI direct note sync test",
         "body": "This temporary note verifies direct Notes loading.",
         "category": "Writing & craft",
+        "related_note_ids": [],
     })
     DIRECT_NOTES.write_text(json.dumps(direct_notes, ensure_ascii=False), encoding="utf-8")
     # A direct note replaces the archive entry with the same ID; it is not
