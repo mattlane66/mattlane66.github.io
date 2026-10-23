@@ -1,5 +1,12 @@
 [
   {
+    "id": "ai-native-manifesto-20261023",
+    "date": "2026-10-23",
+    "title": "The AI-Native Manifesto",
+    "category": "Products & systems",
+    "body": "AI agents can turn instructions into software. A working result can still be the wrong result.\n\nWe have come to value:\n\n**Human judgment and accountability** over autonomous execution\n\n**Value demonstrated in use** over software produced\n\n**Behavior verified against shared intent** over instructions followed\n\n**Changing course when evidence changes** over carrying out a plan\n\nThe things on the right matter when they serve the things on the left.\n\n## Twelve Principles\n\n1. **Make a difference worth making.** Meet a need or reveal a new possibility.\n2. **Learn from real people.** Simulations cannot establish demand.\n3. **Deliver early.** Build small, complete experiences that teach you something.\n4. **Build less.** Every feature, dependency, and agent must earn its place.\n5. **Bound the investment.** Set an appetite, limit human and machine costs, and protect quality.\n6. **Share intent.** Keep the plan inspectable. Return to it when execution drifts.\n7. **Control autonomy.** Bound agents' authority and make consequential actions recoverable.\n8. **Verify independently.** Match the rigor of testing to the risk of being wrong.\n9. **Measure what matters.** Value and learning are progress. Generated output is not.\n10. **Improve the whole flow.** Account for review, recovery, and work in progress.\n11. **Design for lasting use.** Consider adoption, support, reliability, and economics.\n12. **Follow the evidence.** Revise, simplify, or stop when reality demands it."
+  },
+  {
     "id": "compounding-value-model-20261023",
     "date": "2026-10-23",
     "title": "The Compounding Value Model",
@@ -267,4 +274,3 @@
     "words": 156
   }
 ]
-
