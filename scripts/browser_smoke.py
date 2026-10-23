@@ -459,6 +459,7 @@ def main() -> int:
                                 if page.evaluate("location.hash") != "#note-shaping-a-buildable-path-20261019":
                                     failures.append(f"{viewport_name} /notes/: related navigation lost the note hash")
                             page.locator("#close").click()
+                            page.locator("#dialog[open]").wait_for(state="hidden", timeout=8_000)
                             # The archive modal must use the published semantic list HTML.
                             page.evaluate("""() => openNote(NOTES.find(n => String(n.id) === '299848006'))""")
                             page.locator("#dbody ol li").first.wait_for(timeout=15_000)
