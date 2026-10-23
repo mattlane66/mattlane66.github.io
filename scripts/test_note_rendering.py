@@ -86,6 +86,8 @@ def main() -> None:
     automation_note = notes["80206153"]
     assert automation_note["title"] == "What you can't automate is to know what you should be trying to do."
     assert automation_note["summary"] == automation_note["title"]
+    assert "&x27;" not in automation_note["summary"]
+    assert render_body(automation_note["body"]) == ""
     assert automation_note["body"] == ""
     assert note_slug(automation_note) == "what-you-can-t-automate-is-to-know-what-you-should-be-trying-to-do-80206153"
     assert note_content(automation_note["title"], automation_note["body"]) == (automation_note["title"], "")
