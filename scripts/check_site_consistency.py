@@ -14,7 +14,7 @@ import json
 import re
 import sys
 
-from generate_note_pages import ROOT, SITE, NOTE_CATEGORY_KEYS, slugify
+from generate_note_pages import ROOT, SITE, NOTE_CATEGORY_KEYS, note_slug
 
 HOME = ROOT / "index.html"
 ARCHIVE = ROOT / "notes" / "index.html"
@@ -100,7 +100,7 @@ def verify() -> list[str]:
         note = notes.get(ident)
         if note is None:
             continue
-        expected_href = f"./n/{slugify(str(note.get('title', '')))}-{ident}/"
+        expected_href = f"./n/{note_slug(note)}/"
         if href != expected_href:
             errors.append(f"Note {ident}: archive href {href!r}, expected {expected_href!r}")
         expected_category = NOTE_CATEGORY_KEYS.get(str(note.get("category")), "other")
@@ -108,7 +108,7 @@ def verify() -> list[str]:
             errors.append(f"Note {ident}: archive category is inconsistent")
 
     expected_detail = {
-        f"{slugify(str(note.get('title', '')))}-{ident}": ident
+        note_slug(note): ident
         for ident, note in notes.items()
     }
     actual_detail = {
