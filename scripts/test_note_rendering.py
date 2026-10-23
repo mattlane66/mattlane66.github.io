@@ -5,7 +5,7 @@ from html.parser import HTMLParser
 import json
 import re
 
-from generate_note_pages import NOTES_HTML, DIRECT, REMOVED, render_body, note_slug, note_content
+from generate_note_pages import NOTES_HTML, DIRECT, REMOVED, render_body, note_slug, note_content, strip_md
 
 
 class ListNumbers(HTMLParser):
@@ -106,6 +106,50 @@ def main() -> None:
     assert "<h1>Derya, 2013</h1>" in summer_page
     assert f'<article class="body"><p>{summer_note["body"]}</p></article>' in summer_page
     assert summer_page.count(summer_note["body"]) == 1
+
+    # Whole-archive presentation audit: check what readers see, not merely
+    # source-text overlap. Many titles legitimately appear in the source body,
+    # but note_content should remove them from the displayed article.
+    def presentation_text(text: str) -> str:
+        plain = re.sub(r"[\\W_]+", " ", strip_md(text).casefold())
+        return re.sub(r"\\s+", " ", plain).strip()
+
+    presentation_errors = []
+    for ident, note in notes.items():
+        raw_title = str(note.get("title") or "")
+        source_body = str(note.get("body") or "")
+        if not render_body(source_body):
+            fallback = str(note.get("summary") or note.get("excerpt") or "")
+            if strip_md(fallback).casefold() != strip_md(raw_title).casefold():
+                source_body = fallback
+        shown_title, shown_body = note_content(raw_title, source_body)
+        title_normalized = presentation_text(shown_title)
+        body_normalized = presentation_text(shown_body)
+        if len(title_normalized) >= 18 and (
+            body_normalized == title_normalized or
+            body_normalized.startswith(title_normalized + " ")
+        ):
+            presentation_errors.append(f"{ident}: headline repeated in article opening")
+        if len(shown_title) > 230:
+            presentation_errors.append(f"{ident}: headline contains an entire paragraph")
+        if re.search(r"&(x27|quot);", str(note.get("summary") or "")):
+            presentation_errors.append(f"{ident}: malformed/encoded text in summary")
+    assert not presentation_errors, "\\n".join(presentation_errors)
+
+    # Distinct headlines must retain the existing published URLs.
+    restored = {
+        "336302261": "judgment-framework-epistemically-examine-the-principles-336302261",
+        "211335608": "my-modified-ooda-loop-the-pc-uda-loop-1-211335608",
+        "81369757": "note-81369757",
+        "80229568": "every-piece-of-evidence-that-affects-our-confidence-in-an-outcome-change-80229568",
+        "80239952": "we-should-expect-to-receive-rewards-and-benefits-for-using-our-skills-an-80239952",
+    }
+    for ident, old_slug in restored.items():
+        assert note_slug(notes[ident]) == old_slug, ident
+    assert notes["336302261"]["title"] == "Judgment Framework"
+    assert notes["211335608"]["body"].startswith("1. Problem:")
+    assert notes["81369757"]["title"] == "Chesterton’s Fence"
+    assert "https://fs.blog/chestertons-fence/" in notes["81369757"]["body"]
 
     # Arbitrarily spaced lists must show authored numbers, not restart at one.
     assert rendered_numbers("1. First\n\nDetail\n\n2. Second\n\n3. Third").top_level == [1, 2, 3]
