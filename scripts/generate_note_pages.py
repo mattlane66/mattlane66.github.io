@@ -461,7 +461,8 @@ h1{{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 </body>
 </html>"""
-        page = page.replace("</style>", RELATED_CSS + "</style>", 1)
+        if related_html:
+            page = page.replace("</style>", RELATED_CSS + "</style>", 1)
         if re.search(r'https?://[^"\'<>\s]*substack', page, flags=re.I):
             raise RuntimeError(f"Substack URL leaked into generated page: {slug}")
         if slug in custom_pages:
