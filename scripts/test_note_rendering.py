@@ -92,6 +92,21 @@ def main() -> None:
     assert note_slug(automation_note) == "what-you-can-t-automate-is-to-know-what-you-should-be-trying-to-do-80206153"
     assert note_content(automation_note["title"], automation_note["body"]) == (automation_note["title"], "")
 
+    # The original one-paragraph memory must be displayed below a short title,
+    # never truncated into a headline or repeated as a summary paragraph.
+    summer_note = notes["227585143"]
+    summer_opening = "2013, the summer of my life. The summer I fell in love."
+    assert summer_note["title"] == "Derya, 2013"
+    assert summer_note["body"].startswith(summer_opening)
+    assert summer_note["body"].endswith("she made me laugh.")
+    assert summer_note["body"].count(summer_opening) == 1
+    assert note_slug(summer_note) == "2013-the-summer-of-my-life-the-summer-i-fell-in-love-the-first-time-we-m-227585143"
+    assert note_content(summer_note["title"], summer_note["body"]) == (summer_note["title"], summer_note["body"])
+    summer_page = (NOTES_HTML.parent / "n" / note_slug(summer_note) / "index.html").read_text(encoding="utf-8")
+    assert "<h1>Derya, 2013</h1>" in summer_page
+    assert f'<article class="body"><p>{summer_note["body"]}</p></article>' in summer_page
+    assert summer_page.count(summer_note["body"]) == 1
+
     # Arbitrarily spaced lists must show authored numbers, not restart at one.
     assert rendered_numbers("1. First\n\nDetail\n\n2. Second\n\n3. Third").top_level == [1, 2, 3]
     assert rendered_numbers("1. First\n\n    - Nested detail\n\n2. Second").top_level == [1, 2]
