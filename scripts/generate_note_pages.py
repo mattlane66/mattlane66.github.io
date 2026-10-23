@@ -286,6 +286,21 @@ def main() -> None:
     notes = json.loads(match.group(1))
 
     direct = json.loads(DIRECT.read_text(encoding="utf-8"))
+    if not isinstance(direct, list):
+        raise SystemExit("direct-notes.json must contain a JSON list")
+    # Keep the complete direct-Notes fallback available before any network request.
+    # It lets Favorites include direct notes immediately and remain usable offline.
+    fallback = "const DIRECT_NOTES_FALLBACK=" + json.dumps(
+        direct, ensure_ascii=False, separators=(",", ":")
+    ).replace("<", r"\u003c") + ";"
+    text, fallback_count = re.subn(
+        r"const DIRECT_NOTES_FALLBACK=\[[^\n]*\];",
+        lambda _: fallback,
+        text,
+        count=1,
+    )
+    if fallback_count != 1:
+        raise SystemExit("Could not locate embedded direct Notes fallback")
     by_id = {str(n["id"]): n for n in notes}
     for i, n in enumerate(direct):
         if not isinstance(n, dict) or not n.get("title") or not n.get("date"):
