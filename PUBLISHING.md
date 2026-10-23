@@ -50,6 +50,20 @@ Notes. A shared category or vague topical resemblance never creates a link;
 Notes without sufficient evidence stay unlinked. The generated links also
 appear in the existing Notes modal without changing filters or Starred.
 
-`scripts/test_related_notes.py` checks every generated page, valid destinations,
-and repeated generation of interactive custom pages. Keep reviewed pairs tied
-to stable Note IDs rather than mutable titles.
+**Every time a new Note is published:** review its meaning alongside the
+existing archive. If one to three genuinely related Notes exist, put their
+stable IDs in its `related_note_ids` array in `notes/direct-notes.json`, e.g.
+`"related_note_ids": ["shaping-a-buildable-path-20261019"]`.
+Do not fill these slots just to increase linking. Omit the field (or leave an
+empty list) when there is no convincing relationship. The generator creates
+reciprocal links on older Notes automatically, subject to the three-link
+display cap. Newly reviewed links take precedence over existing suggestions.
+
+`scripts/validate_notes.py` checks the shape of the author-supplied list;
+`scripts/test_related_notes.py` checks every generated page, destination,
+and repeated generation of interactive custom pages. A missing, deleted,
+duplicate, self-referential, or malformed editorial destination must fail
+the build—not become an invented or broken link. The browser smoke test
+also clicks a related-note link inside the existing Notes modal at desktop
+and mobile widths. Keep reviewed pairs tied to stable Note IDs rather than
+mutable titles.
