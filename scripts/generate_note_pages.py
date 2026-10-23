@@ -303,6 +303,15 @@ def related_markup(ident: str, relations: dict[str, list[str]], by_id: dict[str,
     return '<aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul>' + "".join(links) + '</ul></aside>'
 
 def augment_custom_note(source: str, related: str) -> str:
+    # Custom pages may be preserved from the previous generated output.
+    # Remove only our marked generated pieces before applying new links.
+    source = re.sub(
+        r'<style id="generated-related-style">[\\s\\S]*?</style>', "", source, flags=re.I,
+    )
+    source = re.sub(
+        r'<aside class="related-thinking" aria-label="Related thinking">[\\s\\S]*?</aside>',
+        "", source, flags=re.I,
+    )
     if not related:
         return source
     if source.count("</main>") != 1 or source.count("</head>") != 1:
@@ -310,7 +319,9 @@ def augment_custom_note(source: str, related: str) -> str:
     # Navigating from the archive's iframe should open the canonical page,
     # not load another full page inside the existing note's frame.
     related = related.replace('<a href=', '<a target="_top" href=')
-    source = source.replace("</head>", "<style>" + RELATED_CSS + "</style></head>", 1)
+    source = source.replace(
+        "</head>", '<style id="generated-related-style">' + RELATED_CSS + "</style></head>", 1,
+    )
     return source.replace("</main>", related + "</main>", 1)
 
 def main() -> None:
