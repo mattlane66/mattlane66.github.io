@@ -136,6 +136,11 @@ def related_notes(notes: list[dict], limit: int = 3) -> dict[str, list[str]]:
     # from generic words like "design", "human", or "product".
     for offset, a in enumerate(ids):
         for b in ids[offset + 1:]:
+            # A publication-time editorial review is authoritative. Even an
+            # empty list means "no verified relation": do not invent one from
+            # lexical overlap. Reviewed global pairs still apply above.
+            if "related_note_ids" in by_id[a] or "related_note_ids" in by_id[b]:
+                continue
             shared_title = headlines[a] & headlines[b] & unusual
             if len(shared_title) < 2:
                 continue
