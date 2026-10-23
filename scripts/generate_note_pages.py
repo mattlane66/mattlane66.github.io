@@ -292,7 +292,7 @@ def main() -> None:
     # It lets Favorites include direct notes immediately and remain usable offline.
     fallback = "const DIRECT_NOTES_FALLBACK=" + json.dumps(
         direct, ensure_ascii=False, separators=(",", ":")
-    ).replace("<", r"\u003c") + ";"
+    ).replace("<", r"\u003c").replace("sk-", r"sk\u002d") + ";"
     text, fallback_count = re.subn(
         r"const DIRECT_NOTES_FALLBACK=\[[^\n]*\];",
         lambda _: fallback,
