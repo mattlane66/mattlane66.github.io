@@ -53,6 +53,33 @@ footer{border-top:1px solid var(--rule);padding:24px 0;color:var(--muted);font-s
 html.embedded .site-header{display:none}html.embedded main{padding-top:24px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fill{transition:none}}
 select{width:100%;font:inherit;font-size:12px;padding:8px 10px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+
+/* Appetite is a constrained commitment between the two economic decisions. */
+.capacity-section{margin:0 0 61px}.capacity-section h2{font-size:clamp(29px,4vw,43px);line-height:1.12;letter-spacing:-.045em;margin:0 0 10px}
+.capacity-section .thesis{font:19px/1.48 Georgia,"Times New Roman",serif;margin:0 0 10px;max-width:800px}
+.capacity-section .explain{max-width:800px;margin-bottom:22px}
+.capacity-fields-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:12px;row-gap:1px}
+.capacity-fields-two .field{min-width:0;margin:5px 0 15px}
+.capacity-fields-two label,.quality-field label{font-size:12px;font-weight:700;line-height:1.4;display:block;margin-bottom:8px}
+.cap-input-unit{height:39px;display:flex;align-items:center;gap:6px;border:1px solid #d2cabb;padding:0 10px;min-width:0;background:#fffefb}
+.cap-input-unit:focus-within{outline:2px solid var(--blue);outline-offset:1px}
+.cap-input-unit input{min-width:0;width:100%;background:transparent;border:0;outline:0;color:var(--ink);font-size:16px;line-height:1;font-variant-numeric:tabular-nums;font-weight:650;padding:0}
+.cap-input-unit span{font-size:10px;line-height:1.2;color:var(--muted);white-space:nowrap}
+.capacity-equation{margin:-7px 0 20px;font-size:11px;line-height:1.55;color:#5a5851}
+.capacity-equation strong{color:var(--ink);font-variant-numeric:tabular-nums}
+.quality-field{border-top:1px solid var(--rule);padding-top:16px;margin:10px 0 13px}
+.quality-field input{display:block;width:100%;border:1px solid #d2cabb;padding:10px 11px;background:#fffefb;color:var(--ink);font-size:12px;line-height:1.4}
+.quality-field .hint{margin-top:7px}
+.capacity-forecast{margin:0 0 11px}
+.capacity-result{font:17px/1.45 Georgia,"Times New Roman",serif;margin:12px 0 19px}
+.cap-meter{margin:0 0 14px}
+.cap-meter-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:7px;font-size:11px}
+.cap-meter-head span{color:#514f4b}.cap-meter-head strong{font-size:11px;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.cap-track{height:7px;background:#e9e4d9;overflow:hidden}.cap-bar{height:100%;background:var(--blue);width:0;max-width:100%}.cap-bar.over{background:var(--danger)}
+.capacity-tightest{font-size:11px;line-height:1.6;color:#4f4b44;margin:11px 0 0}
+.capacity-section .results .model-foot{margin-top:18px}
+@media(max-width:770px){.capacity-section{margin-bottom:46px}}
+@media(max-width:390px){.capacity-fields-two{gap:2px 8px}.cap-input-unit{padding:0 7px}.cap-input-unit span{font-size:10px}.cap-meter-head{font-size:10px}.cap-meter-head strong{font-size:10px}}
 </style>
 
 <style id="economics-final-layout">
@@ -99,7 +126,7 @@ button.reset{background:transparent;border:0;border-bottom:1px solid var(--muted
 <p class="eyebrow">Products &amp; systems · 25 October 2026</p>
 <h1>The economics of AI-native product development.</h1>
 <p class="lead">When software becomes cheaper to produce, the advantage moves toward deciding what is worth making—and how best to make it.</p>
-<p class="intro">More generated software is not necessarily more value. Human judgment, verification, integration, and failure remain costly. Two decisions help direct investment: choose a bet on the evidence, then choose the least costly acceptable way to execute it.</p>
+<p class="intro">More generated software is not necessarily more value. Human judgment, verification, integration, and failure remain costly. Two decisions help direct investment: choose a bet on the evidence, then choose the least costly acceptable way to execute it. Between them, define an appetite that bounds the work.</p>
 <div class="logic" aria-label="Two economic decisions">
   <div><b>01 · Choose the bet</b><span>Build, test, or stop?</span></div><span class="arrow" aria-hidden="true">→</span>
   <div><b>02 · Choose the route</b><span>Agent, review, rules, or human?</span></div>
@@ -142,7 +169,51 @@ button.reset{background:transparent;border:0;border-bottom:1px solid var(--muted
    <div class="model-foot">The illustration assumes two eventual outcomes (success or failure), an informative binary signal, rational updating, and risk-neutral expected monetary benefit. The successful outcome's benefit is reduced by two weeks of delay only if built after the test. The test itself costs money whether or not you build. Benefit and costs are expressed in the same economic units; user value still needs independent real-world evidence.</div>
   </div>
  </div>
- <div class="budget-bridge"><strong>Appetite is a separate judgment.</strong><span id="bet-appetite">First decide whether the opportunity deserves investment. Then choose the maximum amount of human time, machine execution, money, and calendar time you are prepared to commit—and the quality floor that must not move. An estimated build cost is not that commitment.</span></div>
+ <div class="budget-bridge"><strong>Appetite is a separate judgment.</strong><span id="bet-appetite">Set a deliberate commitment after deciding whether the bet is worthwhile; an estimated build cost is not an appetite. Use the capacity check below to test whether a proposed slice fits that commitment.</span></div>
+</section>
+
+
+<section class="capacity-section" aria-labelledby="capacity-title">
+ <p class="section-label">Between the decisions / Commitment</p>
+ <h2 id="capacity-title">Set the appetite. Check the fit.</h2>
+ <p class="thesis">Bound the human work, machine runtime, spending, and elapsed time separately.</p>
+ <p class="explain">An appetite says what the opportunity is <em>worth committing</em>, not how long an unlimited solution might take. Set the limits before agents expand the scope. Compare a proposed slice against each limit; cut optional scope or place a new bet when it does not fit. Quality is a condition of acceptance, not something to trade for a cheaper route.</p>
+ <div class="model capacity-model">
+  <div class="controls">
+   <div class="subhead-row"><p class="subhead">Choose your commitment</p><button type="button" class="reset" id="reset-capacity">Reset example</button></div>
+   <div class="capacity-fields-two">
+    <div class="field"><label for="cap-people">People assigned</label><div class="cap-input-unit"><input id="cap-people" type="number" min="1" max="20" step="1" value="2" inputmode="numeric"><span>people</span></div></div>
+    <div class="field"><label for="cap-weeks">Calendar deadline</label><div class="cap-input-unit"><input id="cap-weeks" type="number" min="1" max="26" step="1" value="6" inputmode="numeric"><span>weeks</span></div></div>
+   </div>
+   <div class="field"><div class="field-head"><label for="cap-share">Time allocated to this bet</label><output id="cap-share-out" for="cap-share">100%</output></div><input id="cap-share" type="range" min="10" max="100" step="5" value="100"></div>
+   <p class="capacity-equation">At 40 hours per person-week: <strong id="cap-human-budget">480 human hours</strong> available for shaping, direction, integration, and review.</p>
+   <div class="capacity-fields-two">
+    <div class="field"><label for="cap-agent">Agent runtime cap</label><div class="cap-input-unit"><input id="cap-agent" type="number" min="1" max="20000" step="20" value="240" inputmode="numeric"><span>agent-h</span></div></div>
+    <div class="field"><label for="cap-cash">Incremental cash cap</label><div class="cap-input-unit"><span aria-hidden="true">$</span><input id="cap-cash" type="number" min="0" max="1000000" step="100" value="5000" inputmode="numeric"></div></div>
+   </div>
+   <div class="field quality-field"><label for="cap-quality">Required quality floor</label><input type="text" id="cap-quality" maxlength="180" autocomplete="off" placeholder="e.g. Tests pass; no unauthorized actions" aria-describedby="cap-quality-hint"><p class="hint" id="cap-quality-hint">State a testable condition before committing. Passing budgets never proves that condition has been met.</p></div>
+   <p class="hint">Agent-hours are <strong>aggregate machine execution</strong>, including parallel agents and retries; not elapsed time. The cash cap covers incremental tools, infrastructure, and outside costs, not the salaried team-hours counted above.</p>
+  </div>
+  <div class="results">
+   <p class="subhead">Compare one proposed slice</p>
+   <div class="capacity-fields-two capacity-forecast">
+    <div class="field"><label for="need-human">Human effort</label><div class="cap-input-unit"><input id="need-human" type="number" min="0" max="100000" step="10" value="160" inputmode="numeric"><span>hours</span></div></div>
+    <div class="field"><label for="need-agent">Agent execution</label><div class="cap-input-unit"><input id="need-agent" type="number" min="0" max="100000" step="10" value="200" inputmode="numeric"><span>agent-h</span></div></div>
+    <div class="field"><label for="need-cash">Incremental spend</label><div class="cap-input-unit"><span aria-hidden="true">$</span><input id="need-cash" type="number" min="0" max="1000000" step="100" value="3500" inputmode="numeric"></div></div>
+    <div class="field"><label for="need-weeks">Estimated critical path</label><div class="cap-input-unit"><input id="need-weeks" type="number" min="0" max="52" step="0.5" value="5" inputmode="decimal"><span>weeks</span></div></div>
+   </div>
+   <span id="cap-status" class="status bad" aria-live="polite">Specify a quality floor</span>
+   <p id="cap-reason" class="capacity-result" aria-live="polite">The illustrative slice fits the resource limits; define a quality floor before considering a commitment complete.</p>
+   <div class="capacity-meters" aria-label="Capacity comparison">
+    <div class="cap-meter"><div class="cap-meter-head"><span>Human capacity</span><strong id="cap-human-use">160 / 480 h</strong></div><div class="cap-track" aria-hidden="true"><div id="cap-human-bar" class="cap-bar"></div></div></div>
+    <div class="cap-meter"><div class="cap-meter-head"><span>Agent execution</span><strong id="cap-agent-use">200 / 240 agent-h</strong></div><div class="cap-track" aria-hidden="true"><div id="cap-agent-bar" class="cap-bar"></div></div></div>
+    <div class="cap-meter"><div class="cap-meter-head"><span>Incremental spend</span><strong id="cap-cash-use">$3,500 / $5,000</strong></div><div class="cap-track" aria-hidden="true"><div id="cap-cash-bar" class="cap-bar"></div></div></div>
+    <div class="cap-meter"><div class="cap-meter-head"><span>Calendar (critical path)</span><strong id="cap-weeks-use">5 / 6 weeks</strong></div><div class="cap-track" aria-hidden="true"><div id="cap-weeks-bar" class="cap-bar"></div></div></div>
+   </div>
+   <p id="cap-tightest" class="capacity-tightest">Tightest limits: machine runtime and calendar.</p>
+   <div class="model-foot">The proposed effort, cash, and critical path are separately entered <em>estimates</em>, not values derived from the other two models. Parallelism can shorten elapsed time without reducing aggregate agent-hours. Actual task dependencies, review queues, access constraints, and human availability still need shaping and verification.</div>
+  </div>
+ </div>
 </section>
 
 <section class="case" aria-labelledby="two-title">
@@ -178,9 +249,9 @@ button.reset{background:transparent;border:0;border-bottom:1px solid var(--muted
 </section>
 
 <section class="outro"><h2>Two decisions. One learning loop.</h2>
-<p>Choose investments on their expected contribution and the value of learning. Then choose execution routes by the full cost of an acceptable result. Set the appetite between them: the budget and quality boundary that keeps a promising bet from becoming unlimited work.</p>
+<p>Choose investments on their expected contribution and the value of learning. Then choose execution routes by the full cost of an acceptable result. The appetite check between them makes the budget and quality boundary explicit, so a promising bet cannot become unlimited work.</p>
 <p>As generation gets cheaper, the constraint can move to review, integration, or judgment. A faster agent does not automatically produce more validated value. Observe what people actually do, compare the result with shared intent, and revise the next decision.</p></section>
-<div class="disclaimer"><b>What these models can and cannot tell you.</b> They are transparent sensitivity exercises, not measured forecasts or a validated operating system. The first compares a single uncertain bet; the second compares one representative task inside a bet. They are deliberately not numerically coupled: a representative task cannot establish the full task mix, review demand, calendar duration, or appetite for an entire product. This synthesis draws on <a href="https://basecamp.com/shapeup/1.2-chapter-03">Shape Up's appetite</a>, <a href="https://lpd2.com/sample-page/the-principles-of-flow/">Reinertsen's flow economics</a>, and conventional Bayesian decision and value-of-information reasoning.</div>
+<div class="disclaimer"><b>What these models can and cannot tell you.</b> They are transparent sensitivity exercises, not measured forecasts or a validated operating system. The first compares a single uncertain bet; the second compares one representative task inside a bet. The capacity illustration is not numerically derived from either decision: a representative task cannot establish an entire product’s task mix, review demand, critical path, or appetite. Its inputs are independent estimates. The four modeled limits are necessary, not sufficient, conditions for a viable release. This synthesis draws on <a href="https://basecamp.com/shapeup/1.2-chapter-03">Shape Up's appetite</a>, <a href="https://lpd2.com/sample-page/the-principles-of-flow/">Reinertsen's flow economics</a>, and conventional Bayesian decision and value-of-information reasoning.</div>
 
 <aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul><li><a target="_top" href="/notes/n/the-ai-native-manifesto-ai-native-manifesto-20261023/">The AI-Native Manifesto</a></li><li><a target="_top" href="/notes/n/shape-up-s-appetite-is-a-value-judgment-not-an-estimate-appetite-agent-budgeting-20261002/">Appetite Is a Value Judgment</a></li></ul></aside></main><footer><div class="wrap">Independent synthesis · Not endorsed by Reinertsen or Singer</div></footer>
 <script>
@@ -259,6 +330,58 @@ bind(['risk','sev','review-cost','rel','delay','deterministic'],renderRoute);
 $('reset-bet').addEventListener('click',()=>{for(const key of ['upside','prior','invest','testcost','reliab','wkdelay'])$(key).value=defaults[key];renderBets();});
 $('reset-route').addEventListener('click',()=>{for(const key of ['risk','sev','review-cost','rel','delay'])$(key).value=defaults[key];$('deterministic').checked=false;renderRoute();});
 renderBets();renderRoute();
+
+function capacityNumber(id,min,max){
+ const el=$(id);const raw=el.value.trim();const parsed=raw===''?NaN:Number(raw);
+ return Number.isFinite(parsed)?Math.min(max,Math.max(min,parsed)):min;
+}
+function renderCapacity(){
+ const people=capacityNumber('cap-people',1,20),weeks=capacityNumber('cap-weeks',1,26),share=capacityNumber('cap-share',10,100);
+ const agentLimit=capacityNumber('cap-agent',1,20000),cashLimit=capacityNumber('cap-cash',0,1000000);
+ const humanLimit=people*weeks*40*share/100;
+ const values=[
+  {name:'human time',label:'Human capacity',id:'human',needed:capacityNumber('need-human',0,100000),limit:humanLimit,unit:'h'},
+  {name:'agent execution',label:'Agent runtime',id:'agent',needed:capacityNumber('need-agent',0,100000),limit:agentLimit,unit:'agent-h'},
+  {name:'incremental spend',label:'Cash',id:'cash',needed:capacityNumber('need-cash',0,1000000),limit:cashLimit,unit:'money'},
+  {name:'calendar time',label:'Calendar',id:'weeks',needed:capacityNumber('need-weeks',0,52),limit:weeks,unit:'weeks'}
+ ];
+ $('cap-share-out').textContent=share+'%';
+ $('cap-human-budget').textContent=humanLimit.toLocaleString('en-US')+' human hours';
+ for(const v of values){
+   const formatted=v.unit==='money'?money(v.needed)+' / '+money(v.limit):v.needed.toLocaleString('en-US')+' / '+v.limit.toLocaleString('en-US')+' '+v.unit;
+   $('cap-'+v.id+'-use').textContent=formatted;
+   const ratio=v.limit>0?v.needed/v.limit:(v.needed>0?Infinity:0);
+   const bar=$('cap-'+v.id+'-bar');bar.style.width=(100*Math.min(1,ratio))+'%';bar.classList.toggle('over',ratio>1+1e-8);
+   v.ratio=ratio;
+ }
+ const overruns=values.filter(v=>v.ratio>1+1e-8).map(v=>v.name);
+ const floor=$('cap-quality').value.trim();
+ const missingFloor=floor.length===0;
+ if(overruns.length){
+   setStatus('cap-status','Outside appetite',true);
+   $('cap-reason').textContent='The proposed slice exceeds '+overruns.join(overruns.length===2?' and ':', ') + (missingFloor?'. The quality floor also needs to be defined.':'. Reduce the proposed scope or explicitly make a new bet.');
+ }else if(missingFloor){
+   setStatus('cap-status','Define the quality floor',true);
+   $('cap-reason').textContent='The slice fits the four illustrative capacity limits. Define a testable quality floor before committing; it must still be verified before acceptance.';
+ }else{
+   setStatus('cap-status','Within modeled limits',false);
+   $('cap-reason').textContent='The slice fits all four estimated caps, with a quality floor specified. That floor must be verified before release.';
+ }
+ const ranked=[...values].sort((a,b)=>b.ratio-a.ratio);
+ const max=ranked[0].ratio;
+ const tight=ranked.filter(v=>v.ratio===max||(Number.isFinite(max)&&Math.abs(v.ratio-max)<1e-8)).map(v=>v.label.toLowerCase());
+ $('cap-tightest').textContent='Tightest modeled constraint'+(tight.length>1?'s':'')+': '+tight.join(' and ')+(Number.isFinite(max)?' ('+Math.round(max*100)+'% of cap).':'.');
+}
+const capacityDefaults={'cap-people':'2','cap-weeks':'6','cap-share':'100','cap-agent':'240','cap-cash':'5000','need-human':'160','need-agent':'200','need-cash':'3500','need-weeks':'5','cap-quality':''};
+const capacityKeys=Object.keys(capacityDefaults);
+for(const key of capacityKeys){$(key).addEventListener('input',renderCapacity);$(key).addEventListener('change',event=>{
+ const el=$(key);if(el.type==='number'){
+ const low=Number(el.min),high=Number(el.max);
+ el.value=String(capacityNumber(key,low,high));
+ }renderCapacity();
+});}
+$('reset-capacity').addEventListener('click',()=>{for(const key of capacityKeys)$(key).value=capacityDefaults[key];renderCapacity();});
+renderCapacity();
 })();
 </script>
 </body>
