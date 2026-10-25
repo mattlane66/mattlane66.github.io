@@ -49,9 +49,10 @@ input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer;display:blo
 .outro{border-top:1px solid var(--rule);padding-top:31px;max-width:850px}.outro h2{font-size:clamp(27px,3.7vw,39px);letter-spacing:-.045em;line-height:1.14;margin:0 0 16px}.outro p{font:18px/1.55 Georgia,"Times New Roman",serif;margin:0 0 18px}.disclaimer{border-top:1px solid var(--rule);margin-top:42px;padding-top:18px;color:var(--muted);font-size:11px;line-height:1.7;max-width:850px}.disclaimer a{white-space:normal}
 footer{border-top:1px solid var(--rule);padding:24px 0;color:var(--muted);font-size:11px}
 @media(max-width:770px){.model{grid-template-columns:1fr}.controls{border-right:0;border-bottom:1px solid var(--rule)}.logic{gap:9px;padding:16px 0}.logic b{font-size:11px}.logic span{font-size:10px}}
-@media(max-width:460px){.wrap{width:calc(100% - 30px)}main{padding:40px 0 64px}.logic{grid-template-columns:1fr;gap:8px;margin-bottom:42px}.logic .arrow{transform:rotate(90deg);justify-self:center;line-height:1}.logic div{gap:2px}.controls,.results{padding:19px 17px}.route-table{font-size:10px}.route-table th,.route-table td{padding-right:3px;padding-left:3px}.route-table th:nth-child(2),.route-table td:nth-child(2){display:none}.field-head label{max-width:70%}.case{margin-bottom:46px}}
+@media(max-width:460px){.wrap{width:calc(100% - 30px)}main{padding:40px 0 64px}.logic{grid-template-columns:1fr;gap:8px;margin-bottom:42px}.logic .arrow{transform:rotate(90deg);justify-self:center;line-height:1}.logic div{gap:2px}.controls,.results{padding:19px 17px}.route-table{font-size:10px}.route-table th,.route-table td{padding-right:3px;padding-left:3px}.route-table{table-layout:fixed}.route-table th{white-space:normal;overflow-wrap:anywhere;line-height:1.25}.route-table td{overflow-wrap:anywhere}.route-table th:nth-child(1){width:32%}.route-table th:nth-child(2){width:17%}.route-table th:nth-child(3){width:25%}.route-table th:nth-child(4){width:26%}.field-head label{max-width:70%}.case{margin-bottom:46px}}
 html.embedded .site-header{display:none}html.embedded main{padding-top:24px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fill{transition:none}}
+select{width:100%;font:inherit;font-size:12px;padding:8px 10px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
 </style>
 <style id="generated-related-style">
 .related-thinking{border-top:1px solid var(--line,#cfccc1);margin-top:42px;padding-top:22px;max-width:760px}
@@ -60,131 +61,204 @@ html.embedded .site-header{display:none}html.embedded main{padding-top:24px}
 .related-thinking li{padding:0!important;margin:0!important}
 .related-thinking a{color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 .related-thinking a:hover{color:var(--blue,#173dff)}
-</style></head>
+</style>
+<style id="economics-final-layout">
+:root{--ink:#16161d;--muted:#64645f;--good:#2a6855;--blue:#1747a6;--rule:#d6d0c1}
+.logic{grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr);padding:19px 3px;gap:12px;margin-bottom:54px}
+.logic>div{min-width:0}.logic .arrow{justify-self:center}.feedback{margin:-40px 0 53px;padding:0 3px;font-size:11px;line-height:1.5;color:var(--muted)}.feedback strong{color:var(--ink)}
+.case h2{max-width:780px}.model-foot b{color:#484640}
+.benchmark{border-top:1px solid var(--rule);margin-top:16px;padding-top:16px}
+.benchmark-head{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted);margin:0 0 12px}
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.signal{border:1px solid #ded7ca;padding:12px;min-width:0;background:#fcfaf5}
+.signal .signal-title{font-size:10px;line-height:1.3;color:var(--muted);font-weight:700;margin:0 0 6px}
+.signal strong{font-size:18px;letter-spacing:-.03em;font-variant-numeric:tabular-nums;display:block;margin:0 0 5px}
+.signal .signal-action{font-size:11px;line-height:1.4;color:#413e38;margin:0}
+.budget-bridge{background:var(--faint);border-left:2px solid var(--blue);padding:13px 15px;margin:22px 0 0;font-size:12px;line-height:1.65;color:#4d4b45}
+.budget-bridge strong{display:block;font-size:12px;color:var(--ink)}
+.route-table td:first-child{letter-spacing:-.01em}.route-table{font-size:11px}
+.status{color:var(--good)}.status.bad{color:var(--danger)}
+.result-subnote{font-size:11px;line-height:1.6;color:var(--muted);margin:11px 0 0}
+.cost-split{display:flex;height:8px;background:#f0ece5;overflow:hidden;margin:10px 0 9px}.cost-split>span{height:100%;transition:width .1s linear}.cost-split .prod{background:#29577d}.cost-split .verify{background:#806d9b}.cost-split .wait{background:#b99555}.cost-split .fail{background:#b65c4d}
+.breakdown{font-size:11px;line-height:1.7;color:#54514a;margin:0}.breakdown b{color:#262522;font-weight:650}
+.breakdown .key{display:inline-block;width:8px;height:8px;vertical-align:0;margin-right:3px}.breakdown .key.prod{background:#29577d}.breakdown .key.verify{background:#806d9b}.breakdown .key.wait{background:#b99555}.breakdown .key.fail{background:#b65c4d}
+.result-head{margin:0 0 8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:800}
+.readouts{border-top:1px solid var(--rule);margin-top:20px;padding-top:14px}.readouts p{font-size:11px;line-height:1.6;margin:0 0 8px;color:var(--muted)}.readouts p b{color:var(--ink)}
+.small-math{font-variant-numeric:tabular-nums}
+button.reset{background:transparent;border:0;border-bottom:1px solid var(--muted);border-radius:0;padding:2px 0;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;min-width:0}
+.subhead-row{display:flex;justify-content:space-between;align-items:start;gap:12px}.subhead-row .subhead{margin:0 0 16px}
+.route-table caption{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:770px){.logic{grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);gap:10px}.feedback{margin:-41px 0 45px}}
+@media(max-width:460px){.logic{grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr);gap:6px;margin-bottom:38px}.logic .arrow{transform:none;justify-self:center}.logic b{font-size:11px}.logic span{font-size:10px}.feedback{margin:-28px 0 38px}.signal-grid{grid-template-columns:1fr 1fr}.signal{padding:10px}.signal strong{font-size:16px}.route-table th:nth-child(1){width:31%}.route-table th:nth-child(2){width:16%}.route-table th:nth-child(3){width:28%}.route-table th:nth-child(4){width:25%}}
+@media(prefers-reduced-motion:reduce){.cost-split>span{transition:none}}
+</style>
+</head>
 <body data-note-category="products">
-<header class="site-header"><div class="wrap"><a href="/notes/" class="brand">Matt Lane · Notes</a><a href="/notes/" class="back">← All notes</a></div></header>
+<header class="site-header"><div class="wrap"><a href="https://mattlane66.github.io/notes/" class="brand">Matt Lane · Notes</a><a href="https://mattlane66.github.io/notes/" class="back">← All notes</a></div></header>
 <main class="wrap">
 <p class="eyebrow">Products &amp; systems · 25 October 2026</p>
 <h1>The economics of AI-native product development.</h1>
-<p class="lead">When software becomes cheaper to produce, deciding what is worth producing—and how best to produce it—matters more than maximizing output.</p>
-<p class="intro">Agents change the cost of making software. They do not eliminate the cost of choosing, verifying, integrating, or living with it. Two decisions govern the investment: how much the opportunity is worth, and which human–machine route can achieve an acceptable result at the lowest total expected cost.</p>
-<div class="logic" aria-label="The two economic decisions">
-<div><b>Commitment</b><span>What is worth investing?</span></div><span class="arrow" aria-hidden="true">→</span>
-<div><b>Execution</b><span>What is the best route?</span></div><span class="arrow" aria-hidden="true">→</span>
-<div><b>Evidence</b><span>What actually changed?</span></div>
+<p class="lead">When software becomes cheaper to produce, the advantage moves toward deciding what is worth making—and how best to make it.</p>
+<p class="intro">More generated software is not necessarily more value. Human judgment, verification, integration, and failure remain costly. Two decisions help direct investment: choose a bet on the evidence, then choose the least costly acceptable way to execute it.</p>
+<div class="logic" aria-label="Two economic decisions">
+  <div><b>01 · Choose the bet</b><span>Build, test, or stop?</span></div><span class="arrow" aria-hidden="true">→</span>
+  <div><b>02 · Choose the route</b><span>Agent, review, rules, or human?</span></div>
 </div>
+<p class="feedback"><strong>Then observe what happened.</strong> Compare the result with shared intent—the behavior, outcome, and constraints people agreed to build toward—and with real use. Feed that evidence into the next bet.</p>
+
 <section class="case" aria-labelledby="one-title">
-<p class="section-label">01 / Commitment</p>
-<h2 id="one-title">What is this worth?</h2>
-<p class="thesis">Choose the appetite before execution. Hold the commitment fixed; let the scope respond.</p>
-<p class="explain">An appetite is a value judgment, not an estimate of an unlimited solution. In AI-native work, agent execution, human direction and review, money, and elapsed time require separate limits. Better agent productivity increases what might fit inside a bet. It does not retroactively enlarge the bet.</p>
-<div class="model">
-<div class="controls">
-<p class="subhead">Explore a fixed illustrative bet</p>
-<div class="bet"><strong>2 people · 6 weeks</strong><span>480 human-hour reference · 2× production factor assumed at commitment · <b>240 agent-hour cap</b> · 160 human hours and $20,000 separately authorized</span></div>
-<div class="field"><div class="field-head"><label for="scope">Comparable scope</label><output id="scope-out" for="scope">480 h</output></div><input id="scope" type="range" min="200" max="900" step="20" value="480"></div>
-<div class="field"><div class="field-head"><label for="factor">Current agent production factor</label><output id="factor-out" for="factor">2.0×</output></div><input id="factor" type="range" min="1" max="5" step=".25" value="2"></div>
-<div class="field"><div class="field-head"><label for="review">Human review per unit of scope</label><output id="review-out" for="review">25%</output></div><input id="review" type="range" min="5" max="45" step="5" value="25"></div>
-<label class="check"><input id="quality" type="checkbox" checked><span>The mandatory quality floor has been verified.</span></label>
-<p class="hint">Comparable scope and production factors are illustrative, not universal conversions between people and agents.</p>
-</div>
-<div class="results" aria-live="polite" aria-atomic="true">
-<p class="subhead">Does the current plan fit?</p>
-<span id="bet-status" class="status">Fits the bet</span>
-<p id="bet-reason" class="recommendation">The estimated execution fits all three limits, and the quality floor is verified.</p>
-<div class="meter"><div class="row"><span>Machine execution</span><b id="agent-hours">240 / 240 agent-h</b></div><div class="track"><div id="agent-bar" class="fill" style="width:100%"></div></div><small>Cap set from the initial 2× assumption; use reflects the current factor</small></div>
-<div class="meter"><div class="row"><span>Human direction + review</span><b id="human-hours">144 / 160 h</b></div><div class="track"><div id="human-bar" class="fill" style="width:90%"></div></div><small>24 hours for direction + review time on comparable scope</small></div>
-<div class="meter"><div class="row"><span>Cash required</span><b id="cash-total">$19,200 / $20,000</b></div><div class="track"><div id="cash-bar" class="fill" style="width:96%"></div></div><small>$20 per agent-hour and $100 per human-hour, both assumed</small></div>
-<div class="model-foot">An agent-hour is one hour of aggregate agent execution, not one hour of calendar time or the value of a human hour. A deadline, permissions, and recovery requirements may impose additional constraints.</div>
-</div>
-</div>
+ <p class="section-label">01 / Value of the bet</p>
+ <h2 id="one-title">Which bet deserves investment?</h2>
+ <p class="thesis">Build now, buy evidence first, or walk away.</p>
+ <p class="explain">Cheap experiments only help when their evidence changes a decision. This model compares the expected economic benefit of building immediately, running a two-week test and then deciding, or not investing. A test can be accurate yet not worth its cost. A profitable idea can still be worth testing before committing.</p>
+ <div class="model">
+  <div class="controls">
+   <div class="subhead-row"><p class="subhead">Change the assumptions</p><button class="reset" id="reset-bet" type="button">Reset example</button></div>
+   <div class="field"><div class="field-head"><label for="upside">Benefit if the bet succeeds</label><output id="upside-out" for="upside">$100,000</output></div><input id="upside" type="range" min="20000" max="300000" step="10000" value="100000"></div>
+   <div class="field"><div class="field-head"><label for="prior">Current chance of success</label><output id="prior-out" for="prior">25%</output></div><input id="prior" type="range" min="5" max="80" step="5" value="25"></div>
+   <div class="field"><div class="field-head"><label for="invest">Cost to build</label><output id="invest-out" for="invest">$30,000</output></div><input id="invest" type="range" min="5000" max="60000" step="5000" value="30000"></div>
+   <div class="field"><div class="field-head"><label for="testcost">Cost of a two-week test</label><output id="testcost-out" for="testcost">$3,000</output></div><input id="testcost" type="range" min="0" max="15000" step="500" value="3000"></div>
+   <div class="field"><div class="field-head"><label for="reliab">Test signal accuracy</label><output id="reliab-out" for="reliab">80%</output></div><input id="reliab" type="range" min="50" max="95" step="5" value="80"></div>
+   <div class="field"><div class="field-head"><label for="wkdelay">Benefit lost per week of delay if successful</label><output id="wkdelay-out" for="wkdelay">$1,000</output></div><input id="wkdelay" type="range" min="0" max="5000" step="250" value="1000"></div>
+   <p class="hint">Signal accuracy assumes equal sensitivity and specificity: for each possible true outcome, the test points the right way this often. Cost and accuracy are independent here for exploration; in practice, reliability depends on the test design and the evidence it can collect. These are hypothetical inputs, not a model of synthetic users.</p>
+  </div>
+  <div class="results" aria-live="polite" aria-atomic="true">
+   <p class="subhead">Compare three actions</p>
+   <span id="bet-status" class="status bad">Test first</span>
+   <p id="bet-reason" class="recommendation"></p>
+   <table class="route-table"><caption>Risk-neutral expected net benefit of three investment choices</caption><thead><tr><th scope="col">Action</th><th scope="col">Expected net</th><th scope="col">Verdict</th></tr></thead><tbody id="bets"></tbody></table>
+   <div class="benchmark">
+    <p class="benchmark-head">What the test could change</p>
+    <div class="signal-grid">
+     <div class="signal"><p class="signal-title">If the signal is positive</p><strong id="post-positive">57%</strong><p class="signal-action" id="action-positive">Build after testing</p></div>
+     <div class="signal"><p class="signal-title">If the signal is negative</p><strong id="post-negative">8%</strong><p class="signal-action" id="action-negative">Do not build</p></div>
+    </div>
+    <p class="result-subnote" id="signal-context">Post-test confidence, not proof. A credible signal should ultimately be calibrated against real outcomes.</p>
+   </div>
+   <div class="readouts">
+    <p><b>Break-even test price:</b> <span id="bet-vi" class="small-math">$9,100</span> <span id="bet-vin">after delay; at this price, testing and the best immediate choice tie</span></p>
+    <p><b>Build-now break-even:</b> <span id="bet-be" class="small-math">30%</span> chance of success under these assumptions.</p>
+   </div>
+   <div class="model-foot">The illustration assumes two eventual outcomes (success or failure), an informative binary signal, rational updating, and risk-neutral expected monetary benefit. The successful outcome's benefit is reduced by two weeks of delay only if built after the test. The test itself costs money whether or not you build. Benefit and costs are expressed in the same economic units; user value still needs independent real-world evidence.</div>
+  </div>
+ </div>
+ <div class="budget-bridge"><strong>Appetite is a separate judgment.</strong><span id="bet-appetite">First decide whether the opportunity deserves investment. Then choose the maximum amount of human time, machine execution, money, and calendar time you are prepared to commit—and the quality floor that must not move. An estimated build cost is not that commitment.</span></div>
 </section>
+
 <section class="case" aria-labelledby="two-title">
-<p class="section-label">02 / Allocation</p>
-<h2 id="two-title">What is the least costly acceptable route?</h2>
-<p class="thesis">The cheapest generation is not always the cheapest completed outcome.</p>
-<p class="explain">A direct agent, a reviewed agent, a deterministic program, and a human specialist have different execution costs, latencies, and failure exposure. First rule out routes that cannot meet the task's safety and quality requirements. Then compare the remaining routes on total expected cost.</p>
-<div class="model">
-<div class="controls">
-<p class="subhead">Change the task economics</p>
-<div class="field"><div class="field-head"><label for="risk">Direct-agent failure probability</label><output id="risk-out" for="risk">14%</output></div><input id="risk" type="range" min="0" max="40" step="1" value="14"></div>
-<div class="field"><div class="field-head"><label for="loss">Loss if a failure escapes</label><output id="loss-out" for="loss">$2,000</output></div><input id="loss" type="range" min="500" max="10000" step="500" value="2000"></div>
-<div class="field"><div class="field-head"><label for="review-cost">Human verification cost</label><output id="review-cost-out" for="review-cost">$100</output></div><input id="review-cost" type="range" min="25" max="300" step="25" value="100"></div>
-<div class="field"><div class="field-head"><label for="efficacy">Risk reduction after review</label><output id="efficacy-out" for="efficacy">70%</output></div><input id="efficacy" type="range" min="20" max="95" step="5" value="70"></div>
-<div class="field"><div class="field-head"><label for="delay">Cost of a day of delay</label><output id="delay-out" for="delay">$20</output></div><input id="delay" type="range" min="0" max="200" step="10" value="20"></div>
-<label class="check"><input id="deterministic" type="checkbox"><span>This task can be expressed reliably as deterministic rules.</span></label>
-</div>
-<div class="results" aria-live="polite" aria-atomic="true">
-<p class="subhead">Compare eligible execution paths</p>
-<div class="route-head"><div><span class="status" id="route-status">Best eligible route</span><p id="route-winner" class="recommendation">Reviewed agent</p></div></div>
-<table class="route-table">
-<thead><tr><th scope="col">Route</th><th scope="col">Failure</th><th scope="col">Expected total</th><th scope="col">Decision</th></tr></thead>
-<tbody id="routes">
-<tr><td>Agent, direct</td><td>14.0%</td><td>$306</td><td class="blocked">Risk gate</td></tr>
-<tr class="winner"><td>Agent + review</td><td>4.2%</td><td>$221</td><td class="best">Best fit</td></tr>
-<tr><td>Human specialist</td><td>1.5%</td><td>$330</td><td>Eligible</td></tr>
-<tr class="ineligible"><td>Deterministic</td><td>0.8%</td><td>$168</td><td class="blocked">Not applicable</td></tr>
-</tbody></table>
-<div class="model-foot"><b>Expected total</b> = execution + review + delay cost + failure probability × loss. Routes must meet a 10% maximum modeled failure rate. Review is assumed to reduce the direct-agent failure rate; these probabilities are not measured. Rules-based systems are eligible only for tasks they can express.</div>
-</div>
-</div>
+ <p class="section-label">02 / Cost of execution</p>
+ <h2 id="two-title">What is the least costly acceptable route?</h2>
+ <p class="thesis">The cheapest production is not always the cheapest acceptable result.</p>
+ <p class="explain">Once a bet is worth making, allocate its tasks within the appetite and quality floor. For one representative task, compare a direct agent, an agent with human review, a specialist, and a deterministic system. Exclude routes that cannot meet the stipulated constraints before comparing total expected cost.</p>
+ <div class="model">
+  <div class="controls">
+   <div class="subhead-row"><p class="subhead">Change the task economics</p><button class="reset" id="reset-route" type="button">Reset example</button></div>
+   <div class="field"><div class="field-head"><label for="risk">Direct-agent escaped failure rate</label><output id="risk-out" for="risk">14%</output></div><input id="risk" type="range" min="0" max="40" step="1" value="14"></div>
+   <div class="field"><div class="field-head"><label for="sev">Consequence and risk limit</label></div><select id="sev"><option value="contained">Contained · $500 loss · 15% limit</option><option value="standard" selected>Moderate · $2,000 loss · 10% limit</option><option value="severe">Severe · $10,000 loss · 2% limit</option></select></div>
+   <div class="field"><div class="field-head"><label for="review-cost">Human verification cost per task</label><output id="review-cost-out" for="review-cost">$100</output></div><input id="review-cost" type="range" min="25" max="300" step="25" value="100"></div>
+   <div class="field"><div class="field-head"><label for="rel">Fraction of agent errors caught by review</label></div><select id="rel"><option value="0.9">90% · high-detection scenario</option><option value="0.7" selected>70% · mid-detection scenario</option><option value="0.4">40% · low-detection scenario</option></select></div>
+   <div class="field"><div class="field-head"><label for="delay">Cost per day of completion delay</label><output id="delay-out" for="delay">$20</output></div><input id="delay" type="range" min="0" max="200" step="10" value="20"></div>
+   <label class="check"><input id="deterministic" type="checkbox"><span>The task is reliably expressible as deterministic rules.</span></label>
+   <p class="hint">These are scenario assumptions. Review catch rates already account for missed errors; independence is not assumed. Real congestion and fatigue may reduce reliability further.</p>
+  </div>
+  <div class="results" aria-live="polite" aria-atomic="true">
+   <p class="subhead">Compare eligible routes</p>
+   <span id="route-status" class="status">Lowest modeled total</span>
+   <p id="route-winner" class="recommendation">Agent + review</p>
+   <table class="route-table"><caption>Illustrative total expected cost and escaped-failure probability per route</caption><thead><tr><th scope="col">Route</th><th scope="col">Failure</th><th scope="col">Expected total</th><th scope="col">Decision</th></tr></thead><tbody id="routes"></tbody></table>
+   <div class="benchmark">
+    <p class="benchmark-head">Cost of the selected route</p>
+    <p id="breakdown-caption" class="result-subnote">Execution, human verification, delay, and expected failure loss</p>
+    <div id="cost-split" class="cost-split" role="img" aria-label="Cost composition of the selected route"><span id="seg-production" class="prod"></span><span id="seg-verification" class="verify"></span><span id="seg-delay" class="wait"></span><span id="seg-failure" class="fail"></span></div>
+    <p id="breakdown-text" class="breakdown"></p>
+   </div>
+   <div class="model-foot"><b>Expected total</b> = production + verification + delay + escaped-failure probability × loss. Here failure loss includes expected rework/recovery. All route base costs and durations are hypothetical: direct agent $24 / 0.1 day; reviewed agent $24 + selected review cost / 0.65 day; specialist $260 / 2 days; deterministic system $140 / 0.6 day. Specialist failure is assumed 1.5%; deterministic failure 0.8%. The numerical failure limits are illustrative, <b>not</b> safety standards. Irreversible harms, authorization, and other quality requirements require separate gates; expected cost cannot waive them.</div>
+  </div>
+ </div>
 </section>
-<section class="outro">
-<h2>Two decisions. One economic discipline.</h2>
-<p>The first fixes what you're willing to invest. The second asks how to use that investment well. Both remain subordinate to the same test: did we produce the intended behavior, and did it create value in use?</p>
-<p>More efficient execution can make a bad idea cheaper. It cannot make it worth doing. What happens in the world—not the volume of work generated—should inform the next bet.</p>
-</section>
-<div class="disclaimer"><b>About the models.</b> Every rate, cost, and probability shown here is illustrative. These are decision instruments, not measured productivity forecasts or an empirically validated system. This synthesis builds on <a href="https://basecamp.com/shapeup/1.2-chapter-03">Shape Up's appetite</a> and <a href="https://lpd2.com/sample-page/the-principles-of-flow/">Reinertsen's product-development economics</a>. For the governing values, see <a href="/notes/n/the-ai-native-manifesto-ai-native-manifesto-20261023/">The AI-Native Manifesto</a>.</div>
-<aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul><li><a target="_top" href="/notes/n/the-ai-native-manifesto-ai-native-manifesto-20261023/">The AI-Native Manifesto</a></li><li><a target="_top" href="/notes/n/shape-up-s-appetite-is-a-value-judgment-not-an-estimate-appetite-agent-budgeting-20261002/">Appetite Is a Value Judgment</a></li></ul></aside></main>
-<footer><div class="wrap">Independent synthesis · Not endorsed by Reinertsen or Singer</div></footer>
+
+<section class="outro"><h2>Two decisions. One learning loop.</h2>
+<p>Choose investments on their expected contribution and the value of learning. Then choose execution routes by the full cost of an acceptable result. Set the appetite between them: the budget and quality boundary that keeps a promising bet from becoming unlimited work.</p>
+<p>As generation gets cheaper, the constraint can move to review, integration, or judgment. A faster agent does not automatically produce more validated value. Observe what people actually do, compare the result with shared intent, and revise the next decision.</p></section>
+<div class="disclaimer"><b>What these models can and cannot tell you.</b> They are transparent sensitivity exercises, not measured forecasts or a validated operating system. The first compares a single uncertain bet; the second compares one representative task inside a bet. They are deliberately not numerically coupled: a representative task cannot establish the full task mix, review demand, calendar duration, or appetite for an entire product. This synthesis draws on <a href="https://basecamp.com/shapeup/1.2-chapter-03">Shape Up's appetite</a>, <a href="https://lpd2.com/sample-page/the-principles-of-flow/">Reinertsen's flow economics</a>, and conventional Bayesian decision and value-of-information reasoning.</div>
+<aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul><li><a target="_top" href="https://mattlane66.github.io/notes/n/the-ai-native-manifesto-ai-native-manifesto-20261023/">The AI-Native Manifesto</a></li><li><a target="_top" href="https://mattlane66.github.io/notes/n/shape-up-s-appetite-is-a-value-judgment-not-an-estimate-appetite-agent-budgeting-20261002/">Appetite Is a Value Judgment</a></li></ul></aside>
+</main><footer><div class="wrap">Independent synthesis · Not endorsed by Reinertsen or Singer</div></footer>
 <script>
 (function(){
-"use strict";
-if(new URLSearchParams(location.search).has("embed"))document.documentElement.classList.add("embedded");
-var $=function(id){return document.getElementById(id);};
-var money=function(n){return "$"+Math.round(n).toLocaleString("en-US");};
-function range(id,format){var x=$(id);$(id+"-out").textContent=format(Number(x.value));return Number(x.value);}
-function meter(name,used,cap,unit){$(name+"-bar").style.width=Math.min(100,Math.max(0,100*used/cap))+"%";$(name+"-bar").classList.toggle("over",used>cap+0.0001);if(name==="cash")$("cash-total").textContent=money(used)+" / "+money(cap);else $(name+"-hours").textContent=Math.round(used)+" / "+cap+" "+unit;}
-function budget(){
- var scope=range("scope",function(n){return n+" h";});
- var factor=range("factor",function(n){return n.toFixed(2).replace(/0$/,"").replace(/\.$/,"")+"×";});
- var review=range("review",function(n){return n+"%";})/100;
- var agent=scope/factor, human=24+scope*review, cash=agent*20+human*100;
- var fails=[];
- if(agent>240+0.0001)fails.push("machine execution");if(human>160+0.0001)fails.push("human review");if(cash>20000+0.0001)fails.push("cash");
- var floor=$("quality").checked;
- var status=$("bet-status");
- if(fails.length){status.textContent="Outside the bet";status.classList.add("bad");$("bet-reason").textContent="This plan exceeds the authorized "+fails.join(", ")+" limit"+(fails.length>1?"s":"")+". Re-scope or explicitly re-bet; passing the quality floor never authorizes an overrun.";}
- else if(!floor){status.textContent="Do not land";status.classList.add("bad");$("bet-reason").textContent="The estimated plan fits the resource limits, but the required quality floor is not verified.";}
- else{status.textContent="Fits the bet";status.classList.remove("bad");$("bet-reason").textContent="The estimated execution fits all three limits, and the quality floor is verified.";}
- meter("agent",agent,240,"agent-h");meter("human",human,160,"h");meter("cash",cash,20000,"");
+'use strict';
+if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('embedded');
+const $=id=>document.getElementById(id);
+const money=n=>'$'+Math.round(Math.abs(n)).toLocaleString('en-US');
+const signedMoney=n=>n < -0.5?'−'+money(n):money(n);
+const pct=n=>Math.round(n*100)+'%';
+function read(id,format){const x=$(id),v=Number(x.value);$(id+'-out').textContent=format(v);return v;}
+function setStatus(id,label,bad){const n=$(id);n.textContent=label;n.classList.toggle('bad',!!bad);}
+function cell(row,text,cls){const td=document.createElement('td');td.textContent=text;if(cls)td.className=cls;row.appendChild(td);}
+function renderBets(){
+ const U=read('upside',money),p=read('prior',v=>v+'%')/100,I=read('invest',money),C=read('testcost',money),r=read('reliab',v=>v+'%')/100,weekly=read('wkdelay',money);
+ const Uafter=Math.max(0,U-2*weekly);
+ const priorValue=p*U-I;
+ const positiveProb=p*r+(1-p)*(1-r);
+ const negativeProb=1-positiveProb;
+ const postPositive=p*r/positiveProb;
+ const postNegative=p*(1-r)/negativeProb;
+ const decisionPositive=postPositive*Uafter-I;
+ const decisionNegative=postNegative*Uafter-I;
+ const positiveAction=decisionPositive>0?'Build after positive signal':'Do not build';
+ const negativeAction=decisionNegative>0?'Build despite negative signal':'Do not build';
+ const afterInfo=positiveProb*Math.max(0,decisionPositive)+negativeProb*Math.max(0,decisionNegative);
+ const afterInfoNoDelay=positiveProb*Math.max(0,postPositive*U-I)+negativeProb*Math.max(0,postNegative*U-I);
+ const noTestBest=Math.max(0,priorValue);
+ const evidenceValue=Math.max(0,afterInfo-noTestBest);
+ const pureInfoValue=Math.max(0,afterInfoNoDelay-noTestBest);
+ const choices=[{name:'Build now',value:priorValue,key:'build'},{name:'Test, then decide',value:afterInfo-C,key:'test'},{name:'Do not invest',value:0,key:'stop'}];
+ // Explicit tie rule: do not buy evidence or commit capital for a modeled gain below $1.
+ let selected=choices[2];for(const candidate of [choices[0],choices[1]])if(candidate.value>selected.value+0.999999)selected=candidate;
+ setStatus('bet-status',selected.key==='test'?'Test first':selected.key==='build'?'Build now':'Do not invest',selected.key==='stop');
+ $('bet-reason').textContent=selected.key==='test'
+   ?'The test is expected to change what you build often enough to justify its cost and the value lost while waiting.'
+   :selected.key==='build'
+   ?'Building immediately has the highest modeled net benefit; testing does not repay its cost and lost time.'
+   :'Neither building nor testing earns a positive modeled return. Reshape the opportunity or stop.';
+ const rows=$('bets');rows.textContent='';
+ for(const option of choices){const tr=document.createElement('tr');tr.className=selected===option?'winner':'';cell(tr,option.name);cell(tr,signedMoney(option.value));cell(tr,selected===option?'Best modeled':option.value < -0.5?'Negative return':'Lower return',selected===option?'best':option.value < -0.5?'blocked':'');rows.appendChild(tr);}
+ $('post-positive').textContent=pct(postPositive);$('post-negative').textContent=pct(postNegative);
+ $('action-positive').textContent=positiveAction;$('action-negative').textContent=negativeAction;
+ $('signal-context').textContent=pureInfoValue<0.5?'Both signals lead to the same decision before delay: this test adds no decision value.':(positiveAction!==negativeAction?'The evidence changes the build decision across possible signals.':'The test does not change the post-test build decision on these assumptions.');
+ $('bet-vi').textContent=money(evidenceValue);
+ $('bet-vin').textContent=evidenceValue<1?'(after delay, there is no positive price worth paying).':C>evidenceValue+0.5?'(the selected test costs more than this; at the threshold, you are indifferent).':'(after delay; at this price, testing and the best immediate choice tie).';
+ $('bet-be').textContent=I>U?'unreachable':pct(I/U);
+ $('bet-appetite').textContent=selected.key==='test'?'The test costs '+money(C)+' and two weeks. If its signal warrants building, first choose a maximum commitment and non-negotiable quality floor; the '+money(I)+' estimated build cost is not itself an appetite.':selected.key==='build'?'Building is favored here. Set the appetite and quality floor independently of the '+money(I)+' forecast cost, then shape scope to fit.':'No build commitment is favored. Revisit when credible evidence changes the upside, chances, or cost.';
 }
-["scope","factor","review","quality"].forEach(function(k){$(k).addEventListener("input",budget);$(k).addEventListener("change",budget);});
-function routing(){
- var p=range("risk",function(n){return n+"%";})/100;
- var loss=range("loss",money);
- var rc=range("review-cost",money);
- var reduction=range("efficacy",function(n){return n+"%";})/100;
- var delay=range("delay",money);
- var rows=[
-  {name:"Agent, direct",base:24,days:.1,risk:p,eligible:p<=.10+1e-9,reason:"Risk gate"},
-  {name:"Agent + review",base:24+rc,days:.65,risk:p*(1-reduction),eligible:p*(1-reduction)<=.10+1e-9,reason:"Risk gate"},
-  {name:"Human specialist",base:260,days:2,risk:.015,eligible:true},
-  {name:"Deterministic",base:140,days:.6,risk:.008,eligible:$("deterministic").checked,reason:"Not applicable"}
+const scenarios={contained:{loss:500,gate:.15},standard:{loss:2000,gate:.1},severe:{loss:10000,gate:.02}};
+function renderRoute(){
+ const p=read('risk',v=>v+'%')/100,scenario=scenarios[$('sev').value],rc=read('review-cost',money),catchRate=Number($('rel').value),daily=read('delay',money);
+ const specs=[
+   {name:'Agent, direct',execution:24,verification:0,days:.1,fail:p,applicable:true},
+   {name:'Agent + review',execution:24,verification:rc,days:.65,fail:p*(1-catchRate),applicable:true},
+   {name:'Human specialist',execution:260,verification:0,days:2,fail:.015,applicable:true},
+   {name:'Deterministic',execution:140,verification:0,days:.6,fail:.008,applicable:$('deterministic').checked}
  ];
- rows.forEach(function(x){x.total=x.base+x.days*delay+x.risk*loss;});
- var eligible=rows.filter(function(x){return x.eligible;}).sort(function(a,b){return a.total-b.total;});
- var winner=eligible[0];$("route-winner").textContent=winner.name+" · "+money(winner.total);
- var body=$("routes");body.textContent="";
- rows.forEach(function(x){
-  var tr=document.createElement("tr");tr.className=!x.eligible?"ineligible":x===winner?"winner":"";
-  var values=[x.name,(100*x.risk).toFixed(1)+"%",money(x.total),!x.eligible?x.reason:(x===winner?"Best fit":"Eligible")];
-  values.forEach(function(v,i){var td=document.createElement("td");td.textContent=v;if(i===3)td.className=!x.eligible?"blocked":x===winner?"best":"";tr.appendChild(td);});
-  body.appendChild(tr);
- });
+ for(const item of specs){item.delayCost=item.days*daily;item.failureCost=item.fail*scenario.loss;item.total=item.execution+item.verification+item.delayCost+item.failureCost;item.eligible=item.applicable && item.fail<=scenario.gate+1e-10;}
+ const allowed=specs.filter(x=>x.eligible).sort((a,b)=>a.total-b.total);
+ const winner=allowed.length?allowed[0]:null;
+ $('route-winner').textContent=winner?winner.name+' · '+money(winner.total):'No route meets the modeled gate';
+ setStatus('route-status',winner?'Lowest modeled total':'No eligible route',!winner);
+ const tbody=$('routes');tbody.textContent='';
+ for(const item of specs){const tr=document.createElement('tr');tr.className=!item.eligible?'ineligible':item===winner?'winner':'';cell(tr,item.name);cell(tr,(100*item.fail).toFixed(1)+'%');cell(tr,money(item.total));cell(tr,!item.applicable?'Not applicable':!item.eligible?'Risk gate':item===winner?'Lowest cost':'Eligible',item.eligible?(item===winner?'best':''):'blocked');tbody.appendChild(tr);}
+ const pieces=[['seg-production','execution'],['seg-verification','verification'],['seg-delay','delayCost'],['seg-failure','failureCost']];
+ for(const [id,key] of pieces)$(id).style.width=winner&&winner.total>0?(100*winner[key]/winner.total).toFixed(4)+'%':'0%';
+ $('breakdown-caption').textContent=winner?'For '+winner.name.toLowerCase()+'; expected dollars per task routed.':'No breakdown until an eligible route is found.';
+ $('cost-split').setAttribute('aria-label',winner?'Selected route costs: execution '+money(winner.execution)+', verification '+money(winner.verification)+', delay '+money(winner.delayCost)+', expected failure loss '+money(winner.failureCost):'No eligible route');
+ $('breakdown-text').textContent=winner?'Production '+money(winner.execution)+'  ·  Review '+money(winner.verification)+'  ·  Delay '+money(winner.delayCost)+'  ·  Expected loss '+money(winner.failureCost):'Rescope or strengthen the safeguards before proceeding.';
 }
-["risk","loss","review-cost","efficacy","delay","deterministic"].forEach(function(k){$(k).addEventListener("input",routing);$(k).addEventListener("change",routing);});
-budget();routing();
+const defaults={'upside':'100000','prior':'25','invest':'30000','testcost':'3000','reliab':'80','wkdelay':'1000','risk':'14','sev':'standard','review-cost':'100','rel':'0.7','delay':'20','deterministic':false};
+function bind(keys,fn){for(const key of keys){$(key).addEventListener('input',fn);$(key).addEventListener('change',fn);}}
+bind(['upside','prior','invest','testcost','reliab','wkdelay'],renderBets);
+bind(['risk','sev','review-cost','rel','delay','deterministic'],renderRoute);
+$('reset-bet').addEventListener('click',()=>{for(const key of ['upside','prior','invest','testcost','reliab','wkdelay'])$(key).value=defaults[key];renderBets();});
+$('reset-route').addEventListener('click',()=>{for(const key of ['risk','sev','review-cost','rel','delay'])$(key).value=defaults[key];$('deterministic').checked=false;renderRoute();});
+renderBets();renderRoute();
 })();
 </script>
 </body>
