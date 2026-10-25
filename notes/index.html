@@ -222,7 +222,7 @@ function openNote(n){
   if(!n)return;
   // Self-contained interactive notes run in the same native modal via an iframe;
   // injecting their HTML into the dialog would leave their scripts inert.
-  if(String(n.id)==="192543364" || String(n.id)==="comedy-constellation-20261022"){
+  if(n.custom_html === true || String(n.id)==="192543364" || String(n.id)==="comedy-constellation-20261022"){
     activeNoteRequest++;
     dlg.classList.add("interactive-open");
     document.getElementById("dcat").textContent=n.category;
