@@ -21,6 +21,7 @@ NOTE_MARKDOWN = MarkdownIt("default", {"html": False, "breaks": True}).enable("t
 # Curated cross-format links are kept separate from similarity-ranked Note links.
 ARTICLE_RELATED_LINKS = {
     "80245840": [("/articles/an-experimental-governance-model/", "An Experimental Governance Model")],
+    "243340177": [("/articles/an-experimental-governance-model/", "An Experimental Governance Model")],
 }
 
 NOTE_CATEGORY_KEYS = {
