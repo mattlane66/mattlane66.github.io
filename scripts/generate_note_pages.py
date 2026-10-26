@@ -18,6 +18,11 @@ OUT = ROOT / "notes" / "n"
 GENERIC_IMAGE = SITE + "/assets/working-form-flow-crisp-v3.jpg"
 NOTE_MARKDOWN = MarkdownIt("default", {"html": False, "breaks": True}).enable("table")
 
+# Curated cross-format links are kept separate from similarity-ranked Note links.
+ARTICLE_RELATED_LINKS = {
+    "80245840": [("/articles/an-experimental-governance-model/", "An Experimental Governance Model")],
+}
+
 NOTE_CATEGORY_KEYS = {
     "AI & future work": "ai",
     "Products & systems": "products",
@@ -290,7 +295,8 @@ RELATED_CSS = """
 
 def related_markup(ident: str, relations: dict[str, list[str]], by_id: dict[str, dict]) -> str:
     related = relations.get(ident, [])
-    if not related:
+    article_links = ARTICLE_RELATED_LINKS.get(ident, [])
+    if not related and not article_links:
         return ""
     links = []
     for other_id in related:
@@ -300,6 +306,8 @@ def related_markup(ident: str, relations: dict[str, list[str]], by_id: dict[str,
         # An HTML character reference preserves the URL while avoiding a
         # false-positive secret scanner match on a legitimate risk-... slug.
         links.append('<li><a href="' + html.escape(href, quote=True).replace("sk-", "sk&#45;") + '">' + html.escape(title) + '</a></li>')
+    for href, title in article_links:
+        links.append('<li><a href="' + html.escape(href, quote=True) + '">' + html.escape(title) + '</a></li>')
     return '<aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul>' + "".join(links) + '</ul></aside>'
 
 def augment_custom_note(source: str, related: str) -> str:
