@@ -5,7 +5,7 @@ from html.parser import HTMLParser
 from urllib.parse import urlsplit
 
 from check_site_consistency import active_notes
-from generate_note_pages import NOTES_HTML, OUT, note_slug, augment_custom_note
+from generate_note_pages import NOTES_HTML, OUT, ROOT, ARTICLE_RELATED_LINKS, note_slug, augment_custom_note
 from related_notes import related_notes
 
 class RelatedLinks(HTMLParser):
@@ -101,14 +101,21 @@ def main() -> None:
         assert html_path.exists(), f"Missing page: {ident}"
         parser = RelatedLinks()
         parser.feed(html_path.read_text(encoding="utf-8"))
+        article_links = ARTICLE_RELATED_LINKS.get(ident, [])
         expected = ["/notes/n/" + note_slug(notes[other]) + "/" for other in refs.get(ident, [])]
+        expected += [href for href, _ in article_links]
         assert parser.links == expected, (ident, parser.links, expected)
         assert parser.sections == int(bool(expected)), (ident, parser.sections)
-        assert len(expected) <= 3 and ident not in refs.get(ident, [])
+        assert len(refs.get(ident, [])) <= 3 and ident not in refs.get(ident, [])
         assert len(expected) == len(set(expected))
         for href in parser.links:
             assert urlsplit(href).query == "" and urlsplit(href).fragment == ""
-            assert (OUT / href.removeprefix("/notes/n/") / "index.html").exists(), (ident, href)
+            assert href.startswith(("/notes/n/", "/articles/")), (ident, href)
+            assert (ROOT / href.lstrip("/") / "index.html").exists(), (ident, href)
+        for href, _ in article_links:
+            article = (ROOT / href.lstrip("/") / "index.html").read_text(encoding="utf-8")
+            reciprocal = f'href="/notes/n/{note_slug(note)}/"'
+            assert reciprocal in article, (ident, href, "Missing reciprocal article link")
         if expected:
             linked += 1
 
