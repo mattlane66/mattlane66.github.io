@@ -235,6 +235,9 @@ body.maker-modal-open{overflow:hidden}
 .maker-dialog .modal-intro{padding:0 0 27px;border-bottom:1px solid var(--ink);margin-bottom:29px}
 .maker-dialog .modal-intro h2{font-size:clamp(41px,5.8vw,75px);letter-spacing:-.071em;line-height:.91;margin:0 0 18px;max-width:12ch}
 .maker-dialog .modal-intro p{font-size:clamp(16px,1.7vw,20px);line-height:1.38;letter-spacing:-.016em;max-width:64ch;margin:0;color:#474740}
+.maker-dialog .maker-workspace{max-width:600px;margin:24px auto 0}
+.maker-dialog .maker-workspace img{display:block;width:100%;height:auto;border:1px solid var(--line)}
+.maker-dialog .maker-workspace figcaption{font-size:11px;line-height:1.5;color:var(--muted);letter-spacing:0;margin-top:10px;max-width:70ch}
 .maker-dialog .modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 32px}
 .maker-dialog .modal-category{min-width:0}
 .maker-dialog .modal-category h3{font-size:18px;line-height:1.1;letter-spacing:-.038em;margin:0 0 12px}
@@ -446,6 +449,10 @@ body.maker-modal-open{overflow:hidden}
       <div class="modal-intro">
         <h2 id="maker-modal-title">My hobby maker stack.</h2>
         <p id="maker-modal-description">A small collection of tools I use to design, build, publish, and sometimes monetize side projects like the ones on this site.</p>
+        <figure class="maker-workspace">
+          <img src="./assets/maker-stack-workspace.avif" alt="Illustrated workspace with a notebook, overhead document camera, and digital project board on a monitor." width="1200" height="800" decoding="async">
+          <figcaption>A seamless path from economically grounded decisions through tactile exploration to digital execution.</figcaption>
+        </figure>
       </div>
       <div class="modal-grid"><section class="modal-category">
 <h3>Build &amp; host</h3><p class="category-sub">The tools that run the projects.</p>

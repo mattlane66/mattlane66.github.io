@@ -87,7 +87,7 @@ def site_url(path: str) -> str:
 def site_zip(target: Path, output: Path) -> None:
     excluded = {".git", ".github", "scripts", "publication-preview", "__pycache__"}
     allowed = {".html", ".css", ".js", ".json", ".xml", ".txt", ".svg", ".jpg",
-               ".jpeg", ".png", ".gif", ".webp", ".ico", ".woff", ".woff2", ".pdf", ".webm", ".mp4"}
+               ".jpeg", ".png", ".gif", ".webp", ".avif", ".ico", ".woff", ".woff2", ".pdf", ".webm", ".mp4"}
     with zipfile.ZipFile(target, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as bundle:
         for file in ROOT.rglob("*"):
             if not file.is_file() or output in file.parents:
