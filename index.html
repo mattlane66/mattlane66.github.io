@@ -237,7 +237,8 @@ body.maker-modal-open{overflow:hidden}
 .maker-dialog .modal-intro p{font-size:clamp(16px,1.7vw,20px);line-height:1.38;letter-spacing:-.016em;max-width:64ch;margin:0;color:#474740}
 .maker-dialog .maker-workspace{max-width:600px;margin:24px auto 0}
 .maker-dialog .maker-workspace img{display:block;width:100%;height:auto;border:1px solid var(--line)}
-.maker-dialog .maker-workspace figcaption{font-size:11px;line-height:1.5;color:var(--muted);letter-spacing:0;margin-top:10px;max-width:70ch}
+.maker-dialog .maker-workspace figcaption{font-size:10px;line-height:1.35;color:var(--muted);letter-spacing:0;margin-top:10px;white-space:nowrap}
+@media(max-width:820px){.maker-dialog .maker-workspace figcaption{white-space:normal}}
 .maker-dialog .modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 32px}
 .maker-dialog .modal-category{min-width:0}
 .maker-dialog .modal-category h3{font-size:18px;line-height:1.1;letter-spacing:-.038em;margin:0 0 12px}
