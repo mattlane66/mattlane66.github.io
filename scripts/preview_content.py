@@ -147,6 +147,31 @@ def main() -> int:
                         png = re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-") + f"-{device}.png"
                         page.screenshot(path=str(output / png), full_page=full, animations="disabled")
                         pairs.append((device, png, full))
+                        # The maker-stack content is inside a dialog, invisible in
+                        # normal homepage captures. Inspect the actual modal at
+                        # both widths, including the two tables and closing text.
+                        if path == "index.html" and page.locator("#maker-modal").count():
+                            page.locator("#maker-feature").click()
+                            page.locator("#maker-modal").wait_for(state="visible")
+                            sections = page.locator(".maker-method-table").count()
+                            rows = page.locator(".maker-method-table tbody tr").count()
+                            if sections != 2 or rows != 15:
+                                failures.append(f"{device}: maker modal expected 2 tables / 15 rows; found {sections} / {rows}")
+                            dialog_size = page.locator("#maker-modal-scroller").evaluate(
+                                "el => ({ client: el.clientWidth, scroll: el.scrollWidth })")
+                            if dialog_size["scroll"] > dialog_size["client"] + 4:
+                                failures.append(f"{device}: maker modal horizontal overflow")
+                            for label, selector in (
+                                ("principles", ".maker-method-table"),
+                                ("agentic-work", "#maker-structure-title"),
+                                ("conclusion", ".maker-method-direction"),
+                            ):
+                                page.locator(selector).first.scroll_into_view_if_needed()
+                                shot = png.replace(".png", f"-maker-{label}.png")
+                                page.locator("#maker-modal").screenshot(
+                                    path=str(output / shot), animations="disabled")
+                                pairs.append((device + " — maker " + label, shot, False))
+                            page.locator("#maker-close").click()
                         # The Notes archive initially shows only its header; also
                         # capture its actual first cards so new Notes can be reviewed.
                         if path == "notes/index.html":
