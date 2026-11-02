@@ -149,21 +149,22 @@ def main() -> int:
                         pairs.append((device, png, full))
                         # The maker-stack content is inside a dialog, invisible in
                         # normal homepage captures. Inspect the actual modal at
-                        # both widths, including the two tables and closing text.
+                        # both widths, including the three tables and closing text.
                         if path == "index.html" and page.locator("#maker-modal").count():
                             page.locator("#maker-feature").click()
                             page.locator("#maker-modal").wait_for(state="visible")
                             sections = page.locator(".maker-method-table").count()
                             rows = page.locator(".maker-method-table tbody tr").count()
-                            if sections != 2 or rows != 15:
-                                failures.append(f"{device}: maker modal expected 2 tables / 15 rows; found {sections} / {rows}")
+                            if sections != 3 or rows != 11:
+                                failures.append(f"{device}: maker modal expected 3 tables / 11 rows; found {sections} / {rows}")
                             dialog_size = page.locator("#maker-modal-scroller").evaluate(
                                 "el => ({ client: el.clientWidth, scroll: el.scrollWidth })")
                             if dialog_size["scroll"] > dialog_size["client"] + 4:
                                 failures.append(f"{device}: maker modal horizontal overflow")
                             for label, selector in (
-                                ("principles", ".maker-method-table"),
-                                ("agentic-work", "#maker-structure-title"),
+                                ("decide", "#maker-decide-title"),
+                                ("together", "#maker-together-title"),
+                                ("execute", "#maker-proof-title"),
                                 ("conclusion", ".maker-method-direction"),
                             ):
                                 page.locator(selector).first.scroll_into_view_if_needed()

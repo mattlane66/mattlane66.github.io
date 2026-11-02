@@ -261,6 +261,7 @@ body.maker-modal-open{overflow:hidden}
 .maker-dialog .maker-method-kicker{font-size:10px;font-weight:750;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
 .maker-dialog .maker-method h3{font-size:clamp(25px,3.2vw,39px);line-height:1.04;letter-spacing:-.05em;margin:0 0 10px}
 .maker-dialog .maker-method-deck{font-size:13px;line-height:1.55;color:var(--muted);margin:0 0 23px;max-width:67ch}
+.maker-dialog .maker-method-group:first-of-type{margin-top:23px}
 .maker-dialog .maker-method-subsection{margin-top:35px;padding-top:30px;border-top:1px solid var(--ink)}
 .maker-dialog .maker-method h4{font-size:clamp(21px,2.65vw,29px);line-height:1.1;letter-spacing:-.045em;margin:0 0 10px}
 .maker-dialog .maker-method-direction a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;font-weight:700}
@@ -277,6 +278,7 @@ body.maker-modal-open{overflow:hidden}
 .maker-dialog .maker-method-direction{font-size:11px;line-height:1.55;color:var(--muted);margin:10px 0 0;max-width:75ch}
 @media(max-width:650px){
   .maker-dialog .maker-method{padding-top:23px}
+  .maker-dialog .maker-method-group:first-of-type{margin-top:20px}
   .maker-dialog .maker-method-subsection{margin-top:29px;padding-top:23px}
   .maker-dialog .maker-method-table,.maker-dialog .maker-method-table tbody,.maker-dialog .maker-method-table tr,.maker-dialog .maker-method-table td{display:block;width:100%;box-sizing:border-box}
   .maker-dialog .maker-method-table colgroup,.maker-dialog .maker-method-table thead{display:none}
@@ -522,41 +524,50 @@ body.maker-modal-open{overflow:hidden}
       <div class="modal-footer"><p>Mostly free tiers, a couple of subscriptions, and pay-as-you-go services when needed. I try to keep the overhead low and let the project—not the stack—dictate what gets added.</p><span class="modal-updated">October 2026</span></div>
       <section class="maker-method" aria-labelledby="maker-method-title">
         <p class="maker-method-kicker">How I make things</p>
-        <h3 id="maker-method-title">How I work with AI.</h3>
+        <h3 id="maker-method-title">How I make things with people and AI.</h3>
         <p class="maker-method-deck">As a product strategist and interaction designer, I direct what matters. Agents do the technical work within clear boundaries.</p>
-        <table class="maker-method-table" aria-label="How I work with AI: product decisions and working practices">
+        <div class="maker-method-group" aria-labelledby="maker-decide-title">
+          <h4 id="maker-decide-title">Decide what to make</h4>
+          <p class="maker-method-deck">Identify what is worth pursuing, compare possible forms, and choose an achievable boundary.</p>
+          <table class="maker-method-table" aria-label="Decide what to make: More about, Less about, Why">
           <colgroup><col class="maker-method-more"><col class="maker-method-less"><col class="maker-method-why"></colgroup>
           <thead><tr><th scope="col">More about…</th><th scope="col">Less about…</th><th scope="col">Why</th></tr></thead>
           <tbody>
-          <tr><td data-label="More about"><strong>Evidence of Demand &amp; Product Fit</strong> — Understand needs, alternatives, economics, and what makes a solution worth pursuing.</td><td data-label="Less about">Building because AI makes it cheap or possible.</td><td data-label="Why">Make the right thing, not merely make things.</td></tr>
-          <tr><td data-label="More about"><strong>Fluid Exploration, Gated Commitment</strong> — Start with a need, idea, sketch, prototype, or uncertainty. Let requirements and solutions inform each other; commit through explicit decisions.</td><td data-label="Less about">Rigid sequencing or exploratory ideas quietly becoming approved scope.</td><td data-label="Why">Preserve creative freedom without confusing exploration with commitment.</td></tr>
-          <tr><td data-label="More about"><strong>A Shared Product Model Above Code</strong> — Maintain stable concepts, relationships, behaviors, requirements, and accepted decisions across people, agents, and tools.</td><td data-label="Less about">Code, prompts, or the latest artifact silently becoming product truth.</td><td data-label="Why">Keep the whole coherent as implementations and participants change.</td></tr>
-          <tr><td data-label="More about"><strong>Complete Vertical Slices</strong> — Build the smallest maintainable, demonstrable end-to-end outcome.</td><td data-label="Less about">Disconnected task piles, speculative infrastructure, and unnecessary rewrites.</td><td data-label="Why">Deliver something real that can be tried and evaluated.</td></tr>
-          <tr><td data-label="More about"><strong>Human Authority, Agentic Execution</strong> — People decide purpose, priorities, scope, trade-offs, and acceptance. Agents investigate, challenge weak approaches, and perform authorized technical work.</td><td data-label="Less about">Agent self-approval or routine engineering chores handed back to people.</td><td data-label="Why">Delegate execution without surrendering consequential decisions.</td></tr>
-          <tr><td data-label="More about"><strong>Evidence From Intent to Effect</strong> — Proposed → Implemented → Verified → Accepted → Effect observed. Separate design fit, built behavior, requirement conformance, and actual outcomes.</td><td data-label="Less about">Passing tests, screenshots, or acceptance treated as proof of product value.</td><td data-label="Why">Diagnose where the failure lies rather than mistaking completion for success.</td></tr>
-          <tr><td data-label="More about"><strong>Plain-English, Decision-Ready Communication</strong> — Explain outcomes, evidence, trade-offs, uncertainty, and decisions needed.</td><td data-label="Less about">Jargon, technical narration, and file-by-file reports.</td><td data-label="Why">Exercise informed judgment without needing to read code.</td></tr>
-          <tr><td data-label="More about"><strong>Durable Context</strong> — Keep accepted decisions and evidence in project records so any agent or fresh thread can resume.</td><td data-label="Less about">Chat history as memory and lost context.</td><td data-label="Why">Maintain continuity across agents, tasks, and sessions.</td></tr>
-          <tr><td data-label="More about"><strong>Disciplined Stopping &amp; Safety</strong> — Diagnose repeated failures, pause at consequential boundaries, and enforce permissions and approvals.</td><td data-label="Less about">Endless speculative retries, unapproved actions, and trusting instructions alone.</td><td data-label="Why">Keep mistakes contained, work recoverable, and authority clear.</td></tr>
-          </tbody>
-        </table>
-        <div class="maker-method-subsection" aria-labelledby="maker-structure-title">
-          <p class="maker-method-kicker">How I design the working system</p>
-          <h4 id="maker-structure-title">How I structure agentic work.</h4>
-          <p class="maker-method-deck">The methods I use and the systems I’m working toward. Shared product models and bounded reviews exist today; richer real-time collaboration and autonomous orchestration remain a direction.</p>
-          <table class="maker-method-table" aria-label="How I structure agentic work: collaboration, harnesses, runtimes, orchestration, and evaluation">
-          <colgroup><col class="maker-method-more"><col class="maker-method-less"><col class="maker-method-why"></colgroup>
-          <thead><tr><th scope="col">More about…</th><th scope="col">Less about…</th><th scope="col">Why</th></tr></thead>
-          <tbody>
-          <tr><td data-label="More about"><strong>Two-Way Fit Checks</strong> — Test requirements against solutions (R × S), then every solution part against the requirements it serves (S × R).</td><td data-label="Less about">Feature accumulation, missing coverage, or mechanisms without a reason to exist.</td><td data-label="Why">Ensure each requirement is served and every part earns its place.</td></tr>
-          <tr><td data-label="More about"><strong>Human–Human–Agent Collaboration</strong> — Give people and agents a shared representation of the work to explore, challenge, compare, and reconcile proposals while preserving authorship and authority.</td><td data-label="Less about">Isolated conversations, invisible decisions, and agents displacing human collaboration.</td><td data-label="Why">Make collective judgment stronger as agents become participants.</td></tr>
-          <tr><td data-label="More about"><strong>Harnesses That Preserve Intent</strong> — Equip agents with accepted context, relevant tools, executable checks, decision boundaries, and recovery rules.</td><td data-label="Less about">One-off prompts, inconsistent instructions, and relying on model behavior alone.</td><td data-label="Why">Make good agent behavior repeatable across tasks and tools.</td></tr>
-          <tr><td data-label="More about"><strong>Bounded, Measurable Agent Runtimes</strong> — Shape execution by outcome, human-attention appetite, quality floor, permissions, and stop rules. Track safe completion, regressions, intervention, time, and cost.</td><td data-label="Less about">Unrestricted loops or treating tokens and activity as productivity.</td><td data-label="Why">Measure reliable value against human effort and resources consumed.</td></tr>
-          <tr><td data-label="More about"><strong>Risk-Routed Orchestration</strong> — Route work among people, implementing agents, independent reviewers, and deterministic checks by dependency, risk, and decision authority.</td><td data-label="Less about">One agent grading itself, needless handoffs, or agents authorizing new scope.</td><td data-label="Why">Automate coordination where reliable while preserving human gates.</td></tr>
-          <tr><td data-label="More about"><strong>Evaluation as Product Design</strong> — Define representative tasks, user journeys, experience criteria, failure cases, and success measures. Combine objective checks with calibrated human judgment.</td><td data-label="Less about">Benchmark scores, agent self-evaluation, or passing tests mistaken for user experience quality.</td><td data-label="Why">Judge whether the right experience was created, not only whether an agent finished.</td></tr>
+          <tr><td data-label="More about"><strong>Evidence of Demand &amp; Economics</strong> — Find the real struggle, alternatives, willingness to pay, and economics before treating an idea as an opportunity.</td><td data-label="Less about">Building simply because AI makes it possible or inexpensive.</td><td data-label="Why">Choose work worth making, not just work that can be made.</td></tr>
+          <tr><td data-label="More about"><strong>Fluid Exploration, Gated Commitment</strong> — Begin with a need, idea, sketch, prototype, or uncertainty. Let requirements and solutions sharpen each other; commit through explicit decisions.</td><td data-label="Less about">Rigid sequences or exploratory ideas silently turning into approved scope.</td><td data-label="Why">Keep exploration open and consequential decisions deliberate.</td></tr>
+          <tr><td data-label="More about"><strong>Two-Way Fit Checks</strong> — Test requirements against candidate solutions (R × S), then each solution part against the requirements it serves (S × R).</td><td data-label="Less about">Missing coverage, unjustified mechanisms, and feature accumulation.</td><td data-label="Why">Ensure every requirement is served and every part earns its place.</td></tr>
+          <tr><td data-label="More about"><strong>Complete Vertical Slices</strong> — Select the smallest maintainable, observable end-to-end behavior worth building and evaluating.</td><td data-label="Less about">Disconnected task piles, speculative infrastructure, and scope without a demonstrable outcome.</td><td data-label="Why">Build something real that people can try and judge.</td></tr>
           </tbody>
         </table>
         </div>
-        <p class="maker-method-principle"><strong>The principle.</strong> I determine what deserves to exist, why it matters, and whether the result is right. Agents figure out how to make it work, demonstrate what works, and improve it within the boundaries I’ve authorized.</p>
+        <div class="maker-method-group maker-method-subsection" aria-labelledby="maker-together-title">
+          <h4 id="maker-together-title">Work together</h4>
+          <p class="maker-method-deck">Give people and agents a coherent shared model, clear authority, and the right conditions for working well.</p>
+          <table class="maker-method-table" aria-label="Work together: More about, Less about, Why">
+          <colgroup><col class="maker-method-more"><col class="maker-method-less"><col class="maker-method-why"></colgroup>
+          <thead><tr><th scope="col">More about…</th><th scope="col">Less about…</th><th scope="col">Why</th></tr></thead>
+          <tbody>
+          <tr><td data-label="More about"><strong>Shared Product Model &amp; Durable Context</strong> — Keep stable product concepts, requirements, behavior, decisions, and evidence in shared project records across people, tools, agents, and sessions.</td><td data-label="Less about">Chat history, code, or the latest artifact silently becoming product truth.</td><td data-label="Why">Preserve meaning and continuity while the product and its collaborators change.</td></tr>
+          <tr><td data-label="More about"><strong>Human–Human–Agent Collaboration &amp; Authority</strong> — Help people and agents explore, challenge, compare, and reconcile proposals; make authorship, decision rights, and next steps plain.</td><td data-label="Less about">Isolated conversations, opaque decisions, agent self-approval, and jargon that obscures judgment.</td><td data-label="Why">Strengthen collective thinking while keeping consequential human authority clear.</td></tr>
+          <tr><td data-label="More about"><strong>Harnesses That Preserve Intent</strong> — Give agents accepted context, appropriate tools, enforced permissions, checks, and recovery rules for the selected work.</td><td data-label="Less about">One-off prompts, instruction-only safeguards, and inconsistent behavior between sessions.</td><td data-label="Why">Make reliable execution repeatable without handing over product decisions.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="maker-method-group maker-method-subsection" aria-labelledby="maker-proof-title">
+          <h4 id="maker-proof-title">Execute, prove, and improve</h4>
+          <p class="maker-method-deck">Coordinate work by risk, verify what agents actually accomplish, and learn whether the product works in real use.</p>
+          <table class="maker-method-table" aria-label="Execute, prove, and improve: More about, Less about, Why">
+          <colgroup><col class="maker-method-more"><col class="maker-method-less"><col class="maker-method-why"></colgroup>
+          <thead><tr><th scope="col">More about…</th><th scope="col">Less about…</th><th scope="col">Why</th></tr></thead>
+          <tbody>
+          <tr><td data-label="More about"><strong>Risk-Routed Orchestration</strong> — Route implementation, independent review, checks, and human decisions according to dependency, risk, and authority.</td><td data-label="Less about">One agent grading itself, needless handoffs, or agents approving new scope.</td><td data-label="Why">Automate routine coordination while preserving meaningful human gates.</td></tr>
+          <tr><td data-label="More about"><strong>Bounded, Measurable Agent Runtimes</strong> — Set outcome, human-attention appetite, quality floor, permitted actions, recovery points, and stopping rules. Track safe success, regressions, intervention, time, and cost.</td><td data-label="Less about">Endless retries, unbounded execution, and mistaking speed or tokens for value.</td><td data-label="Why">Make autonomy trustworthy and proportionate to the result.</td></tr>
+          <tr><td data-label="More about"><strong>Evaluation as Product Design</strong> — Define representative tasks, user journeys, experience criteria, failure cases, and success measures; combine objective checks with calibrated human judgment.</td><td data-label="Less about">Benchmarks, agent self-reports, or passing tests mistaken for experience quality.</td><td data-label="Why">Judge whether the right experience was created—not merely whether an agent finished.</td></tr>
+          <tr><td data-label="More about"><strong>Intent-to-Effect Reconciliation</strong> — Compare accepted design, observed implementation, actual requirement conformance, and effects in use. Revisit the smallest mistaken assumption.</td><td data-label="Less about">Treating design fit, technical correctness, and real-world impact as the same result.</td><td data-label="Why">Learn where intent and reality diverge and correct the right thing.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="maker-method-principle"><strong>The principle.</strong> I take responsibility for what deserves to exist, why it matters, and whether the result is right. People and agents can challenge and improve the work; decisions, evidence, and authority must remain legible.</p>
         <p class="maker-method-direction"><strong>The direction.</strong> I’m building toward a shared, CAD-like workspace for products—where people and agents can explore alternatives, model behavior, test fit, make decisions, and reconcile them with implementation and real-world effects. <a href="https://mattlane66.github.io/planning-skills-for-agents-and-humans/shaping-board/" target="_blank" rel="noopener noreferrer">Explore Shaping Board ↗</a></p>
       </section>
     </div>
