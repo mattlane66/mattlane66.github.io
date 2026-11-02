@@ -256,6 +256,31 @@ body.maker-modal-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){.maker-feature,.maker-dialog .modal-close{transition:none}}
 
 
+/* Product judgment and AI working method in the maker-stack modal. */
+.maker-dialog .maker-method{margin-top:34px;padding-top:26px;border-top:1px solid var(--ink)}
+.maker-dialog .maker-method-kicker{font-size:10px;font-weight:750;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.maker-dialog .maker-method h3{font-size:clamp(25px,3.2vw,39px);line-height:1.04;letter-spacing:-.05em;margin:0 0 10px}
+.maker-dialog .maker-method-deck{font-size:13px;line-height:1.55;color:var(--muted);margin:0 0 23px;max-width:67ch}
+.maker-dialog .maker-method-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.maker-dialog .maker-method-more{width:44%}
+.maker-dialog .maker-method-less{width:27%}
+.maker-dialog .maker-method-why{width:29%}
+.maker-dialog .maker-method-table th{text-align:left;font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 12px 12px 0;border-bottom:1px solid var(--ink)}
+.maker-dialog .maker-method-table td{vertical-align:top;font-size:11px;line-height:1.55;padding:13px 12px 14px 0;border-bottom:1px solid var(--line);overflow-wrap:break-word}
+.maker-dialog .maker-method-table td strong{font-size:12px;font-weight:750;color:var(--ink)}
+.maker-dialog .maker-method-table td:nth-child(2){color:var(--muted)}
+.maker-dialog .maker-method-principle{font-size:13px;line-height:1.55;margin:24px 0 0;max-width:70ch}
+.maker-dialog .maker-method-direction{font-size:11px;line-height:1.55;color:var(--muted);margin:10px 0 0;max-width:75ch}
+@media(max-width:650px){
+  .maker-dialog .maker-method{padding-top:23px}
+  .maker-dialog .maker-method-table,.maker-dialog .maker-method-table tbody,.maker-dialog .maker-method-table tr,.maker-dialog .maker-method-table td{display:block;width:100%;box-sizing:border-box}
+  .maker-dialog .maker-method-table colgroup,.maker-dialog .maker-method-table thead{display:none}
+  .maker-dialog .maker-method-table tr{padding:9px 0 11px;border-bottom:1px solid var(--line)}
+  .maker-dialog .maker-method-table td{border:0;padding:4px 0 3px;font-size:12px}
+  .maker-dialog .maker-method-table td::before{content:attr(data-label);display:block;font-size:9px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--muted);margin-bottom:2px}
+  .maker-dialog .maker-method-table td strong{font-size:13px}
+}
+
 /* Roadmap demonstration belongs within the existing Methods you can use grid. */
 #tools .roadmap-tool{padding:0;overflow:hidden;display:flex;flex-direction:column}
 #tools .roadmap-tool .roadmap-shot{height:230px;border-bottom:1px solid var(--ink);background:#f9fbfd;overflow:hidden}
@@ -490,6 +515,28 @@ body.maker-modal-open{overflow:hidden}
 <div class="modal-service"><a href="https://www.cloudflare.com/products/registrar/" target="_blank" rel="noopener noreferrer">Cloudflare Registrar ↗</a><span class="service-use">Domain registration and renewals.</span><span class="service-price">Annual cost</span></div>
 </section></div>
       <div class="modal-footer"><p>Mostly free tiers, a couple of subscriptions, and pay-as-you-go services when needed. I try to keep the overhead low and let the project—not the stack—dictate what gets added.</p><span class="modal-updated">October 2026</span></div>
+      <section class="maker-method" aria-labelledby="maker-method-title">
+        <p class="maker-method-kicker">How I make things</p>
+        <h3 id="maker-method-title">How I work with AI.</h3>
+        <p class="maker-method-deck">As a product strategist and non-engineer, I direct what matters. Agents do the technical work within clear boundaries.</p>
+        <table class="maker-method-table">
+          <colgroup><col class="maker-method-more"><col class="maker-method-less"><col class="maker-method-why"></colgroup>
+          <thead><tr><th scope="col">More about…</th><th scope="col">Less about…</th><th scope="col">Why</th></tr></thead>
+          <tbody>
+          <tr><td data-label="More about"><strong>Evidence of Demand &amp; Product Fit</strong> — Understand needs, alternatives, economics, and what makes a solution worth pursuing.</td><td data-label="Less about">Building because AI makes it cheap or possible.</td><td data-label="Why">Make the right thing, not merely make things.</td></tr>
+          <tr><td data-label="More about"><strong>Shaping Before Committing</strong> — Explore alternatives, evaluate fit, set appetite, and define a quality floor.</td><td data-label="Less about">Premature implementation and open-ended scope.</td><td data-label="Why">Make deliberate bets while preserving room to learn.</td></tr>
+          <tr><td data-label="More about"><strong>Coherent Product Meaning</strong> — Preserve users, concepts, journeys, relationships, and accepted intent.</td><td data-label="Less about">Silent drift, duplicate concepts, and features without purpose.</td><td data-label="Why">Keep the whole product coherent as it evolves.</td></tr>
+          <tr><td data-label="More about"><strong>Complete Vertical Slices</strong> — Build the smallest maintainable, demonstrable end-to-end outcome.</td><td data-label="Less about">Disconnected task piles, speculative infrastructure, and unnecessary rewrites.</td><td data-label="Why">Deliver something real that can be tried and evaluated.</td></tr>
+          <tr><td data-label="More about"><strong>Human Judgment, Agentic Execution</strong> — I decide purpose, priorities, scope, trade-offs, and acceptance. Agents own authorized technical work and challenge weak approaches.</td><td data-label="Less about">Agent self-approval or engineering chores handed back to me.</td><td data-label="Why">Delegate execution without surrendering direction.</td></tr>
+          <tr><td data-label="More about"><strong>Evidence Before Acceptance</strong> — Proposed → Implemented → Verified → Accepted → Effect observed. Use real checks and independent review where warranted.</td><td data-label="Less about">Unobserved “done,” mock-only proof, and trusting self-reports.</td><td data-label="Why">Know what works, what remains uncertain, and what I am accepting.</td></tr>
+          <tr><td data-label="More about"><strong>Plain-English, Decision-Ready Communication</strong> — Explain outcomes, evidence, trade-offs, uncertainty, and decisions needed.</td><td data-label="Less about">Jargon, technical narration, and file-by-file reports.</td><td data-label="Why">Exercise informed judgment without needing to read code.</td></tr>
+          <tr><td data-label="More about"><strong>Durable Context</strong> — Keep accepted decisions and evidence in project records so any agent or fresh thread can resume.</td><td data-label="Less about">Chat history as memory and lost context.</td><td data-label="Why">Maintain continuity across agents, tasks, and sessions.</td></tr>
+          <tr><td data-label="More about"><strong>Disciplined Stopping &amp; Safety</strong> — Diagnose repeated failures, pause at consequential boundaries, and enforce permissions and approvals.</td><td data-label="Less about">Endless speculative retries, unapproved actions, and trusting instructions alone.</td><td data-label="Why">Keep mistakes contained, work recoverable, and authority clear.</td></tr>
+          </tbody>
+        </table>
+        <p class="maker-method-principle"><strong>The principle.</strong> I determine what deserves to exist, why it matters, and whether the result is right. Agents figure out how to make it work, demonstrate what works, and improve it within the boundaries I’ve authorized.</p>
+        <p class="maker-method-direction"><strong>Direction.</strong> Automate handoffs and review wherever checks give a clear pass or fail, while keeping my gates at slice selection and acceptance.</p>
+      </section>
     </div>
   </div>
 </dialog>
