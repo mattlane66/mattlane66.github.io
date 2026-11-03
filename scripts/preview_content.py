@@ -165,7 +165,7 @@ def main() -> int:
                                 ("decide", "#maker-decide-title"),
                                 ("together", "#maker-together-title"),
                                 ("execute", "#maker-proof-title"),
-                                ("conclusion", ".maker-method-direction"),
+                                ("conclusion", ".maker-method-principle"),
                             ):
                                 page.locator(selector).first.scroll_into_view_if_needed()
                                 shot = png.replace(".png", f"-maker-{label}.png")
