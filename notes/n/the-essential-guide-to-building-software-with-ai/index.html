@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff8e7">
+<link rel="icon" href="/favicon.svg?v=20260930" type="image/svg+xml">
+<title>The Essential Guide to Building Software with AI — Matt Lane</title>
+<meta name="description" content="Five human skills for directing AI-assisted software development, with a repeatable operating cycle and three disciplines for staying in control.">
+<link rel="canonical" href="https://mattlane66.github.io/notes/n/the-essential-guide-to-building-software-with-ai/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Matt Lane">
+<meta property="og:url" content="https://mattlane66.github.io/notes/n/the-essential-guide-to-building-software-with-ai/">
+<meta property="og:title" content="The Essential Guide to Building Software with AI — Matt Lane">
+<meta property="og:description" content="Five human skills for directing AI-assisted software development, with a repeatable operating cycle and three disciplines for staying in control.">
+<meta property="og:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
+<meta property="og:image:alt" content="Matt Lane product strategy and interaction map">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Essential Guide to Building Software with AI — Matt Lane">
+<meta name="twitter:description" content="Five human skills for directing AI-assisted software development, with a repeatable operating cycle and three disciplines for staying in control.">
+<meta name="twitter:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "@id": "https://mattlane66.github.io/notes/n/the-essential-guide-to-building-software-with-ai/#article", "headline": "The Essential Guide to Building Software with AI", "description": "Five human skills for directing AI-assisted software development, with a repeatable operating cycle and three disciplines for staying in control.", "url": "https://mattlane66.github.io/notes/n/the-essential-guide-to-building-software-with-ai/", "datePublished": "2026-11-03", "author": {"@type": "Person", "@id": "https://mattlane66.github.io/#person", "name": "Matt Lane", "url": "https://mattlane66.github.io/"}, "mainEntityOfPage": "https://mattlane66.github.io/notes/n/the-essential-guide-to-building-software-with-ai/"}</script>
+<style>
+:root{--bg:#f2efe7;--paper:#fffefa;--ink:#10100f;--muted:#68675f;--line:#cfccc1;--blue:#173dff;--max:900px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
+.top{border-bottom:1px solid var(--line)}.topin{height:58px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{font-weight:800;text-decoration:none;letter-spacing:-.02em}.back{font-size:12px;color:var(--muted);text-decoration:none}
+main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
+.body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px;overflow-wrap:anywhere}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
+
+.related-thinking{border-top:1px solid var(--line,#cfccc1);margin-top:42px;padding-top:22px;max-width:760px}
+.related-thinking h2{font-family:Inter,Arial,sans-serif;font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted,#666);margin:0 0 16px;font-weight:750}
+.related-thinking ul{list-style:none!important;display:grid;gap:12px;padding:0!important;margin:0!important}
+.related-thinking li{padding:0!important;margin:0!important}
+.related-thinking a{color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.related-thinking a:hover{color:var(--blue,#173dff)}
+</style>
+<link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
+</head>
+<body data-note-category="products">
+<header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
+<main class="wrap"><div class="meta">2026-11-03 · <span class="category-name">Products &amp; systems</span></div><h1>The Essential Guide to Building Software with AI</h1><article class="body"><p>AI can write the code. That doesn't decide what should be built, whether the result works, or what should happen next.</p>
+<p>The essential work is making good judgments before, during, and after the build.</p>
+<h2>Five skills</h2>
+<ol>
+<li>
+<p><strong>Choose — Can you identify what matters?</strong> Know which problem is worth solving, for whom, and why. Decide what matters before deciding which features to make.</p>
+</li>
+<li>
+<p><strong>Describe — Can you explain what you want?</strong> Describe what someone should be able to do, how the software should behave, which constraints matter, and what would count as success. Clear descriptions make results easier to evaluate.</p>
+</li>
+<li>
+<p><strong>Verify — Can you establish what actually happened?</strong> Use the software. Try ordinary and difficult cases. Have the AI show its test results and identify what it couldn't check. Distinguish working behavior from a convincing demonstration.</p>
+</li>
+<li>
+<p><strong>Interpret — Can you explain what the results mean?</strong> Determine whether the product solves the intended problem and whether its parts fit together. A technically correct feature may still be the wrong feature.</p>
+</li>
+<li>
+<p><strong>Steer — Can you decide what happens next?</strong> Continue when the evidence supports the direction. Refine what's inadequate. Realign when the approach or assumptions are wrong. Stop when further work isn't justified.</p>
+</li>
+</ol>
+<h2>The operating cycle</h2>
+<p><img src="/assets/notes/building-with-ai-operating-cycle.svg" alt="The operating cycle: Choose, Describe, AI builds, Verify, Interpret, Steer, then repeat."></p>
+<p>Give the AI one small, complete, useful piece to implement. Then examine what was built and make a new decision. Repeat at meaningful checkpoints, not after every tiny edit.</p>
+<h2>Three disciplines</h2>
+<ul>
+<li><strong>Build complete pieces.</strong> Prefer one experience that works from end to end over several disconnected features.</li>
+<li><strong>Keep changes reversible.</strong> Use version control or checkpoints. You should be able to undo a mistake without losing good work.</li>
+<li><strong>Know when to intervene.</strong> Repeated failed fixes, unsupported claims, unexplained changes, or expanding complexity are reasons to stop and reassess, not to keep prompting indefinitely.</li>
+</ul>
+<p>The AI can help you with every step, including choosing, describing, testing, and interpreting. It should also explain technical details you need to make a decision. But its confidence is not evidence, and its proposal is not your approval.</p>
+<p><strong>You don't need to know how to write the code. You need to know what should exist, establish what actually exists, understand what it means, and decide what happens next.</strong></p>
+<p><em>For a practical way to start, see <a href="/notes/n/how-to-start-building-products-with-ai/">How to Start Building Products with AI</a>.</em></p></article><aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul><li><a href="/notes/n/how-to-start-building-products-with-ai/">How to Start Building Products with AI</a></li><li><a href="/notes/n/shaping-is-finding-a-buildable-path-shaping-a-buildable-path-20261019/">Shaping Is Finding a Buildable Path</a></li><li><a href="/notes/n/product-judgment-is-the-learned-ability-to-make-good-decisions-under-amb-product-judgment-agentic-era-20261002/">Product Judgment in the Agentic Era</a></li></ul></aside></main>
+<footer><div class="wrap">© 2026 Matt Lane</div></footer>
+</body>
+</html>
