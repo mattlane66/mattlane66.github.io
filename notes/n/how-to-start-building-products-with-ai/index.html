@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff8e7">
+<link rel="icon" href="/favicon.svg?v=20260930" type="image/svg+xml">
+<title>How to Start Building Products with AI — Matt Lane</title>
+<meta name="description" content="You don&#x27;t need to know how to code. You need to understand what you&#x27;re trying to accomplish, why it matters, and what a successful result looks like.…">
+<link rel="canonical" href="https://mattlane66.github.io/notes/n/how-to-start-building-products-with-ai/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Matt Lane">
+<meta property="og:url" content="https://mattlane66.github.io/notes/n/how-to-start-building-products-with-ai/">
+<meta property="og:title" content="How to Start Building Products with AI — Matt Lane">
+<meta property="og:description" content="You don&#x27;t need to know how to code. You need to understand what you&#x27;re trying to accomplish, why it matters, and what a successful result looks like.…">
+<meta property="og:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
+<meta property="og:image:alt" content="Matt Lane product strategy and interaction map">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Start Building Products with AI — Matt Lane">
+<meta name="twitter:description" content="You don&#x27;t need to know how to code. You need to understand what you&#x27;re trying to accomplish, why it matters, and what a successful result looks like.…">
+<meta name="twitter:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "@id": "https://mattlane66.github.io/notes/n/how-to-start-building-products-with-ai/#article", "headline": "How to Start Building Products with AI", "description": "You don't need to know how to code. You need to understand what you're trying to accomplish, why it matters, and what a successful result looks like.…", "url": "https://mattlane66.github.io/notes/n/how-to-start-building-products-with-ai/", "datePublished": "2026-11-03", "author": {"@type": "Person", "@id": "https://mattlane66.github.io/#person", "name": "Matt Lane", "url": "https://mattlane66.github.io/"}, "mainEntityOfPage": "https://mattlane66.github.io/notes/n/how-to-start-building-products-with-ai/"}</script>
+<style>
+:root{--bg:#f2efe7;--paper:#fffefa;--ink:#10100f;--muted:#68675f;--line:#cfccc1;--blue:#173dff;--max:900px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
+.top{border-bottom:1px solid var(--line)}.topin{height:58px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{font-weight:800;text-decoration:none;letter-spacing:-.02em}.back{font-size:12px;color:var(--muted);text-decoration:none}
+main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
+.body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px;overflow-wrap:anywhere}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
+
+.related-thinking{border-top:1px solid var(--line,#cfccc1);margin-top:42px;padding-top:22px;max-width:760px}
+.related-thinking h2{font-family:Inter,Arial,sans-serif;font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted,#666);margin:0 0 16px;font-weight:750}
+.related-thinking ul{list-style:none!important;display:grid;gap:12px;padding:0!important;margin:0!important}
+.related-thinking li{padding:0!important;margin:0!important}
+.related-thinking a{color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.related-thinking a:hover{color:var(--blue,#173dff)}
+</style>
+<link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
+</head>
+<body data-note-category="products">
+<header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
+<main class="wrap"><div class="meta">2026-11-03 · <span class="category-name">Products &amp; systems</span></div><h1>How to Start Building Products with AI</h1><article class="body"><p>You don't need to know how to code. You need to understand what you're trying to accomplish, why it matters, and what a successful result looks like.</p>
+<p>Start with an AI coding tool, such as Codex, Claude Code, or Gemini CLI, and a project folder. You'll establish four files:</p>
+<ol>
+<li><strong>Agent instructions</strong> (<code>AGENTS.md</code>, <code>CLAUDE.md</code>, or <code>GEMINI.md</code> — use whichever your tool reads) — How the AI should work with you: communicate, make decisions, ask permission, test its work, and report problems. Tell it to read the product context, current status, and relevant feature brief before starting work.</li>
+<li><strong><code>PRODUCT.md</code></strong> — Who the product serves, what problem it solves, what outcome you want, and what matters most.</li>
+<li><strong><code>docs/CURRENT.md</code></strong> — What's being worked on, what actually works, what's unresolved, and what's next.</li>
+<li><strong><code>docs/features/&lt;name&gt;.md</code></strong> — What you're building next, how it should work, what's included or excluded, and how you'll know it's done.</li>
+</ol>
+<p><strong>You don't have to write these yourself.</strong> Ask the AI to interview you, examine anything already built, and draft the first three files for your review.</p>
+<p>Once you've agreed on the problem and desired outcome, ask the AI to help you explore possible solutions. Decide what matters, how much effort the work is worth, and which approach best fits.</p>
+<p>Then choose the smallest complete, useful part to build. Have the AI document its intended behavior, boundaries, and acceptance criteria in the feature brief. <strong>Review and approve the approach before building begins.</strong></p>
+<p>Then work in short cycles:</p>
+<p><strong>Build → Test → Demonstrate → Accept or Improve → Repeat.</strong></p>
+<p>Accept the work only after you've seen it working yourself, not merely because the AI says its tests passed.</p>
+<p>The AI handles the technical work and keeps <code>CURRENT.md</code> updated. You approve changes to the product's purpose, intended behavior, and scope.</p>
+<p>Keep the process proportional to the problem. A small, obvious fix doesn't need an elaborate plan. A complex or uncertain feature deserves more thought before implementation.</p>
+<p><strong>You decide what matters and whether the result is good enough. The AI figures out how to build it.</strong></p>
+<p>The goal isn't to produce more code. It's to make something useful that actually works.</p>
+<hr>
+<p><em>For a more structured approach to understanding problems, exploring solutions, evaluating tradeoffs, and planning what to build, see <a href="https://github.com/mattlane66/planning-skills-for-agents-and-humans">Planning Skills for Agents and Humans</a>.</em></p></article><aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul><li><a href="/notes/n/shaping-is-finding-a-buildable-path-shaping-a-buildable-path-20261019/">Shaping Is Finding a Buildable Path</a></li><li><a href="/notes/n/product-judgment-is-the-learned-ability-to-make-good-decisions-under-amb-product-judgment-agentic-era-20261002/">Product Judgment in the Agentic Era</a></li><li><a href="/notes/n/coding-is-the-production-of-software-coding-vs-product-20261002/">Coding is the production of software.</a></li></ul></aside></main>
+<footer><div class="wrap">© 2026 Matt Lane</div></footer>
+</body>
+</html>
