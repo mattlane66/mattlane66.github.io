@@ -1,5 +1,18 @@
 [
   {
+    "id": "how-to-start-building-products-with-ai-20261103",
+    "date": "2026-11-03",
+    "permalink": "how-to-start-building-products-with-ai",
+    "title": "How to Start Building Products with AI",
+    "category": "Products & systems",
+    "body": "You don't need to know how to code. You need to understand what you're trying to accomplish, why it matters, and what a successful result looks like.\n\nStart with an AI coding tool, such as Codex, Claude Code, or Gemini CLI, and a project folder. You'll establish four files:\n\n1. **Agent instructions** (`AGENTS.md`, `CLAUDE.md`, or `GEMINI.md` — use whichever your tool reads) — How the AI should work with you: communicate, make decisions, ask permission, test its work, and report problems. Tell it to read the product context, current status, and relevant feature brief before starting work.\n2. **`PRODUCT.md`** — Who the product serves, what problem it solves, what outcome you want, and what matters most.\n3. **`docs/CURRENT.md`** — What's being worked on, what actually works, what's unresolved, and what's next.\n4. **`docs/features/<name>.md`** — What you're building next, how it should work, what's included or excluded, and how you'll know it's done.\n\n**You don't have to write these yourself.** Ask the AI to interview you, examine anything already built, and draft the first three files for your review.\n\nOnce you've agreed on the problem and desired outcome, ask the AI to help you explore possible solutions. Decide what matters, how much effort the work is worth, and which approach best fits.\n\nThen choose the smallest complete, useful part to build. Have the AI document its intended behavior, boundaries, and acceptance criteria in the feature brief. **Review and approve the approach before building begins.**\n\nThen work in short cycles:\n\n**Build → Test → Demonstrate → Accept or Improve → Repeat.**\n\nAccept the work only after you've seen it working yourself, not merely because the AI says its tests passed.\n\nThe AI handles the technical work and keeps `CURRENT.md` updated. You approve changes to the product's purpose, intended behavior, and scope.\n\nKeep the process proportional to the problem. A small, obvious fix doesn't need an elaborate plan. A complex or uncertain feature deserves more thought before implementation.\n\n**You decide what matters and whether the result is good enough. The AI figures out how to build it.**\n\nThe goal isn't to produce more code. It's to make something useful that actually works.\n\n---\n\n*For a more structured approach to understanding problems, exploring solutions, evaluating tradeoffs, and planning what to build, see [Planning Skills for Agents and Humans](https://github.com/mattlane66/planning-skills-for-agents-and-humans).*",
+    "related_note_ids": [
+      "shaping-a-buildable-path-20261019",
+      "product-judgment-agentic-era-20261002",
+      "coding-vs-product-20261002"
+    ]
+  },
+  {
     "id": "assumptions-cannot-settle-question-20261102",
     "date": "2026-11-02",
     "permalink": "even-flawless-reasoning-has-limits-assumptions-cannot-settle-question-20261102",
