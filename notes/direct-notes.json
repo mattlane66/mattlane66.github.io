@@ -1,5 +1,19 @@
 [
   {
+    "id": "essential-guide-building-software-with-ai-20261103",
+    "date": "2026-11-03",
+    "permalink": "the-essential-guide-to-building-software-with-ai",
+    "title": "The Essential Guide to Building Software with AI",
+    "category": "Products & systems",
+    "excerpt": "Five human skills for directing AI-assisted software development, with a repeatable operating cycle and three disciplines for staying in control.",
+    "body": "AI can write the code. That doesn't decide what should be built, whether the result works, or what should happen next.\n\nThe essential work is making good judgments before, during, and after the build.\n\n## Five skills\n\n1. **Choose — Can you identify what matters?** Know which problem is worth solving, for whom, and why. Decide what matters before deciding which features to make.\n\n2. **Describe — Can you explain what you want?** Describe what someone should be able to do, how the software should behave, which constraints matter, and what would count as success. Clear descriptions make results easier to evaluate.\n\n3. **Verify — Can you establish what actually happened?** Use the software. Try ordinary and difficult cases. Have the AI show its test results and identify what it couldn't check. Distinguish working behavior from a convincing demonstration.\n\n4. **Interpret — Can you explain what the results mean?** Determine whether the product solves the intended problem and whether its parts fit together. A technically correct feature may still be the wrong feature.\n\n5. **Steer — Can you decide what happens next?** Continue when the evidence supports the direction. Refine what's inadequate. Realign when the approach or assumptions are wrong. Stop when further work isn't justified.\n\n## The operating cycle\n\n![The operating cycle: Choose, Describe, AI builds, Verify, Interpret, Steer, then repeat.](/assets/notes/building-with-ai-operating-cycle.svg)\n\nGive the AI one small, complete, useful piece to implement. Then examine what was built and make a new decision. Repeat at meaningful checkpoints, not after every tiny edit.\n\n## Three disciplines\n\n- **Build complete pieces.** Prefer one experience that works from end to end over several disconnected features.\n- **Keep changes reversible.** Use version control or checkpoints. You should be able to undo a mistake without losing good work.\n- **Know when to intervene.** Repeated failed fixes, unsupported claims, unexplained changes, or expanding complexity are reasons to stop and reassess, not to keep prompting indefinitely.\n\nThe AI can help you with every step, including choosing, describing, testing, and interpreting. It should also explain technical details you need to make a decision. But its confidence is not evidence, and its proposal is not your approval.\n\n**You don't need to know how to write the code. You need to know what should exist, establish what actually exists, understand what it means, and decide what happens next.**\n\n*For a practical way to start, see [How to Start Building Products with AI](/notes/n/how-to-start-building-products-with-ai/).*",
+    "related_note_ids": [
+      "how-to-start-building-products-with-ai-20261103",
+      "shaping-a-buildable-path-20261019",
+      "product-judgment-agentic-era-20261002"
+    ]
+  },
+  {
     "id": "what-good-reasoning-requires-20261103",
     "date": "2026-11-03",
     "permalink": "what-good-reasoning-requires",
@@ -358,4 +372,3 @@
     "related_note_ids": []
   }
 ]
-
