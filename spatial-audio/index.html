@@ -173,7 +173,7 @@
       try {
         const ready = await createGraph();
         if (!ready || !worklet) throw new Error('LCC is unavailable in this browser.');
-        if (audioContext.state === 'suspended') await audioContext.resume();
+        if (audioContext.state === 'suspended') void audioContext.resume().catch(() => {});
         on = Boolean(enableAfterLoad);
         reflect();
         report(on ? 'LCC is on for your local audio. Press play to compare.' : 'Your audio is ready. Press play, then switch LCC on to compare.');
@@ -195,7 +195,7 @@
         return;
       }
       if (!worklet) { report('LCC is unavailable in this browser.'); return; }
-      if (audioContext.state === 'suspended') await audioContext.resume();
+      if (audioContext.state === 'suspended') void audioContext.resume().catch(() => {});
       on = !on;
       reflect();
       report(on ? 'LCC is on for your local audio.' : 'LCC is off. Your local audio is unprocessed.');
