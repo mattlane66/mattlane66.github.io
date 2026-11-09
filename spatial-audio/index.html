@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff8e7">
+  <meta name="description" content="Listen to spatial audio through closely spaced stereo speakers. Compare unprocessed stereo with LCC, an open-source crosstalk-cancellation algorithm.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <title>Spatial Audio — Matt Lane</title>
+  <style>
+    :root { color-scheme: light; --paper: #fff8e7; --ink: #16161d; --muted: #65645e; --line: #c9c5b9; --blue: #173dff; --orange: #e45a35; --surface: #fffdfa; }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { min-width: 320px; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    button { font: inherit; }
+    :is(a, button, input, audio):focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
+    .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    header { border-bottom: 1px solid var(--line); }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 64px; }
+    .brand { font-size: 14px; font-weight: 750; letter-spacing: -.025em; text-decoration: none; }
+    .back { text-decoration: none; font-size: 13px; color: var(--muted); }
+    .back:hover, footer a:hover { color: var(--blue); }
+    main { padding: clamp(58px, 9vw, 104px) 0 100px; }
+    .eyebrow, .tiny { font-size: 11px; font-weight: 750; letter-spacing: .115em; line-height: 1.5; text-transform: uppercase; }
+    .eyebrow { color: var(--orange); }
+    .tiny { color: var(--muted); }
+    h1 { font-size: clamp(65px, 9.5vw, 124px); font-weight: 760; letter-spacing: -.087em; line-height: .95; margin: 20px 0 25px; }
+    .intro { font-size: clamp(18px, 2.2vw, 24px); line-height: 1.4; letter-spacing: -.027em; max-width: 690px; margin: 0 0 46px; }
+    .experience { max-width: 760px; }
+    .player-header { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; margin-bottom: 12px; }
+    .spotify-frame { width: 100%; height: 352px; display: block; border: 0; border-radius: 12px; background: #191414; }
+    .controls { margin-top: 22px; padding: 24px 28px; background: var(--surface); border: 1px solid var(--ink); box-shadow: 9px 9px 0 rgba(22, 22, 29, .06); }
+    .control-row { display: flex; justify-content: space-between; gap: 30px; align-items: center; }
+    .control-title { margin: 0 0 4px; font-size: 23px; line-height: 1.1; letter-spacing: -.05em; }
+    .control-sub { margin: 0; font-size: 13px; line-height: 1.4; color: var(--muted); }
+    .switch { display: inline-flex; align-items: center; gap: 12px; border: 0; padding: 12px 0 12px 14px; background: transparent; color: var(--ink); cursor: pointer; flex-shrink: 0; }
+    .switch .state { min-width: 27px; font-size: 13px; font-weight: 700; }
+    .track { position: relative; display: inline-block; background: #b5b3ad; width: 64px; height: 36px; border-radius: 40px; transition: background .17s ease; }
+    .thumb { display: block; position: absolute; top: 4px; left: 4px; width: 28px; height: 28px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,.16); transition: transform .17s ease; }
+    .switch[aria-checked="true"] .track { background: var(--blue); }
+    .switch[aria-checked="true"] .thumb { transform: translateX(28px); }
+    .separator { height: 1px; background: var(--line); margin: 20px 0 18px; }
+    .control-note { font-size: 13px; line-height: 1.55; color: var(--muted); max-width: 620px; margin: 0; }
+    .control-note strong { color: var(--ink); font-weight: 700; }
+    .file-actions { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-top: 13px; }
+    .file-action { background: none; border: 0; padding: 4px 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--blue); }
+    .file-action:hover { color: var(--ink); }
+    .file-name { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+    .local-player { margin-top: 16px; width: 100%; }
+    .status { font-size: 12px; line-height: 1.55; color: var(--muted); margin: 10px 0 0; min-height: 18px; }
+    .listening { max-width: 760px; margin: 39px 0 0; border-top: 1px solid var(--line); padding-top: 18px; display: flex; gap: 24px; justify-content: space-between; flex-wrap: wrap; }
+    .listening p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.55; max-width: 520px; }
+    .listening a { font-size: 13px; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+    footer { border-top: 1px solid var(--line); padding: 23px 0 35px; font-size: 12px; line-height: 1.55; color: var(--muted); }
+    @media (max-width: 680px) {
+      .wrap { width: calc(100% - 32px); }
+      .nav { min-height: 57px; }
+      main { padding: 58px 0 70px; }
+      h1 { margin-top: 16px; }
+      .intro { margin-bottom: 36px; }
+      .controls { padding: 19px 18px; box-shadow: 6px 6px 0 rgba(22,22,29,.06); }
+      .control-row { gap: 10px; }
+      .control-title { font-size: 22px; }
+      .player-header { flex-direction: column; gap: 2px; margin-bottom: 13px; }
+      .spotify-frame { height: 352px; }
+      .listening { margin-top: 30px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="/">Matt Lane <span aria-hidden="true">·</span> Experiments</a>
+      <a class="back" href="/#projects">← Side projects</a>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="eyebrow">An experiment in listening</div>
+    <h1>Spatial audio.</h1>
+    <p class="intro">A different way to hear stereo: reduce the sound from each speaker reaching the opposite ear.</p>
+    <section class="experience" aria-label="Listen and compare">
+      <div class="player-header"><span class="tiny">Listen · Spotify playlist</span><span class="tiny">Stereo speakers recommended</span></div>
+      <iframe class="spotify-frame" data-testid="embed-iframe" title="Spotify spatial audio listening playlist" src="https://open.spotify.com/embed/playlist/0XrqQ8tIVGMKuVIC5mIrNN?utm_source=generator&amp;si=2f4f14aa3b5b4694" width="100%" height="352" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <div class="controls">
+        <div class="control-row">
+          <div>
+            <h2 class="control-title" id="lcc-label">LCC</h2>
+            <p class="control-sub">Localization Cue Correction</p>
+          </div>
+          <button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="source-note" aria-checked="false"><span class="state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button>
+        </div>
+        <div class="separator" aria-hidden="true"></div>
+        <p class="control-note" id="source-note"><strong>To hear LCC, use a stereo audio file.</strong> Spotify's embedded player cannot pass its audio into this effect; its playback above stays unprocessed. Your file stays on your device.</p>
+        <div class="file-actions"><button type="button" class="file-action" id="choose-file">Choose audio file ↗</button><span class="file-name" id="file-name">No file selected</span></div>
+        <input type="file" id="audio-file" accept="audio/*" hidden aria-label="Choose a local stereo audio file">
+        <audio class="local-player" id="local-player" controls preload="metadata" hidden aria-label="Local audio comparison player"></audio>
+        <p class="status" id="status" role="status" aria-live="polite">LCC is off.</p>
+      </div>
+    </section>
+    <div class="listening">
+      <p>For the intended effect, listen on two closely spaced stereo loudspeakers and sit centered between them. LCC is not designed for headphones.</p>
+      <a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">Explore the algorithm ↗</a>
+    </div>
+  </main>
+  <footer><div class="wrap">LCC by Robert LiKamWa and Matthew Lane, developed with guidance from Ralph Glasgal. Browser processing adapts the published open-source implementation.</div></footer>
+  <script>
+  (() => {
+    'use strict';
+    const byId = id => document.getElementById(id);
+    const toggle = byId('lcc-switch');
+    const stateText = byId('switch-state');
+    const fileInput = byId('audio-file');
+    const chooseButton = byId('choose-file');
+    const player = byId('local-player');
+    const fileName = byId('file-name');
+    const status = byId('status');
+    let audioContext = null;
+    let worklet = null;
+    let fileURL = null;
+    let on = false;
+    let pendingEnable = false;
+    let loading = false;
+
+    function report(message) { status.textContent = message; }
+    function reflect() {
+      toggle.setAttribute('aria-checked', String(on));
+      stateText.textContent = on ? 'On' : 'Off';
+      if (worklet) worklet.port.postMessage({ type: 'enable', value: on });
+    }
+    async function createGraph() {
+      if (audioContext) return Boolean(worklet);
+      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextCtor) throw new Error('Your browser does not support the Web Audio API.');
+      audioContext = new AudioContextCtor();
+      const source = audioContext.createMediaElementSource(player);
+      if (!audioContext.audioWorklet) {
+        source.connect(audioContext.destination);
+        throw new Error('This browser cannot run the LCC processor. Playback remains unprocessed.');
+      }
+      try {
+        await audioContext.audioWorklet.addModule('./lcc-worklet.js');
+        worklet = new AudioWorkletNode(audioContext, 'lcc-processor', {numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2], channelCount: 2, channelCountMode: 'explicit', channelInterpretation: 'discrete'});
+        const safeGain = audioContext.createGain();
+        safeGain.gain.value = 0.65;
+        source.connect(worklet);
+        worklet.connect(safeGain);
+        safeGain.connect(audioContext.destination);
+        return true;
+      } catch (error) {
+        source.connect(audioContext.destination);
+        throw error;
+      }
+    }
+    async function loadFile(file, enableAfterLoad) {
+      if (!file) return;
+      if (!file.type.startsWith('audio/') && !/\.(wav|mp3|ogg|opus|m4a|aac|flac|aif|aiff)$/i.test(file.name)) {
+        report('Choose an audio file, such as WAV, MP3, or M4A.');
+        return;
+      }
+      loading = true;
+      toggle.disabled = true;
+      on = false;
+      reflect();
+      if (fileURL) URL.revokeObjectURL(fileURL);
+      fileURL = URL.createObjectURL(file);
+      player.src = fileURL;
+      player.hidden = false;
+      player.load();
+      fileName.textContent = file.name;
+      report('Preparing the audio comparison…');
+      try {
+        const ready = await createGraph();
+        if (!ready || !worklet) throw new Error('LCC is unavailable in this browser.');
+        if (audioContext.state === 'suspended') await audioContext.resume();
+        on = Boolean(enableAfterLoad);
+        reflect();
+        report(on ? 'LCC is on for your local audio. Press play to compare.' : 'Your audio is ready. Press play, then switch LCC on to compare.');
+      } catch (error) {
+        on = false;
+        reflect();
+        report(error && error.message ? error.message : 'LCC could not start in this browser.');
+      } finally {
+        loading = false;
+        toggle.disabled = false;
+      }
+    }
+    toggle.addEventListener('click', async () => {
+      if (loading) return;
+      if (!fileURL) {
+        pendingEnable = true;
+        report('Choose a local stereo audio file to use LCC. Spotify playback will not change.');
+        fileInput.click();
+        return;
+      }
+      if (!worklet) { report('LCC is unavailable in this browser.'); return; }
+      if (audioContext.state === 'suspended') await audioContext.resume();
+      on = !on;
+      reflect();
+      report(on ? 'LCC is on for your local audio.' : 'LCC is off. Your local audio is unprocessed.');
+    });
+    chooseButton.addEventListener('click', () => { pendingEnable = false; fileInput.click(); });
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files && fileInput.files[0];
+      const enable = pendingEnable;
+      pendingEnable = false;
+      if (file) void loadFile(file, enable);
+      fileInput.value = '';
+    });
+    player.addEventListener('play', () => { if (audioContext && audioContext.state === 'suspended') void audioContext.resume(); });
+    window.addEventListener('pagehide', () => { if (fileURL) URL.revokeObjectURL(fileURL); });
+    reflect();
+  })();
+  </script>
+</body>
+</html>
