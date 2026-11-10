@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fff8e7">
-<meta name="description" content="Hear the difference with Localization Cue Correction: five listening samples, one live stereo comparison.">
+<meta name="description" content="Spatial Audio: hear a sound orbit around you, a giant creature approaching from behind, and other 3D scenes with LCC Off and On.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <title>Spatial Audio — Matt Lane</title>
 <style>
@@ -90,6 +90,33 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 .progress{width:100px;min-width:70px}.transport{align-items:start}.meta{margin-left:auto}.hint{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+
+/* Top-down stage: the dot represents the source's actual HRTF coordinates. */
+.samples{grid-template-columns:repeat(4,minmax(0,1fr))}
+.soundstage{height:252px;justify-content:center;gap:clamp(25px,6vw,72px);padding:14px 22px}
+.sound-map{position:relative;width:210px;height:210px;border:1px dashed #aaa69a;border-radius:50%;flex-shrink:0;background:radial-gradient(circle,#e7e4de 0 2px,transparent 3px),radial-gradient(circle,#fffdfa 0 46%,#f3efe6 47% 47.5%,transparent 48%);}
+.sound-map:after{content:'';position:absolute;top:50%;left:9%;right:9%;border-top:1px solid #ded9d0;transform:translateY(-50%);pointer-events:none}
+.sound-map:before{content:'';position:absolute;left:50%;top:9%;bottom:9%;border-left:1px solid #ded9d0;transform:translateX(-50%);pointer-events:none}
+.map-label{position:absolute;color:var(--muted);letter-spacing:.09em;font-size:9px;font-weight:750;white-space:nowrap;z-index:2}
+.map-front{top:-1px;left:50%;transform:translateX(-50%);background:var(--panel);padding:0 6px}
+.map-rear{bottom:-1px;left:50%;transform:translateX(-50%);background:var(--panel);padding:0 6px}
+.map-left{left:-24px;top:50%;transform:translateY(-50%) rotate(-90deg);background:var(--panel);padding:0 5px}
+.map-right{right:-27px;top:50%;transform:translateY(-50%) rotate(90deg);background:var(--panel);padding:0 5px}
+.map-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--ink);font-size:10px;font-weight:760;letter-spacing:.05em;color:white;z-index:3}
+.source-dot{position:absolute;width:18px;height:18px;border-radius:50%;background:var(--blue);left:50%;top:15%;transform:translate(-50%,-50%);box-shadow:0 0 0 6px rgba(23,61,255,.14);z-index:4;transition:left .08s linear,top .08s linear}
+.map-readout{max-width:230px;display:flex;flex-direction:column;gap:10px}
+.map-readout strong{font-size:clamp(21px,3vw,31px);line-height:1.1;letter-spacing:-.05em}
+.map-readout span:last-child{font-size:12px;line-height:1.55;color:var(--muted)}
+@media(max-width:690px){
+ .samples{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .soundstage{height:218px;gap:22px;padding:12px 6px}
+ .sound-map{width:162px;height:162px}
+ .map-readout{max-width:126px;gap:7px}
+ .map-readout strong{font-size:19px}
+ .map-readout span:last-child{font-size:11px}
+}
+@media(max-width:370px){.sound-map{width:135px;height:135px}.map-readout{max-width:105px}}
+
 </style>
 </head>
 <body>
@@ -97,222 +124,271 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 <main class="wrap">
 <div class="kicker">An experiment in listening</div>
 <h1>Spatial audio.</h1>
-<p class="intro">Hear what changes when sound from the left speaker is prevented from reaching the right ear—and vice versa.</p>
+<p class="intro">An object circles your head. Something enormous approaches from behind. Toggle LCC to hear how sound escapes the space between two speakers.</p>
 <section class="experience" aria-label="Spatial audio sound library">
-<div class="library-head"><span class="label">Listen to the difference</span><span class="label">5 listening samples</span></div>
+<div class="library-head"><span class="label">Listen to the difference</span><span class="label">4 spatial scenes · 360°</span></div>
 <div class="samples" role="group" aria-label="Choose a sound">
-<button type="button" class="sample" data-sound="position" aria-pressed="true"><span class="number">01 / TEST</span><span class="name">Position</span></button>
-<button type="button" class="sample" data-sound="movement" aria-pressed="false"><span class="number">02 / TEST</span><span class="name">Movement</span></button>
-<button type="button" class="sample" data-sound="car" aria-pressed="false"><span class="number">03 / TEST</span><span class="name">Passing car</span></button>
-<button type="button" class="sample" data-sound="forest" aria-pressed="false"><span class="number">04 / FIELD</span><span class="name">Forest</span></button>
-<button type="button" class="sample" data-sound="music" aria-pressed="false"><span class="number">05 / MUSIC</span><span class="name">Piano</span></button>
+<button type="button" class="sample" data-sound="orbit" aria-pressed="true"><span class="number">01 / 360°</span><span class="name">Orbit</span></button>
+<button type="button" class="sample" data-sound="dinosaur" aria-pressed="false"><span class="number">02 / REAR</span><span class="name">Dinosaur</span></button>
+<button type="button" class="sample" data-sound="flyby" aria-pressed="false"><span class="number">03 / NEAR</span><span class="name">Flyby</span></button>
+<button type="button" class="sample" data-sound="helicopter" aria-pressed="false"><span class="number">04 / ABOVE</span><span class="name">Helicopter</span></button>
 </div>
 <div class="deck">
-<div class="headline"><div><span class="label" id="sample-number">01 / 05</span><h2 id="sample-title">Position</h2><p class="description" id="sample-description">A short sound at left, center, and right. Listen for where each sound seems to come from.</p></div><div class="type" id="sample-type">Synthesized test</div></div>
-<div class="soundstage" aria-hidden="true"><div class="speaker"></div><div class="stage-center"><span class="room">Listening field</span><div class="stage-track" id="stage-track"><span class="dot"></span><span class="dot centre"></span><span class="dot"></span></div><span class="room">Left · center · right</span></div><div class="speaker"></div></div>
+<div class="headline"><div><span class="label" id="sample-number">01 / 04</span><h2 id="sample-title">Orbit</h2><p class="description" id="sample-description">A pulsing object circles around your head, passing both sides and traveling behind you.</p></div><div class="type" id="sample-type">3D / HRTF scene</div></div>
+<div class="soundstage" aria-hidden="true"><div class="sound-map"><span class="map-label map-front">IN FRONT</span><span class="map-label map-rear">BEHIND YOU</span><span class="map-label map-left">LEFT</span><span class="map-label map-right">RIGHT</span><span class="map-center">YOU</span><span class="source-dot" id="source-dot"></span></div><div class="map-readout"><span class="label">Source position</span><strong id="source-position">In front</strong><span>Sound travels in real 3D space around the listener before LCC processing.</span></div></div>
 <div class="transport">
-<div class="play-group"><button id="play" class="play" type="button">▶ Play sound</button><span class="hint" id="play-hint">Click Play, then toggle LCC below without stopping the audio.</span></div>
-<div class="meta"><progress id="progress" class="progress" value="0" max="100" aria-label="Sound playback progress"></progress><span class="timer" id="timer">0:00 / 0:12</span></div>
+<div class="play-group"><button id="play" class="play" type="button">▶ Play sound</button><span class="hint" id="play-hint">Play at moderate volume. Toggle LCC without restarting the sound.</span></div>
+<div class="meta"><progress id="progress" class="progress" value="0" max="100" aria-label="Sound playback progress"></progress><span class="timer" id="timer">0:00 / 0:14</span></div>
 </div>
 </div>
 <div class="compare"><div><h3 id="lcc-label">LCC</h3><p>Localization Cue Correction · original / processed</p></div><button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="status" aria-checked="false"><span class="switch-state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button></div>
-<p id="status" class="status" role="status" aria-live="polite">Ready. Play a sound, then switch LCC On and Off to compare.</p>
+<p id="status" class="status" role="status" aria-live="polite">Orbit is ready. Play, then compare LCC Off and On while the same object circles you.</p>
 </section>
-<div class="source-credit" id="source-credit"><p id="credit-text">Position is a synthesized stereo test, generated locally in the browser.</p><a id="source-link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">About the LCC algorithm ↗</a></div>
+<div class="source-credit" id="source-credit"><p id="credit-text">Orbit is an original synthesized 3D scene generated in the browser, with HRTF positioning feeding the LCC processor.</p><a id="source-link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">About the LCC algorithm ↗</a></div>
 <details><summary>How to listen — and where these sounds come from</summary>
-<p>Listen through two closely spaced stereo loudspeakers while seated on their center line. LCC is designed for speakers, not headphones. Keep the speaker volume modest when comparing modes. These tests have different spatial content: a difference in sound does not automatically mean more accurate spatial localization.</p>
-<p>Position, Movement and Passing car are original synthesized tests generated in your browser. Forest is “Birdsong mild sunny day” by stephan, a public-domain recording from PDSounds hosted by Wikimedia Commons. Piano is “Emotional Piano” by triangelx, available under CC0 and hosted by Wikimedia Commons. When a recording cannot be loaded, the page clearly says so and falls back to a locally generated demonstration. The site never uploads or records microphone audio.</p>
+<p>For the intended spatial effect, use two closely spaced stereo loudspeakers and sit on their center line. LCC is not designed for headphone listening. Start quietly; the dinosaur has deep impacts and a sudden roar. The 3D scenes use a generic browser HRTF to create front/back and height cues before LCC processing. These cues vary by listener, speaker geometry, room, and browser: no fixed two-speaker system guarantees a literal source behind every listener.</p>
+<p>Orbit, Flyby and Helicopter are original synthesized mono sources moved through the browser’s HRTF spatializer. Dinosaur combines original synthesized creature sounds and footsteps with an optional, low-pitched public-domain growl by stilgar (Wikimedia Commons / PDSounds). If that growl cannot load, the complete synthesized dinosaur scene still works. No microphone capture, third-party players, or uploaded files.</p>
 </details>
 <div class="listening"><p>LCC by Robert LiKamWa and Matthew Lane with guidance from Ralph Glasgal. The processing is adapted from the public-domain implementation.</p><a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">Explore the algorithm ↗</a></div>
 </main>
-<footer><div class="wrap">A browser-based listening experiment. The comparison stays in sync as you switch between original stereo and LCC.</div></footer>
+<footer><div class="wrap">A 3D sound-design experiment. Each stereo HRTF scene is held constant as you compare unprocessed stereo with LCC.</div></footer>
 <script>
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
 const catalog={
- position:{title:'Position',desc:'A short sound at left, center, and right. Listen for where each sound seems to come from.',type:'Synthesized test',duration:12,credit:'Position is a synthesized stereo test, generated locally in the browser.',link:'https://github.com/mattlane66/lcc',linkText:'About the LCC algorithm ↗'},
- movement:{title:'Movement',desc:'A smooth sweep of pink-ish noise across the stereo field. Listen for continuous motion rather than jumps.',type:'Synthesized test',duration:14,credit:'Movement is a synthesized stereo-noise sweep, generated locally in the browser.',link:'https://github.com/mattlane66/lcc',linkText:'About the LCC algorithm ↗'},
- car:{title:'Passing car',desc:'A synthetic vehicle approaches, passes and recedes. Listen for the location and motion of the sound.',type:'Synthesized test',duration:12,credit:'Passing car is a designed simulation, not a recording of a real vehicle.',link:'https://github.com/mattlane66/lcc',linkText:'About the LCC algorithm ↗'},
- forest:{title:'Forest',desc:'Actual birdsong recorded in the woods. Listen for where individual calls appear in the stereo landscape.',type:'Public-domain field recording',duration:37,source:'https://upload.wikimedia.org/wikipedia/commons/7/75/Birdsong_mild_sunny_day.ogg',credit:'“Birdsong mild sunny day” recorded by stephan, public domain. Source: Wikimedia Commons.',link:'https://commons.wikimedia.org/wiki/File:Birdsong_mild_sunny_day.ogg',linkText:'Recording and license ↗'},
- music:{title:'Piano',desc:'An expressive piano recording. Listen for tonal character, image width, and how the sound occupies the space.',type:'CC0 piano recording',duration:16,source:'https://upload.wikimedia.org/wikipedia/commons/7/70/Emotional_piano.wav',credit:'“Emotional piano” by triangelx, CC0 1.0. Source: Wikimedia Commons / Freesound.',link:'https://commons.wikimedia.org/wiki/File:Emotional_piano.wav',linkText:'Recording and license ↗'}
+  orbit:{title:'Orbit',desc:'A pulsing machine circles you completely—past both ears, across the front, and behind your head twice.',duration:14,type:'3D orbit · HRTF',credit:'Original synthesized orbital sound. Browser HRTF positions the mono source in 3D before the LCC processor.'},
+  dinosaur:{title:'Dinosaur',desc:'Heavy footsteps approach from behind. A creature growls near your shoulder and recedes into the distance.',duration:16,type:'Behind you · HRTF',credit:'Original synthesized footsteps and creature roar. An optional processed growl by stilgar is public domain (PDSounds / Wikimedia Commons).',link:'https://commons.wikimedia.org/wiki/File:Monster_growls_2.ogg'},
+  flyby:{title:'Flyby',desc:'A fast object streaks from behind your left shoulder, nearly overhead, and away in front of you.',duration:12,type:'Overhead · HRTF',credit:'Original synthesized aerodynamic sweep, with 3D position, distance and Doppler-inspired pitch design.'},
+  helicopter:{title:'Helicopter',desc:'A rotorcraft makes a low circle above and around you. Follow it when it disappears behind.',duration:14,type:'Height and orbit · HRTF',credit:'Original synthesized rotor and engine layers, positioned above the listener using HRTF.'}
 };
 const elements={
- buttons:[...document.querySelectorAll('.sample')],play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
- title:$('sample-title'),desc:$('sample-description'),num:$('sample-number'),type:$('sample-type'),
- credit:$('credit-text'),link:$('source-link'),progress:$('progress'),timer:$('timer'),
- stage:$('stage-track'),status:$('status'),hint:$('play-hint')
+  tabs:[...document.querySelectorAll('.sample')],play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
+  title:$('sample-title'),desc:$('sample-description'),num:$('sample-number'),type:$('sample-type'),
+  credit:$('credit-text'),link:$('source-link'),progress:$('progress'),timer:$('timer'),
+  dot:$('source-dot'),position:$('source-position'),status:$('status'),hint:$('play-hint')
 };
-let selected='position',ctx=null,worklet=null,master=null,node=null,playing=false,loaded=null;
-let startedAt=0,pausedOffset=0,currentToken=0,loadPromise=null,animation=0;
-const cache={};
-const fallbackKinds=new Set();
-function report(s){elements.status.textContent=s;}
-function formatTime(sec){let n=Math.max(0,Math.floor(sec));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');}
-function elapsed(){if(!playing||!ctx)return pausedOffset;return (pausedOffset+(ctx.currentTime-startedAt))%Math.max(.01,loaded?.duration||catalog[selected].duration);}
-function updateProgress(){
- const dur=loaded?.duration||catalog[selected].duration;
- let t=elapsed();
- elements.timer.textContent=formatTime(t)+' / '+formatTime(dur);
- elements.progress.value=Math.min(100,Math.max(0,100*t/dur));
- if(playing){animation=requestAnimationFrame(updateProgress);}
+let selected='orbit',ctx=null,worklet=null,bus=null,playing=false,enabled=false,frame=0;
+let sources=[],panners=[],startTime=0,offset=0,token=0;
+const buffers={};
+let growlBuffer=null,growlFailed=false;
+function report(msg){elements.status.textContent=msg;}
+function ftime(n){const a=Math.floor(Math.max(0,n));return Math.floor(a/60)+':'+String(a%60).padStart(2,'0');}
+function elapsed(){return playing&&ctx ? (offset+ctx.currentTime-startTime)%catalog[selected].duration:offset;}
+function pos(kind,t,index=0){
+ const tau=Math.PI*2;
+ if(kind==='orbit'){const a=t*tau/7;return {x:Math.sin(a)*2.9,y:0.1,z:-Math.cos(a)*2.9,scale:4.3};}
+ if(kind==='dinosaur'){
+   const knots=[[4,8],[3,7],[2,5.8],[1.2,3.7],[0.5,1.4],[-0.7,1.3],[-2,2.1],[-3.6,4.7],[-4.6,8]];
+   const k=Math.min(knots.length-2,Math.floor(t/2)),v=Math.max(0,Math.min(1,(t-k*2)/2));
+   const ease=v*v*(3-2*v),a=knots[k],b=knots[k+1];
+   return{x:a[0]+(b[0]-a[0])*ease,y:0.25,z:a[1]+(b[1]-a[1])*ease,scale:10};
+ }
+ if(kind==='flyby'){
+   const p=Math.max(0,Math.min(1,t/12)),u=p*p*(3-2*p);
+   return {x:-11+22*u,y:0.65+4*Math.abs(p-.5),z:7-14*u,scale:12};
+ }
+ const a=t*tau/9+(index?index*Math.PI:0);
+ return{x:Math.sin(a)*4.2,y:3+Math.sin(a*1.2)*.55,z:-Math.cos(a)*4.2,scale:6.5};
 }
-function showChoice(){
- const c=catalog[selected];const ids=Object.keys(catalog);
- elements.buttons.forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.sound===selected)));
- elements.title.textContent=c.title;elements.desc.textContent=c.desc;
- elements.num.textContent=String(ids.indexOf(selected)+1).padStart(2,'0')+' / 05';
- elements.type.textContent=c.type;elements.credit.textContent=c.credit;
- elements.link.href=c.link;elements.link.textContent=c.linkText;
- elements.stage.dataset.motion=(selected==='movement'||selected==='car')?'moving':'static';
- elements.timer.textContent='0:00 / '+formatTime(c.duration);elements.progress.value=0;
- elements.hint.textContent='Switch LCC while listening. The sound will not restart.';
+function paint(t){
+ const p=pos(selected,t);
+ const x=Math.max(12,Math.min(88,50+38*p.x/p.scale));
+ const y=Math.max(12,Math.min(88,50+38*p.z/p.scale));
+ elements.dot.style.left=x+'%';elements.dot.style.top=y+'%';
+ const horizontal=Math.abs(p.x)>Math.abs(p.z)*.68?(p.x>0?'Right':'Left'):'';
+ const depth=p.z>0.75?'Behind':p.z<-.75?'In front':'Beside';
+ elements.position.textContent=horizontal?(depth+' · '+horizontal):depth;
+}
+function tick(){
+ const t=elapsed(),dur=catalog[selected].duration;
+ elements.timer.textContent=ftime(t)+' / '+ftime(dur);
+ elements.progress.value=100*t/dur;
+ paint(t);
+ if(playing){
+  for(let i=0;i<panners.length;i++){
+   const p=pos(selected,t,i);
+   const a=panners[i],now=ctx.currentTime;
+   a.positionX.setTargetAtTime(p.x,now,.018);
+   a.positionY.setTargetAtTime(p.y,now,.018);
+   a.positionZ.setTargetAtTime(p.z,now,.018);
+  }
+  frame=requestAnimationFrame(tick);
+ }
 }
 function reflect(){
  elements.state.textContent=enabled?'On':'Off';
  elements.toggle.setAttribute('aria-checked',String(enabled));
  if(worklet)worklet.port.postMessage({type:'enable',value:enabled});
 }
-let enabled=false;
-function setPlaying(value){playing=value;elements.play.textContent=value?'❚❚ Pause':'▶ Play sound';elements.play.setAttribute('aria-label',value?'Pause sound':'Play sound');cancelAnimationFrame(animation);updateProgress();}
-async function ensureGraph(){
+function setPlaying(v){
+ playing=v;elements.play.textContent=v?'❚❚ Pause':'▶ Play sound';
+ elements.play.setAttribute('aria-label',v?'Pause sound':'Play sound');
+ cancelAnimationFrame(frame);tick();
+}
+async function graph(){
  if(ctx)return;
  const A=window.AudioContext||window.webkitAudioContext;
- if(!A||!window.AudioWorkletNode)throw new Error('This browser does not support the LCC audio processor.');
+ if(!A||!window.AudioWorkletNode)throw Error('This browser does not support the audio processor.');
  const c=new A({latencyHint:'playback'});
  try{
   await c.audioWorklet.addModule('./lcc-worklet.js');
   const w=new AudioWorkletNode(c,'lcc-processor',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2],channelCount:2,channelCountMode:'explicit',channelInterpretation:'discrete'});
-  const g=c.createGain();g.gain.value=.50;
-  w.connect(g);g.connect(c.destination);
-  ctx=c;worklet=w;master=g;reflect();
- }catch(error){await c.close();throw error;}
+  const gain=c.createGain();gain.gain.value=.58;
+  const input=c.createGain();
+  input.gain.value=.72;
+  input.connect(w);w.connect(gain);gain.connect(c.destination);
+  ctx=c;worklet=w;bus=input;reflect();
+ }catch(error){try{await c.close();}catch(_){ }throw error;}
 }
-function smoothImpulse(t,offset,len){let d=t-offset;return d<0||d>len?0:Math.sin(Math.PI*d/len)**2;}
-function makeGenerated(kind,sr){
- const dur=catalog[kind].duration, n=Math.ceil(dur*sr);
- const audio=new AudioBuffer({numberOfChannels:2,length:n,sampleRate:sr});
- const l=audio.getChannelData(0),r=audio.getChannelData(1);
- let seed=0x1234abcd;
- function random(){seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return ((seed>>>0)/4294967295)*2-1;}
- let smooth=0,phase=0;
- if(kind==='position'){
-  for(let i=0;i<n;i++){
-    const t=i/sr;const k=Math.floor(t/.77);const f=t-k*.77;
-    const envelope=smoothImpulse(f,.055,.105);
-    const ping=envelope*(.32*Math.sin(2*Math.PI*740*f)+.11*Math.sin(2*Math.PI*1480*f));
-    const p=k%3;
-    l[i]=ping*(p===0?1:p===1?.70:.03);
-    r[i]=ping*(p===0?.03:p===1?.70:1);
+function createSound(kind){
+ const rate=ctx.sampleRate,seconds=catalog[kind].duration,len=Math.ceil(rate*seconds);
+ const audio=ctx.createBuffer(1,len,rate);
+ const out=audio.getChannelData(0);
+ let seed=0x77fc9e2b,low=0,slow=0,phase=0;
+ function noise(){seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return ((seed>>>0)/4294967295)*2-1;}
+ function burst(t,center,width){const u=(t-center)/width;return Math.exp(-u*u*3);}
+ for(let i=0;i<len;i++){
+  const t=i/rate,n=noise();
+  low=.94*low+.06*n;slow=.997*slow+.003*n;
+  let v=0;
+  if(kind==='orbit'){
+    const fr=265+37*Math.sin(t*Math.PI*2/7)+15*Math.sin(t*1.4);
+    phase+=2*Math.PI*fr/rate;
+    const shimmer=.72+.28*Math.sin(2*Math.PI*12*t);
+    v=(.11*Math.sin(phase)+.065*Math.sin(phase*1.98)+.13*low+.05*n)*shimmer;
+    v+=.08*burst(t%3.5,1.1,.38)*Math.sin(phase*3);
+  }else if(kind==='dinosaur'){
+    const onset=Math.max(burst(t,5.1,2.35),burst(t,10.1,2.8));
+    const freq=65+30*Math.sin(t*1.9)+15*Math.sin(t*7);
+    phase+=2*Math.PI*freq/rate;
+    const glottal=.60*Math.sin(phase)+.28*Math.sin(2*phase)+.15*Math.sin(3.15*phase);
+    const rough=.5*low+.1*n+.4*slow;
+    v=onset*(.28*Math.tanh(1.3*glottal)+.15*rough);
+    const footCount=10;
+    for(let j=0;j<footCount;j++){
+      const footTime=.8+j*1.35;
+      const dt=t-footTime;
+      if(dt>0&&dt<.45){
+        const decay=Math.exp(-16*dt);
+        v+=decay*(.26*Math.sin(2*Math.PI*(62+12*Math.exp(-17*dt))*dt)+.18*low);
+      }
+    }
+    v+=.04*slow;
+  }else if(kind==='flyby'){
+    const u=(t-6)/2.0,near=Math.exp(-u*u);
+    const fr=510-200*Math.tanh((t-6)*2)+30*Math.sin(4*t);
+    phase+=2*Math.PI*fr/rate;
+    v=(.06+.28*near)*(.55*low+.25*n+.20*Math.sin(phase));
+    v+=.08*near*Math.sin(phase*.27);
+  }else{
+    const rotor=Math.pow(Math.max(0,Math.sin(t*Math.PI*2*13)),2);
+    phase+=2*Math.PI*(81+8*Math.sin(t*.7))/rate;
+    v=(.06+.15*rotor)*(.8*Math.sin(phase)+.42*low+.24*n);
+    v+=.045*Math.sin(phase*.5);
   }
- }else if(kind==='movement'){
-  for(let i=0;i<n;i++){
-    const t=i/sr;const x=random();smooth=.965*smooth+.035*x;
-    const noise=(.28*x+.95*smooth)*.58;
-    const pan=Math.sin(2*Math.PI*t/7-Math.PI/2);
-    l[i]=noise*Math.sqrt((1-pan)/2);r[i]=noise*Math.sqrt((1+pan)/2);
-  }
- }else if(kind==='car'){
-  for(let i=0;i<n;i++){
-    const t=i/sr;const pan=Math.max(-1,Math.min(1,(t-6)/4.1));
-    const dist=(t-6)/2.9,env=.66*Math.exp(-dist*dist/2);
-    const freq=132-43*Math.max(0,Math.min(1,(t-4)/4));
-    phase+=2*Math.PI*freq/sr;
-    const x=random();smooth=.94*smooth+.06*x;
-    const engine=.17*Math.sin(phase)+.10*Math.sin(phase*.5)+.20*smooth+.09*x;
-    const signal=env*engine;
-    l[i]=signal*Math.sqrt((1-pan)/2);r[i]=signal*Math.sqrt((1+pan)/2);
-  }
- }else if(kind==='forest'){
-  for(let i=0;i<n;i++){
-   const t=i/sr;const x=random();smooth=.997*smooth+.003*x;
-   const ground=.045*smooth+.009*x;
-   l[i]=ground;r[i]=ground*.8;
-   for(let voice=0;voice<5;voice++){
-    const period=1.4+voice*.23, time=(t+voice*.44)%period;
-    const e=smoothImpulse(time,.2,.19);
-    const chirp=.16*e*Math.sin(2*Math.PI*(900+voice*250)*time+210*time*time);
-    const pan=(voice/4)*2-1;
-    l[i]+=chirp*Math.sqrt((1-pan)/2);r[i]+=chirp*Math.sqrt((1+pan)/2);
-   }
-  }
- }else if(kind==='music'){
-  const melody=[60,64,67,72,71,67,64,62,60,64,67,72,76,72,67,64];
-  for(let i=0;i<n;i++){
-   const t=i/sr;const step=Math.floor(t/.5),local=t%(.5);
-   const note=melody[step%melody.length];
-   const freq=440*Math.pow(2,(note-69)/12);
-   const e=Math.exp(-7*local)*(1-Math.exp(-140*local));
-   const tone=e*(.20*Math.sin(2*Math.PI*freq*local)+.11*Math.sin(2*Math.PI*freq*2*local)+.05*Math.sin(2*Math.PI*freq*3*local));
-   const pan=step%2? .35:-.35;
-   l[i]=tone*Math.sqrt((1-pan)/2);r[i]=tone*Math.sqrt((1+pan)/2);
-  }
+  out[i]=Math.max(-.75,Math.min(.75,v));
  }
  return audio;
 }
-async function getBuffer(kind){
- if(cache[kind])return cache[kind];
- if(!catalog[kind].source){return cache[kind]=makeGenerated(kind,ctx.sampleRate);}
+async function loadGrowl(){
+ if(growlBuffer||growlFailed)return growlBuffer;
+ const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),5000);
  try{
-  const response=await fetch(catalog[kind].source,{mode:'cors'});
-  if(!response.ok)throw new Error('HTTP '+response.status);
-  const buffer=await ctx.decodeAudioData(await response.arrayBuffer());
-  if(buffer.numberOfChannels<2)throw new Error('source is mono');
-  fallbackKinds.delete(kind);cache[kind]=buffer;return buffer;
- }catch(error){
-  fallbackKinds.add(kind);
-  report('The recording is unavailable here ('+error.message+'). Using a synthesized stereo substitute.');
-  cache[kind]=makeGenerated(kind,ctx.sampleRate);
-  return cache[kind];
- }
+  const res=await fetch('https://upload.wikimedia.org/wikipedia/commons/3/36/Monster_growls_2.ogg',{mode:'cors',signal:ac.signal});
+  if(!res.ok)throw Error('HTTP '+res.status);
+  growlBuffer=await ctx.decodeAudioData(await res.arrayBuffer());
+  return growlBuffer;
+ }catch(_){growlFailed=true;return null;}
+ finally{clearTimeout(timer);}
+}
+function pannerFor(index=0){
+ const p=ctx.createPanner();
+ p.panningModel='HRTF';p.distanceModel='inverse';p.refDistance=2.0;
+ p.maxDistance=35;p.rolloffFactor=.72;p.coneInnerAngle=360;p.coneOuterAngle=360;
+ const at=pos(selected,offset,index);
+ p.positionX.value=at.x;p.positionY.value=at.y;p.positionZ.value=at.z;
+ p.connect(bus);panners.push(p);return p;
+}
+function attachSound(buffer,panner,opts={}){
+ const s=ctx.createBufferSource();s.buffer=buffer;s.loop=true;
+ s.playbackRate.value=opts.rate||1;
+ const g=ctx.createGain();g.gain.value=opts.gain||1;
+ s.connect(g);g.connect(panner);
+ s.start(0,(offset*(opts.rate||1))%buffer.duration);
+ sources.push(s);
+}
+function silence(){
+ sources.forEach(s=>{try{s.stop();}catch(_){ }try{s.disconnect();}catch(_){ }});
+ panners.forEach(p=>{try{p.disconnect();}catch(_){ }});
+ sources=[];panners=[];
 }
 function halt(){
- if(node){try{node.stop();}catch(_){ }try{node.disconnect();}catch(_){ }node=null;}
- cancelAnimationFrame(animation);
- setPlaying(false);
+ silence();setPlaying(false);
 }
 async function play(){
- if(playing){pausedOffset=elapsed();halt();report('Paused. LCC is '+(enabled?'On':'Off')+'.');return;}
- const token=++currentToken;
- elements.play.disabled=true;elements.play.textContent='Loading…';
+ if(playing){offset=elapsed();halt();report('Paused. LCC '+(enabled?'On':'Off')+'.');return;}
+ const mine=++token;
+ elements.play.disabled=true;elements.play.textContent='Preparing…';
  try{
-  await ensureGraph();
-  if(ctx.state==='suspended')await ctx.resume();
-  if(token!==currentToken)return;
-  const buffer=await getBuffer(selected);
-  if(token!==currentToken)return;
-  loaded=buffer;
-  const source=ctx.createBufferSource();source.buffer=buffer;source.loop=true;
-  source.connect(worklet);node=source;
-  const offset=pausedOffset%buffer.duration;
-  source.start(0,offset);
-  startedAt=ctx.currentTime;
-  setPlaying(true);
-  if(!fallbackKinds.has(selected)){
-    report('Playing '+catalog[selected].title+'. LCC is '+(enabled?'On':'Off')+'. Switch at any time.');
+  await graph();if(ctx.state==='suspended')await ctx.resume();
+  if(mine!==token)return;
+  if(!buffers[selected])buffers[selected]=createSound(selected);
+  if(mine!==token)return;
+  const main=pannerFor();
+  attachSound(buffers[selected],main);
+  // Add a human-made public-domain growl to reinforce the designed dinosaur sound.
+  // This is a *layer*, not a requirement; playback starts without a network request.
+  startTime=ctx.currentTime;setPlaying(true);
+  report(selected==='dinosaur'
+    ? 'Creature approaching from behind. Original synthesized sound playing; adding optional public-domain growl if available.'
+    : '3D sound playing. LCC is '+(enabled?'On':'Off')+'. Switch without interrupting the same scene.');
+  if(selected==='dinosaur'){
+    void loadGrowl().then(growl=>{
+      if(mine!==token||!playing||selected!=='dinosaur')return;
+      if(growl){
+        const p=pannerFor();
+        const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=1200;
+        const s=ctx.createBufferSource();s.buffer=growl;s.loop=true;s.playbackRate.value=.72;
+        const g=ctx.createGain();g.gain.value=.35;
+        s.connect(filter);filter.connect(g);g.connect(p);
+        s.start(0,((offset+ctx.currentTime-startTime)*.72)%growl.duration);
+        sources.push(s);
+        report('Dinosaur: synthesized footsteps and roar with a public-domain growl layer. LCC '+(enabled?'On':'Off')+'.');
+      }else{
+        report('Dinosaur: synthesized footsteps and roar. The optional growl recording is unavailable; the spatial scene remains active.');
+      }
+    }).catch(()=>{});
   }
- }catch(error){
-  report('Playback could not start: '+(error?.message||String(error)));
-  halt();
- }finally{
-  if(token===currentToken){elements.play.disabled=false;if(!playing)elements.play.textContent='▶ Play sound';}
- }
+ }catch(e){report('Playback could not start: '+(e?.message||String(e)));halt();}
+ finally{if(mine===token){elements.play.disabled=false;if(!playing)elements.play.textContent='▶ Play sound';}}
 }
-async function choose(kind){
- if(!catalog[kind]||kind===selected)return;
- currentToken++;
- halt();pausedOffset=0;loaded=null;selected=kind;
+function show(){
+ const c=catalog[selected],keys=Object.keys(catalog);
+ elements.tabs.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sound===selected)));
+ elements.title.textContent=c.title;elements.desc.textContent=c.desc;
+ elements.num.textContent=String(keys.indexOf(selected)+1).padStart(2,'0')+' / 04';
+ elements.type.textContent=c.type;elements.credit.textContent=c.credit;
+ elements.link.href=c.link||'https://github.com/mattlane66/lcc';
+ elements.link.textContent=c.link?'Sound license and source ↗':'About the LCC algorithm ↗';
+ elements.timer.textContent='0:00 / '+ftime(c.duration);elements.progress.value=0;
+ elements.hint.textContent='Listen with your two speakers close together. Switch LCC mid-scene.';
+ paint(0);
+}
+function choose(kind){
+ if(!catalog[kind]||selected===kind)return;
+ token++;offset=0;halt();selected=kind;
  elements.play.disabled=false;elements.play.textContent='▶ Play sound';
- showChoice();report('Ready: '+catalog[kind].title+'. Click Play to compare stereo and LCC.');
+ show();report('Ready: '+catalog[kind].title+'. Play to compare LCC Off and On.');
 }
-elements.buttons.forEach(b=>b.addEventListener('click',()=>{void choose(b.dataset.sound);}));
+elements.tabs.forEach(b=>b.addEventListener('click',()=>choose(b.dataset.sound)));
 elements.play.addEventListener('click',()=>{void play();});
 elements.toggle.addEventListener('click',()=>{
  enabled=!enabled;reflect();
- report((enabled?'LCC On.':'LCC Off.')+(playing?' Playback continues unchanged.':' Press Play to listen.'));
+ report((enabled?'LCC On.':'LCC Off.')+(playing?' The spatial scene continues uninterrupted.':' Press Play to hear the scene.'));
 });
-window.addEventListener('pagehide',()=>{currentToken++;halt();if(ctx)void ctx.close().catch(()=>{});});
-showChoice();reflect();
+window.addEventListener('pagehide',()=>{token++;halt();if(ctx)void ctx.close().catch(()=>{});});
+show();reflect();
 })();
 </script>
 </body>
