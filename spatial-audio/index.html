@@ -193,17 +193,29 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 'use strict';
 const $=id=>document.getElementById(id);
 const catalog={
-  orbit:{title:'Close orbit',desc:'A textured mechanical sound circles inches from you, slipping behind your head and brushing past both ears.',duration:14,type:'Close-up binaural · HRTF',credit:'Original layered mechanical Foley, spatialized once using the browser HRTF before LCC. The motion is deliberately close and theatrical.'},
-  dinosaur:{title:'Dinosaur behind you',desc:'Huge footsteps approach from behind. A close roar and growl cut across your shoulder before retreating.',duration:16,type:'Rear approach · HRTF',credit:'Original synthesized impacts and creature sound, plus an optional public-domain growl by stilgar (Wikimedia Commons / PDSounds).',link:'https://commons.wikimedia.org/wiki/File:Monster_growls_2.ogg'},
-  flyby:{title:'Near miss',desc:'A rushing object approaches from behind-left, cuts right past your ear, and vaults overhead toward the front.',duration:12,type:'Fast motion · HRTF',credit:'Original layered broadband whoosh, Doppler-style pitch bend, and short high-frequency transients, spatialized via the browser HRTF.'},
-  helicopter:{title:'Overhead',desc:'A rotorcraft circles from far above to almost overhead, then pulls away behind your head.',duration:14,type:'Above and behind · HRTF',credit:'Original synthesized rotor and engine, plus optional public-domain helicopter recording by ezwa (Wikimedia Commons / PDSounds).',link:'https://commons.wikimedia.org/wiki/File:Helicopter_over_quiet_n.ogg'},
-  barber:{title:'Virtual barber',desc:'Scissors snip beside one ear while a buzzing clipper circles behind your head and returns on the other side.',duration:16,type:'Haircut · HRTF',credit:'Original haircut-style demonstration synthesized in the browser—no licensed virtual barbershop recording is used.'}
+  orbit:{title:'Close orbit',desc:'A textured mechanical sound circles inches from you, slipping behind your head and brushing past both ears.',duration:14,type:'3D scene · HRTF',credit:'Original close-orbit sound designed in this browser; positioned with an HRTF before LCC.'},
+  dinosaur:{title:'Dinosaur behind you',desc:'Huge footsteps approach from behind. A close roar cuts across your shoulder before retreating.',duration:16,type:'3D scene · HRTF',credit:'Original synthesized impacts and creature sounds, spatialized with HRTF before LCC.'},
+  flyby:{title:'Near miss',desc:'A rushing object approaches from behind-left, cuts past your ear and vaults overhead.',duration:12,type:'3D scene · HRTF',credit:'Original broadband whoosh and fast-moving sound design, positioned using HRTF.'},
+  helicopter:{title:'Overhead',desc:'A rotorcraft circles above you, descends, and pulls away behind your head.',duration:14,type:'3D scene · HRTF',credit:'Original synthetic rotor and engine, positioned using HRTF.'},
+  barber:{title:'Virtual barber',desc:'Scissors snip beside one ear while a buzzing clipper circles behind your head.',duration:16,type:'3D scene · HRTF',credit:'Original virtual-barber sound design, positioned using HRTF.'},
+  rumba:{title:'One Man Rumba',desc:'Real music: individual percussion instruments recorded around a Neumann KU-100 dummy head.',duration:130,type:'Recorded binaurally · music',
+    file:'https://upload.wikimedia.org/wikipedia/commons/3/35/One_Man_Rumba_binaural_audio_demonstration.ogg',
+    credit:'“One Man Rumba” by Kall Binaural Audio and percussionist Jon Bailey, CC BY-SA 3.0. Original recording processed live by LCC; source and license at Wikimedia Commons.',
+    link:'https://commons.wikimedia.org/wiki/File:One_Man_Rumba_binaural_audio_demonstration.ogg'},
+  pool:{title:'Pool hall',desc:'Real binaural sound effects: billiard balls collide and move around a table.',duration:32,type:'Recorded binaurally · sound effects',
+    file:'https://upload.wikimedia.org/wikipedia/commons/5/5d/Pool_Sounds.ogg',
+    credit:'“Pool Sounds” by Dsw4, dedicated to the public domain. Original recording at Wikimedia Commons.',
+    link:'https://commons.wikimedia.org/wiki/File:Pool_Sounds.ogg'},
+  matchsticks:{title:'Matchsticks',desc:'Real, close-up binaural sound captured with a dummy-head recording technique.',duration:0,type:'Recorded binaurally · close-up',
+    file:'https://3d3a.princeton.edu/sites/g/files/toruqf931/files/2023-04/Binaural_Match_Sticks.wav',
+    credit:'“Binaural Match Sticks,” listed as public domain by Princeton University’s 3D3A Lab. Original recording from the lab.',
+    link:'https://3d3a.princeton.edu/binaural-audio-samples'}
 };
 const elements={
   tabs:[...document.querySelectorAll('.sample')],play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
   title:$('sample-title'),desc:$('sample-description'),num:$('sample-number'),type:$('sample-type'),
   credit:$('credit-text'),link:$('source-link'),progress:$('progress'),timer:$('timer'),
-  dot:$('source-dot'),position:$('source-position'),status:$('status'),hint:$('play-hint'),
+  dot:$('source-dot'),position:$('source-position'),explanation:$('stage-explanation'),status:$('status'),hint:$('play-hint'),
   presets:[...document.querySelectorAll('[data-preset]')],presetActive:$('preset-active'),presetNote:$('preset-note')
 };
 let selected='orbit',ctx=null,worklet=null,bus=null,playing=false,enabled=false,frame=0;
@@ -213,7 +225,8 @@ const buffers={};
 const recordingCache={};
 function report(msg){elements.status.textContent=msg;}
 function ftime(n){const a=Math.floor(Math.max(0,n));return Math.floor(a/60)+':'+String(a%60).padStart(2,'0');}
-function elapsed(){return playing&&ctx ? (offset+ctx.currentTime-startTime)%catalog[selected].duration:offset;}
+function duration(){const c=catalog[selected];return c.file?(recordingCache[selected]?.duration||c.duration):c.duration;}
+function elapsed(){return playing&&ctx ? (offset+ctx.currentTime-startTime)%Math.max(0.1,duration()):offset;}
 function pos(kind,t,index=0){
  const tau=Math.PI*2,phase=index*0.12;
  if(kind==='orbit'){
@@ -249,6 +262,12 @@ function pos(kind,t,index=0){
  return{x:Math.sin(a)*radius,y:1.25+3.8*(.5+.5*Math.sin(t*tau/14)),z:-Math.cos(a)*radius,scale:6.5};
 }
 function paint(t){
+ if(catalog[selected].file){
+   elements.dot.style.display='none';
+   elements.position.textContent='Captured binaurally';
+   return;
+ }
+ elements.dot.style.display='';
  const p=pos(selected,t);
  const x=Math.max(12,Math.min(88,50+38*p.x/p.scale));
  const y=Math.max(12,Math.min(88,50+38*p.z/p.scale));
@@ -258,9 +277,9 @@ function paint(t){
  elements.position.textContent=horizontal?(depth+' · '+horizontal):depth;
 }
 function tick(){
- const t=elapsed(),dur=catalog[selected].duration;
- elements.timer.textContent=ftime(t)+' / '+ftime(dur);
- elements.progress.value=100*t/dur;
+ const t=elapsed(),dur=duration();
+ elements.timer.textContent=ftime(t)+' / '+(dur?ftime(dur):'—');
+ elements.progress.value=dur?100*t/dur:0;
  paint(t);
  if(playing){
   for(let i=0;i<panners.length;i++){
@@ -363,28 +382,20 @@ function createSound(kind){
  }
  return buffer;
 }
-async function loadFieldRecording(kind){
- if(Object.prototype.hasOwnProperty.call(recordingCache,kind))return recordingCache[kind];
- const urls={
-  dinosaur:'https://upload.wikimedia.org/wikipedia/commons/3/36/Monster_growls_2.ogg',
-  helicopter:'https://upload.wikimedia.org/wikipedia/commons/b/b8/Helicopter_over_quiet_n.ogg'
- };
- if(!urls[kind])return null;
- const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),6500);
+async function loadBinauralRecording(kind){
+ if(recordingCache[kind])return recordingCache[kind];
+ const c=catalog[kind];
+ if(!c?.file)throw new Error('Not a recorded scene.');
+ const controller=new AbortController();
+ const timeout=setTimeout(()=>controller.abort(),15000);
  try{
-  const res=await fetch(urls[kind],{mode:'cors',signal:ac.signal});
-  if(!res.ok)throw Error('HTTP '+res.status);
-  const decoded=await ctx.decodeAudioData(await res.arrayBuffer());
-  // Convert to mono before applying HRTF; never convolve a binaural
-  // recording with another HRTF.
-  if(decoded.numberOfChannels===1){recordingCache[kind]=decoded;return decoded;}
-  const mono=ctx.createBuffer(1,decoded.length,decoded.sampleRate);
-  const out=mono.getChannelData(0);
-  const l=decoded.getChannelData(0),r=decoded.getChannelData(1);
-  for(let i=0;i<out.length;i++)out[i]=(l[i]+r[i])*.5;
-  recordingCache[kind]=mono;return mono;
- }catch(_){recordingCache[kind]=null;return null;}
- finally{clearTimeout(timer);}
+  const response=await fetch(c.file,{mode:'cors',signal:controller.signal,credentials:'omit'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const decoded=await ctx.decodeAudioData(await response.arrayBuffer());
+  if(decoded.numberOfChannels!==2)throw new Error('The recording is not a stereo binaural file.');
+  recordingCache[kind]=decoded;
+  return decoded;
+ }finally{clearTimeout(timeout);}
 }
 function pannerFor(index=0){
  const p=ctx.createPanner();
@@ -418,50 +429,54 @@ function halt(){
 }
 async function play(){
  if(playing){offset=elapsed();halt();report('Paused. LCC '+(enabled?'On':'Off')+'.');return;}
- const mine=++token;
- elements.play.disabled=true;elements.play.textContent='Preparing…';
+ const mine=++token,kind=selected;
+ elements.play.disabled=true;elements.play.textContent='Loading…';
  try{
-  await graph();if(ctx.state==='suspended')await ctx.resume();
+  await graph();
+  if(ctx.state==='suspended')await ctx.resume();
   if(mine!==token)return;
-  if(!buffers[selected])buffers[selected]=createSound(selected);
-  if(mine!==token)return;
-  attachSound(buffers[selected],pannerFor());
-  startTime=ctx.currentTime;setPlaying(true);
-  report('Playing '+catalog[selected].title+'. LCC is '+(enabled?'On':'Off')+'. Compare while the sound moves.');
-  // Optional real public-domain field recordings reinforce original dry mono
-  // sound design. Scene playback never blocks on network requests.
-  if(selected==='dinosaur'||selected==='helicopter'){
-    const kind=selected;
-    void loadFieldRecording(kind).then(buffer=>{
-      if(mine!==token||!playing||selected!==kind)return;
-      if(buffer){
-        const sp=pannerFor(1);
-        const layer=attachSound(buffer,sp,{gain:kind==='dinosaur'?.33:.26,rate:kind==='dinosaur'?.77:1});
-        // These are source layers, not a substitute for the generated scene.
-        // Reduce field sound volume to retain sharp synthetic localization cues.
-        if(kind==='dinosaur'){
-          const t=elapsed();
-          layer.gain.gain.value=.2+(.19*Math.exp(-Math.pow((t-8)/2.7,2)));
-        }
-        report('Playing '+catalog[kind].title+' with a public-domain recorded layer. LCC '+(enabled?'On':'Off')+'.');
-      }else{
-        report('Playing '+catalog[kind].title+' using the original synthesised layers. Optional field recording unavailable.');
-      }
-    }).catch(()=>{});
+  if(catalog[kind].file){
+    // A real binaural recording is already stereo: DO NOT apply PannerNode
+    // or any second HRTF to its two interaural channels.
+    const audio=await loadBinauralRecording(kind);
+    if(mine!==token)return;
+    const src=ctx.createBufferSource();
+    src.buffer=audio;src.loop=true;
+    src.connect(bus);
+    src.start(0,offset%audio.duration);
+    sources.push(src);
+  }else{
+    if(!buffers[kind])buffers[kind]=createSound(kind);
+    if(mine!==token)return;
+    attachSound(buffers[kind],pannerFor());
   }
- }catch(error){report('Playback could not start: '+(error?.message||String(error)));halt();}
- finally{if(mine===token){elements.play.disabled=false;if(!playing)elements.play.textContent='▶ Play sound';}}
+  startTime=ctx.currentTime;
+  setPlaying(true);
+  report('Playing '+catalog[kind].title+'. LCC '+(enabled?'On':'Off')+'. Toggle LCC or change speaker preset without restarting.');
+ }catch(error){
+  const reason=error?.name==='AbortError'?'download timed out':(error?.message||String(error));
+  report('Cannot play '+catalog[kind].title+': '+reason+'. Try another sound or retry.');
+  halt();
+ }finally{
+  if(mine===token){
+    elements.play.disabled=false;
+    if(!playing)elements.play.textContent='▶ Play sound';
+  }
+ }
 }
 function show(){
  const c=catalog[selected],keys=Object.keys(catalog);
  elements.tabs.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sound===selected)));
  elements.title.textContent=c.title;elements.desc.textContent=c.desc;
- elements.num.textContent=String(keys.indexOf(selected)+1).padStart(2,'0')+' / 05';
+ elements.num.textContent=String(keys.indexOf(selected)+1).padStart(2,'0')+' / 08';
  elements.type.textContent=c.type;elements.credit.textContent=c.credit;
  elements.link.href=c.link||'https://github.com/mattlane66/lcc';
- elements.link.textContent=c.link?'Sound license and source ↗':'About the LCC algorithm ↗';
- elements.timer.textContent='0:00 / '+ftime(c.duration);elements.progress.value=0;
- elements.hint.textContent='Listen with your two speakers close together. Switch LCC mid-scene.';
+ elements.link.textContent=c.link?'Recording and license ↗':'About the LCC algorithm ↗';
+ elements.timer.textContent='0:00 / '+(duration()?ftime(duration()):'—');elements.progress.value=0;
+ elements.hint.textContent=c.file?'A genuine binaural stereo recording; no second HRTF. Compare with LCC Off/On.':'Compare LCC Off and On while the source moves.';
+ elements.explanation.textContent=c.file
+  ? 'Recorded binaural stereo goes directly into the LCC processor—without a second HRTF.'
+  : 'The dry sound is positioned by an HRTF before LCC processing.';
  paint(0);
 }
 function selectPreset(which){
