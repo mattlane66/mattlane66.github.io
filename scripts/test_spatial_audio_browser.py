@@ -30,8 +30,9 @@ def free_port():
 
 MOCK_CAPTURE = """
 (() => {
-  const original = navigator.mediaDevices.getDisplayMedia;
-  navigator.mediaDevices.getDisplayMedia = async () => {
+  const media = navigator.mediaDevices || {};
+  Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: media });
+  media.getDisplayMedia = async () => {
     const ctx = new AudioContext();
     const left = ctx.createOscillator();
     const right = ctx.createOscillator();
@@ -81,6 +82,21 @@ def main():
                 widths = page.evaluate("({doc:document.documentElement.scrollWidth, viewport:document.documentElement.clientWidth})")
                 if widths["doc"] > widths["viewport"] + 4:
                     failures.append(f"{viewport['width']}px: document overflows by {widths['doc']-widths['viewport']}px.")
+                page.locator("#play-demo").click()
+                try:
+                    page.wait_for_function("!document.getElementById('lcc-switch').disabled", timeout=10000)
+                    if "Demo audio is playing" not in page.locator("#status").inner_text():
+                        failures.append("Built-in demo did not connect and start.")
+                    page.locator("#lcc-switch").click()
+                    if page.locator("#lcc-switch").get_attribute("aria-checked") != "true":
+                        failures.append("Demo On switch failed.")
+                    page.locator("#lcc-switch").click()
+                    if page.locator("#lcc-switch").get_attribute("aria-checked") != "false":
+                        failures.append("Demo Off switch failed.")
+                    page.locator("#stop").click()
+                    page.wait_for_function("document.getElementById('lcc-switch').disabled", timeout=10000)
+                except Exception as exc:
+                    failures.append(f"{viewport['width']}px: built-in demo check failed: {exc}")
                 page.locator("#capture-tab").click()
                 try:
                     page.locator("#lcc-switch").wait_for(state="visible")
@@ -108,7 +124,7 @@ def main():
         print("ERROR:", failure)
     if failures:
         return 1
-    print("Spatial audio browser smoke passed: desktop/mobile, Spotify embed ID, capture mock, real worklet, LCC switching and disconnect.")
+    print("Spatial audio browser smoke passed: desktop/mobile, Spotify embed ID, built-in stereo demo, capture mock, real worklet, LCC switching and disconnect.")
     return 0
 
 
