@@ -231,9 +231,15 @@ function openNote(n){
     shell.setAttribute("aria-label",n.title+" — interactive note");
     shell.hidden=false;
     frame.title=n.title+" — interactive note";
-    shell.querySelector(".interactive-note-tools a").href=noteHref(n);
+    // The popup and its full-page link must bypass Safari's cached HTML
+    // after a Note is edited. Remote artwork remains cached independently.
+    const freshUrl=new URL(noteHref(n),location.href);
+    freshUrl.searchParams.set("v",String(Date.now()));
+    shell.querySelector(".interactive-note-tools a").href=freshUrl.href;
     if(!dlg.open)dlg.showModal();
-    frame.src=noteHref(n)+"?embed=1";
+    const frameUrl=new URL(freshUrl);
+    frameUrl.searchParams.set("embed","1");
+    frame.src=frameUrl.href;
     history.replaceState(null,"","#note-"+n.id);
     return;
   }
