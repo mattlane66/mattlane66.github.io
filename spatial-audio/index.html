@@ -140,7 +140,7 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 </style>
 </head>
 <body>
-<header><div class="wrap nav"><a class="brand" href="/">Matt Lane <span aria-hidden="true">·</span> Experiments</a><a class="back" href="/#projects">← Side projects</a></div></header>
+<header><div class="wrap nav"><a class="brand" href="https://mattlane66.github.io/">Matt Lane <span aria-hidden="true">·</span> Experiments</a><a class="back" href="https://mattlane66.github.io/#projects">← Side projects</a></div></header>
 <main class="wrap">
 <div class="kicker">An experiment in listening</div>
 <h1>Spatial audio.</h1>
@@ -179,7 +179,7 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 </section>
 <div class="source-credit" id="source-credit"><p id="credit-text">Orbit is an original synthesized 3D scene generated in the browser, with HRTF positioning feeding the LCC processor.</p><a id="source-link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">About the LCC algorithm ↗</a></div>
 <details><summary>How to listen — and where these sounds come from</summary>
-<p>For the intended spatial effect, use two closely spaced stereo loudspeakers and sit on their center line. LCC is not designed for headphone listening. <strong>Start at low volume</strong>: the dinosaur contains heavy impacts and sudden roaring, and the flyby has aggressive high-frequency movement. Dry mono sounds are spatialized once with the browser’s measured HRTF before reaching LCC. Adding another binaural/HRTF effect to an already binaural signal would double-process its spatial cues. A fixed two-speaker system cannot guarantee rear or above localization for every person or room.</p>
+<p>For the intended spatial effect, use two closely spaced stereo loudspeakers and sit on their center line. LCC is not designed for headphone listening. <strong>Start at low volume</strong>: the dinosaur contains heavy impacts and sudden roaring, and the flyby has aggressive high-frequency movement. Dry mono sounds are spatialized once with the browser’s measured HRTF before reaching LCC. Adding another binaural/HRTF effect to an already binaural signal would double-process its spatial cues. A fixed two-speaker system cannot guarantee rear or above localization for every person or room. LCC can also change volume and tone; a louder sound is not necessarily more spatially accurate.</p>
 <p>All five scenes use original synthesized dry mono Foley layers, HRTF positioning, and LCC. Barber is a newly created haircut-like scene with moving clippers and scissors, <strong>not</strong> the classic copyrighted virtual barbershop recording. Dinosaur optionally layers a public-domain growl by stilgar; Overhead optionally layers a public-domain helicopter recording by ezwa. If recorded layers cannot load, the synthesized scenes still play. No microphone, account, or file upload.</p>
 </details>
 <section class="beyond" aria-label="Binaural listening references">
@@ -190,8 +190,8 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 <section class="beyond" aria-label="LCC for a home-theater system">
 <span class="label">Beyond the browser</span><h2>What if LCC lived in a tiny computer?</h2>
 <p>A dedicated mini computer could process stereo binaural audio for a home-theater pair of loudspeakers, without opening this webpage. Imagine a dedicated device between a source and a stereo playback system, with a single LCC On/Off switch.</p>
-<div class="signal" aria-label="Conceptual stereo signal chain"><span>Source / HDMI</span><b>→</b><span>Audio extraction + stereo PCM</span><b>→</b><span>Mini computer running LCC</span><b>→</b><span>Stereo amplifier / speakers</span></div>
-<p>This is a concept, not a plug-and-play HDMI product. It requires suitable HDMI-input hardware or an audio extractor, synchronized video pass-through, and a legal compatible source. HDCP-protected movies and streaming services commonly prevent ordinary HDMI capture; a Raspberry Pi’s HDMI sockets are outputs, not inputs. LCC here operates on a two-channel signal, not an unmodified multichannel surround stream.</p>
+<div class="signal" aria-label="Conceptual HDMI and stereo signal chain"><span>HDMI source</span><b>→</b><span>HDMI extractor / pass-through</span><b>→</b><span>Video to TV + stereo PCM to mini PC</span><b>→</b><span>LCC → amplifier → stereo speakers</span></div>
+<p>This is a concept, not a plug-and-play HDMI product. An HDMI receiver or extractor would need to pass video to the TV while providing two-channel PCM audio to a mini computer running LCC; the processed audio would then go to an amplifier and speakers. Video/audio synchronization and suitable hardware are essential. HDCP-protected content often prevents ordinary capture. A Raspberry Pi’s normal HDMI ports are outputs, not inputs. The current LCC code accepts stereo PCM, not raw HDMI or unmodified multichannel surround.</p>
 </section>
 <div class="listening"><p><strong>For loudspeakers only—not headphones.</strong> Place your head on the center line between two speakers directly in front of you. LCC aims to reduce interaural crosstalk for binaural audio played over a narrow stereo triangle. Start at low volume.</p><a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">LCC setup and algorithm ↗</a></div>
 </main>
