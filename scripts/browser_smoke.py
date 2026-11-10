@@ -504,6 +504,30 @@ def main() -> int:
                                 )
                             except PlaywrightTimeoutError:
                                 failures.append(f"{viewport_name} /notes/: constellation iframe was not unloaded")
+                            # A custom editorial Note must show exactly the shared
+                            # category accent, and Safari must never reuse stale
+                            # cached HTML when reopening the Notes modal.
+                            page.locator('[data-id="what-a-line-can-leave-out-20261107"]').first.click()
+                            forest = page.frame_locator("#interactive-note-frame")
+                            forest.locator("main.wrap h1").wait_for(timeout=15_000)
+                            forest_bar = forest.locator("main.wrap").evaluate("""el => {
+                                const before = getComputedStyle(el, "::before");
+                                return {
+                                    sharedAccentHeight: before.height,
+                                    sharedAccentDisplay: before.display,
+                                    redundantAccentCount: el.querySelectorAll(".kicker").length
+                                };
+                            }""")
+                            if forest_bar["sharedAccentHeight"] != "5px" or forest_bar["sharedAccentDisplay"] != "block":
+                                failures.append(f"{viewport_name} /notes/: Forest Note lost its shared category accent")
+                            if forest_bar["redundantAccentCount"] != 0:
+                                failures.append(f"{viewport_name} /notes/: Forest Note has a duplicated accent")
+                            frame_src = page.locator("#interactive-note-frame").get_attribute("src") or ""
+                            full_link = page.locator(".interactive-note-tools a").get_attribute("href") or ""
+                            if "v=" not in frame_src or "embed=1" not in frame_src or "v=" not in full_link:
+                                failures.append(f"{viewport_name} /notes/: Forest Note iframe and full-page link are not cache-busted")
+                            page.locator("#close").click()
+                            page.locator("#dialog[open]").wait_for(state="hidden", timeout=8_000)
                             # Escape while focus is inside the iframe must also
                             # dismiss the parent dialog, not merely reset the map.
                             page.locator('[data-id="comedy-constellation-20261022"]').first.click()
