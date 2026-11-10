@@ -281,18 +281,9 @@ function tick(){
  elements.timer.textContent=ftime(t)+' / '+(dur?ftime(dur):'—');
  elements.progress.value=dur?100*t/dur:0;
  paint(t);
- if(playing){
-  for(let i=0;i<panners.length;i++){
-   const p=pos(selected,t,i);
-   const a=panners[i],now=ctx.currentTime;
-   a.p.positionX.setTargetAtTime(p.x,now,.014);
-   a.p.positionY.setTargetAtTime(p.y,now,.014);
-   a.p.positionZ.setTargetAtTime(p.z,now,.014);
-   const distance=Math.hypot(p.x,p.y,p.z),shadow=p.z>0?.68:1;
-   a.filter.frequency.setTargetAtTime(Math.max(1400,Math.min(14000,14000/(1+distance*.25)*shadow)),now,.026);
-  }
-  frame=requestAnimationFrame(tick);
- }
+ // Source motion is scheduled in the audio thread, not tied to visible
+ // frame updates. This keeps moving sound alive in a background tab.
+ if(playing)frame=requestAnimationFrame(tick);
 }
 function reflect(){
  elements.state.textContent=enabled?'On':'Off';
@@ -397,6 +388,24 @@ async function loadBinauralRecording(kind){
   return decoded;
  }finally{clearTimeout(timeout);}
 }
+function scheduleSpatialAudio(layer,index){
+ const duration=catalog[selected].duration;
+ const begin=ctx.currentTime;
+ const amount=Math.ceil(duration*8/.06);
+ for(let i=0;i<=amount;i++){
+  const at=begin+i*.06;
+  const t=(offset+i*.06)%duration;
+  const p=pos(selected,t,index);
+  const d=Math.hypot(p.x,p.y,p.z),shadow=p.z>0?.68:1;
+  const cutoff=Math.max(1400,Math.min(14000,14000/(1+d*.25)*shadow));
+  for(const [param,value] of [
+    [layer.p.positionX,p.x],[layer.p.positionY,p.y],
+    [layer.p.positionZ,p.z],[layer.filter.frequency,cutoff]]){
+   if(i===0)param.setValueAtTime(value,at);
+   else param.linearRampToValueAtTime(value,at);
+  }
+ }
+}
 function pannerFor(index=0){
  const p=ctx.createPanner();
  p.panningModel='HRTF';p.distanceModel='inverse';
@@ -407,8 +416,10 @@ function pannerFor(index=0){
  p.connect(bus);
  const filter=ctx.createBiquadFilter();
  filter.type='lowpass';filter.frequency.value=9500;filter.Q.value=.5;
- panners.push({p,filter});
- return {p,filter};
+ const layer={p,filter};
+ scheduleSpatialAudio(layer,index);
+ panners.push(layer);
+ return layer;
 }
 function attachSound(buffer,spatial,opts={}){
  const s=ctx.createBufferSource();s.buffer=buffer;s.loop=true;
