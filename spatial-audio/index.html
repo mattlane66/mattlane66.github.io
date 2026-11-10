@@ -146,6 +146,7 @@ const elements={
 let selected='position',ctx=null,worklet=null,master=null,node=null,playing=false,loaded=null;
 let startedAt=0,pausedOffset=0,currentToken=0,loadPromise=null,animation=0;
 const cache={};
+const fallbackKinds=new Set();
 function report(s){elements.status.textContent=s;}
 function formatTime(sec){let n=Math.max(0,Math.floor(sec));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');}
 function elapsed(){if(!playing||!ctx)return pausedOffset;return (pausedOffset+(ctx.currentTime-startedAt))%Math.max(.01,loaded?.duration||catalog[selected].duration);}
@@ -257,8 +258,9 @@ async function getBuffer(kind){
   if(!response.ok)throw new Error('HTTP '+response.status);
   const buffer=await ctx.decodeAudioData(await response.arrayBuffer());
   if(buffer.numberOfChannels<2)throw new Error('source is mono');
-  cache[kind]=buffer;return buffer;
+  fallbackKinds.delete(kind);cache[kind]=buffer;return buffer;
  }catch(error){
+  fallbackKinds.add(kind);
   report('The recording is unavailable here ('+error.message+'). Using a synthesized stereo substitute.');
   cache[kind]=makeGenerated(kind,ctx.sampleRate);
   return cache[kind];
@@ -286,13 +288,8 @@ async function play(){
   source.start(0,offset);
   startedAt=ctx.currentTime;
   setPlaying(true);
-  if(cache[selected]===buffer&&catalog[selected].source&&buffer.duration===catalog[selected].duration){
-    report('Playing '+catalog[selected].title+'. LCC is '+(enabled?'On':'Off')+'. Compare the same continuous audio.');
-  }else{
-    // Preserve any fallback status produced during the fetch.
-    if(!catalog[selected].source||Math.abs(buffer.duration-catalog[selected].duration)<2){
-      if(!elements.status.textContent.includes('substitute'))report('Playing '+catalog[selected].title+'. LCC is '+(enabled?'On':'Off')+'. Switch at any time.');
-    }
+  if(!fallbackKinds.has(selected)){
+    report('Playing '+catalog[selected].title+'. LCC is '+(enabled?'On':'Off')+'. Switch at any time.');
   }
  }catch(error){
   report('Playback could not start: '+(error?.message||String(error)));
