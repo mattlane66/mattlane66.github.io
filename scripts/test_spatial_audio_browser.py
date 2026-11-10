@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Targeted browser regression for the five-sound spatial audio demonstration.
+"""Targeted browser regression for the four-scene HRTF spatial audio demonstration.
 
 Exercises the actual WebAudio graph and browser AudioWorklet, with no mic capture,
-external service authorization, or copyrighted inputs. Wikimedia media is blocked
-during browser testing to verify the explicit synthesized offline fallback.
+external service authorization, or copyrighted inputs. The optional public-domain
+growl is blocked to confirm the dinosaur synthesis remains independent.
 """
 from __future__ import annotations
 
@@ -77,8 +77,8 @@ def main():
                 page.goto(f"http://127.0.0.1:{port}/spatial-audio/", wait_until="domcontentloaded")
                 if page.locator("h1").count() != 1:
                     failures.append("Expected exactly one h1.")
-                if page.locator(".sample").count() != 5:
-                    failures.append("Expected five sound samples.")
+                if page.locator(".sample").count() != 4:
+                    failures.append("Expected four spatial scenes.")
                 if page.locator("#lcc-switch").get_attribute("aria-checked") != "false":
                     failures.append("LCC did not begin Off.")
                 if page.locator("#lcc-switch").is_disabled():
@@ -100,6 +100,11 @@ def main():
                         failures.append("LCC could not be enabled before sound played.")
                     page.locator("#play").click()
                     page.wait_for_function("document.getElementById('play').textContent.includes('Pause')", timeout=15000)
+                    first_position = page.locator("#source-dot").get_attribute("style")
+                    page.wait_for_timeout(450)
+                    moved_position = page.locator("#source-dot").get_attribute("style")
+                    if first_position == moved_position:
+                        failures.append("Spatial source marker does not follow the moving scene.")
                     page.locator("#lcc-switch").click()
                     if page.locator("#lcc-switch").get_attribute("aria-checked") != "false":
                         failures.append("LCC Off did not follow active On.")
@@ -109,16 +114,17 @@ def main():
                     page.locator("#play").click()
                     if "Play" not in page.locator("#play").inner_text():
                         failures.append("Pause button did not return to Play.")
-                    for kind in ["movement","car","forest","music","position"]:
+                    for kind in ["dinosaur","flyby","helicopter","orbit"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         if page.locator(f'[data-sound="{kind}"]').get_attribute("aria-pressed") != "true":
                             failures.append(f"Selecting {kind} did not update selection.")
                         page.locator("#play").click()
                         page.wait_for_function("document.getElementById('play').textContent.includes('Pause')", timeout=15000)
-                        if kind in ("forest","music"):
+                        if kind == "dinosaur":
+                            page.wait_for_function("document.getElementById('status').textContent.includes('Dinosaur: synthesized') || document.getElementById('status').textContent.includes('Creature approaching')", timeout=10000)
                             text=page.locator("#status").inner_text()
-                            if "substitute" not in text:
-                                failures.append(f"{kind} did not identify the intentionally offline test fallback: {text}")
+                            if "synthesized" not in text and "Creature approaching" not in text:
+                                failures.append(f"Dinosaur does not identify synthesized layers: {text}")
                         page.locator("#play").click()
                 except Exception as exc:
                     failures.append(f"{viewport['width']}px: playback or switch check failed: {exc}")
@@ -134,7 +140,7 @@ def main():
         print("ERROR:", failure)
     if failures:
         return 1
-    print("Spatial audio browser smoke passed: five sounds, original/stereo DSP comparison, switch while playing, offline fallback, desktop and mobile.")
+    print("Spatial audio browser smoke passed: four HRTF scenes, DSP bypass-versus-LCC, moving source marker, switching during playback, desktop and mobile.")
     return 0
 
 
