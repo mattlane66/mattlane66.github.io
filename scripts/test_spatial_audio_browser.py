@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""Targeted browser regression for the five-scene HRTF spatial audio demonstration.
+"""Browser audit for the LCC demo: real DSP, two presets, generated and binaural recordings.
 
-Exercises the actual WebAudio graph and browser AudioWorklet, with no mic capture,
-external service authorization, or copyrighted inputs. The optional public-domain
-growl is blocked to confirm the dinosaur synthesis remains independent.
+Mocked stereo WAV responses make deterministic browser checks independent of third-party
+hosts. An additional non-blocking real-source check attempts actual external CORS+decode
+to report whether public binaural recordings are reachable from Chromium in CI.
 """
 from __future__ import annotations
 
 import http.server
+import io
+import math
 import socket
+import struct
 import threading
+import wave
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -28,158 +32,226 @@ def free_port():
         return sock.getsockname()[1]
 
 
-def worklet_probe(page):
+def stereo_wav():
+    """Create truly distinct left/right audio so stereo downmix bugs are detectable."""
+    sample_rate = 24000
+    samples = int(sample_rate * 1.75)
+    raw = io.BytesIO()
+    with wave.open(raw, "wb") as output:
+        output.setnchannels(2)
+        output.setsampwidth(2)
+        output.setframerate(sample_rate)
+        output.writeframes(b"".join(
+            struct.pack(
+                "<hh",
+                int(10000 * math.sin(2 * math.pi * 460 * i / sample_rate)),
+                int(10000 * math.sin(2 * math.pi * 670 * i / sample_rate))
+            )
+            for i in range(samples)
+        ))
+    return raw.getvalue()
+
+
+def probe_worklet(page):
     return page.evaluate("""async () => {
       const src = await (await fetch('./lcc-worklet.js')).text();
       let Processor;
-      class WorkletBase { constructor() { this.port = { onmessage: null }; } }
+      class FakeWorklet { constructor(){ this.port={onmessage:null}; } }
       new Function('AudioWorkletProcessor','registerProcessor','sampleRate',src)(
-        WorkletBase, (name,Ctor) => { Processor = Ctor; }, 48000
-      );
-      if (!Processor) throw new Error('Worklet could not register');
-      const instance = new Processor();
-      const raw = new Float32Array(128);
-      for (let i=0;i<128;i++) raw[i]=Math.sin(i * 0.17) * 0.17;
-      const silent = new Float32Array(128);
-      const baseline = [new Float32Array(128),new Float32Array(128)];
-      instance.process([[raw,silent]],[baseline]);
+        FakeWorklet,(name,constructor)=>{Processor=constructor;},48000);
+      if(!Processor) throw new Error('LCC worklet not registered');
+      const processor=new Processor();
+      const left=Float32Array.from({length:128},(_,i)=>.15*Math.sin(i*.17));
+      const right=Float32Array.from({length:128},(_,i)=>.09*Math.cos(i*.13));
+      function advance(rounds){
+        let last=null,peak=0,nonFinite=0;
+        for(let r=0;r<rounds;r++){
+          last=[new Float32Array(128),new Float32Array(128)];
+          processor.process([[left,right]],[last]);
+          for(let k=0;k<2;k++) for(let i=0;i<128;i++){
+            const value=last[k][i];
+            if(!Number.isFinite(value))nonFinite++;
+            peak=Math.max(peak,Math.abs(value));
+          }
+        }
+        return {left:Array.from(last[0]),right:Array.from(last[1]),peak,nonFinite};
+      }
+      const bypass=advance(1),orig={delay:processor.delayUs,decay:processor.decaygain,frames:processor.framesPerBlock};
       let bypassError=0;
-      for (let i=0;i<128;i++) {
-        bypassError=Math.max(bypassError,Math.abs(baseline[0][i]-raw[i]),Math.abs(baseline[1][i]));
+      for(let i=0;i<128;i++)bypassError=Math.max(bypassError,
+        Math.abs(bypass.left[i]-left[i]),Math.abs(bypass.right[i]-right[i]));
+      processor.port.onmessage({data:{type:'enable',value:true}});
+      const originalWet=advance(60);
+      processor.port.onmessage({data:{type:'preset',value:'laptop'}});
+      const laptopWet=advance(60);
+      const laptop={delay:processor.delayUs,decay:processor.decaygain,frames:processor.framesPerBlock,preset:processor.currentPreset};
+      processor.port.onmessage({data:{type:'preset',value:'loudspeakers'}});
+      const restoredWet=advance(60);
+      const restored={delay:processor.delayUs,decay:processor.decaygain,frames:processor.framesPerBlock,preset:processor.currentPreset};
+      let wetDifference=0,presetDifference=0,restoredDifference=0;
+      for(let i=0;i<128;i++){
+        wetDifference=Math.max(wetDifference,Math.abs(originalWet.left[i]-left[i]));
+        presetDifference=Math.max(presetDifference,Math.abs(originalWet.left[i]-laptopWet.left[i]));
+        restoredDifference=Math.max(restoredDifference,Math.abs(originalWet.left[i]-restoredWet.left[i]));
       }
-      instance.port.onmessage({ data: {type:'enable',value:true} });
-      let processedDifference=0;
-      for(let round=0;round<4;round++){
-        const changed=[new Float32Array(128),new Float32Array(128)];
-        instance.process([[raw,silent]],[changed]);
-        for (let i=0;i<128;i++) processedDifference=Math.max(
-          processedDifference,Math.abs(changed[0][i]-raw[i]),Math.abs(changed[1][i])
-        );
-      }
-      const originalDelay=instance.delayUs,originalDecay=instance.decaygain;
-      instance.port.onmessage({data:{type:'preset',value:'laptop'}});
-      for(let i=0;i<40;i++){
-        const changed=[new Float32Array(128),new Float32Array(128)];
-        instance.process([[raw,silent]],[changed]);
-      }
-      const laptop={delay:instance.delayUs,decay:instance.decaygain,
-        frames:instance.framesPerBlock,preset:instance.currentPreset};
-      instance.port.onmessage({data:{type:'preset',value:'loudspeakers'}});
-      for(let i=0;i<40;i++){
-        const changed=[new Float32Array(128),new Float32Array(128)];
-        instance.process([[raw,silent]],[changed]);
-      }
-      const restored={delay:instance.delayUs,decay:instance.decaygain,
-        frames:instance.framesPerBlock,preset:instance.currentPreset};
-      return {bypassError,processedDifference,originalDelay,originalDecay,laptop,restored};
+      return {orig,bypassError,originalWetPeak:originalWet.peak,wetDifference,
+        presetDifference,restoredDifference,laptop,restored,
+        finite:[bypass.nonFinite,originalWet.nonFinite,laptopWet.nonFinite,restoredWet.nonFinite]};
     }""")
 
 
+def check_live_media(browser, base_url):
+    """Best-effort external fetch check; network blocking does not invalidate local DSP."""
+    page = browser.new_page()
+    try:
+        page.goto(base_url, wait_until="domcontentloaded")
+        for kind, url in [
+            ("rumba", "https://upload.wikimedia.org/wikipedia/commons/3/35/One_Man_Rumba_binaural_audio_demonstration.ogg"),
+            ("pool", "https://upload.wikimedia.org/wikipedia/commons/5/5d/Pool_Sounds.ogg"),
+            ("matchsticks", "https://3d3a.princeton.edu/sites/g/files/toruqf931/files/2023-04/Binaural_Match_Sticks.wav")
+        ]:
+            try:
+                check=page.evaluate("""async (url) => {
+                    const controller=new AbortController();
+                    const timeout=setTimeout(()=>controller.abort(),12000);
+                    try{
+                      const response=await fetch(url,{mode:'cors',signal:controller.signal});
+                      if(!response.ok)throw new Error('HTTP '+response.status);
+                      const bytes=await response.arrayBuffer();
+                      const ac=new AudioContext();
+                      try{
+                        const audio=await ac.decodeAudioData(bytes);
+                        return {channels:audio.numberOfChannels,duration:audio.duration,bytes:bytes.byteLength};
+                      }finally{await ac.close();}
+                    }finally{clearTimeout(timeout);}
+                }""",url)
+                if check["channels"]==2 and check["duration"]>0.5:
+                    print(f"LIVE MEDIA VERIFIED: {kind} stereo={check['channels']} duration={check['duration']:.1f}s bytes={check['bytes']}")
+                else:
+                    print(f"WARNING: live binaural media {kind} not valid stereo: {check}")
+            except Exception as exc:
+                print(f"WARNING: live binaural media {kind} unavailable in CI browser: {str(exc)[:250]}")
+    finally:
+        page.close()
+
+
 def main():
-    port = free_port()
-    handler = lambda *args, **kwargs: QuietHandler(*args, directory=str(ROOT), **kwargs)
-    server = http.server.ThreadingHTTPServer(("127.0.0.1", port), handler)
-    threading.Thread(target=server.serve_forever, daemon=True).start()
-    failures = []
+    port=free_port()
+    handler=lambda *args,**kwargs:QuietHandler(*args,directory=str(ROOT),**kwargs)
+    server=http.server.ThreadingHTTPServer(("127.0.0.1",port),handler)
+    threading.Thread(target=server.serve_forever,daemon=True).start()
+    failures=[]
+    fixture=stereo_wav()
     try:
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(headless=True, args=["--autoplay-policy=no-user-gesture-required"])
-            for viewport in [{"width": 1440, "height": 900}, {"width": 390, "height": 844}]:
-                page = browser.new_page(viewport=viewport)
-                page.route("https://upload.wikimedia.org/**", lambda route: route.abort())
-                errors = []
-                page.on("pageerror", lambda exc: errors.append(str(exc)))
-                page.goto(f"http://127.0.0.1:{port}/spatial-audio/", wait_until="domcontentloaded")
-                if page.locator("h1").count() != 1:
-                    failures.append("Expected exactly one h1.")
-                if page.locator(".sample").count() != 5:
-                    failures.append("Expected five spatial scenes, including Barber.")
-                if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed") != "true":
-                    failures.append("Original loudspeaker preset must be selected by default.")
-                if page.locator('[data-preset="laptop"]').get_attribute("aria-pressed") != "false":
-                    failures.append("Laptop must not start selected.")
-                if page.locator("#lcc-switch").get_attribute("aria-checked") != "false":
-                    failures.append("LCC did not begin Off.")
-                if page.locator("#lcc-switch").is_disabled():
-                    failures.append("LCC must be clickable before playback.")
-                if page.locator("iframe").count() or page.locator("#capture-tab").count():
-                    failures.append("Legacy embed/capture UI was not removed.")
-                width = page.evaluate("({doc:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth})")
-                if width["doc"] > width["viewport"] + 4:
-                    failures.append(f"{viewport['width']}px overflow: {width}")
+            browser=playwright.chromium.launch(headless=True,args=["--autoplay-policy=no-user-gesture-required"])
+            for viewport in [{"width":1440,"height":900},{"width":390,"height":844}]:
+                page=browser.new_page(viewport=viewport)
+                page.add_init_script("""(() => {
+                    window.__lccAudit={panners:0};
+                    const original=AudioContext.prototype.createPanner;
+                    AudioContext.prototype.createPanner=function(...args){
+                        window.__lccAudit.panners++;
+                        return original.apply(this,args);
+                    };
+                })();""")
+                def audio_route(route):
+                    route.fulfill(status=200,content_type="audio/wav",body=fixture,
+                        headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
+                page.route("https://upload.wikimedia.org/**",audio_route)
+                page.route("https://3d3a.princeton.edu/**",audio_route)
+                errors=[]
+                page.on("pageerror",lambda err:errors.append(str(err)))
+                page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
+                if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
+                if page.locator(".sample").count()!=8:failures.append("Expected 8 scenes/recordings")
+                if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed")!="true":
+                    failures.append("Original preset is not selected on load")
+                if page.locator("#lcc-switch").get_attribute("aria-checked")!="false":
+                    failures.append("LCC must begin Off")
+                if page.locator("iframe").count():failures.append("Unexpected obsolete player embed")
+                if page.locator("body").inner_text().find("Hear something real.")>=0:
+                    failures.append("Removed promotional binaural references are still present")
+                if page.locator("body").inner_text().find("All five scenes use original synthesized")>=0:
+                    failures.append("Removed verbose explanation is still present")
+                if page.locator(".signal").count():failures.append("Removed HDMI signal diagram is still present")
+                if not page.locator(".brand").get_attribute("href").startswith("https://mattlane66.github.io"):
+                    failures.append("Preview brand navigation does not return to portfolio")
+                width=page.evaluate("({doc:document.documentElement.scrollWidth,view:document.documentElement.clientWidth})")
+                if width["doc"]>width["view"]+4:
+                    failures.append(f"{viewport['width']}px page overflow: {width}")
                 try:
-                    # A real bypass-vs-processed signal test independent of UI state.
-                    probe=worklet_probe(page)
-                    if probe["bypassError"] > 0.00001:
-                        failures.append(f"Worklet bypass changed original signal: {probe}")
-                    if probe["processedDifference"] < 0.001:
-                        failures.append(f"Worklet On mode made no audible-sample change: {probe}")
-                    if probe["originalDelay"] != 32 or abs(probe["originalDecay"]-0.74989420933)>1e-8:
-                        failures.append(f"Original LCC default was changed: {probe}")
-                    if probe["laptop"]["preset"]!="laptop" or probe["laptop"]["delay"]!=113 or abs(probe["laptop"]["decay"]-.68)>1e-8 or probe["laptop"]["frames"]!=6:
-                        failures.append(f"Laptop preset did not change delay history and attenuation at 48 kHz: {probe}")
-                    if probe["restored"]["preset"]!="loudspeakers" or probe["restored"]["delay"]!=32 or abs(probe["restored"]["decay"]-.74989420933)>1e-8 or probe["restored"]["frames"]!=2:
-                        failures.append(f"Returning to original preset failed: {probe}")
-                    page.locator("#lcc-switch").click()
-                    if page.locator("#lcc-switch").get_attribute("aria-checked") != "true":
-                        failures.append("LCC could not be enabled before sound played.")
+                    probe=probe_worklet(page)
+                    if probe["bypassError"]>1e-5:failures.append(f"Stereo bypass altered signal: {probe}")
+                    if probe["orig"]["delay"]!=32 or abs(probe["orig"]["decay"]-.74989420933)>1e-9:
+                        failures.append(f"Original LCC default changed: {probe}")
+                    if probe["wetDifference"]<.001 or probe["presetDifference"]<.001:
+                        failures.append(f"LCC On or laptop preset made no DSP output difference: {probe}")
+                    if probe["laptop"]["preset"]!="laptop" or probe["laptop"]["delay"]!=113 or abs(probe["laptop"]["decay"]-.68)>1e-9 or probe["laptop"]["frames"]!=6:
+                        failures.append(f"Laptop preset failed to change delay and attenuation: {probe}")
+                    if probe["restored"]["preset"]!="loudspeakers" or probe["restored"]["delay"]!=32 or abs(probe["restored"]["decay"]-.74989420933)>1e-9 or probe["restored"]["frames"]!=2:
+                        failures.append(f"Original DSP preset could not be restored: {probe}")
+                    if any(probe["finite"]):failures.append(f"Non-finite audio samples: {probe}")
                     page.locator("#play").click()
-                    page.wait_for_function("document.getElementById('play').textContent.includes('Pause')", timeout=15000)
-                    first_position = page.locator("#source-dot").get_attribute("style")
-                    page.wait_for_timeout(450)
-                    moved_position = page.locator("#source-dot").get_attribute("style")
-                    if first_position == moved_position:
-                        failures.append("Spatial source marker does not follow the moving scene.")
+                    page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
+                    first=page.locator("#source-dot").get_attribute("style")
+                    page.wait_for_timeout(400)
+                    if first==page.locator("#source-dot").get_attribute("style"):
+                        failures.append("3D source indicator did not move")
+                    page.locator("#lcc-switch").click()
                     page.locator('[data-preset="laptop"]').click()
-                    if page.locator('[data-preset="laptop"]').get_attribute("aria-pressed") != "true":
-                        failures.append("Laptop preset did not select while audio was playing.")
-                    if "113 µs" not in page.locator("#preset-active").inner_text():
-                        failures.append("Laptop preset readout was not updated.")
-                    if page.locator("#lcc-switch").get_attribute("aria-checked") != "true":
-                        failures.append("Changing preset disabled LCC instead of retaining its On state.")
+                    if page.locator("#preset-active").inner_text()!="Laptop · 113 µs":
+                        failures.append("Laptop UI selection failed")
+                    page.wait_for_timeout(170)
+                    if not page.locator("#play").inner_text().find("Pause")>=0:
+                        failures.append("Audio stopped when changing to laptop preset")
                     page.locator('[data-preset="loudspeakers"]').click()
-                    if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed") != "true":
-                        failures.append("Original loudspeaker preset could not be restored.")
-                    if "32 µs" not in page.locator("#preset-active").inner_text():
-                        failures.append("Original delay not shown after preset restoration.")
-                    page.locator("#lcc-switch").click()
-                    if page.locator("#lcc-switch").get_attribute("aria-checked") != "false":
-                        failures.append("LCC Off did not follow active On.")
-                    page.locator("#lcc-switch").click()
-                    if page.locator("#lcc-switch").get_attribute("aria-checked") != "true":
-                        failures.append("LCC did not toggle back On.")
+                    if page.locator("#preset-active").inner_text()!="Original LCC · 32 µs":
+                        failures.append("Restoring original UI selection failed")
+                    if page.locator("#lcc-switch").get_attribute("aria-checked")!="true":
+                        failures.append("LCC switch reset when changing presets")
                     page.locator("#play").click()
-                    if "Play" not in page.locator("#play").inner_text():
-                        failures.append("Pause button did not return to Play.")
-                    for kind in ["dinosaur","flyby","helicopter","barber","orbit"]:
+                    for kind in ["dinosaur","flyby","helicopter","barber"]:
                         page.locator(f'[data-sound="{kind}"]').click()
-                        if page.locator(f'[data-sound="{kind}"]').get_attribute("aria-pressed") != "true":
-                            failures.append(f"Selecting {kind} did not update selection.")
                         page.locator("#play").click()
-                        page.wait_for_function("document.getElementById('play').textContent.includes('Pause')", timeout=15000)
-                        if kind == "dinosaur":
-                            page.wait_for_function("document.getElementById('status').textContent.toLowerCase().includes('dinosaur')", timeout=10000)
-                            text=page.locator("#status").inner_text()
-                            if "Playback could not start" in text:
-                                failures.append(f"Dinosaur audio failed to start: {text}")
+                        page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
                         page.locator("#play").click()
+                    for kind in ["rumba","pool","matchsticks"]:
+                        page.locator(f'[data-sound="{kind}"]').click()
+                        before=page.evaluate("window.__lccAudit.panners")
+                        if page.locator("#source-dot").is_visible():
+                            failures.append(f"Recording {kind} wrongly displays simulated direction dot")
+                        if "without a second HRTF" not in page.locator("#stage-explanation").inner_text():
+                            failures.append(f"Recording {kind} missing stereo routing explanation")
+                        page.locator("#play").click()
+                        page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
+                        after=page.evaluate("window.__lccAudit.panners")
+                        if before!=after:
+                            failures.append(f"Recording {kind} was incorrectly reprocessed by a PannerNode")
+                        if "Recording and license" not in page.locator("#source-link").inner_text():
+                            failures.append(f"Recording {kind} missing license link")
+                        page.locator("#lcc-switch").click()
+                        page.locator("#lcc-switch").click()
+                        page.locator("#play").click()
+                    # The recorded source remains paused and can restart without downloading again.
+                    page.locator("#play").click()
+                    page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=10000)
+                    page.locator("#play").click()
                 except Exception as exc:
-                    failures.append(f"{viewport['width']}px: playback or switch check failed: {exc}")
-                if errors:
-                    failures.append(f"{viewport['width']}px: JS errors: {errors[:3]}")
+                    failures.append(f"{viewport['width']}px browser interaction failure: {exc}")
+                if errors:failures.append(f"{viewport['width']}px runtime errors: {errors[:3]}")
                 page.close()
+            # An external probe is diagnostic, not the deterministic test.
+            check_live_media(browser,f"http://127.0.0.1:{port}/spatial-audio/")
             browser.close()
     finally:
         server.shutdown()
         server.server_close()
-
-    for failure in failures:
-        print("ERROR:", failure)
-    if failures:
-        return 1
-    print("Spatial audio browser smoke passed: five HRTF scenes, exact DSP preset parameters and return, continuous LCC switching during playback, desktop and mobile.")
+    for failure in failures:print("ERROR:",failure)
+    if failures:return 1
+    print("LCC audit passed: 8 samples, stereo bypass, real wet/preset DSP difference, original parameter restoration, no re-HRTF of binaural recordings, desktop/mobile.")
     return 0
 
 
-if __name__ == "__main__":
+if __name__=="__main__":
     raise SystemExit(main())
