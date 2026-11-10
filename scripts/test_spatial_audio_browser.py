@@ -108,7 +108,7 @@ def check_live_media(browser, base_url):
         for kind, url in [
             ("rumba", "https://upload.wikimedia.org/wikipedia/commons/3/35/One_Man_Rumba_binaural_audio_demonstration.ogg"),
             ("pool", "https://upload.wikimedia.org/wikipedia/commons/5/5d/Pool_Sounds.ogg"),
-            ("matchsticks", "https://3d3a.princeton.edu/sites/g/files/toruqf931/files/2023-04/Binaural_Match_Sticks.wav")
+            ("telephone", "https://upload.wikimedia.org/wikipedia/commons/1/1c/Telephone.ogg")
         ]:
             try:
                 check=page.evaluate("""async (url) => {
@@ -118,10 +118,11 @@ def check_live_media(browser, base_url):
                       const response=await fetch(url,{mode:'cors',signal:controller.signal});
                       if(!response.ok)throw new Error('HTTP '+response.status);
                       const bytes=await response.arrayBuffer();
+                      const size=bytes.byteLength;
                       const ac=new AudioContext();
                       try{
                         const audio=await ac.decodeAudioData(bytes);
-                        return {channels:audio.numberOfChannels,duration:audio.duration,bytes:bytes.byteLength};
+                        return {channels:audio.numberOfChannels,duration:audio.duration,bytes:size};
                       }finally{await ac.close();}
                     }finally{clearTimeout(timeout);}
                 }""",url)
@@ -159,8 +160,7 @@ def main():
                     route.fulfill(status=200,content_type="audio/wav",body=fixture,
                         headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
                 page.route("https://upload.wikimedia.org/**",audio_route)
-                page.route("https://3d3a.princeton.edu/**",audio_route)
-                errors=[]
+                                errors=[]
                 page.on("pageerror",lambda err:errors.append(str(err)))
                 page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
                 if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
@@ -216,7 +216,7 @@ def main():
                         page.locator("#play").click()
                         page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
                         page.locator("#play").click()
-                    for kind in ["rumba","pool","matchsticks"]:
+                    for kind in ["rumba","pool","telephone"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         before=page.evaluate("window.__lccAudit.panners")
                         if page.locator("#source-dot").is_visible():
