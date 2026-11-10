@@ -222,7 +222,7 @@
         node.connect(volume);
         volume.connect(ctx.destination);
         // The capture action is a user gesture; on compatible browsers it may permit resume.
-        if (ctx.state === 'suspended') await ctx.resume();
+        if (ctx.state === 'suspended') void ctx.resume().catch(() => {});
         context = ctx; processor = node; captureStream = stream;
         activeMode = mode; enabled = false;
         const channels = stream.getAudioTracks()[0].getSettings().channelCount;
