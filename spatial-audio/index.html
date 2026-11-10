@@ -204,15 +204,18 @@ const catalog={
   orbit:{title:'Close orbit',desc:'A textured mechanical sound circles inches from you, slipping behind your head and brushing past both ears.',duration:14,type:'Close-up binaural · HRTF',credit:'Original layered mechanical Foley, spatialized once using the browser HRTF before LCC. The motion is deliberately close and theatrical.'},
   dinosaur:{title:'Dinosaur behind you',desc:'Huge footsteps approach from behind. A close roar and growl cut across your shoulder before retreating.',duration:16,type:'Rear approach · HRTF',credit:'Original synthesized impacts and creature sound, plus an optional public-domain growl by stilgar (Wikimedia Commons / PDSounds).',link:'https://commons.wikimedia.org/wiki/File:Monster_growls_2.ogg'},
   flyby:{title:'Near miss',desc:'A rushing object approaches from behind-left, cuts right past your ear, and vaults overhead toward the front.',duration:12,type:'Fast motion · HRTF',credit:'Original layered broadband whoosh, Doppler-style pitch bend, and short high-frequency transients, spatialized via the browser HRTF.'},
-  helicopter:{title:'Overhead',desc:'A rotorcraft circles from far above to almost overhead, then pulls away behind your head.',duration:14,type:'Above and behind · HRTF',credit:'Original synthesized rotor and engine, plus optional public-domain helicopter recording by ezwa (Wikimedia Commons / PDSounds).',link:'https://commons.wikimedia.org/wiki/File:Helicopter_over_quiet_n.ogg'}
+  helicopter:{title:'Overhead',desc:'A rotorcraft circles from far above to almost overhead, then pulls away behind your head.',duration:14,type:'Above and behind · HRTF',credit:'Original synthesized rotor and engine, plus optional public-domain helicopter recording by ezwa (Wikimedia Commons / PDSounds).',link:'https://commons.wikimedia.org/wiki/File:Helicopter_over_quiet_n.ogg'},
+  barber:{title:'Virtual barber',desc:'Scissors snip beside one ear while a buzzing clipper circles behind your head and returns on the other side.',duration:16,type:'Haircut · HRTF',credit:'Original haircut-style demonstration synthesized in the browser—no licensed virtual barbershop recording is used.'}
 };
 const elements={
   tabs:[...document.querySelectorAll('.sample')],play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
   title:$('sample-title'),desc:$('sample-description'),num:$('sample-number'),type:$('sample-type'),
   credit:$('credit-text'),link:$('source-link'),progress:$('progress'),timer:$('timer'),
-  dot:$('source-dot'),position:$('source-position'),status:$('status'),hint:$('play-hint')
+  dot:$('source-dot'),position:$('source-position'),status:$('status'),hint:$('play-hint'),
+  presets:[...document.querySelectorAll('[data-preset]')],presetActive:$('preset-active'),presetNote:$('preset-note')
 };
 let selected='orbit',ctx=null,worklet=null,bus=null,playing=false,enabled=false,frame=0;
+let preset='loudspeakers';
 let sources=[],panners=[],startTime=0,offset=0,token=0;
 const buffers={};
 const recordingCache={};
@@ -234,6 +237,12 @@ function pos(kind,t,index=0){
    const i=Math.min(path.length-2,Math.floor(t/2)),v=Math.max(0,Math.min(1,(t-i*2)/2));
    const ease=v*v*(3-2*v),a=path[i],b=path[i+1];
    return{x:a[0]+(b[0]-a[0])*ease,y:.35,z:a[1]+(b[1]-a[1])*ease,scale:9};
+ }
+ if(kind==='barber'){
+   const right=t%8<4,part=t%4,close=.22+.35*Math.abs(part-2)/2;
+   const x=right?close:-close;
+   const z=.15+.35*Math.sin(t*Math.PI/4)**2;
+   return{x,y:.13+.08*Math.sin(t),z,scale:1.9};
  }
  if(kind==='flyby'){
    // Two closely passing swoops with different approach directions.
@@ -296,7 +305,9 @@ async function graph(){
   const input=c.createGain();
   input.gain.value=.72;
   input.connect(w);w.connect(gain);gain.connect(c.destination);
-  ctx=c;worklet=w;bus=input;reflect();
+  ctx=c;worklet=w;bus=input;
+  w.port.postMessage({type:'preset',value:preset});
+  reflect();
  }catch(error){try{await c.close();}catch(_){ }throw error;}
 }
 function createSound(kind){
@@ -334,6 +345,15 @@ function createSound(kind){
         if(dt<.07)v+=.22*bright*Math.exp(-dt*60);
       }
     }
+  }else if(kind==='barber'){
+    const side=t%8,clipper=side<3.5||side>7,scissor=t%(.37);
+    phase+=2*Math.PI*(111+9*Math.sin(t*7))/sr;
+    phase2+=2*Math.PI*(1300+90*Math.sin(t*12))/sr;
+    const buzz=.12*Math.sin(phase)+.08*Math.sin(phase*2.1)+.13*low;
+    const hiss=.06*bright+.03*Math.sin(phase2);
+    const clip=scissor<.09?Math.exp(-scissor*58)*(.38*bright+.19*low):0;
+    const brushing=.09*(.5+.5*Math.sin(t*2.4))*(bright*.45+low*.55);
+    v=(clipper?.95:.26)*(buzz+hiss)+clip+brushing;
   }else if(kind==='flyby'){
     const t6=t%6,nearest=pulse(t6,3,.62);
     const hz=760-325*Math.tanh((t6-3)*2)+42*Math.sin(t*9);
@@ -444,13 +464,24 @@ function show(){
  const c=catalog[selected],keys=Object.keys(catalog);
  elements.tabs.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sound===selected)));
  elements.title.textContent=c.title;elements.desc.textContent=c.desc;
- elements.num.textContent=String(keys.indexOf(selected)+1).padStart(2,'0')+' / 04';
+ elements.num.textContent=String(keys.indexOf(selected)+1).padStart(2,'0')+' / 05';
  elements.type.textContent=c.type;elements.credit.textContent=c.credit;
  elements.link.href=c.link||'https://github.com/mattlane66/lcc';
  elements.link.textContent=c.link?'Sound license and source ↗':'About the LCC algorithm ↗';
  elements.timer.textContent='0:00 / '+ftime(c.duration);elements.progress.value=0;
  elements.hint.textContent='Listen with your two speakers close together. Switch LCC mid-scene.';
  paint(0);
+}
+function selectPreset(which){
+ if(which!=='loudspeakers'&&which!=='laptop')return;
+ preset=which;
+ elements.presets.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.preset===preset)));
+ elements.presetActive.textContent=which==='laptop'?'Laptop · 113 µs':'Original LCC · 32 µs';
+ elements.presetNote.textContent=which==='laptop'
+   ? 'Laptop estimate: 25 cm speaker spacing and 55 cm head distance, 113 µs / 0.68 decay. This is a model-based starting point—not verified calibration.'
+   : 'The original 32 µs / 0.7499 decay is preserved. The 2–3 ft speaker separation at ~6 ft is a suggested setup, not a calibration implied by the default.';
+ if(worklet)worklet.port.postMessage({type:'preset',value:which});
+ report('Selected '+(which==='laptop'?'Laptop':'Original loudspeaker')+' preset. '+(playing?'Audio continues without restarting.':'Press Play to listen.'));
 }
 function choose(kind){
  if(!catalog[kind]||selected===kind)return;
@@ -459,13 +490,14 @@ function choose(kind){
  show();report('Ready: '+catalog[kind].title+'. Play to compare LCC Off and On.');
 }
 elements.tabs.forEach(b=>b.addEventListener('click',()=>choose(b.dataset.sound)));
+elements.presets.forEach(b=>b.addEventListener('click',()=>selectPreset(b.dataset.preset)));
 elements.play.addEventListener('click',()=>{void play();});
 elements.toggle.addEventListener('click',()=>{
  enabled=!enabled;reflect();
  report((enabled?'LCC On.':'LCC Off.')+(playing?' The spatial scene continues uninterrupted.':' Press Play to hear the scene.'));
 });
 window.addEventListener('pagehide',()=>{token++;halt();if(ctx)void ctx.close().catch(()=>{});});
-show();reflect();
+show();selectPreset('loudspeakers');reflect();
 })();
 </script>
 </body>
