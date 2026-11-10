@@ -1,424 +1,322 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#fff8e7">
-  <meta name="description" content="Explore Localization Cue Correction, a spatial audio algorithm for closely spaced stereo loudspeakers. Connect tab audio or a virtual device and compare LCC on and off.">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <title>Spatial Audio — Matt Lane</title>
-  <style>
-    :root { color-scheme:light; --paper:#fff8e7; --ink:#16161d; --muted:#65645e; --line:#c9c5b9; --blue:#173dff; --orange:#e45a35; --panel:#fffdfa; }
-    *,*::before,*::after { box-sizing:border-box; }
-    html { min-width:320px; }
-    body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter,"Helvetica Neue",Arial,sans-serif; -webkit-font-smoothing:antialiased; }
-    a { color:inherit; } button,select { font:inherit; }
-    :is(a,button,select):focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
-    .wrap { width:min(1180px,calc(100% - 40px)); margin:0 auto; }
-    header { border-bottom:1px solid var(--line); }
-    .nav { min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
-    .brand { font-size:14px; font-weight:750; letter-spacing:-.025em; text-decoration:none; }
-    .back { color:var(--muted); font-size:13px; text-decoration:none; }
-    .back:hover,footer a:hover { color:var(--blue); }
-    main { padding:clamp(56px,8vw,97px) 0 90px; }
-    .eyebrow,.tiny { font-size:11px; font-weight:750; letter-spacing:.115em; line-height:1.5; text-transform:uppercase; }
-    .eyebrow { color:var(--orange); } .tiny { color:var(--muted); }
-    h1 { font-size:clamp(66px,9.5vw,122px); font-weight:760; letter-spacing:-.087em; line-height:.95; margin:18px 0 23px; }
-    .intro { font-size:clamp(18px,2.1vw,23px); line-height:1.42; letter-spacing:-.026em; max-width:705px; margin:0 0 47px; }
-    .experience { max-width:770px; }
-    .frame-head { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin:0 0 14px; }
-    .spotify-frame { display:block; width:100%; height:352px; border:0; border-radius:12px; background:#191414; }
-    .after-spotify { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:13px 0 27px; }
-    .note { font-size:13px; line-height:1.5; margin:0; color:var(--muted); max-width:600px; }
-    .link { font-size:13px; color:var(--blue); text-decoration:underline; text-underline-offset:3px; }
-    .panel { background:var(--panel); border:1px solid var(--ink); box-shadow:9px 9px 0 rgba(22,22,29,.06); }
-    .panel-intro { padding:25px 26px 20px; border-bottom:1px solid var(--line); }
-    .panel-intro h2 { font-size:clamp(22px,3vw,31px); font-weight:760; letter-spacing:-.05em; margin:6px 0 9px; }
-    .panel-intro p { max-width:625px; line-height:1.55; font-size:14px; margin:0; color:var(--muted); }
-    .source-options { padding:22px 26px 23px; }
-    .source-row { display:grid; grid-template-columns:1fr auto; align-items:center; gap:14px; }
-    .source-row + .source-row { border-top:1px solid var(--line); margin-top:20px; padding-top:20px; }
-    .source-row h3 { font-size:16px; letter-spacing:-.025em; margin:0 0 5px; }
-    .source-row p { font-size:13px; color:var(--muted); line-height:1.5; margin:0; max-width:440px; }
-    .btn { display:inline-flex; align-items:center; justify-content:center; min-height:43px; padding:10px 15px; font-size:13px; font-weight:750; border:1px solid var(--ink); border-radius:0; color:var(--ink); background:transparent; cursor:pointer; text-align:center; }
-    .btn.primary { background:var(--ink); color:#fff; }
-    .btn:hover:not(:disabled) { background:var(--blue); border-color:var(--blue); color:#fff; }
-    .btn:disabled { opacity:.45; cursor:not-allowed; }
-    .routing { border-top:1px solid var(--line); background:#f8f3e7; padding:20px 26px 24px; }
-    .routing[hidden] { display:none; }
-    .routing p { color:var(--muted); font-size:13px; line-height:1.52; margin:0 0 13px; }
-    .route-fields { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-    .field label { display:block; font-size:11px; font-weight:750; letter-spacing:.07em; text-transform:uppercase; margin:0 0 7px; }
-    .field select { display:block; appearance:auto; border:1px solid var(--line); background:#fff; width:100%; min-height:41px; border-radius:0; font-size:13px; color:var(--ink); padding:8px; }
-    .route-actions { display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }
-    .readout { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:26px; border-top:1px solid var(--ink); flex-wrap:wrap; }
-    .readout h2 { font-size:26px; font-weight:760; letter-spacing:-.05em; margin:0 0 4px; }
-    .readout p { font-size:13px; color:var(--muted); margin:0; }
-    .switch { display:inline-flex; gap:11px; align-items:center; border:0; background:transparent; padding:7px 0 7px 12px; cursor:pointer; }
-    .switch:disabled { cursor:not-allowed; opacity:.58; }
-    .state { min-width:27px; font-size:13px; font-weight:750; }
-    .track { width:65px; height:36px; border-radius:22px; background:#b5b3ad; display:block; position:relative; transition:background .2s; }
-    .thumb { position:absolute; top:4px; left:4px; width:28px; height:28px; border-radius:50%; background:white; box-shadow:0 1px 3px rgba(0,0,0,.18); transition:transform .2s; }
-    .switch[aria-checked=true] .track { background:var(--blue); }
-    .switch[aria-checked=true] .thumb { transform:translateX(29px); }
-    .status-wrap { padding:15px 26px 19px; border-top:1px solid var(--line); }
-    .status { margin:0; color:var(--muted); font-size:13px; line-height:1.55; }
-    .status strong { color:var(--ink); }
-    .stop { border:0; text-decoration:underline; text-underline-offset:3px; background:transparent; color:var(--blue); padding:8px 0 0; font-size:12px; cursor:pointer; }
-    .stop[hidden] { display:none; }
-    details { max-width:770px; border-top:1px solid var(--line); margin-top:30px; padding:18px 0; font-size:13px; }
-    summary { font-size:13px; font-weight:700; cursor:pointer; }
-    details p { max-width:685px; font-size:13px; color:var(--muted); line-height:1.6; }
-    .listening { display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:17px; padding-top:20px; border-top:1px solid var(--line); max-width:770px; }
-    .listening p { margin:0; color:var(--muted); font-size:13px; line-height:1.6; max-width:560px; }
-    footer { border-top:1px solid var(--line); padding:23px 0 36px; color:var(--muted); font-size:12px; line-height:1.55; }
-    @media(max-width:680px) {
-      .wrap { width:calc(100% - 32px); }
-      .nav { min-height:57px; }
-      main { padding:58px 0 65px; }
-      .intro { margin-bottom:36px; }
-      .spotify-frame { height:352px; }
-      .panel { box-shadow:6px 6px 0 rgba(22,22,29,.06); }
-      .panel-intro,.source-options,.routing,.readout { padding-left:18px; padding-right:18px; }
-      .status-wrap { padding-left:18px; padding-right:18px; }
-      .source-row { grid-template-columns:1fr; gap:12px; }
-      .source-row .btn { width:100%; }
-      .route-fields { grid-template-columns:1fr; }
-      .readout h2 { font-size:23px; }
-    }
-    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; } }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff8e7">
+<meta name="description" content="Hear the difference with Localization Cue Correction: five listening samples, one live stereo comparison.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Spatial Audio — Matt Lane</title>
+<style>
+:root{color-scheme:light;--paper:#fff8e7;--ink:#16161d;--muted:#68665e;--blue:#173dff;--orange:#d85b37;--line:#cec9be;--panel:#fffdfa}
+*,*:before,*:after{box-sizing:border-box}
+html{min-width:320px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit}a{color:inherit}
+:is(a,button):focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+.wrap{width:min(1130px,calc(100% - 40px));margin:auto}
+header{border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:15px;min-height:64px}
+.brand{text-decoration:none;font-size:14px;font-weight:750;letter-spacing:-.025em}
+.back{font-size:13px;color:var(--muted);text-decoration:none}
+.back:hover,footer a:hover{color:var(--blue)}
+main{padding:clamp(54px,8.4vw,92px) 0 80px}
+.kicker,.label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:760;line-height:1.55}
+.kicker{color:var(--orange)}.label{color:var(--muted)}
+h1{font-size:clamp(66px,9.5vw,123px);line-height:.94;letter-spacing:-.089em;margin:19px 0 25px;font-weight:760}
+.intro{font-size:clamp(18px,2vw,23px);line-height:1.42;letter-spacing:-.023em;max-width:675px;margin:0 0 43px}
+.experience{max-width:845px}
+.library-head{display:flex;justify-content:space-between;align-items:baseline;gap:18px;margin-bottom:15px}
+.samples{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--ink);background:var(--panel)}
+.sample{border:0;border-right:1px solid var(--line);background:transparent;color:var(--ink);padding:20px 14px 21px;text-align:left;min-height:118px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;gap:16px;transition:background .15s,color .15s}
+.sample:last-child{border-right:0}
+.sample:hover:not([aria-pressed=true]){background:#f3efe6}
+.sample[aria-pressed=true]{background:var(--ink);color:white}
+.sample .number{font-size:11px;color:var(--muted);font-weight:700}
+.sample[aria-pressed=true] .number{color:#c4c2da}
+.sample .name{font-size:clamp(14px,1.6vw,18px);font-weight:740;letter-spacing:-.045em}
+.deck{border:1px solid var(--ink);border-top:0;background:var(--panel);padding:28px 30px}
+.headline{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+h2{font-size:clamp(27px,3.5vw,37px);line-height:1.05;letter-spacing:-.057em;margin:8px 0 8px}
+.description{margin:0;max-width:620px;color:var(--muted);font-size:14px;line-height:1.56}
+.type{color:var(--muted);font-size:11px;letter-spacing:.07em;font-weight:740;text-transform:uppercase;white-space:nowrap;margin-top:13px}
+.soundstage{position:relative;height:145px;display:flex;justify-content:space-between;align-items:center;gap:25px;margin:22px 0 22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:15px 14px}
+.speaker{width:48px;height:66px;background:var(--ink);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.speaker:after{content:'';width:24px;height:24px;border:2px solid #9b9ba7;border-radius:50%;box-shadow:inset 0 0 0 5px #292934}
+.stage-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0}
+.stage-center .room{color:var(--muted);font-size:11px;letter-spacing:.10em;text-transform:uppercase;font-weight:700}
+.stage-track{position:relative;width:min(100%,350px);height:56px;display:flex;align-items:center;justify-content:space-between}
+.stage-track:before{content:'';position:absolute;left:0;right:0;top:50%;border-top:1px dashed var(--line)}
+.dot{width:11px;height:11px;background:var(--blue);border-radius:50%;position:relative;z-index:1;box-shadow:0 0 0 5px rgba(23,61,255,.07)}
+.dot.centre{width:15px;height:15px}
+.stage-track[data-motion=moving] .dot.centre{animation:move 4s ease-in-out infinite alternate}
+@keyframes move{0%{transform:translateX(-55px)}100%{transform:translateX(55px)}}
+.transport{display:flex;gap:15px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.play{border:1px solid var(--ink);background:var(--ink);color:#fff;font-size:15px;font-weight:760;min-width:142px;padding:15px 19px;cursor:pointer;text-align:center}
+.play:hover{background:var(--blue);border-color:var(--blue)}
+.play:disabled{opacity:.6;cursor:wait}
+.play-group{display:flex;gap:15px;align-items:center;flex-wrap:wrap}
+.hint{color:var(--muted);font-size:12px;line-height:1.4;max-width:260px}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.timer{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.progress{appearance:none;display:block;height:4px;min-width:135px;width:170px;background:#d9d4ca;overflow:hidden}
+.progress::-webkit-progress-bar{background:#d9d4ca}
+.progress::-webkit-progress-value{background:var(--blue)}
+.progress::-moz-progress-bar{background:var(--blue)}
+.compare{display:flex;align-items:center;justify-content:space-between;gap:20px;border:1px solid var(--ink);border-top:0;background:#f2eee5;padding:22px 30px}
+.compare h3{font-size:27px;font-weight:750;letter-spacing:-.055em;margin:0 0 5px}
+.compare p{font-size:13px;color:var(--muted);margin:0;line-height:1.45}
+.switch{display:flex;gap:12px;align-items:center;background:transparent;border:0;padding:10px 0 10px 13px;cursor:pointer;flex-shrink:0}
+.switch-state{font-weight:760;font-size:13px;min-width:26px}
+.track{position:relative;width:66px;height:38px;border-radius:25px;background:#aca9a1;transition:background .15s}
+.thumb{position:absolute;left:5px;top:5px;width:28px;height:28px;background:white;border-radius:50%;box-shadow:0 1px 4px #0002;transition:transform .15s}
+.switch[aria-checked=true] .track{background:var(--blue)}
+.switch[aria-checked=true] .thumb{transform:translateX(28px)}
+.status{border:1px solid var(--line);border-top:0;padding:14px 30px;min-height:54px;color:var(--muted);font-size:13px;line-height:1.5}
+.source-credit{margin-top:22px;border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:13px;flex-wrap:wrap;max-width:845px}
+.source-credit p{margin:0;font-size:12px;color:var(--muted);line-height:1.55;max-width:620px}
+.source-credit a{font-size:12px;text-decoration:underline;text-underline-offset:3px}
+details{max-width:845px;border-top:1px solid var(--line);margin-top:25px;padding:19px 0 8px}
+summary{font-size:13px;font-weight:700;cursor:pointer}
+details p,details li{font-size:13px;line-height:1.6;color:var(--muted)}
+.listening{max-width:845px;margin-top:18px;padding-top:19px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:start;gap:15px;flex-wrap:wrap}
+.listening p{margin:0;font-size:13px;line-height:1.55;color:var(--muted);max-width:620px}
+.listening a{font-size:13px;text-decoration:underline;text-underline-offset:3px}
+footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color:var(--muted);line-height:1.55}
+@media(max-width:690px){
+.wrap{width:calc(100% - 32px)}.nav{min-height:57px}main{padding:58px 0 65px}.intro{margin-bottom:33px}
+.samples{grid-template-columns:repeat(5,minmax(0,1fr))}.sample{min-height:92px;padding:14px 7px 14px;gap:10px}.sample .name{font-size:clamp(10px,2.5vw,14px);overflow-wrap:anywhere}.sample .number{font-size:10px}
+.deck{padding:23px 18px}.compare{padding:18px}.status{padding:13px 18px}.soundstage{height:120px;margin:18px 0}.speaker{width:29px;height:48px}.speaker:after{width:15px;height:15px;box-shadow:inset 0 0 0 3px #292934}
+.progress{width:100px;min-width:70px}.transport{align-items:start}.meta{margin-left:auto}.hint{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+</style>
 </head>
 <body>
-  <header><div class="wrap nav"><a class="brand" href="/">Matt Lane <span aria-hidden="true">·</span> Experiments</a><a class="back" href="/#projects">← Side projects</a></div></header>
-  <main class="wrap">
-    <div class="eyebrow">An experiment in listening</div>
-    <h1>Spatial audio.</h1>
-    <p class="intro">A different way to hear stereo: reduce the sound from each speaker reaching the opposite ear. Compare the original signal with Localization Cue Correction.</p>
-    <section class="experience" aria-label="Spatial audio listening experiment">
-      <div class="frame-head"><span class="tiny">Curated listening · Spotify playlist</span><span class="tiny">Closely spaced stereo speakers</span></div>
-      <iframe class="spotify-frame" data-testid="embed-iframe" title="LCC listening playlist on Spotify" src="https://open.spotify.com/embed/playlist/0XrqQ8tIVGMKuVIC5mIrNN?utm_source=generator&amp;si=2f4f14aa3b5b4694" width="100%" height="352" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-      <div class="after-spotify">
-        <p class="note">Browse the playlist here. Tab capture uses a separate music tab, not this embedded player.</p>
-        <a class="link" href="https://open.spotify.com/playlist/0XrqQ8tIVGMKuVIC5mIrNN" target="_blank" rel="noopener noreferrer">Open playlist in new tab ↗</a>
-      </div>
-      <div class="panel">
-        <div class="panel-intro">
-          <span class="eyebrow">01 · Listen and compare</span>
-          <h2>Hear the difference.</h2>
-          <p>Start with the built-in demo to test the LCC switch instantly, or connect an audio source you have permission to process. Sound stays on your device. Best experienced with two closely spaced stereo speakers.</p>
-        </div>
-        <div class="source-options">
-          <div class="source-row">
-            <div><h3>Play a built-in stereo demo</h3><p>Hear original stereo and LCC immediately with a short, synthesized musical pattern. No audio permissions, downloads or setup.</p></div>
-            <button class="btn primary" id="play-demo" type="button">Play demo audio ▶</button>
-          </div>
-          <div class="source-row">
-            <div><h3>Capture a browser tab</h3><p>Open audio in another tab. Select that tab in Chrome’s sharing dialog and enable <strong>Share tab audio</strong>. No installation required.</p></div>
-            <button class="btn" id="capture-tab" type="button">Connect tab audio ↗</button>
-          </div>
-          <div class="source-row">
-            <div><h3>Connect BlackHole / virtual audio</h3><p>On macOS, route a permitted desktop audio source to BlackHole 2ch, then choose separate physical speakers for playback.</p></div>
-            <button class="btn" id="show-virtual" type="button" aria-expanded="false" aria-controls="virtual-routing">Set up device ↗</button>
-          </div>
-        </div>
-        <div id="virtual-routing" class="routing" hidden>
-          <p><strong>Before connecting:</strong> Install <a href="https://github.com/ExistentialAudio/BlackHole" target="_blank" rel="noopener noreferrer">BlackHole 2ch</a>, then set the music app or Mac output to BlackHole. Choose a physical speaker output here; never route the processed output back into BlackHole.</p>
-          <div class="route-fields">
-            <div class="field"><label for="virtual-input">Audio input</label><select id="virtual-input"><option value="">Discover devices first</option></select></div>
-            <div class="field"><label for="speaker-output">Physical speaker output</label><select id="speaker-output"><option value="">Discover devices first</option></select></div>
-          </div>
-          <div class="route-actions">
-            <button class="btn" id="discover-devices" type="button">Discover devices</button>
-            <button class="btn primary" id="connect-virtual" type="button" disabled>Connect virtual audio</button>
-          </div>
-          <p class="status" id="routing-help" aria-live="polite" style="margin:12px 0 0;">Device discovery requests microphone permission so available audio devices can be listed. It does not start playback.</p>
-        </div>
-        <div class="readout">
-          <div><h2 id="lcc-label">LCC</h2><p>Localization Cue Correction</p></div>
-          <button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="status" aria-checked="false" disabled><span class="state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button>
-        </div>
-        <div class="status-wrap">
-          <p class="status" id="status" role="status" aria-live="polite"><strong>Ready to test.</strong> Click Play demo audio, then switch LCC On and Off while listening.</p>
-          <button class="btn" id="resume" type="button" hidden style="margin-top:12px;min-height:36px;">Enable sound</button>
-          <button class="stop" id="stop" type="button" hidden>Disconnect audio</button>
-        </div>
-      </div>
-    </section>
-    <details>
-      <summary>About capture, browser support and listening rights</summary>
-      <p>A webpage cannot directly read Spotify’s embedded audio or change your Mac's system output. Chrome tab capture uses a browser permission prompt; some browsers do not expose tab audio. The same-tab playlist is provided for discovery, not direct capture. The processing feature is intended for sources you are authorized to process: external audio services may prohibit altered playback even when capture is technically possible. Spotify's platform policies restrict applications that alter Spotify content. Audio capture stays local, but permission to modify music is separate from permission to listen.</p>
-      <p>BlackHole must be installed and configured separately; the website cannot install drivers or change macOS sound routing. The comparison is meaningful only when the input is stereo and your speakers are arranged as described in the <a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">LCC documentation</a>. For safety, start with a low speaker volume. A little delay and loudness variation between modes is possible.</p>
-    </details>
-    <div class="listening">
-      <p>Listen on two closely spaced stereo loudspeakers, sitting centered between them. LCC is designed for this geometry, not headphone playback.</p>
-      <a class="link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">Explore the algorithm ↗</a>
-    </div>
-  </main>
-  <footer><div class="wrap">LCC by Robert LiKamWa and Matthew Lane, with guidance from Ralph Glasgal. Audio processing runs locally in your browser. No accounts or uploaded recordings.</div></footer>
-  <script>
-  (() => {
-    'use strict';
-    const $ = id => document.getElementById(id);
-    const controls = {
-      demo: $('play-demo'), capture: $('capture-tab'), showVirtual: $('show-virtual'),
-      virtualRouting: $('virtual-routing'), discover: $('discover-devices'),
-      connectVirtual: $('connect-virtual'), input: $('virtual-input'),
-      output: $('speaker-output'), routingHelp: $('routing-help'),
-      toggle: $('lcc-switch'), state: $('switch-state'),
-      status: $('status'), stop: $('stop'), resume: $('resume')
-    };
-    let captureStream = null, context = null, processor = null;
-    let activeMode = null, enabled = false, connecting = false;
-    let demoCleanup = null;
-
-    function status(message) { controls.status.textContent = message; }
-    function setBusy(value) {
-      connecting = value;
-      controls.capture.disabled = value || Boolean(activeMode);
-      controls.demo.disabled = value || Boolean(activeMode);
-      controls.connectVirtual.disabled = value || Boolean(activeMode) || !controls.input.value || !controls.output.value;
-      controls.discover.disabled = value || Boolean(activeMode);
+<header><div class="wrap nav"><a class="brand" href="/">Matt Lane <span aria-hidden="true">·</span> Experiments</a><a class="back" href="/#projects">← Side projects</a></div></header>
+<main class="wrap">
+<div class="kicker">An experiment in listening</div>
+<h1>Spatial audio.</h1>
+<p class="intro">Hear what changes when sound from the left speaker is prevented from reaching the right ear—and vice versa.</p>
+<section class="experience" aria-label="Spatial audio sound library">
+<div class="library-head"><span class="label">Listen to the difference</span><span class="label">5 listening samples</span></div>
+<div class="samples" role="group" aria-label="Choose a sound">
+<button type="button" class="sample" data-sound="position" aria-pressed="true"><span class="number">01 / TEST</span><span class="name">Position</span></button>
+<button type="button" class="sample" data-sound="movement" aria-pressed="false"><span class="number">02 / TEST</span><span class="name">Movement</span></button>
+<button type="button" class="sample" data-sound="car" aria-pressed="false"><span class="number">03 / TEST</span><span class="name">Passing car</span></button>
+<button type="button" class="sample" data-sound="forest" aria-pressed="false"><span class="number">04 / FIELD</span><span class="name">Forest</span></button>
+<button type="button" class="sample" data-sound="music" aria-pressed="false"><span class="number">05 / MUSIC</span><span class="name">Piano</span></button>
+</div>
+<div class="deck">
+<div class="headline"><div><span class="label" id="sample-number">01 / 05</span><h2 id="sample-title">Position</h2><p class="description" id="sample-description">A short sound at left, center, and right. Listen for where each sound seems to come from.</p></div><div class="type" id="sample-type">Synthesized test</div></div>
+<div class="soundstage" aria-hidden="true"><div class="speaker"></div><div class="stage-center"><span class="room">Listening field</span><div class="stage-track" id="stage-track"><span class="dot"></span><span class="dot centre"></span><span class="dot"></span></div><span class="room">Left · center · right</span></div><div class="speaker"></div></div>
+<div class="transport">
+<div class="play-group"><button id="play" class="play" type="button">▶ Play sound</button><span class="hint" id="play-hint">Click Play, then toggle LCC below without stopping the audio.</span></div>
+<div class="meta"><progress id="progress" class="progress" value="0" max="100" aria-label="Sound playback progress"></progress><span class="timer" id="timer">0:00 / 0:12</span></div>
+</div>
+</div>
+<div class="compare"><div><h3 id="lcc-label">LCC</h3><p>Localization Cue Correction · original / processed</p></div><button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="status" aria-checked="false"><span class="switch-state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button></div>
+<p id="status" class="status" role="status" aria-live="polite">Ready. Play a sound, then switch LCC On and Off to compare.</p>
+</section>
+<div class="source-credit" id="source-credit"><p id="credit-text">Position is a synthesized stereo test, generated locally in the browser.</p><a id="source-link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">About the LCC algorithm ↗</a></div>
+<details><summary>How to listen — and where these sounds come from</summary>
+<p>Listen through two closely spaced stereo loudspeakers while seated on their center line. LCC is designed for speakers, not headphones. Keep the speaker volume modest when comparing modes. These tests have different spatial content: a difference in sound does not automatically mean more accurate spatial localization.</p>
+<p>Position, Movement and Passing car are original synthesized tests generated in your browser. Forest is “Birdsong mild sunny day” by stephan, a public-domain recording from PDSounds hosted by Wikimedia Commons. Piano is “Emotional Piano” by triangelx, available under CC0 and hosted by Wikimedia Commons. When a recording cannot be loaded, the page clearly says so and falls back to a locally generated demonstration. The site never uploads or records microphone audio.</p>
+</details>
+<div class="listening"><p>LCC by Robert LiKamWa and Matthew Lane with guidance from Ralph Glasgal. The processing is adapted from the public-domain implementation.</p><a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">Explore the algorithm ↗</a></div>
+</main>
+<footer><div class="wrap">A browser-based listening experiment. The comparison stays in sync as you switch between original stereo and LCC.</div></footer>
+<script>
+(() => {
+'use strict';
+const $=id=>document.getElementById(id);
+const catalog={
+ position:{title:'Position',desc:'A short sound at left, center, and right. Listen for where each sound seems to come from.',type:'Synthesized test',duration:12,credit:'Position is a synthesized stereo test, generated locally in the browser.',link:'https://github.com/mattlane66/lcc',linkText:'About the LCC algorithm ↗'},
+ movement:{title:'Movement',desc:'A smooth sweep of pink-ish noise across the stereo field. Listen for continuous motion rather than jumps.',type:'Synthesized test',duration:14,credit:'Movement is a synthesized stereo-noise sweep, generated locally in the browser.',link:'https://github.com/mattlane66/lcc',linkText:'About the LCC algorithm ↗'},
+ car:{title:'Passing car',desc:'A synthetic vehicle approaches, passes and recedes. Listen for the location and motion of the sound.',type:'Synthesized test',duration:12,credit:'Passing car is a designed simulation, not a recording of a real vehicle.',link:'https://github.com/mattlane66/lcc',linkText:'About the LCC algorithm ↗'},
+ forest:{title:'Forest',desc:'Actual birdsong recorded in the woods. Listen for where individual calls appear in the stereo landscape.',type:'Public-domain field recording',duration:37,source:'https://upload.wikimedia.org/wikipedia/commons/7/75/Birdsong_mild_sunny_day.ogg',credit:'“Birdsong mild sunny day” recorded by stephan, public domain. Source: Wikimedia Commons.',link:'https://commons.wikimedia.org/wiki/File:Birdsong_mild_sunny_day.ogg',linkText:'Recording and license ↗'},
+ music:{title:'Piano',desc:'An expressive piano recording. Listen for tonal character, image width, and how the sound occupies the space.',type:'CC0 piano recording',duration:16,source:'https://upload.wikimedia.org/wikipedia/commons/7/70/Emotional_piano.wav',credit:'“Emotional piano” by triangelx, CC0 1.0. Source: Wikimedia Commons / Freesound.',link:'https://commons.wikimedia.org/wiki/File:Emotional_piano.wav',linkText:'Recording and license ↗'}
+};
+const elements={
+ buttons:[...document.querySelectorAll('.sample')],play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
+ title:$('sample-title'),desc:$('sample-description'),num:$('sample-number'),type:$('sample-type'),
+ credit:$('credit-text'),link:$('source-link'),progress:$('progress'),timer:$('timer'),
+ stage:$('stage-track'),status:$('status'),hint:$('play-hint')
+};
+let selected='position',ctx=null,worklet=null,master=null,node=null,playing=false,loaded=null;
+let startedAt=0,pausedOffset=0,currentToken=0,loadPromise=null,animation=0;
+const cache={};
+function report(s){elements.status.textContent=s;}
+function formatTime(sec){let n=Math.max(0,Math.floor(sec));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');}
+function elapsed(){if(!playing||!ctx)return pausedOffset;return (pausedOffset+(ctx.currentTime-startedAt))%Math.max(.01,loaded?.duration||catalog[selected].duration);}
+function updateProgress(){
+ const dur=loaded?.duration||catalog[selected].duration;
+ let t=elapsed();
+ elements.timer.textContent=formatTime(t)+' / '+formatTime(dur);
+ elements.progress.value=Math.min(100,Math.max(0,100*t/dur));
+ if(playing){animation=requestAnimationFrame(updateProgress);}
+}
+function showChoice(){
+ const c=catalog[selected];const ids=Object.keys(catalog);
+ elements.buttons.forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.sound===selected)));
+ elements.title.textContent=c.title;elements.desc.textContent=c.desc;
+ elements.num.textContent=String(ids.indexOf(selected)+1).padStart(2,'0')+' / 05';
+ elements.type.textContent=c.type;elements.credit.textContent=c.credit;
+ elements.link.href=c.link;elements.link.textContent=c.linkText;
+ elements.stage.dataset.motion=(selected==='movement'||selected==='car')?'moving':'static';
+ elements.timer.textContent='0:00 / '+formatTime(c.duration);elements.progress.value=0;
+ elements.hint.textContent='Switch LCC while listening. The sound will not restart.';
+}
+function reflect(){
+ elements.state.textContent=enabled?'On':'Off';
+ elements.toggle.setAttribute('aria-checked',String(enabled));
+ if(worklet)worklet.port.postMessage({type:'enable',value:enabled});
+}
+let enabled=false;
+function setPlaying(value){playing=value;elements.play.textContent=value?'❚❚ Pause':'▶ Play sound';elements.play.setAttribute('aria-label',value?'Pause sound':'Play sound');cancelAnimationFrame(animation);updateProgress();}
+async function ensureGraph(){
+ if(ctx)return;
+ const A=window.AudioContext||window.webkitAudioContext;
+ if(!A||!window.AudioWorkletNode)throw new Error('This browser does not support the LCC audio processor.');
+ const c=new A({latencyHint:'playback'});
+ try{
+  await c.audioWorklet.addModule('./lcc-worklet.js');
+  const w=new AudioWorkletNode(c,'lcc-processor',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2],channelCount:2,channelCountMode:'explicit',channelInterpretation:'discrete'});
+  const g=c.createGain();g.gain.value=.50;
+  w.connect(g);g.connect(c.destination);
+  ctx=c;worklet=w;master=g;reflect();
+ }catch(error){await c.close();throw error;}
+}
+function smoothImpulse(t,offset,len){let d=t-offset;return d<0||d>len?0:Math.sin(Math.PI*d/len)**2;}
+function makeGenerated(kind,sr){
+ const dur=catalog[kind].duration, n=Math.ceil(dur*sr);
+ const audio=new AudioBuffer({numberOfChannels:2,length:n,sampleRate:sr});
+ const l=audio.getChannelData(0),r=audio.getChannelData(1);
+ let seed=0x1234abcd;
+ function random(){seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return ((seed>>>0)/4294967295)*2-1;}
+ let smooth=0,phase=0;
+ if(kind==='position'){
+  for(let i=0;i<n;i++){
+    const t=i/sr;const k=Math.floor(t/.77);const f=t-k*.77;
+    const envelope=smoothImpulse(f,.055,.105);
+    const ping=envelope*(.32*Math.sin(2*Math.PI*740*f)+.11*Math.sin(2*Math.PI*1480*f));
+    const p=k%3;
+    l[i]=ping*(p===0?1:p===1?.70:.03);
+    r[i]=ping*(p===0?.03:p===1?.70:1);
+  }
+ }else if(kind==='movement'){
+  for(let i=0;i<n;i++){
+    const t=i/sr;const x=random();smooth=.965*smooth+.035*x;
+    const noise=(.28*x+.95*smooth)*.58;
+    const pan=Math.sin(2*Math.PI*t/7-Math.PI/2);
+    l[i]=noise*Math.sqrt((1-pan)/2);r[i]=noise*Math.sqrt((1+pan)/2);
+  }
+ }else if(kind==='car'){
+  for(let i=0;i<n;i++){
+    const t=i/sr;const pan=Math.max(-1,Math.min(1,(t-6)/4.1));
+    const dist=(t-6)/2.9,env=.66*Math.exp(-dist*dist/2);
+    const freq=132-43*Math.max(0,Math.min(1,(t-4)/4));
+    phase+=2*Math.PI*freq/sr;
+    const x=random();smooth=.94*smooth+.06*x;
+    const engine=.17*Math.sin(phase)+.10*Math.sin(phase*.5)+.20*smooth+.09*x;
+    const signal=env*engine;
+    l[i]=signal*Math.sqrt((1-pan)/2);r[i]=signal*Math.sqrt((1+pan)/2);
+  }
+ }else if(kind==='forest'){
+  for(let i=0;i<n;i++){
+   const t=i/sr;const x=random();smooth=.997*smooth+.003*x;
+   const ground=.045*smooth+.009*x;
+   l[i]=ground;r[i]=ground*.8;
+   for(let voice=0;voice<5;voice++){
+    const period=1.4+voice*.23, time=(t+voice*.44)%period;
+    const e=smoothImpulse(time,.2,.19);
+    const chirp=.16*e*Math.sin(2*Math.PI*(900+voice*250)*time+210*time*time);
+    const pan=(voice/4)*2-1;
+    l[i]+=chirp*Math.sqrt((1-pan)/2);r[i]+=chirp*Math.sqrt((1+pan)/2);
+   }
+  }
+ }else if(kind==='music'){
+  const melody=[60,64,67,72,71,67,64,62,60,64,67,72,76,72,67,64];
+  for(let i=0;i<n;i++){
+   const t=i/sr;const step=Math.floor(t/.5),local=t%(.5);
+   const note=melody[step%melody.length];
+   const freq=440*Math.pow(2,(note-69)/12);
+   const e=Math.exp(-7*local)*(1-Math.exp(-140*local));
+   const tone=e*(.20*Math.sin(2*Math.PI*freq*local)+.11*Math.sin(2*Math.PI*freq*2*local)+.05*Math.sin(2*Math.PI*freq*3*local));
+   const pan=step%2? .35:-.35;
+   l[i]=tone*Math.sqrt((1-pan)/2);r[i]=tone*Math.sqrt((1+pan)/2);
+  }
+ }
+ return audio;
+}
+async function getBuffer(kind){
+ if(cache[kind])return cache[kind];
+ if(!catalog[kind].source){return cache[kind]=makeGenerated(kind,ctx.sampleRate);}
+ try{
+  const response=await fetch(catalog[kind].source,{mode:'cors'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const buffer=await ctx.decodeAudioData(await response.arrayBuffer());
+  if(buffer.numberOfChannels<2)throw new Error('source is mono');
+  cache[kind]=buffer;return buffer;
+ }catch(error){
+  report('The recording is unavailable here ('+error.message+'). Using a synthesized stereo substitute.');
+  cache[kind]=makeGenerated(kind,ctx.sampleRate);
+  return cache[kind];
+ }
+}
+function halt(){
+ if(node){try{node.stop();}catch(_){ }try{node.disconnect();}catch(_){ }node=null;}
+ cancelAnimationFrame(animation);
+ setPlaying(false);
+}
+async function play(){
+ if(playing){pausedOffset=elapsed();halt();report('Paused. LCC is '+(enabled?'On':'Off')+'.');return;}
+ const token=++currentToken;
+ elements.play.disabled=true;elements.play.textContent='Loading…';
+ try{
+  await ensureGraph();
+  if(ctx.state==='suspended')await ctx.resume();
+  if(token!==currentToken)return;
+  const buffer=await getBuffer(selected);
+  if(token!==currentToken)return;
+  loaded=buffer;
+  const source=ctx.createBufferSource();source.buffer=buffer;source.loop=true;
+  source.connect(worklet);node=source;
+  const offset=pausedOffset%buffer.duration;
+  source.start(0,offset);
+  startedAt=ctx.currentTime;
+  setPlaying(true);
+  if(cache[selected]===buffer&&catalog[selected].source&&buffer.duration===catalog[selected].duration){
+    report('Playing '+catalog[selected].title+'. LCC is '+(enabled?'On':'Off')+'. Compare the same continuous audio.');
+  }else{
+    // Preserve any fallback status produced during the fetch.
+    if(!catalog[selected].source||Math.abs(buffer.duration-catalog[selected].duration)<2){
+      if(!elements.status.textContent.includes('substitute'))report('Playing '+catalog[selected].title+'. LCC is '+(enabled?'On':'Off')+'. Switch at any time.');
     }
-    function reflect() {
-      controls.toggle.disabled = !activeMode || connecting;
-      controls.toggle.setAttribute('aria-checked', String(enabled));
-      controls.state.textContent = enabled ? 'On' : 'Off';
-      controls.stop.hidden = !activeMode;
-      controls.resume.hidden = !activeMode || !context || context.state !== 'suspended';
-      if (processor) processor.port.postMessage({type:'enable',value:enabled});
-    }
-    function stopStream(stream) {
-      if (stream) stream.getTracks().forEach(track => track.stop());
-    }
-    async function disconnect(message) {
-      enabled = false;
-      activeMode = null;
-      const oldStream = captureStream;
-      const oldContext = context;
-      captureStream = null;
-      context = null;
-      processor = null;
-      stopStream(oldStream);
-      if (demoCleanup) { const stop = demoCleanup; demoCleanup = null; stop(); }
-      if (oldContext) { try { await oldContext.close(); } catch (_) {} }
-      setBusy(false);
-      reflect();
-      status(message || 'Disconnected. Connect an audio source to compare again.');
-    }
-    async function connectStream(stream, mode, sinkId) {
-      if (!stream.getAudioTracks().length) throw new Error('No audio track was shared. Choose a browser tab and enable Share tab audio.');
-      const A = window.AudioContext || window.webkitAudioContext;
-      if (!A || !window.AudioWorkletNode) throw new Error('Web Audio processing is not supported in this browser.');
-      const ctx = new A({latencyHint:'interactive'});
-      try {
-        // Explicitly select the physical speaker output before connecting any stream.
-        if (mode === 'virtual') {
-          if (typeof ctx.setSinkId !== 'function') throw new Error('This browser cannot choose a separate speaker output. Use desktop Chrome.');
-          await ctx.setSinkId(sinkId);
-        }
-        if (!ctx.audioWorklet) throw new Error('AudioWorklet is not available.');
-        await ctx.audioWorklet.addModule('./lcc-worklet.js');
-        const node = new AudioWorkletNode(ctx,'lcc-processor',{
-          numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2],
-          channelCount:2,channelCountMode:'explicit',channelInterpretation:'discrete'
-        });
-        const volume = ctx.createGain();
-        volume.gain.value = 0.55;
-        const source = ctx.createMediaStreamSource(stream);
-        source.connect(node);
-        node.connect(volume);
-        volume.connect(ctx.destination);
-        // The capture action is a user gesture; on compatible browsers it may permit resume.
-        if (ctx.state === 'suspended') void ctx.resume().then(() => { if (context === ctx) reflect(); }).catch(() => {});
-        context = ctx; processor = node; captureStream = stream;
-        activeMode = mode; enabled = false;
-        const channels = stream.getAudioTracks()[0].getSettings().channelCount;
-        reflect();
-        stream.getTracks().forEach(track => {
-          track.addEventListener('ended', () => { if (captureStream === stream) void disconnect('Audio sharing ended. Reconnect when ready.'); },{once:true});
-        });
-        status(mode === 'demo'
-          ? 'Demo audio is playing. Switch LCC On and Off to compare the same moving stereo notes.'
-          : mode === 'tab'
-            ? 'Connected to a browser tab. LCC is Off. If you hear double audio, stop sharing and check source-tab audio suppression.'
-            : 'Virtual audio connected to physical speakers. LCC is Off. Start playback in your source app.');
-        if (channels === 1) status('Audio connected, but your browser reports a mono input. Stereo is required for the intended LCC effect.');
-      } catch (error) {
-        try { await ctx.close(); } catch (_) {}
-        throw error;
-      }
-    }
-
-    function createDemoSignal() {
-      const A = window.AudioContext || window.webkitAudioContext;
-      if (!A) throw new Error('This browser cannot generate demo audio.');
-      const generator = new A({latencyHint:'interactive'});
-      const destination = generator.createMediaStreamDestination();
-      const left = generator.createGain();
-      const right = generator.createGain();
-      const merger = generator.createChannelMerger(2);
-      left.connect(merger,0,0);
-      right.connect(merger,0,1);
-      merger.connect(destination);
-      const notes = [261.63,392.00,329.63,493.88,293.66,440.00,349.23,523.25];
-      let next = generator.currentTime + 0.06;
-      let step = 0;
-      let stopped = false;
-      function schedule() {
-        if (stopped) return;
-        while (next < generator.currentTime + 0.35) {
-          const voice = generator.createOscillator();
-          const amp = generator.createGain();
-          voice.type = 'triangle';
-          voice.frequency.setValueAtTime(notes[step % notes.length], next);
-          amp.gain.setValueAtTime(0.0001,next);
-          amp.gain.exponentialRampToValueAtTime(0.22,next + 0.012);
-          amp.gain.exponentialRampToValueAtTime(0.0001,next + 0.34);
-          voice.connect(amp);
-          amp.connect(step % 2 ? right : left);
-          voice.start(next);
-          voice.stop(next + 0.35);
-          next += 0.4;
-          step++;
-        }
-      }
-      schedule();
-      const timer = setInterval(schedule,80);
-      void generator.resume().catch(() => {});
-      return {
-        stream:destination.stream,
-        stop() { stopped=true; clearInterval(timer); void generator.close().catch(() => {}); }
-      };
-    }
-    async function playDemo() {
-      if (connecting || activeMode) return;
-      setBusy(true);
-      let session = null;
-      try {
-        session = createDemoSignal();
-        demoCleanup = session.stop;
-        await connectStream(session.stream,'demo',null);
-      } catch (error) {
-        if (session) session.stop();
-        demoCleanup = null;
-        status(error.message || 'The demo audio could not start. Try Chrome or Safari on desktop.');
-      } finally {
-        setBusy(false);
-        reflect();
-      }
-    }
-
-    async function captureTab() {
-      if (connecting || activeMode) return;
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
-        status('This browser cannot capture tab audio. Try desktop Chrome.');
-        return;
-      }
-      setBusy(true);
-      let stream = null;
-      try {
-        // Call directly from the button gesture; browsers must show a permission picker.
-        stream = await navigator.mediaDevices.getDisplayMedia({
-          video:{displaySurface:'browser'},
-          audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,suppressLocalAudioPlayback:true},
-          selfBrowserSurface:'exclude',
-          surfaceSwitching:'exclude',
-          systemAudio:'exclude'
-        });
-        const video = stream.getVideoTracks()[0];
-        if (video && video.getSettings().displaySurface && video.getSettings().displaySurface !== 'browser') {
-          throw new Error('Choose a browser tab, not a window or screen. Stop and connect again.');
-        }
-        await connectStream(stream,'tab',null);
-      } catch (error) {
-        stopStream(stream);
-        status(error && error.name === 'NotAllowedError' ? 'Tab sharing was cancelled or not allowed.' : (error.message || 'Tab capture could not start.'));
-      } finally { setBusy(false); reflect(); }
-    }
-    function fillSelect(select,items,placeholder) {
-      select.replaceChildren(new Option(placeholder,''));
-      items.forEach(d => select.add(new Option(d.label || d.deviceId,d.deviceId)));
-    }
-    function validRoute() {
-      const chosenInput = controls.input.selectedOptions[0];
-      const chosenOutput = controls.output.selectedOptions[0];
-      const name = chosenInput ? chosenInput.textContent : '';
-      const outputName = chosenOutput ? chosenOutput.textContent : '';
-      return Boolean(controls.input.value && controls.output.value &&
-        /blackhole|soundflower|vb.audio|cable output/i.test(name) &&
-        !/blackhole|soundflower|vb.audio|cable input|virtual/i.test(outputName) &&
-        controls.input.value !== controls.output.value);
-    }
-    async function discoverDevices() {
-      if (connecting || activeMode) return;
-      setBusy(true);
-      try {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('This browser cannot list audio devices.');
-        const A = window.AudioContext || window.webkitAudioContext;
-        if (!A || !A.prototype.setSinkId) throw new Error('Choose desktop Chrome for virtual-device routing; this browser cannot select a speaker output.');
-        // Request device-label access, but never connect this temporary microphone stream to playback.
-        const permission = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
-        stopStream(permission);
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const inputs = devices.filter(d => d.kind === 'audioinput' && /blackhole|soundflower|vb.audio|cable output/i.test(d.label));
-        const outputs = devices.filter(d => d.kind === 'audiooutput' && !/blackhole|soundflower|vb.audio|cable input/i.test(d.label) && d.deviceId && d.deviceId !== 'default' && d.deviceId !== 'communications');
-        fillSelect(controls.input,inputs,'Choose virtual audio input');
-        fillSelect(controls.output,outputs,'Choose physical speakers');
-        if (!inputs.length) throw new Error('BlackHole or another recognized virtual input is not available. Install it and refresh devices.');
-        if (!outputs.length) throw new Error('No selectable physical speaker output was found. Check browser permissions and speaker connections.');
-        controls.routingHelp.textContent = 'Choose your virtual input and a different physical speaker output. Check volume before connecting.';
-      } catch (error) {
-        controls.routingHelp.textContent = error.message || 'Device discovery failed.';
-      } finally { setBusy(false); controls.connectVirtual.disabled = !validRoute(); }
-    }
-    async function connectVirtual() {
-      if (connecting || activeMode) return;
-      if (!validRoute()) {
-        controls.routingHelp.textContent = 'Select a recognized virtual input and different physical speakers (never BlackHole as output).';
-        return;
-      }
-      setBusy(true);
-      let stream = null;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video:false,
-          audio:{deviceId:{exact:controls.input.value},channelCount:{ideal:2},
-            echoCancellation:false,noiseSuppression:false,autoGainControl:false}
-        });
-        await connectStream(stream,'virtual',controls.output.value);
-      } catch (error) {
-        stopStream(stream);
-        controls.routingHelp.textContent = error.message || 'Could not connect virtual input.';
-        status('Virtual audio connection failed. Confirm device permissions and output selection.');
-      } finally { setBusy(false); reflect(); }
-    }
-    controls.demo.addEventListener('click',() => { void playDemo(); });
-    controls.capture.addEventListener('click',() => { void captureTab(); });
-    controls.showVirtual.addEventListener('click',() => {
-      controls.virtualRouting.hidden = !controls.virtualRouting.hidden;
-      controls.showVirtual.setAttribute('aria-expanded',String(!controls.virtualRouting.hidden));
-      controls.showVirtual.textContent = controls.virtualRouting.hidden ? 'Set up device ↗' : 'Hide setup ↑';
-    });
-    controls.discover.addEventListener('click',() => { void discoverDevices(); });
-    controls.input.addEventListener('change',() => { controls.connectVirtual.disabled = !validRoute(); });
-    controls.output.addEventListener('change',() => { controls.connectVirtual.disabled = !validRoute(); });
-    controls.connectVirtual.addEventListener('click',() => { void connectVirtual(); });
-    controls.toggle.addEventListener('click',() => {
-      if (!activeMode || !processor) return;
-      enabled = !enabled;
-      reflect();
-      status(enabled ? 'LCC is On for the connected audio stream.' : 'LCC is Off. Original stereo is playing.');
-      if (context && context.state === 'suspended') void context.resume().catch(() => {});
-    });
-    controls.resume.addEventListener('click',() => {
-      if (!context || !activeMode) return;
-      void context.resume().then(() => { reflect(); status('Audio output enabled. LCC remains ' + (enabled ? 'On.' : 'Off.')); }).catch(() => status('Audio could not start. Check output settings and browser permissions.'));
-    });
-    controls.stop.addEventListener('click',() => { void disconnect(); });
-    window.addEventListener('pagehide',() => { stopStream(captureStream); if (context) void context.close().catch(() => {}); });
-    setBusy(false); reflect();
-  })();
-  </script>
+  }
+ }catch(error){
+  report('Playback could not start: '+(error?.message||String(error)));
+  halt();
+ }finally{
+  if(token===currentToken){elements.play.disabled=false;if(!playing)elements.play.textContent='▶ Play sound';}
+ }
+}
+async function choose(kind){
+ if(!catalog[kind]||kind===selected)return;
+ currentToken++;
+ halt();pausedOffset=0;loaded=null;selected=kind;
+ elements.play.disabled=false;elements.play.textContent='▶ Play sound';
+ showChoice();report('Ready: '+catalog[kind].title+'. Click Play to compare stereo and LCC.');
+}
+elements.buttons.forEach(b=>b.addEventListener('click',()=>{void choose(b.dataset.sound);}));
+elements.play.addEventListener('click',()=>{void play();});
+elements.toggle.addEventListener('click',()=>{
+ enabled=!enabled;reflect();
+ report((enabled?'LCC On.':'LCC Off.')+(playing?' Playback continues unchanged.':' Press Play to listen.'));
+});
+window.addEventListener('pagehide',()=>{currentToken++;halt();if(ctx)void ctx.close().catch(()=>{});});
+showChoice();reflect();
+})();
+</script>
 </body>
 </html>
