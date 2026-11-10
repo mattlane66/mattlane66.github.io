@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#fff8e7" name="theme-color"/>
+<title>From Fit to Evidence — Matt Lane</title>
+<meta name="description" content="How product criteria become fit checks, AI evaluations, and evidence of meaningful outcomes—without confusing primary measures, backstops, and validation.">
+<link rel="canonical" href="https://mattlane66.github.io/notes/n/from-fit-to-evidence/">
+<link rel="icon" href="/favicon.svg?v=20260930" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Matt Lane">
+<meta property="og:url" content="https://mattlane66.github.io/notes/n/from-fit-to-evidence/">
+<meta property="og:title" content="From Fit to Evidence — Matt Lane">
+<meta property="og:description" content="How product criteria become fit checks, AI evaluations, and evidence of meaningful outcomes—without confusing primary measures, backstops, and validation.">
+<meta property="og:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="From Fit to Evidence — Matt Lane">
+<meta name="twitter:description" content="How product criteria become fit checks, AI evaluations, and evidence of meaningful outcomes—without confusing primary measures, backstops, and validation.">
+<meta name="twitter:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","@id":"https://mattlane66.github.io/notes/n/from-fit-to-evidence/#article","headline":"From Fit to Evidence","description":"How product criteria become fit checks, AI evaluations, and evidence of meaningful outcomes—without confusing primary measures, backstops, and validation.","url":"https://mattlane66.github.io/notes/n/from-fit-to-evidence/","datePublished":"2026-11-10","dateModified":"2026-11-10","author":{"@type":"Person","name":"Matt Lane","url":"https://mattlane66.github.io/"},"mainEntityOfPage":"https://mattlane66.github.io/notes/n/from-fit-to-evidence/"}</script>
+<style>
+:root {
+  --bg:#fff8e7; --paper:#fffdf5; --ink:#16161d; --secondary:#535b63; --muted:#647179;
+  --line:#d8d0be; --light:#efe9dc; --accent:#193cf0; --softblue:#eff2ff;
+  --ui: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --reading: "Atkinson Hyperlegible Next", Georgia, "Times New Roman", serif;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+* {box-sizing:border-box}
+html {scroll-behavior:smooth}
+body {margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+a {color:inherit}
+a:hover {color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.sitehead {border-bottom:1px solid var(--line)}
+.nav {max-width:990px;width:calc(100% - 44px);margin:auto;min-height:59px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand {font-size:15px;font-weight:800;letter-spacing:-.025em;text-decoration:none}
+.back {font-size:12px;color:var(--muted);text-decoration:none}
+.wrap {max-width:990px;width:calc(100% - 44px);margin:auto}
+main {padding:clamp(60px,8vw,105px) 0 90px}
+.kickerbar {height:5px;width:100px;background:var(--accent);margin-bottom:27px}
+.meta {font:11px/1.65 var(--mono);color:var(--muted);letter-spacing:.055em;text-transform:uppercase;margin:0 0 19px}
+h1 {font-size:clamp(46px,7.7vw,82px);line-height:.99;letter-spacing:-.06em;font-weight:760;max-width:850px;margin:0 0 34px;text-wrap:balance}
+.dek {font:400 clamp(22px,3.2vw,29px)/1.43 var(--reading);max-width:760px;letter-spacing:-.012em;margin:0 0 36px}
+.prose {max-width:715px;font:400 19px/1.68 var(--reading)}
+.prose p {margin:0 0 1.3em}
+.prose strong {font-weight:650}
+.section-index{font:11px/1.4 var(--mono);letter-spacing:.05em;color:var(--muted);text-transform:uppercase;display:block;margin:0 0 10px}
+.section-heading{font-size:clamp(26px,4.0vw,37px);line-height:1.1;letter-spacing:-.04em;margin:0 0 22px;font-weight:730}
+.section-intro{max-width:715px;font:400 18px/1.65 var(--reading);margin:0 0 32px}
+.visual-wrap {margin:42px 0 50px}
+.visual-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin:0 0 15px}
+.visual-head strong{font-size:14px;letter-spacing:-.015em}
+.visual-head span{font:11px/1.3 var(--mono);color:var(--muted)}
+.diagram {background:var(--paper);border:1px solid var(--line);padding:34px clamp(16px,4vw,44px) 30px}
+.node{max-width:630px;margin:0 auto;border:1px solid #c7c7c4;background:#fffefa;padding:18px 24px;text-align:center}
+.node.frame{background:#f5f3ec}
+.node-title{font:600 10px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.09em;color:var(--secondary);margin-bottom:8px}
+.node-main{font:700 clamp(17px,2.25vw,23px)/1.26 var(--ui);letter-spacing:-.025em}
+.node-text{font:12px/1.5 var(--ui);color:var(--secondary);margin-top:5px}
+.flow-arrow{height:33px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;color:var(--muted)}
+.flow-arrow .stem {width:1px;height:19px;background:#9ba3a0}
+.flow-arrow .head {height:7px;width:7px;transform:rotate(45deg);border-right:1px solid #9ba3a0;border-bottom:1px solid #9ba3a0;margin-top:-5px}
+.split{max-width:630px;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:auto}
+.split .node{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center}
+.node.eval{border-color:#c9d2fc;background:#f4f6ff}
+.metricdots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;max-width:560px;margin:15px auto 0}
+.metricdots span {display:block;font:11px/1.2 var(--ui);background:#fff;border:1px solid #d9dff8;padding:9px 4px;color:#283354;text-align:center}
+.diagram-footnote {font:11px/1.6 var(--ui);color:var(--secondary);margin:13px auto 0;max-width:630px}
+.middle-rule{height:1px;background:var(--line);margin:58px 0 56px}
+.case{max-width:900px;margin:30px 0 48px;background:var(--paper);border:1px solid var(--line)}
+.case-head{padding:24px clamp(18px,3.2vw,34px);border-bottom:1px solid var(--line)}
+.case-kicker{font:11px/1.4 var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px}
+.case-head h3{font-size:clamp(19px,3vw,25px);letter-spacing:-.03em;line-height:1.28;margin:0;max-width:750px}
+.case-step{display:grid;grid-template-columns:150px 1fr;gap:25px;padding:20px clamp(18px,3.2vw,34px);border-bottom:1px solid var(--line)}
+.case-step:last-of-type{border-bottom:0}
+.case-step .lbl{font:700 12px/1.45 var(--ui);letter-spacing:.01em}
+.case-step .detail{font:16px/1.55 var(--reading)}
+.case-step .detail p{margin:0}
+.case-step .detail p+p{margin-top:9px}
+.case-step .detail b{font-weight:600}
+.case-footer{padding:17px clamp(18px,3.2vw,34px);background:#f4f1e9;font:13px/1.5 var(--ui);color:var(--secondary)}
+.metrics {margin:34px 0 32px;border-top:2px solid var(--ink);max-width:950px}
+.metrics-row{display:grid;grid-template-columns:1.1fr 1.65fr 1.7fr;gap:18px;padding:17px 8px;border-bottom:1px solid var(--line);align-items:baseline}
+.metrics-row.header{font:10px/1.4 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding-top:12px;padding-bottom:12px}
+.metrics-row .metric-name{font:650 15px/1.4 var(--ui)}
+.metrics-row .val{font:14px/1.5 var(--ui);color:#303039}
+.metrics-row .num{font:11px/1.35 var(--mono);color:var(--muted);margin-right:7px}
+.callout{font:500 clamp(24px,3.2vw,32px)/1.38 var(--reading);letter-spacing:-.02em;max-width:790px;padding-left:25px;border-left:3px solid var(--ink);margin:48px 0}
+.final{font:500 clamp(25px,3.8vw,36px)/1.35 var(--reading);letter-spacing:-.026em;max-width:850px;margin:55px 0 0;border-left:3px solid var(--ink);padding-left:26px}
+.related {border-top:1px solid var(--line);padding-top:23px;max-width:715px;margin-top:75px}
+.related h2 {font:700 11px/1.5 var(--ui);color:var(--muted);letter-spacing:.10em;text-transform:uppercase;margin:0 0 15px}
+.related ul{padding:0;margin:0;list-style:none;display:grid;gap:11px}
+.related a{font:16px/1.5 var(--reading);text-decoration:underline;text-underline-offset:3px}
+.sitefooter{border-top:1px solid var(--line);padding:24px 0 36px;font:12px/1.5 var(--ui);color:var(--muted)}
+@media(max-width:700px){
+.nav,.wrap {width:calc(100% - 34px)}
+main{padding-top:54px}
+h1{margin-bottom:27px}
+.dek{margin-bottom:30px}
+.prose{font-size:18px;line-height:1.65}
+.diagram{padding:20px 12px}
+.node{padding:14px 11px}
+.node-main{font-size:17px}
+.node-text{font-size:11px}
+.metricdots{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.metricdots span{font-size:10px;padding:8px 2px}
+.split{gap:8px}
+.split .node-title{font-size:9px}
+.split .node-main{font-size:15px}
+.case-step{grid-template-columns:1fr;gap:8px;padding:17px 18px}
+.case-step .lbl{color:var(--secondary);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.case-head{padding:19px 18px}
+.case-footer{padding:15px 18px}
+.metrics-row{grid-template-columns:1fr 1fr;gap:9px 15px;padding:17px 2px}
+.metrics-row.header{display:none}
+.metrics-row .metric-name{grid-column:1 / -1}
+.metrics-row .val::before{display:block;margin-bottom:4px;font:10px/1.4 var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.metrics-row .val.primary::before{content:"Primary"}
+.metrics-row .val.backstop::before{content:"Backstop"}
+.middle-rule{margin:43px 0}
+.final{padding-left:18px}
+}
+@media(max-width:400px){
+.node-main{font-size:15px}
+.split .node-main{font-size:14px}
+.split .node-text{font-size:10px}
+.metricdots{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* REVISED NOTE: objective measures are distinct from execution evaluation and calibration. */
+.track-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:630px;margin:0 auto}
+.track-row .node{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center}
+.node.boundary{background:#f3f1e9}
+.node.outcome{background:#f7f8ff;border-color:#cbd4fa}
+.metricdots span{padding:10px 5px}
+.quality-note{max-width:630px;margin:11px auto 0;padding:10px 12px;background:#f4f1e9;font:11px/1.5 var(--ui);color:var(--secondary)}
+.objective-pair{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--line)}
+.objective-cell{padding:19px clamp(18px,3.2vw,34px) 21px}
+.objective-cell+.objective-cell{border-left:1px solid var(--line)}
+.objective-tag{font:600 10px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--secondary);margin:0 0 9px}
+.objective-cell strong{font:700 17px/1.32 var(--ui);letter-spacing:-.016em;display:block;margin-bottom:9px}
+.objective-cell p{margin:0;font:13px/1.48 var(--ui);color:var(--secondary)}
+.smallcap{font:11px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:30px 0 15px}
+.metrics-row{grid-template-columns:1.12fr 1.55fr 1.75fr}
+.metrics-row .val:last-child{color:var(--secondary)}
+.instrument{max-width:900px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;display:grid;grid-template-columns:140px 1fr;gap:20px;margin:19px 0 36px}
+.instrument .lbl{font:700 12px/1.4 var(--ui);text-transform:uppercase;letter-spacing:.03em}
+.instrument .detail{font:16px/1.55 var(--reading)}
+.instrument .detail p{margin:0}
+.sources{border-top:1px solid var(--line);max-width:780px;margin-top:60px;padding-top:20px;font:12px/1.65 var(--reading);color:var(--secondary)}
+.sources h2{font:700 11px/1.4 var(--ui);text-transform:uppercase;letter-spacing:.09em;margin:0 0 10px;color:var(--muted)}
+.sources ul{list-style:none;padding:0;margin:0;display:grid;gap:7px}
+.sources a{color:inherit;text-underline-offset:3px}
+.sources .source-note{margin-top:11px}
+@media(max-width:700px){
+  .track-row{gap:8px}
+  .track-row .node-main{font-size:15px}
+  .track-row .node-text{font-size:10px}
+  .objective-pair{grid-template-columns:1fr}
+  .objective-cell+.objective-cell{border-left:0;border-top:1px solid var(--line)}
+  .instrument{grid-template-columns:1fr;gap:6px}
+  .metrics-row{grid-template-columns:1fr 1fr}
+  .metrics-row .val:last-child::before{content:'Why it matters';display:block;margin-bottom:4px;font:10px/1.4 var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+  .metrics-row .val.primary::before{content:'Operational proxy'}
+}
+@media print{
+  .sitehead, .sitefooter{display:none}
+  body{background:white}
+  .wrap{max-width:100%;width:100%}
+  main{padding:10px 0 15px}
+  .diagram,.case,.metricdots span,.node{break-inside:avoid}
+  .case-step,.metrics-row,.objective-pair,.instrument{break-inside:avoid}
+  .case{break-inside:auto}
+  .visual-wrap{break-inside:avoid;margin:20px 0}
+  .diagram{padding:13px 17px}
+  .node{padding:10px 12px}
+  .node-title{margin-bottom:4px}
+  .node-text{margin-top:3px}
+  .flow-arrow{height:18px}
+  .flow-arrow .stem{height:10px}
+  .metricdots{margin:7px auto 0}
+  .metricdots span{padding:6px 2px}
+  .quality-note{padding:6px 8px;margin-top:6px}
+  .diagram-footnote{margin-top:5px}
+  .case-head,.objective-cell{padding-top:14px;padding-bottom:14px}
+  .case-step{padding-top:13px;padding-bottom:13px}
+  .case-footer{padding-top:11px;padding-bottom:11px}
+  .prose{font-size:17px;line-height:1.5}
+  .dek{font-size:24px;line-height:1.38}
+  .middle-rule{margin:28px 0}
+  .eval-intro{break-inside:avoid}
+  .related {break-inside:auto}
+}
+</style>
+<style>html.embed .sitehead,html.embed .sitefooter{display:none}html.embed main{padding-top:28px}</style><script>if(new URLSearchParams(location.search).has("embed"))document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<header class="sitehead"><div class="nav"><a class="brand" href="https://mattlane66.github.io/notes/">Matt Lane · Notes</a><a class="back" href="https://mattlane66.github.io/notes/">← All notes</a></div></header>
+<main class="wrap">
+<div class="kickerbar"></div>
+<div class="meta">2026-11-10 · Judgment &amp; knowledge</div>
+<h1>From Fit to Evidence</h1>
+<p class="dek">A solution can satisfy every requirement on paper and still fail in use. It can also work exactly as designed without improving the situation it was built to change.</p>
+<div class="prose">
+<p>These are different failures. They require different evidence.</p>
+<p>A Fit Check asks whether a proposed solution could satisfy the requirements. An evaluation asks whether the built system does so in practice. An outcome measure asks whether the work made a difference.</p>
+<p>What connects them is intent: measure the response the product should cause, not merely the activity it performs.</p>
+</div>
+<figure aria-label="From framing to requirements and objective measures, design fit, realized behavior, and observed product effect" class="visual-wrap">
+<div class="visual-head"><strong>One chain of judgment and evidence</strong><span>DESIGN → EXECUTION → EFFECT</span></div>
+<div class="diagram">
+<div class="node frame"><div class="node-title">01 / Frame</div><div class="node-main">x → f() → y</div><div class="node-text">What situation needs to change, and toward what outcome?</div></div>
+<div aria-hidden="true" class="flow-arrow"><span class="stem"></span><span class="head"></span></div>
+<div class="track-row">
+<div class="node boundary"><div class="node-title">02 / Criteria</div><div class="node-main">Requirements (R)</div><div class="node-text">What must an acceptable solution preserve or accomplish?</div></div>
+<div class="node outcome"><div class="node-title">02 / Objective measures</div><div class="node-main">Primary + Backstop</div><div class="node-text">What should improve, without damaging what matters?</div></div>
+</div>
+<div aria-hidden="true" class="flow-arrow"><span class="stem"></span><span class="head"></span></div>
+<div class="split">
+<div class="node"><div class="node-title">03 / Fit Check</div><div class="node-main">R × S</div><div class="node-text">Which candidate shapes meet the requirements?</div></div>
+<div class="node"><div class="node-title">03 / Reverse Fit</div><div class="node-main">Parts × R</div><div class="node-text">Which parts have a reason to exist?</div></div>
+</div>
+<div aria-hidden="true" class="flow-arrow"><span class="stem"></span><span class="head"></span></div>
+<div class="node eval"><div class="node-title">04 / Realized Fit · Agent evaluations</div><div class="node-main">Does the built system satisfy R?</div>
+<div class="metricdots"><span>Task success</span><span>Reliability</span><span>Failure incidence</span><span>Regression</span></div>
+</div>
+<div class="quality-note">Check the measuring instrument separately: representative scenarios, human calibration, and an untouched holdout set.</div>
+<div aria-hidden="true" class="flow-arrow"><span class="stem"></span><span class="head"></span></div>
+<div class="node"><div class="node-title">05 / Observed Effect</div><div class="node-main">Did reality move toward y?</div><div class="node-text">Did the primary measure improve while the backstop held?</div></div>
+<p class="diagram-footnote">The Fit Check judges a candidate design, not a working implementation. Passing evals does not by itself establish product value.</p>
+</div>
+</figure>
+<div class="prose">
+<p>Before building, hold the requirements fixed long enough to compare candidate shapes honestly. The Fit Check tests each shape against the requirements. The reverse check tests whether each proposed part serves one.</p>
+<p>Those are design judgments. They do not prove that implementation will preserve the intended behavior, or that the result will be useful.</p>
+<p>For the objective, define a <strong>primary measure</strong> of the change sought and a <strong>backstop</strong> protecting something that must not be sacrificed to achieve it. The backstop is not a second way to check the accuracy of the primary metric.</p>
+</div>
+<hr class="middle-rule"/>
+<div class="section-index">A concrete example</div>
+<h2 class="section-heading">One objective. One constraint. Three kinds of evidence.</h2>
+<div class="case">
+<div class="case-head"><div class="case-kicker">Illustrative agent product</div><h3>Help teams complete approved product changes with less manual rework.</h3></div>
+<div class="objective-pair">
+<div class="objective-cell"><div class="objective-tag">Primary measure · Reduce</div><strong>Human correction time</strong><p>Median minutes of human rework per accepted, approved change.</p></div>
+<div class="objective-cell"><div class="objective-tag">Backstop · Preserve</div><strong>Completed change volume</strong><p>Approved changes completed per week must not decline, under comparable demand and task difficulty.</p></div>
+</div>
+<div class="case-step"><div class="lbl">Requirement · R2</div><div class="detail"><p>The agent must not change product behavior outside the accepted scope without approval. This is a must-have constraint, not a tradeable performance target.</p></div></div>
+<div class="case-step"><div class="lbl">Design fit</div><div class="detail"><p>The proposed shape includes scoped permissions and a human approval gate for scope expansion. The Fit Check asks whether that design plausibly satisfies R2. Reverse Fit asks why each approval or permission mechanism is needed.</p></div></div>
+<div class="case-step"><div class="lbl">Realized fit</div><div class="detail"><p>Run ordinary and adversarial change requests. Verify the resulting code and state, not just the agent's completion message. Count unauthorized attempts, applied changes, and regressions across repeated trials.</p></div></div>
+<div class="case-step"><div class="lbl">Observed effect</div><div class="detail"><p>Did correction time fall while completed change volume held? Did people actually recover useful time and retain control over what shipped?</p></div></div>
+<div class="case-footer">If correction time falls only because the agent completes fewer changes, the backstop reveals the tradeoff. If it bypasses approval, R2 fails regardless of the other scores. A must-have is not something a high average can offset.</div>
+</div>
+<div class="prose">
+<p>The primary and backstop belong to the product objective. R2 states a non-negotiable requirement. The evals test whether the system reliably respects those requirements. Human review and representative test cases tell us whether the evals can be trusted.</p>
+</div>
+<hr class="middle-rule"/>
+<div class="eval-intro">
+<div class="section-index">Evaluation at scale</div>
+<h2 class="section-heading">Four lenses on realized fit</h2>
+<p class="section-intro">An agent can work once without working consistently. It can improve on familiar tests while breaking something else. Four operational measures help expose those differences. They are not four additional product objectives.</p>
+</div>
+<div aria-label="Four agent evaluation lenses, their operational proxies, and what they reveal" class="metrics" role="table">
+<div class="metrics-row header" role="row"><div role="columnheader">Evaluation lens</div><div role="columnheader">Operational proxy</div><div role="columnheader">What it reveals</div></div>
+<div class="metrics-row" role="row"><div class="metric-name" role="cell"><span class="num">01</span>Task success</div><div class="val primary" role="cell">Verified first-attempt success rate (pass@1)</div><div class="val" role="cell">Does the system accomplish the intended task?</div></div>
+<div class="metrics-row" role="row"><div class="metric-name" role="cell"><span class="num">02</span>Reliability</div><div class="val primary" role="cell">Share of scenarios passing all three independent trials (pass³)</div><div class="val" role="cell">Does success persist across repeated attempts and critical task categories?</div></div>
+<div class="metrics-row" role="row"><div class="metric-name" role="cell"><span class="num">03</span>Failure incidence</div><div class="val primary" role="cell">Each failure type per 1,000 executions, segmented by severity</div><div class="val" role="cell">What goes wrong, for whom, and how seriously?</div></div>
+<div class="metrics-row" role="row"><div class="metric-name" role="cell"><span class="num">04</span>Regression</div><div class="val primary" role="cell">Change in pass rate on a fixed regression suite after each release</div><div class="val" role="cell">What previously working behavior has deteriorated?</div></div>
+</div>
+<div class="instrument"><div class="lbl">Validity checks</div><div class="detail"><p>Keep validation separate from product backstops. Calibrate automated graders against expert human judgments. Sample ordinary, rare, and high-risk situations. Retain holdout scenarios, and review raw traces when a score changes. Use consistent task mixes and denominators when comparing versions.</p></div></div>
+<div class="prose">
+<p>Each requirement calls for its own test. Not every requirement needs all four measures, and not every failure can be reduced to one score. A severe authorization violation should remain a release blocker even if aggregate success is high.</p>
+<p>The four measures establish whether the system behaves reliably, not whether a market wants it. People returning, saying they would miss it, recommending it unprompted, and paying are signals of market–product fit. No single signal proves it; a few devoted users may not constitute a viable market. And finding fit is not the finish line: value must hold beyond early enthusiasts, and repeated use should build advantages competitors struggle to reproduce.</p>
+</div>
+<div class="callout">A backstop protects the value a primary measure might accidentally destroy. A validity check protects the evidence from misleading us.</div>
+<div class="prose">
+<p>When reality disagrees with our expectations, trace the evidence backward. Was the system built incorrectly? Was the selected shape inadequate? Or were the criteria or desired outcome mistaken? Each failure calls for a different correction.</p>
+<p>The point is not to measure everything. It is to preserve the line between what we intended, what was built, and what actually changed. Evidence can challenge an accepted criterion. It should not silently redefine it.</p>
+</div>
+<div class="final">Fit tells us what should work.<br/>Evaluation tells us what does work.<br/>Outcomes tell us whether it matters.</div>
+<div class="sources">
+<h2>Sources and related methods</h2>
+<ul>
+<li><a href="https://www.svpg.com/team-objectives-empowerment/" rel="noopener noreferrer" target="_blank">Marty Cagan / SVPG — Team Objectives: Empowerment</a> (primary and backstop measures)</li>
+<li><a href="https://www.anthropic.com/research/demystifying-evals-for-ai-agents" rel="noopener noreferrer" target="_blank">Anthropic — Demystifying evals for AI agents</a> (task success, repeat trials, regression suites and graders)</li>
+<li><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices" rel="noopener noreferrer" target="_blank">OpenAI — Evaluation best practices</a> (task-specific and continuously calibrated evaluations)</li>
+<li><a href="https://github.com/mattlane66/planning-skills-for-agents-and-humans" rel="noopener noreferrer" target="_blank">Planning Skills for Agents and Humans</a> (Fit Check, Reverse Fit and requirement traceability)</li>
+<li><a href="https://www.ryansinger.co/measuring-usage-with-a-taguchi-signal-noise-ratio/" rel="noopener noreferrer" target="_blank">Ryan Singer — Measuring usage with a Taguchi signal/noise ratio</a> (intended response versus feature activity)</li>
+</ul>
+<p class="source-note">The synthesis and illustrative metrics here are proposed applications, not an official shared scorecard from these organizations.</p>
+</div>
+<aside aria-label="Related thinking" class="related">
+<h2>Related thinking</h2>
+<ul>
+<li><a href="https://mattlane66.github.io/notes/n/the-beauty-of-fit-beauty-of-fit-20261018/">The Beauty of Fit</a></li>
+<li><a href="https://mattlane66.github.io/notes/n/what-good-reasoning-requires/">What Good Reasoning Requires</a></li>
+<li><a href="https://mattlane66.github.io/notes/n/changing-the-question-changes-the-solution/">Changing the Question Changes the Solution</a></li>
+<li><a href="https://mattlane66.github.io/notes/n/the-compounding-value-model-compounding-value-model-20261023/">The Compounding Value Model</a></li>
+</ul>
+</aside>
+</main>
+<footer class="sitefooter"><div class="wrap">© 2026 Matt Lane</div></footer>
+</body>
+</html>
