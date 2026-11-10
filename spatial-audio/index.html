@@ -104,14 +104,18 @@
       </div>
       <div class="panel">
         <div class="panel-intro">
-          <span class="eyebrow">01 · Connect audio</span>
+          <span class="eyebrow">01 · Listen and compare</span>
           <h2>Hear the difference.</h2>
-          <p>Connect a stereo audio source that you have permission to process. The sound is processed on your device and never uploaded to this site. Best experienced on desktop Chrome with two closely spaced speakers.</p>
+          <p>Start with the built-in demo to test the LCC switch instantly, or connect an audio source you have permission to process. Sound stays on your device. Best experienced with two closely spaced stereo speakers.</p>
         </div>
         <div class="source-options">
           <div class="source-row">
+            <div><h3>Play a built-in stereo demo</h3><p>Hear original stereo and LCC immediately with a short, synthesized musical pattern. No audio permissions, downloads or setup.</p></div>
+            <button class="btn primary" id="play-demo" type="button">Play demo audio ▶</button>
+          </div>
+          <div class="source-row">
             <div><h3>Capture a browser tab</h3><p>Open audio in another tab. Select that tab in Chrome’s sharing dialog and enable <strong>Share tab audio</strong>. No installation required.</p></div>
-            <button class="btn primary" id="capture-tab" type="button">Connect tab audio ↗</button>
+            <button class="btn" id="capture-tab" type="button">Connect tab audio ↗</button>
           </div>
           <div class="source-row">
             <div><h3>Connect BlackHole / virtual audio</h3><p>On macOS, route a permitted desktop audio source to BlackHole 2ch, then choose separate physical speakers for playback.</p></div>
@@ -135,7 +139,7 @@
           <button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="status" aria-checked="false" disabled><span class="state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button>
         </div>
         <div class="status-wrap">
-          <p class="status" id="status" role="status" aria-live="polite"><strong>Not connected.</strong> Connect an audio source to enable the switch.</p>
+          <p class="status" id="status" role="status" aria-live="polite"><strong>Ready to test.</strong> Click Play demo audio, then switch LCC On and Off while listening.</p>
           <button class="btn" id="resume" type="button" hidden style="margin-top:12px;min-height:36px;">Enable sound</button>
           <button class="stop" id="stop" type="button" hidden>Disconnect audio</button>
         </div>
@@ -157,7 +161,7 @@
     'use strict';
     const $ = id => document.getElementById(id);
     const controls = {
-      capture: $('capture-tab'), showVirtual: $('show-virtual'),
+      demo: $('play-demo'), capture: $('capture-tab'), showVirtual: $('show-virtual'),
       virtualRouting: $('virtual-routing'), discover: $('discover-devices'),
       connectVirtual: $('connect-virtual'), input: $('virtual-input'),
       output: $('speaker-output'), routingHelp: $('routing-help'),
@@ -166,12 +170,13 @@
     };
     let captureStream = null, context = null, processor = null;
     let activeMode = null, enabled = false, connecting = false;
-    let routingOutput = null;
+    let demoCleanup = null;
 
     function status(message) { controls.status.textContent = message; }
     function setBusy(value) {
       connecting = value;
       controls.capture.disabled = value || Boolean(activeMode);
+      controls.demo.disabled = value || Boolean(activeMode);
       controls.connectVirtual.disabled = value || Boolean(activeMode) || !controls.input.value || !controls.output.value;
       controls.discover.disabled = value || Boolean(activeMode);
     }
@@ -195,6 +200,7 @@
       context = null;
       processor = null;
       stopStream(oldStream);
+      if (demoCleanup) { const stop = demoCleanup; demoCleanup = null; stop(); }
       if (oldContext) { try { await oldContext.close(); } catch (_) {} }
       setBusy(false);
       reflect();
@@ -232,15 +238,77 @@
         stream.getTracks().forEach(track => {
           track.addEventListener('ended', () => { if (captureStream === stream) void disconnect('Audio sharing ended. Reconnect when ready.'); },{once:true});
         });
-        status(mode === 'tab'
-          ? 'Connected to a browser tab. LCC is Off. If you hear double audio, stop sharing and check source-tab audio suppression.'
-          : 'Virtual audio connected to physical speakers. LCC is Off. Start playback in your source app.');
+        status(mode === 'demo'
+          ? 'Demo audio is playing. Switch LCC On and Off to compare the same moving stereo notes.'
+          : mode === 'tab'
+            ? 'Connected to a browser tab. LCC is Off. If you hear double audio, stop sharing and check source-tab audio suppression.'
+            : 'Virtual audio connected to physical speakers. LCC is Off. Start playback in your source app.');
         if (channels === 1) status('Audio connected, but your browser reports a mono input. Stereo is required for the intended LCC effect.');
       } catch (error) {
         try { await ctx.close(); } catch (_) {}
         throw error;
       }
     }
+
+    function createDemoSignal() {
+      const A = window.AudioContext || window.webkitAudioContext;
+      if (!A) throw new Error('This browser cannot generate demo audio.');
+      const generator = new A({latencyHint:'interactive'});
+      const destination = generator.createMediaStreamDestination();
+      const left = generator.createGain();
+      const right = generator.createGain();
+      const merger = generator.createChannelMerger(2);
+      left.connect(merger,0,0);
+      right.connect(merger,0,1);
+      merger.connect(destination);
+      const notes = [261.63,392.00,329.63,493.88,293.66,440.00,349.23,523.25];
+      let next = generator.currentTime + 0.06;
+      let step = 0;
+      let stopped = false;
+      function schedule() {
+        if (stopped) return;
+        while (next < generator.currentTime + 0.35) {
+          const voice = generator.createOscillator();
+          const amp = generator.createGain();
+          voice.type = 'triangle';
+          voice.frequency.setValueAtTime(notes[step % notes.length], next);
+          amp.gain.setValueAtTime(0.0001,next);
+          amp.gain.exponentialRampToValueAtTime(0.22,next + 0.012);
+          amp.gain.exponentialRampToValueAtTime(0.0001,next + 0.34);
+          voice.connect(amp);
+          amp.connect(step % 2 ? right : left);
+          voice.start(next);
+          voice.stop(next + 0.35);
+          next += 0.4;
+          step++;
+        }
+      }
+      schedule();
+      const timer = setInterval(schedule,80);
+      void generator.resume().catch(() => {});
+      return {
+        stream:destination.stream,
+        stop() { stopped=true; clearInterval(timer); void generator.close().catch(() => {}); }
+      };
+    }
+    async function playDemo() {
+      if (connecting || activeMode) return;
+      setBusy(true);
+      let session = null;
+      try {
+        session = createDemoSignal();
+        demoCleanup = session.stop;
+        await connectStream(session.stream,'demo',null);
+      } catch (error) {
+        if (session) session.stop();
+        demoCleanup = null;
+        status(error.message || 'The demo audio could not start. Try Chrome or Safari on desktop.');
+      } finally {
+        setBusy(false);
+        reflect();
+      }
+    }
+
     async function captureTab() {
       if (connecting || activeMode) return;
       if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
@@ -325,6 +393,7 @@
         status('Virtual audio connection failed. Confirm device permissions and output selection.');
       } finally { setBusy(false); reflect(); }
     }
+    controls.demo.addEventListener('click',() => { void playDemo(); });
     controls.capture.addEventListener('click',() => { void captureTab(); });
     controls.showVirtual.addEventListener('click',() => {
       controls.virtualRouting.hidden = !controls.virtualRouting.hidden;
