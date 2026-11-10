@@ -9,6 +9,8 @@ class LCCProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.enabled = false;
+    this.mix = 0;
+    this.rampPerSample = 1 / Math.max(1, sampleRate * 0.025);
     this.inputgain = 0.70;
     this.decaygain = 0.74989420933;
     this.centergain = 0.70;
@@ -27,12 +29,7 @@ class LCCProcessor extends AudioWorkletProcessor {
     this.port.onmessage = event => {
       if (event.data && event.data.type === 'enable') {
         const next = Boolean(event.data.value);
-        if (next !== this.enabled) {
-          this.enabled = next;
-          this.prevOut.fill(0);
-          this.fill = 0;
-          this.read = this.framesPerBlock;
-        }
+        this.enabled = next;
       }
     };
   }
@@ -76,14 +73,19 @@ class LCCProcessor extends AudioWorkletProcessor {
     for (let i = 0; i < leftOut.length; i++) {
       const l = leftIn ? leftIn[i] : 0;
       const r = rightIn ? rightIn[i] : l;
-      if (!this.enabled) {
-        leftOut[i] = l;
-        rightOut[i] = r;
-        continue;
-      }
-      leftOut[i] = this.read < this.framesPerBlock ? this.outBlock[this.read * 2] : 0;
-      rightOut[i] = this.read < this.framesPerBlock ? this.outBlock[this.read * 2 + 1] : 0;
+      const wetL = this.read < this.framesPerBlock ? this.outBlock[this.read * 2] : 0;
+      const wetR = this.read < this.framesPerBlock ? this.outBlock[this.read * 2 + 1] : 0;
       if (this.read < this.framesPerBlock) this.read++;
+      // Run the cancellation network continuously to keep its delay state
+      // warm, even when bypassed. Crossfade over 25 ms so a comparison
+      // does not click or restart the source's timeline.
+      const target = this.enabled ? 1 : 0;
+      if (this.mix !== target) {
+        const step = this.rampPerSample;
+        this.mix = Math.max(0, Math.min(1, this.mix + (target > this.mix ? step : -step)));
+      }
+      leftOut[i] = l * (1 - this.mix) + wetL * this.mix;
+      rightOut[i] = r * (1 - this.mix) + wetR * this.mix;
       this.inBlock[this.fill * 2] = l;
       this.inBlock[this.fill * 2 + 1] = r;
       this.fill++;
