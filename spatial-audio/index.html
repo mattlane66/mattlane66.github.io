@@ -253,54 +253,56 @@ async function graph(){
  }catch(error){try{await c.close();}catch(_){ }throw error;}
 }
 function createSound(kind){
- const rate=ctx.sampleRate,seconds=catalog[kind].duration,len=Math.ceil(rate*seconds);
- const audio=ctx.createBuffer(1,len,rate);
- const out=audio.getChannelData(0);
- let seed=0x77fc9e2b,low=0,slow=0,phase=0;
+ // Original dry mono Foley. The browser's measured HRTF makes the binaural
+ // signal once; LCC receives that stereo pair without a second HRTF.
+ const sr=ctx.sampleRate,duration=catalog[kind].duration,buffer=ctx.createBuffer(1,Math.ceil(duration*sr),sr);
+ const out=buffer.getChannelData(0);
+ let seed=0x77fc9e2b,low=0,air=0,phase=0,phase2=0;
  function noise(){seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return ((seed>>>0)/4294967295)*2-1;}
- function burst(t,center,width){const u=(t-center)/width;return Math.exp(-u*u*3);}
- for(let i=0;i<len;i++){
-  const t=i/rate,n=noise();
-  low=.94*low+.06*n;slow=.997*slow+.003*n;
+ function pulse(t,at,width){const d=(t-at)/width;return Math.exp(-3*d*d);}
+ for(let i=0;i<out.length;i++){
+  const t=i/sr,n=noise();low=.88*low+.12*n;air=.996*air+.004*n;
+  const bright=n-low;
   let v=0;
   if(kind==='orbit'){
-    const fr=265+37*Math.sin(t*Math.PI*2/7)+15*Math.sin(t*1.4);
-    phase+=2*Math.PI*fr/rate;
-    const shimmer=.72+.28*Math.sin(2*Math.PI*12*t);
-    v=(.11*Math.sin(phase)+.065*Math.sin(phase*1.98)+.13*low+.05*n)*shimmer;
-    v+=.08*burst(t%3.5,1.1,.38)*Math.sin(phase*3);
+    const a=t*Math.PI*2/4.65,near=Math.pow(Math.abs(Math.sin(a)),8);
+    const hz=195+108*Math.sin(a+.9)+22*Math.sin(t*12);
+    phase+=2*Math.PI*hz/sr;phase2+=2*Math.PI*hz*1.505/sr;
+    const teeth=Math.pow(Math.max(0,Math.sin(t*Math.PI*2*29)),5);
+    const scrape=.30*bright+.14*low+.12*Math.sin(phase2*3.5);
+    v=(.20*Math.sin(phase)+.14*Math.sin(phase2)+.1*scrape)*(.6+.7*teeth);
+    v+=(near*.43+.035)*scrape;
+    const click=t%(.43);if(click>.026&&click<.13)v+=.22*Math.exp(-(click-.026)*51)*bright;
   }else if(kind==='dinosaur'){
-    const onset=Math.max(burst(t,5.1,2.35),burst(t,10.1,2.8));
-    const freq=65+30*Math.sin(t*1.9)+15*Math.sin(t*7);
-    phase+=2*Math.PI*freq/rate;
-    const glottal=.60*Math.sin(phase)+.28*Math.sin(2*phase)+.15*Math.sin(3.15*phase);
-    const rough=.5*low+.1*n+.4*slow;
-    v=onset*(.28*Math.tanh(1.3*glottal)+.15*rough);
-    const footCount=10;
-    for(let j=0;j<footCount;j++){
-      const footTime=.8+j*1.35;
-      const dt=t-footTime;
-      if(dt>0&&dt<.45){
-        const decay=Math.exp(-16*dt);
-        v+=decay*(.26*Math.sin(2*Math.PI*(62+12*Math.exp(-17*dt))*dt)+.18*low);
+    const roar=Math.max(pulse(t,6.4,1.7),pulse(t,9.3,1.5),pulse(t,11.3,1.0));
+    const f=53+19*Math.sin(8*t)+9*Math.sin(21*t);
+    phase+=2*Math.PI*f/sr;
+    const throat=Math.tanh(1.9*(Math.sin(phase)+.52*Math.sin(phase*2.1)+.31*Math.sin(phase*4.1)));
+    v=.36*roar*throat+.25*roar*low+.11*roar*bright+.09*air;
+    for(let k=0;k<11;k++){
+      const dt=t-(.68+k*1.37);
+      if(dt>=0&&dt<.48){
+        const impact=Math.exp(-dt*14);
+        v+=impact*(.32*Math.sin(2*Math.PI*(62-28*Math.min(1,dt*5))*dt)+.23*low);
+        if(dt<.07)v+=.22*bright*Math.exp(-dt*60);
       }
     }
-    v+=.04*slow;
   }else if(kind==='flyby'){
-    const u=(t-6)/2.0,near=Math.exp(-u*u);
-    const fr=510-200*Math.tanh((t-6)*2)+30*Math.sin(4*t);
-    phase+=2*Math.PI*fr/rate;
-    v=(.06+.28*near)*(.55*low+.25*n+.20*Math.sin(phase));
-    v+=.08*near*Math.sin(phase*.27);
+    const t6=t%6,nearest=pulse(t6,3,.62);
+    const hz=760-325*Math.tanh((t6-3)*2)+42*Math.sin(t*9);
+    phase+=2*Math.PI*hz/sr;phase2+=2*Math.PI*(110+18*Math.sin(t*4))/sr;
+    v=(.10+.84*nearest)*(.38*bright+.34*low+.13*Math.sin(phase)+.12*Math.sin(phase2));
+    v+=.20*nearest*Math.sin(phase*2.3)+.20*pulse(t6,3.04,.075)*bright;
   }else{
-    const rotor=Math.pow(Math.max(0,Math.sin(t*Math.PI*2*13)),2);
-    phase+=2*Math.PI*(81+8*Math.sin(t*.7))/rate;
-    v=(.06+.15*rotor)*(.8*Math.sin(phase)+.42*low+.24*n);
-    v+=.045*Math.sin(phase*.5);
+    phase+=2*Math.PI*(16+1.9*Math.sin(t*.8))/sr;
+    phase2+=2*Math.PI*(87+9*Math.sin(t*.9))/sr;
+    const rotor=Math.pow(Math.max(0,Math.sin(phase)),5);
+    v=(.1+.4*rotor)*(.70*low+.27*bright)+.24*Math.sin(phase2)+.09*Math.sin(phase2*.51)+.05*air;
   }
-  out[i]=Math.max(-.75,Math.min(.75,v));
+  const fade=Math.max(0,Math.min(1,t/.13,(duration-t)/.16));
+  out[i]=.74*fade*Math.tanh(1.8*v);
  }
- return audio;
+ return buffer;
 }
 async function loadGrowl(){
  if(growlBuffer||growlFailed)return growlBuffer;
