@@ -4,213 +4,345 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff8e7">
-  <meta name="description" content="Listen to spatial audio through closely spaced stereo speakers. Compare unprocessed stereo with LCC, an open-source crosstalk-cancellation algorithm.">
+  <meta name="description" content="Explore Localization Cue Correction, a spatial audio algorithm for closely spaced stereo loudspeakers. Connect tab audio or a virtual device and compare LCC on and off.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <title>Spatial Audio — Matt Lane</title>
   <style>
-    :root { color-scheme: light; --paper: #fff8e7; --ink: #16161d; --muted: #65645e; --line: #c9c5b9; --blue: #173dff; --orange: #e45a35; --surface: #fffdfa; }
-    *, *::before, *::after { box-sizing: border-box; }
-    html { min-width: 320px; }
-    body { margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
-    a { color: inherit; }
-    button { font: inherit; }
-    :is(a, button, input, audio):focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
-    .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
-    header { border-bottom: 1px solid var(--line); }
-    .nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 64px; }
-    .brand { font-size: 14px; font-weight: 750; letter-spacing: -.025em; text-decoration: none; }
-    .back { text-decoration: none; font-size: 13px; color: var(--muted); }
-    .back:hover, footer a:hover { color: var(--blue); }
-    main { padding: clamp(58px, 9vw, 104px) 0 100px; }
-    .eyebrow, .tiny { font-size: 11px; font-weight: 750; letter-spacing: .115em; line-height: 1.5; text-transform: uppercase; }
-    .eyebrow { color: var(--orange); }
-    .tiny { color: var(--muted); }
-    h1 { font-size: clamp(65px, 9.5vw, 124px); font-weight: 760; letter-spacing: -.087em; line-height: .95; margin: 20px 0 25px; }
-    .intro { font-size: clamp(18px, 2.2vw, 24px); line-height: 1.4; letter-spacing: -.027em; max-width: 690px; margin: 0 0 46px; }
-    .experience { max-width: 760px; }
-    .player-header { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; margin-bottom: 12px; }
-    .spotify-frame { width: 100%; height: 352px; display: block; border: 0; border-radius: 12px; background: #191414; }
-    .controls { margin-top: 22px; padding: 24px 28px; background: var(--surface); border: 1px solid var(--ink); box-shadow: 9px 9px 0 rgba(22, 22, 29, .06); }
-    .control-row { display: flex; justify-content: space-between; gap: 30px; align-items: center; }
-    .control-title { margin: 0 0 4px; font-size: 23px; line-height: 1.1; letter-spacing: -.05em; }
-    .control-sub { margin: 0; font-size: 13px; line-height: 1.4; color: var(--muted); }
-    .switch { display: inline-flex; align-items: center; gap: 12px; border: 0; padding: 12px 0 12px 14px; background: transparent; color: var(--ink); cursor: pointer; flex-shrink: 0; }
-    .switch .state { min-width: 27px; font-size: 13px; font-weight: 700; }
-    .track { position: relative; display: inline-block; background: #b5b3ad; width: 64px; height: 36px; border-radius: 40px; transition: background .17s ease; }
-    .thumb { display: block; position: absolute; top: 4px; left: 4px; width: 28px; height: 28px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,.16); transition: transform .17s ease; }
-    .switch[aria-checked="true"] .track { background: var(--blue); }
-    .switch[aria-checked="true"] .thumb { transform: translateX(28px); }
-    .separator { height: 1px; background: var(--line); margin: 20px 0 18px; }
-    .control-note { font-size: 13px; line-height: 1.55; color: var(--muted); max-width: 620px; margin: 0; }
-    .control-note strong { color: var(--ink); font-weight: 700; }
-    .file-actions { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-top: 13px; }
-    .file-action { background: none; border: 0; padding: 4px 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--blue); }
-    .file-action:hover { color: var(--ink); }
-    .file-name { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
-    .local-player { margin-top: 16px; width: 100%; }
-    .status { font-size: 12px; line-height: 1.55; color: var(--muted); margin: 10px 0 0; min-height: 18px; }
-    .listening { max-width: 760px; margin: 39px 0 0; border-top: 1px solid var(--line); padding-top: 18px; display: flex; gap: 24px; justify-content: space-between; flex-wrap: wrap; }
-    .listening p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.55; max-width: 520px; }
-    .listening a { font-size: 13px; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
-    footer { border-top: 1px solid var(--line); padding: 23px 0 35px; font-size: 12px; line-height: 1.55; color: var(--muted); }
-    @media (max-width: 680px) {
-      .wrap { width: calc(100% - 32px); }
-      .nav { min-height: 57px; }
-      main { padding: 58px 0 70px; }
-      h1 { margin-top: 16px; }
-      .intro { margin-bottom: 36px; }
-      .controls { padding: 19px 18px; box-shadow: 6px 6px 0 rgba(22,22,29,.06); }
-      .control-row { gap: 10px; }
-      .control-title { font-size: 22px; }
-      .player-header { flex-direction: column; gap: 2px; margin-bottom: 13px; }
-      .spotify-frame { height: 352px; }
-      .listening { margin-top: 30px; }
+    :root { color-scheme:light; --paper:#fff8e7; --ink:#16161d; --muted:#65645e; --line:#c9c5b9; --blue:#173dff; --orange:#e45a35; --panel:#fffdfa; }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { min-width:320px; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter,"Helvetica Neue",Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+    a { color:inherit; } button,select { font:inherit; }
+    :is(a,button,select):focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+    .wrap { width:min(1180px,calc(100% - 40px)); margin:0 auto; }
+    header { border-bottom:1px solid var(--line); }
+    .nav { min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .brand { font-size:14px; font-weight:750; letter-spacing:-.025em; text-decoration:none; }
+    .back { color:var(--muted); font-size:13px; text-decoration:none; }
+    .back:hover,footer a:hover { color:var(--blue); }
+    main { padding:clamp(56px,8vw,97px) 0 90px; }
+    .eyebrow,.tiny { font-size:11px; font-weight:750; letter-spacing:.115em; line-height:1.5; text-transform:uppercase; }
+    .eyebrow { color:var(--orange); } .tiny { color:var(--muted); }
+    h1 { font-size:clamp(66px,9.5vw,122px); font-weight:760; letter-spacing:-.087em; line-height:.95; margin:18px 0 23px; }
+    .intro { font-size:clamp(18px,2.1vw,23px); line-height:1.42; letter-spacing:-.026em; max-width:705px; margin:0 0 47px; }
+    .experience { max-width:770px; }
+    .frame-head { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin:0 0 14px; }
+    .spotify-frame { display:block; width:100%; height:352px; border:0; border-radius:12px; background:#191414; }
+    .after-spotify { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:13px 0 27px; }
+    .note { font-size:13px; line-height:1.5; margin:0; color:var(--muted); max-width:600px; }
+    .link { font-size:13px; color:var(--blue); text-decoration:underline; text-underline-offset:3px; }
+    .panel { background:var(--panel); border:1px solid var(--ink); box-shadow:9px 9px 0 rgba(22,22,29,.06); }
+    .panel-intro { padding:25px 26px 20px; border-bottom:1px solid var(--line); }
+    .panel-intro h2 { font-size:clamp(22px,3vw,31px); font-weight:760; letter-spacing:-.05em; margin:6px 0 9px; }
+    .panel-intro p { max-width:625px; line-height:1.55; font-size:14px; margin:0; color:var(--muted); }
+    .source-options { padding:22px 26px 23px; }
+    .source-row { display:grid; grid-template-columns:1fr auto; align-items:center; gap:14px; }
+    .source-row + .source-row { border-top:1px solid var(--line); margin-top:20px; padding-top:20px; }
+    .source-row h3 { font-size:16px; letter-spacing:-.025em; margin:0 0 5px; }
+    .source-row p { font-size:13px; color:var(--muted); line-height:1.5; margin:0; max-width:440px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; min-height:43px; padding:10px 15px; font-size:13px; font-weight:750; border:1px solid var(--ink); border-radius:0; color:var(--ink); background:transparent; cursor:pointer; text-align:center; }
+    .btn.primary { background:var(--ink); color:#fff; }
+    .btn:hover:not(:disabled) { background:var(--blue); border-color:var(--blue); color:#fff; }
+    .btn:disabled { opacity:.45; cursor:not-allowed; }
+    .routing { border-top:1px solid var(--line); background:#f8f3e7; padding:20px 26px 24px; }
+    .routing[hidden] { display:none; }
+    .routing p { color:var(--muted); font-size:13px; line-height:1.52; margin:0 0 13px; }
+    .route-fields { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .field label { display:block; font-size:11px; font-weight:750; letter-spacing:.07em; text-transform:uppercase; margin:0 0 7px; }
+    .field select { display:block; appearance:auto; border:1px solid var(--line); background:#fff; width:100%; min-height:41px; border-radius:0; font-size:13px; color:var(--ink); padding:8px; }
+    .route-actions { display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }
+    .readout { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:26px; border-top:1px solid var(--ink); flex-wrap:wrap; }
+    .readout h2 { font-size:26px; font-weight:760; letter-spacing:-.05em; margin:0 0 4px; }
+    .readout p { font-size:13px; color:var(--muted); margin:0; }
+    .switch { display:inline-flex; gap:11px; align-items:center; border:0; background:transparent; padding:7px 0 7px 12px; cursor:pointer; }
+    .switch:disabled { cursor:not-allowed; opacity:.58; }
+    .state { min-width:27px; font-size:13px; font-weight:750; }
+    .track { width:65px; height:36px; border-radius:22px; background:#b5b3ad; display:block; position:relative; transition:background .2s; }
+    .thumb { position:absolute; top:4px; left:4px; width:28px; height:28px; border-radius:50%; background:white; box-shadow:0 1px 3px rgba(0,0,0,.18); transition:transform .2s; }
+    .switch[aria-checked=true] .track { background:var(--blue); }
+    .switch[aria-checked=true] .thumb { transform:translateX(29px); }
+    .status-wrap { padding:15px 26px 19px; border-top:1px solid var(--line); }
+    .status { margin:0; color:var(--muted); font-size:13px; line-height:1.55; }
+    .status strong { color:var(--ink); }
+    .stop { border:0; text-decoration:underline; text-underline-offset:3px; background:transparent; color:var(--blue); padding:8px 0 0; font-size:12px; cursor:pointer; }
+    .stop[hidden] { display:none; }
+    details { max-width:770px; border-top:1px solid var(--line); margin-top:30px; padding:18px 0; font-size:13px; }
+    summary { font-size:13px; font-weight:700; cursor:pointer; }
+    details p { max-width:685px; font-size:13px; color:var(--muted); line-height:1.6; }
+    .listening { display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:17px; padding-top:20px; border-top:1px solid var(--line); max-width:770px; }
+    .listening p { margin:0; color:var(--muted); font-size:13px; line-height:1.6; max-width:560px; }
+    footer { border-top:1px solid var(--line); padding:23px 0 36px; color:var(--muted); font-size:12px; line-height:1.55; }
+    @media(max-width:680px) {
+      .wrap { width:calc(100% - 32px); }
+      .nav { min-height:57px; }
+      main { padding:58px 0 65px; }
+      .intro { margin-bottom:36px; }
+      .spotify-frame { height:352px; }
+      .panel { box-shadow:6px 6px 0 rgba(22,22,29,.06); }
+      .panel-intro,.source-options,.routing,.readout { padding-left:18px; padding-right:18px; }
+      .status-wrap { padding-left:18px; padding-right:18px; }
+      .source-row { grid-template-columns:1fr; gap:12px; }
+      .source-row .btn { width:100%; }
+      .route-fields { grid-template-columns:1fr; }
+      .readout h2 { font-size:23px; }
     }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; } }
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap nav">
-      <a class="brand" href="/">Matt Lane <span aria-hidden="true">·</span> Experiments</a>
-      <a class="back" href="/#projects">← Side projects</a>
-    </div>
-  </header>
+  <header><div class="wrap nav"><a class="brand" href="/">Matt Lane <span aria-hidden="true">·</span> Experiments</a><a class="back" href="/#projects">← Side projects</a></div></header>
   <main class="wrap">
     <div class="eyebrow">An experiment in listening</div>
     <h1>Spatial audio.</h1>
-    <p class="intro">A different way to hear stereo: reduce the sound from each speaker reaching the opposite ear.</p>
-    <section class="experience" aria-label="Listen and compare">
-      <div class="player-header"><span class="tiny">Listen · Spotify playlist</span><span class="tiny">Stereo speakers recommended</span></div>
-      <iframe class="spotify-frame" data-testid="embed-iframe" title="Spotify spatial audio listening playlist" src="https://open.spotify.com/embed/playlist/0XrqQ8tIVGMKuVIC5mIrNN?utm_source=generator&amp;si=2f4f14aa3b5b4694" width="100%" height="352" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-      <div class="controls">
-        <div class="control-row">
-          <div>
-            <h2 class="control-title" id="lcc-label">LCC</h2>
-            <p class="control-sub">Localization Cue Correction</p>
-          </div>
-          <button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="source-note" aria-checked="false"><span class="state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button>
+    <p class="intro">A different way to hear stereo: reduce the sound from each speaker reaching the opposite ear. Compare the original signal with Localization Cue Correction.</p>
+    <section class="experience" aria-label="Spatial audio listening experiment">
+      <div class="frame-head"><span class="tiny">Curated listening · Spotify playlist</span><span class="tiny">Closely spaced stereo speakers</span></div>
+      <iframe class="spotify-frame" data-testid="embed-iframe" title="LCC listening playlist on Spotify" src="https://open.spotify.com/embed/playlist/0XrqQ8tIVGMKuVIC5mIrNN?utm_source=generator&amp;si=2f4f14aa3b5b4694" width="100%" height="352" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <div class="after-spotify">
+        <p class="note">Browse the playlist here. Tab capture uses a separate music tab, not this embedded player.</p>
+        <a class="link" href="https://open.spotify.com/playlist/0XrqQ8tIVGMKuVIC5mIrNN" target="_blank" rel="noopener noreferrer">Open playlist in new tab ↗</a>
+      </div>
+      <div class="panel">
+        <div class="panel-intro">
+          <span class="eyebrow">01 · Connect audio</span>
+          <h2>Hear the difference.</h2>
+          <p>Connect a stereo audio source that you have permission to process. The sound is processed on your device and never uploaded to this site. Best experienced on desktop Chrome with two closely spaced speakers.</p>
         </div>
-        <div class="separator" aria-hidden="true"></div>
-        <p class="control-note" id="source-note"><strong>To hear LCC, use a stereo audio file.</strong> Spotify's embedded player cannot pass its audio into this effect; its playback above stays unprocessed. Your file stays on your device.</p>
-        <div class="file-actions"><button type="button" class="file-action" id="choose-file">Choose audio file ↗</button><span class="file-name" id="file-name">No file selected</span></div>
-        <input type="file" id="audio-file" accept="audio/*" hidden aria-label="Choose a local stereo audio file">
-        <audio class="local-player" id="local-player" controls preload="metadata" hidden aria-label="Local audio comparison player"></audio>
-        <p class="status" id="status" role="status" aria-live="polite">LCC is off.</p>
+        <div class="source-options">
+          <div class="source-row">
+            <div><h3>Capture a browser tab</h3><p>Open audio in another tab. Select that tab in Chrome’s sharing dialog and enable <strong>Share tab audio</strong>. No installation required.</p></div>
+            <button class="btn primary" id="capture-tab" type="button">Connect tab audio ↗</button>
+          </div>
+          <div class="source-row">
+            <div><h3>Connect BlackHole / virtual audio</h3><p>On macOS, route a permitted desktop audio source to BlackHole 2ch, then choose separate physical speakers for playback.</p></div>
+            <button class="btn" id="show-virtual" type="button" aria-expanded="false" aria-controls="virtual-routing">Set up device ↗</button>
+          </div>
+        </div>
+        <div id="virtual-routing" class="routing" hidden>
+          <p><strong>Before connecting:</strong> Install <a href="https://github.com/ExistentialAudio/BlackHole" target="_blank" rel="noopener noreferrer">BlackHole 2ch</a>, then set the music app or Mac output to BlackHole. Choose a physical speaker output here; never route the processed output back into BlackHole.</p>
+          <div class="route-fields">
+            <div class="field"><label for="virtual-input">Audio input</label><select id="virtual-input"><option value="">Discover devices first</option></select></div>
+            <div class="field"><label for="speaker-output">Physical speaker output</label><select id="speaker-output"><option value="">Discover devices first</option></select></div>
+          </div>
+          <div class="route-actions">
+            <button class="btn" id="discover-devices" type="button">Discover devices</button>
+            <button class="btn primary" id="connect-virtual" type="button" disabled>Connect virtual audio</button>
+          </div>
+          <p class="status" id="routing-help" aria-live="polite" style="margin:12px 0 0;">Device discovery requests microphone permission so available audio devices can be listed. It does not start playback.</p>
+        </div>
+        <div class="readout">
+          <div><h2 id="lcc-label">LCC</h2><p>Localization Cue Correction</p></div>
+          <button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="status" aria-checked="false" disabled><span class="state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button>
+        </div>
+        <div class="status-wrap">
+          <p class="status" id="status" role="status" aria-live="polite"><strong>Not connected.</strong> Connect an audio source to enable the switch.</p>
+          <button class="stop" id="stop" type="button" hidden>Disconnect audio</button>
+        </div>
       </div>
     </section>
+    <details>
+      <summary>About capture, browser support and listening rights</summary>
+      <p>A webpage cannot directly read Spotify’s embedded audio or change your Mac's system output. Chrome tab capture uses a browser permission prompt; some browsers do not expose tab audio. The same-tab playlist is provided for discovery, not direct capture. The processing feature is intended for sources you are authorized to process: external audio services may prohibit altered playback even when capture is technically possible. Spotify's platform policies restrict applications that alter Spotify content. Audio capture stays local, but permission to modify music is separate from permission to listen.</p>
+      <p>BlackHole must be installed and configured separately; the website cannot install drivers or change macOS sound routing. The comparison is meaningful only when the input is stereo and your speakers are arranged as described in the <a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">LCC documentation</a>. For safety, start with a low speaker volume. A little delay and loudness variation between modes is possible.</p>
+    </details>
     <div class="listening">
-      <p>For the intended effect, listen on two closely spaced stereo loudspeakers and sit centered between them. LCC is not designed for headphones.</p>
-      <a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">Explore the algorithm ↗</a>
+      <p>Listen on two closely spaced stereo loudspeakers, sitting centered between them. LCC is designed for this geometry, not headphone playback.</p>
+      <a class="link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">Explore the algorithm ↗</a>
     </div>
   </main>
-  <footer><div class="wrap">LCC by Robert LiKamWa and Matthew Lane, developed with guidance from Ralph Glasgal. Browser processing adapts the published open-source implementation.</div></footer>
+  <footer><div class="wrap">LCC by Robert LiKamWa and Matthew Lane, with guidance from Ralph Glasgal. Audio processing runs locally in your browser. No accounts or uploaded recordings.</div></footer>
   <script>
   (() => {
     'use strict';
-    const byId = id => document.getElementById(id);
-    const toggle = byId('lcc-switch');
-    const stateText = byId('switch-state');
-    const fileInput = byId('audio-file');
-    const chooseButton = byId('choose-file');
-    const player = byId('local-player');
-    const fileName = byId('file-name');
-    const status = byId('status');
-    let audioContext = null;
-    let worklet = null;
-    let fileURL = null;
-    let on = false;
-    let pendingEnable = false;
-    let loading = false;
+    const $ = id => document.getElementById(id);
+    const controls = {
+      capture: $('capture-tab'), showVirtual: $('show-virtual'),
+      virtualRouting: $('virtual-routing'), discover: $('discover-devices'),
+      connectVirtual: $('connect-virtual'), input: $('virtual-input'),
+      output: $('speaker-output'), routingHelp: $('routing-help'),
+      toggle: $('lcc-switch'), state: $('switch-state'),
+      status: $('status'), stop: $('stop')
+    };
+    let captureStream = null, context = null, processor = null;
+    let activeMode = null, enabled = false, connecting = false;
+    let routingOutput = null;
 
-    function report(message) { status.textContent = message; }
-    function reflect() {
-      toggle.setAttribute('aria-checked', String(on));
-      stateText.textContent = on ? 'On' : 'Off';
-      if (worklet) worklet.port.postMessage({ type: 'enable', value: on });
+    function status(message) { controls.status.textContent = message; }
+    function setBusy(value) {
+      connecting = value;
+      controls.capture.disabled = value || Boolean(activeMode);
+      controls.connectVirtual.disabled = value || Boolean(activeMode) || !controls.input.value || !controls.output.value;
+      controls.discover.disabled = value || Boolean(activeMode);
     }
-    async function createGraph() {
-      if (audioContext) return Boolean(worklet);
-      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextCtor) throw new Error('Your browser does not support the Web Audio API.');
-      audioContext = new AudioContextCtor();
-      const source = audioContext.createMediaElementSource(player);
-      if (!audioContext.audioWorklet) {
-        source.connect(audioContext.destination);
-        throw new Error('This browser cannot run the LCC processor. Playback remains unprocessed.');
-      }
+    function reflect() {
+      controls.toggle.disabled = !activeMode || connecting;
+      controls.toggle.setAttribute('aria-checked', String(enabled));
+      controls.state.textContent = enabled ? 'On' : 'Off';
+      controls.stop.hidden = !activeMode;
+      if (processor) processor.port.postMessage({type:'enable',value:enabled});
+    }
+    function stopStream(stream) {
+      if (stream) stream.getTracks().forEach(track => track.stop());
+    }
+    async function disconnect(message) {
+      enabled = false;
+      activeMode = null;
+      const oldStream = captureStream;
+      const oldContext = context;
+      captureStream = null;
+      context = null;
+      processor = null;
+      stopStream(oldStream);
+      if (oldContext) { try { await oldContext.close(); } catch (_) {} }
+      setBusy(false);
+      reflect();
+      status(message || 'Disconnected. Connect an audio source to compare again.');
+    }
+    async function connectStream(stream, mode, sinkId) {
+      if (!stream.getAudioTracks().length) throw new Error('No audio track was shared. Choose a browser tab and enable Share tab audio.');
+      const A = window.AudioContext || window.webkitAudioContext;
+      if (!A || !window.AudioWorkletNode) throw new Error('Web Audio processing is not supported in this browser.');
+      const ctx = new A({latencyHint:'interactive'});
       try {
-        await audioContext.audioWorklet.addModule('./lcc-worklet.js');
-        worklet = new AudioWorkletNode(audioContext, 'lcc-processor', {numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2], channelCount: 2, channelCountMode: 'explicit', channelInterpretation: 'discrete'});
-        const safeGain = audioContext.createGain();
-        safeGain.gain.value = 0.65;
-        source.connect(worklet);
-        worklet.connect(safeGain);
-        safeGain.connect(audioContext.destination);
-        return true;
+        // Explicitly select the physical speaker output before connecting any stream.
+        if (mode === 'virtual') {
+          if (typeof ctx.setSinkId !== 'function') throw new Error('This browser cannot choose a separate speaker output. Use desktop Chrome.');
+          await ctx.setSinkId(sinkId);
+        }
+        if (!ctx.audioWorklet) throw new Error('AudioWorklet is not available.');
+        await ctx.audioWorklet.addModule('./lcc-worklet.js');
+        const node = new AudioWorkletNode(ctx,'lcc-processor',{
+          numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2],
+          channelCount:2,channelCountMode:'explicit',channelInterpretation:'discrete'
+        });
+        const volume = ctx.createGain();
+        volume.gain.value = 0.55;
+        const source = ctx.createMediaStreamSource(stream);
+        source.connect(node);
+        node.connect(volume);
+        volume.connect(ctx.destination);
+        // The capture action is a user gesture; on compatible browsers it may permit resume.
+        if (ctx.state === 'suspended') await ctx.resume();
+        context = ctx; processor = node; captureStream = stream;
+        activeMode = mode; enabled = false;
+        const channels = stream.getAudioTracks()[0].getSettings().channelCount;
+        reflect();
+        stream.getTracks().forEach(track => {
+          track.addEventListener('ended', () => { if (captureStream === stream) void disconnect('Audio sharing ended. Reconnect when ready.'); },{once:true});
+        });
+        status(mode === 'tab'
+          ? 'Connected to a browser tab. LCC is Off. If you hear double audio, stop sharing and check source-tab audio suppression.'
+          : 'Virtual audio connected to physical speakers. LCC is Off. Start playback in your source app.');
+        if (channels === 1) status('Audio connected, but your browser reports a mono input. Stereo is required for the intended LCC effect.');
       } catch (error) {
-        source.connect(audioContext.destination);
+        try { await ctx.close(); } catch (_) {}
         throw error;
       }
     }
-    async function loadFile(file, enableAfterLoad) {
-      if (!file) return;
-      if (!file.type.startsWith('audio/') && !/\.(wav|mp3|ogg|opus|m4a|aac|flac|aif|aiff)$/i.test(file.name)) {
-        report('Choose an audio file, such as WAV, MP3, or M4A.');
+    async function captureTab() {
+      if (connecting || activeMode) return;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        status('This browser cannot capture tab audio. Try desktop Chrome.');
         return;
       }
-      loading = true;
-      toggle.disabled = true;
-      on = false;
-      reflect();
-      if (fileURL) URL.revokeObjectURL(fileURL);
-      fileURL = URL.createObjectURL(file);
-      player.src = fileURL;
-      player.hidden = false;
-      player.load();
-      fileName.textContent = file.name;
-      report('Preparing the audio comparison…');
+      setBusy(true);
+      let stream = null;
       try {
-        const ready = await createGraph();
-        if (!ready || !worklet) throw new Error('LCC is unavailable in this browser.');
-        if (audioContext.state === 'suspended') void audioContext.resume().catch(() => {});
-        on = Boolean(enableAfterLoad);
-        reflect();
-        report(on ? 'LCC is on for your local audio. Press play to compare.' : 'Your audio is ready. Press play, then switch LCC on to compare.');
+        // Call directly from the button gesture; browsers must show a permission picker.
+        stream = await navigator.mediaDevices.getDisplayMedia({
+          video:{displaySurface:'browser'},
+          audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,suppressLocalAudioPlayback:true},
+          selfBrowserSurface:'exclude',
+          surfaceSwitching:'exclude',
+          systemAudio:'exclude'
+        });
+        const video = stream.getVideoTracks()[0];
+        if (video && video.getSettings().displaySurface && video.getSettings().displaySurface !== 'browser') {
+          throw new Error('Choose a browser tab, not a window or screen. Stop and connect again.');
+        }
+        await connectStream(stream,'tab',null);
       } catch (error) {
-        on = false;
-        reflect();
-        report(error && error.message ? error.message : 'LCC could not start in this browser.');
-      } finally {
-        loading = false;
-        toggle.disabled = false;
-      }
+        stopStream(stream);
+        status(error && error.name === 'NotAllowedError' ? 'Tab sharing was cancelled or not allowed.' : (error.message || 'Tab capture could not start.'));
+      } finally { setBusy(false); reflect(); }
     }
-    toggle.addEventListener('click', async () => {
-      if (loading) return;
-      if (!fileURL) {
-        pendingEnable = true;
-        report('Choose a local stereo audio file to use LCC. Spotify playback will not change.');
-        fileInput.click();
+    function fillSelect(select,items,placeholder) {
+      select.replaceChildren(new Option(placeholder,''));
+      items.forEach(d => select.add(new Option(d.label || d.deviceId,d.deviceId)));
+    }
+    function validRoute() {
+      const chosenInput = controls.input.selectedOptions[0];
+      const chosenOutput = controls.output.selectedOptions[0];
+      const name = chosenInput ? chosenInput.textContent : '';
+      const outputName = chosenOutput ? chosenOutput.textContent : '';
+      return Boolean(controls.input.value && controls.output.value &&
+        /blackhole|soundflower|vb.audio|cable output/i.test(name) &&
+        !/blackhole|soundflower|vb.audio|cable input|virtual/i.test(outputName) &&
+        controls.input.value !== controls.output.value);
+    }
+    async function discoverDevices() {
+      if (connecting || activeMode) return;
+      setBusy(true);
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('This browser cannot list audio devices.');
+        const A = window.AudioContext || window.webkitAudioContext;
+        if (!A || !A.prototype.setSinkId) throw new Error('Choose desktop Chrome for virtual-device routing; this browser cannot select a speaker output.');
+        // Request device-label access, but never connect this temporary microphone stream to playback.
+        const permission = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+        stopStream(permission);
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const inputs = devices.filter(d => d.kind === 'audioinput' && /blackhole|soundflower|vb.audio|cable output/i.test(d.label));
+        const outputs = devices.filter(d => d.kind === 'audiooutput' && !/blackhole|soundflower|vb.audio|cable input/i.test(d.label) && d.deviceId && d.deviceId !== 'default' && d.deviceId !== 'communications');
+        fillSelect(controls.input,inputs,'Choose virtual audio input');
+        fillSelect(controls.output,outputs,'Choose physical speakers');
+        if (!inputs.length) throw new Error('BlackHole or another recognized virtual input is not available. Install it and refresh devices.');
+        if (!outputs.length) throw new Error('No selectable physical speaker output was found. Check browser permissions and speaker connections.');
+        controls.routingHelp.textContent = 'Choose your virtual input and a different physical speaker output. Check volume before connecting.';
+      } catch (error) {
+        controls.routingHelp.textContent = error.message || 'Device discovery failed.';
+      } finally { setBusy(false); controls.connectVirtual.disabled = !validRoute(); }
+    }
+    async function connectVirtual() {
+      if (connecting || activeMode) return;
+      if (!validRoute()) {
+        controls.routingHelp.textContent = 'Select a recognized virtual input and different physical speakers (never BlackHole as output).';
         return;
       }
-      if (!worklet) { report('LCC is unavailable in this browser.'); return; }
-      if (audioContext.state === 'suspended') void audioContext.resume().catch(() => {});
-      on = !on;
+      setBusy(true);
+      let stream = null;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video:false,
+          audio:{deviceId:{exact:controls.input.value},channelCount:{ideal:2},
+            echoCancellation:false,noiseSuppression:false,autoGainControl:false}
+        });
+        await connectStream(stream,'virtual',controls.output.value);
+      } catch (error) {
+        stopStream(stream);
+        controls.routingHelp.textContent = error.message || 'Could not connect virtual input.';
+        status('Virtual audio connection failed. Confirm device permissions and output selection.');
+      } finally { setBusy(false); reflect(); }
+    }
+    controls.capture.addEventListener('click',() => { void captureTab(); });
+    controls.showVirtual.addEventListener('click',() => {
+      controls.virtualRouting.hidden = !controls.virtualRouting.hidden;
+      controls.showVirtual.setAttribute('aria-expanded',String(!controls.virtualRouting.hidden));
+      controls.showVirtual.textContent = controls.virtualRouting.hidden ? 'Set up device ↗' : 'Hide setup ↑';
+    });
+    controls.discover.addEventListener('click',() => { void discoverDevices(); });
+    controls.input.addEventListener('change',() => { controls.connectVirtual.disabled = !validRoute(); });
+    controls.output.addEventListener('change',() => { controls.connectVirtual.disabled = !validRoute(); });
+    controls.connectVirtual.addEventListener('click',() => { void connectVirtual(); });
+    controls.toggle.addEventListener('click',() => {
+      if (!activeMode || !processor) return;
+      enabled = !enabled;
       reflect();
-      report(on ? 'LCC is on for your local audio.' : 'LCC is off. Your local audio is unprocessed.');
+      status(enabled ? 'LCC is On for the connected audio stream.' : 'LCC is Off. Original stereo is playing.');
+      if (context && context.state === 'suspended') void context.resume().catch(() => {});
     });
-    chooseButton.addEventListener('click', () => { pendingEnable = false; fileInput.click(); });
-    fileInput.addEventListener('change', () => {
-      const file = fileInput.files && fileInput.files[0];
-      const enable = pendingEnable;
-      pendingEnable = false;
-      if (file) void loadFile(file, enable);
-      fileInput.value = '';
-    });
-    player.addEventListener('play', () => { if (audioContext && audioContext.state === 'suspended') void audioContext.resume(); });
-    window.addEventListener('pagehide', () => { if (fileURL) URL.revokeObjectURL(fileURL); });
-    reflect();
+    controls.stop.addEventListener('click',() => { void disconnect(); });
+    window.addEventListener('pagehide',() => { stopStream(captureStream); if (context) void context.close().catch(() => {}); });
+    setBusy(false); reflect();
   })();
   </script>
 </body>
