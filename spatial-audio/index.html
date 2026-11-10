@@ -171,7 +171,7 @@ const elements={
 let selected='orbit',ctx=null,worklet=null,bus=null,playing=false,enabled=false,frame=0;
 let sources=[],panners=[],startTime=0,offset=0,token=0;
 const buffers={};
-let growlBuffer=null,growlFailed=false;
+const recordingCache={};
 function report(msg){elements.status.textContent=msg;}
 function ftime(n){const a=Math.floor(Math.max(0,n));return Math.floor(a/60)+':'+String(a%60).padStart(2,'0');}
 function elapsed(){return playing&&ctx ? (offset+ctx.currentTime-startTime)%catalog[selected].duration:offset;}
@@ -196,11 +196,12 @@ function pos(kind,t,index=0){
    const segment=t<6?t:t-6,first=t<6,u=Math.max(0,Math.min(1,segment/6));
    const smooth=u*u*(3-2*u);
    const across=first?-1:1;
-   return{x:across*(5.8-11.6*smooth),y:.1+3.0*Math.sin(Math.PI*u)**2,
+   return{x:across*(5.8-11.6*smooth)+.42,
+     y:.18+3.8*Math.pow(Math.max(0,(u-.5)*2),2),
      z:5.7-11.4*smooth,scale:7.5};
  }
- const a=t*tau/5.5+phase,radius=1.1+3.3*(.5+.5*Math.cos(t*1.1));
- return{x:Math.sin(a)*radius,y:1.0+4.5*(.5+.5*Math.sin(t*.85)),z:-Math.cos(a)*radius,scale:6.5};
+ const a=t*tau/7+phase,radius=1.05+3.25*(.5+.5*Math.cos(t*tau/14));
+ return{x:Math.sin(a)*radius,y:1.25+3.8*(.5+.5*Math.sin(t*tau/14)),z:-Math.cos(a)*radius,scale:6.5};
 }
 function paint(t){
  const p=pos(selected,t);
@@ -306,15 +307,27 @@ function createSound(kind){
  }
  return buffer;
 }
-async function loadGrowl(){
- if(growlBuffer||growlFailed)return growlBuffer;
- const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),5000);
+async function loadFieldRecording(kind){
+ if(Object.prototype.hasOwnProperty.call(recordingCache,kind))return recordingCache[kind];
+ const urls={
+  dinosaur:'https://upload.wikimedia.org/wikipedia/commons/3/36/Monster_growls_2.ogg',
+  helicopter:'https://upload.wikimedia.org/wikipedia/commons/b/b8/Helicopter_over_quiet_n.ogg'
+ };
+ if(!urls[kind])return null;
+ const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),6500);
  try{
-  const res=await fetch('https://upload.wikimedia.org/wikipedia/commons/3/36/Monster_growls_2.ogg',{mode:'cors',signal:ac.signal});
+  const res=await fetch(urls[kind],{mode:'cors',signal:ac.signal});
   if(!res.ok)throw Error('HTTP '+res.status);
-  growlBuffer=await ctx.decodeAudioData(await res.arrayBuffer());
-  return growlBuffer;
- }catch(_){growlFailed=true;return null;}
+  const decoded=await ctx.decodeAudioData(await res.arrayBuffer());
+  // Convert to mono before applying HRTF; never convolve a binaural
+  // recording with another HRTF.
+  if(decoded.numberOfChannels===1){recordingCache[kind]=decoded;return decoded;}
+  const mono=ctx.createBuffer(1,decoded.length,decoded.sampleRate);
+  const out=mono.getChannelData(0);
+  const l=decoded.getChannelData(0),r=decoded.getChannelData(1);
+  for(let i=0;i<out.length;i++)out[i]=(l[i]+r[i])*.5;
+  recordingCache[kind]=mono;return mono;
+ }catch(_){recordingCache[kind]=null;return null;}
  finally{clearTimeout(timer);}
 }
 function pannerFor(index=0){
@@ -356,32 +369,31 @@ async function play(){
   if(mine!==token)return;
   if(!buffers[selected])buffers[selected]=createSound(selected);
   if(mine!==token)return;
-  const main=pannerFor();
-  attachSound(buffers[selected],main);
-  // Add a human-made public-domain growl to reinforce the designed dinosaur sound.
-  // This is a *layer*, not a requirement; playback starts without a network request.
+  attachSound(buffers[selected],pannerFor());
   startTime=ctx.currentTime;setPlaying(true);
-  report(selected==='dinosaur'
-    ? 'Creature approaching from behind. Original synthesized sound playing; adding optional public-domain growl if available.'
-    : '3D sound playing. LCC is '+(enabled?'On':'Off')+'. Switch without interrupting the same scene.');
-  if(selected==='dinosaur'){
-    void loadGrowl().then(growl=>{
-      if(mine!==token||!playing||selected!=='dinosaur')return;
-      if(growl){
-        const p=pannerFor();
-        const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=1200;
-        const s=ctx.createBufferSource();s.buffer=growl;s.loop=true;s.playbackRate.value=.72;
-        const g=ctx.createGain();g.gain.value=.35;
-        s.connect(filter);filter.connect(g);g.connect(p);
-        s.start(0,((offset+ctx.currentTime-startTime)*.72)%growl.duration);
-        sources.push(s);
-        report('Dinosaur: synthesized footsteps and roar with a public-domain growl layer. LCC '+(enabled?'On':'Off')+'.');
+  report('Playing '+catalog[selected].title+'. LCC is '+(enabled?'On':'Off')+'. Compare while the sound moves.');
+  // Optional real public-domain field recordings reinforce original dry mono
+  // sound design. Scene playback never blocks on network requests.
+  if(selected==='dinosaur'||selected==='helicopter'){
+    const kind=selected;
+    void loadFieldRecording(kind).then(buffer=>{
+      if(mine!==token||!playing||selected!==kind)return;
+      if(buffer){
+        const sp=pannerFor(1);
+        const layer=attachSound(buffer,sp,{gain:kind==='dinosaur'?.33:.26,rate:kind==='dinosaur'?.77:1});
+        // These are source layers, not a substitute for the generated scene.
+        // Reduce field sound volume to retain sharp synthetic localization cues.
+        if(kind==='dinosaur'){
+          const t=elapsed();
+          layer.gain.gain.value=.2+(.19*Math.exp(-Math.pow((t-8)/2.7,2)));
+        }
+        report('Playing '+catalog[kind].title+' with a public-domain recorded layer. LCC '+(enabled?'On':'Off')+'.');
       }else{
-        report('Dinosaur: synthesized footsteps and roar. The optional growl recording is unavailable; the spatial scene remains active.');
+        report('Playing '+catalog[kind].title+' using the original synthesised layers. Optional field recording unavailable.');
       }
     }).catch(()=>{});
   }
- }catch(e){report('Playback could not start: '+(e?.message||String(e)));halt();}
+ }catch(error){report('Playback could not start: '+(error?.message||String(error)));halt();}
  finally{if(mine===token){elements.play.disabled=false;if(!playing)elements.play.textContent='▶ Play sound';}}
 }
 function show(){
