@@ -11,11 +11,15 @@ class LCCProcessor extends AudioWorkletProcessor {
     this.enabled = false;
     this.mix = 0;
     this.rampPerSample = 1 / Math.max(1, sampleRate * 0.025);
+    this.currentPreset = 'loudspeakers';
+    this.pendingPreset = null;
+    this.changingPreset = false;
     this.inputgain = 0.70;
     this.decaygain = 0.74989420933;
     this.centergain = 0.70;
     this.endgain = 1.4285;
-    this.delay = 32 * 1e-6 * sampleRate;
+    this.delayUs = 32;
+    this.delay = this.delayUs * 1e-6 * sampleRate;
     this.framesPerBlock = Math.max(1, Math.ceil(this.delay));
     this.buflen = this.framesPerBlock * 2;
     this.delaymod = this.framesPerBlock - this.delay;
@@ -27,11 +31,35 @@ class LCCProcessor extends AudioWorkletProcessor {
     this.fill = 0;
     this.read = this.framesPerBlock;
     this.port.onmessage = event => {
-      if (event.data && event.data.type === 'enable') {
-        const next = Boolean(event.data.value);
-        this.enabled = next;
+      const data = event.data;
+      if (!data) return;
+      if (data.type === 'enable') this.enabled = Boolean(data.value);
+      if (data.type === 'preset' && (data.value === 'loudspeakers' || data.value === 'laptop')) {
+        if (data.value === this.currentPreset && !this.pendingPreset) return;
+        this.pendingPreset = data.value;
+        this.changingPreset = true;
       }
     };
+  }
+  applyPreset(which) {
+    // Apply new geometry with fresh delay history only after fading to bypass.
+    const laptop = which === 'laptop';
+    this.delayUs = laptop ? 113 : 32;
+    this.decaygain = laptop ? 0.68 : 0.74989420933;
+    this.delay = this.delayUs * 1e-6 * sampleRate;
+    this.framesPerBlock = Math.max(1, Math.ceil(this.delay));
+    this.buflen = this.framesPerBlock * 2;
+    this.delaymod = this.framesPerBlock - this.delay;
+    this.delaymodinv = 1 - this.delaymod;
+    this.prevOut = new Float64Array(this.buflen);
+    this.inBlock = new Float64Array(this.buflen);
+    this.outBlock = new Float64Array(this.buflen);
+    this.rawBlock = new Float64Array(this.buflen);
+    this.fill = 0;
+    this.read = this.framesPerBlock;
+    this.currentPreset = which;
+    this.pendingPreset = null;
+    this.changingPreset = false;
   }
   runBlock() {
     const n = this.buflen;
@@ -73,13 +101,16 @@ class LCCProcessor extends AudioWorkletProcessor {
     for (let i = 0; i < leftOut.length; i++) {
       const l = leftIn ? leftIn[i] : 0;
       const r = rightIn ? rightIn[i] : l;
+      if (this.changingPreset && this.mix <= 0) {
+        this.applyPreset(this.pendingPreset);
+      }
       const wetL = this.read < this.framesPerBlock ? this.outBlock[this.read * 2] : 0;
       const wetR = this.read < this.framesPerBlock ? this.outBlock[this.read * 2 + 1] : 0;
       if (this.read < this.framesPerBlock) this.read++;
       // Run the cancellation network continuously to keep its delay state
       // warm, even when bypassed. Crossfade over 25 ms so a comparison
       // does not click or restart the source's timeline.
-      const target = this.enabled ? 1 : 0;
+      const target = this.changingPreset ? 0 : (this.enabled ? 1 : 0);
       if (this.mix !== target) {
         const step = this.rampPerSample;
         this.mix = Math.max(0, Math.min(1, this.mix + (target > this.mix ? step : -step)));
