@@ -220,9 +220,11 @@ function tick(){
   for(let i=0;i<panners.length;i++){
    const p=pos(selected,t,i);
    const a=panners[i],now=ctx.currentTime;
-   a.positionX.setTargetAtTime(p.x,now,.018);
-   a.positionY.setTargetAtTime(p.y,now,.018);
-   a.positionZ.setTargetAtTime(p.z,now,.018);
+   a.p.positionX.setTargetAtTime(p.x,now,.014);
+   a.p.positionY.setTargetAtTime(p.y,now,.014);
+   a.p.positionZ.setTargetAtTime(p.z,now,.014);
+   const distance=Math.hypot(p.x,p.y,p.z),shadow=p.z>0?.68:1;
+   a.filter.frequency.setTargetAtTime(Math.max(1400,Math.min(14000,14000/(1+distance*.25)*shadow)),now,.026);
   }
   frame=requestAnimationFrame(tick);
  }
@@ -245,7 +247,7 @@ async function graph(){
  try{
   await c.audioWorklet.addModule('./lcc-worklet.js');
   const w=new AudioWorkletNode(c,'lcc-processor',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2],channelCount:2,channelCountMode:'explicit',channelInterpretation:'discrete'});
-  const gain=c.createGain();gain.gain.value=.58;
+  const gain=c.createGain();gain.gain.value=.46;
   const input=c.createGain();
   input.gain.value=.72;
   input.connect(w);w.connect(gain);gain.connect(c.destination);
@@ -317,23 +319,29 @@ async function loadGrowl(){
 }
 function pannerFor(index=0){
  const p=ctx.createPanner();
- p.panningModel='HRTF';p.distanceModel='inverse';p.refDistance=2.0;
- p.maxDistance=35;p.rolloffFactor=.72;p.coneInnerAngle=360;p.coneOuterAngle=360;
+ p.panningModel='HRTF';p.distanceModel='inverse';
+ p.refDistance=.85;p.maxDistance=30;p.rolloffFactor=1.12;
+ p.coneInnerAngle=360;p.coneOuterAngle=360;
  const at=pos(selected,offset,index);
  p.positionX.value=at.x;p.positionY.value=at.y;p.positionZ.value=at.z;
- p.connect(bus);panners.push(p);return p;
+ p.connect(bus);
+ const filter=ctx.createBiquadFilter();
+ filter.type='lowpass';filter.frequency.value=9500;filter.Q.value=.5;
+ panners.push({p,filter});
+ return {p,filter};
 }
-function attachSound(buffer,panner,opts={}){
+function attachSound(buffer,spatial,opts={}){
  const s=ctx.createBufferSource();s.buffer=buffer;s.loop=true;
  s.playbackRate.value=opts.rate||1;
- const g=ctx.createGain();g.gain.value=opts.gain||1;
- s.connect(g);g.connect(panner);
+ const g=ctx.createGain();g.gain.value=opts.gain===undefined?1:opts.gain;
+ s.connect(g);g.connect(spatial.filter);spatial.filter.connect(spatial.p);
  s.start(0,(offset*(opts.rate||1))%buffer.duration);
  sources.push(s);
+ return {source:s,gain:g};
 }
 function silence(){
  sources.forEach(s=>{try{s.stop();}catch(_){ }try{s.disconnect();}catch(_){ }});
- panners.forEach(p=>{try{p.disconnect();}catch(_){ }});
+ panners.forEach(layer=>{try{layer.filter.disconnect();}catch(_){ }try{layer.p.disconnect();}catch(_){ }});
  sources=[];panners=[];
 }
 function halt(){
