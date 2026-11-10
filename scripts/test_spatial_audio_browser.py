@@ -160,7 +160,7 @@ def main():
                     route.fulfill(status=200,content_type="audio/wav",body=fixture,
                         headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
                 page.route("https://upload.wikimedia.org/**",audio_route)
-                                errors=[]
+                errors=[]
                 page.on("pageerror",lambda err:errors.append(str(err)))
                 page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
                 if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
