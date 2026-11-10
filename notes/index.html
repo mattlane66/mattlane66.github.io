@@ -233,7 +233,12 @@ function openNote(n){
     frame.title=n.title+" — interactive note";
     shell.querySelector(".interactive-note-tools a").href=noteHref(n);
     if(!dlg.open)dlg.showModal();
-    frame.src=noteHref(n)+"?embed=1";
+    // Give each open a fresh URL so Safari cannot reuse a stale cached
+    // version of an edited custom Note, while artwork assets remain cacheable.
+    const frameUrl=new URL(noteHref(n),location.href);
+    frameUrl.searchParams.set("embed","1");
+    frameUrl.searchParams.set("v",String(Date.now()));
+    frame.src=frameUrl.href;
     history.replaceState(null,"","#note-"+n.id);
     return;
   }
