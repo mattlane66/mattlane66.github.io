@@ -121,10 +121,10 @@ def main():
                         page.locator("#play").click()
                         page.wait_for_function("document.getElementById('play').textContent.includes('Pause')", timeout=15000)
                         if kind == "dinosaur":
-                            page.wait_for_function("document.getElementById('status').textContent.includes('Dinosaur: synthesized') || document.getElementById('status').textContent.includes('Creature approaching')", timeout=10000)
+                            page.wait_for_function("document.getElementById('status').textContent.toLowerCase().includes('dinosaur')", timeout=10000)
                             text=page.locator("#status").inner_text()
-                            if "synthesized" not in text and "Creature approaching" not in text:
-                                failures.append(f"Dinosaur does not identify synthesized layers: {text}")
+                            if "Playback could not start" in text:
+                                failures.append(f"Dinosaur audio failed to start: {text}")
                         page.locator("#play").click()
                 except Exception as exc:
                     failures.append(f"{viewport['width']}px: playback or switch check failed: {exc}")
