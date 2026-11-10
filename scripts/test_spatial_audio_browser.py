@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Targeted browser regression for the four-scene HRTF spatial audio demonstration.
+"""Targeted browser regression for the five-scene HRTF spatial audio demonstration.
 
 Exercises the actual WebAudio graph and browser AudioWorklet, with no mic capture,
 external service authorization, or copyrighted inputs. The optional public-domain
@@ -56,7 +56,22 @@ def worklet_probe(page):
           processedDifference,Math.abs(changed[0][i]-raw[i]),Math.abs(changed[1][i])
         );
       }
-      return {bypassError,processedDifference};
+      const originalDelay=instance.delayUs,originalDecay=instance.decaygain;
+      instance.port.onmessage({data:{type:'preset',value:'laptop'}});
+      for(let i=0;i<40;i++){
+        const changed=[new Float32Array(128),new Float32Array(128)];
+        instance.process([[raw,silent]],[changed]);
+      }
+      const laptop={delay:instance.delayUs,decay:instance.decaygain,
+        frames:instance.framesPerBlock,preset:instance.currentPreset};
+      instance.port.onmessage({data:{type:'preset',value:'loudspeakers'}});
+      for(let i=0;i<40;i++){
+        const changed=[new Float32Array(128),new Float32Array(128)];
+        instance.process([[raw,silent]],[changed]);
+      }
+      const restored={delay:instance.delayUs,decay:instance.decaygain,
+        frames:instance.framesPerBlock,preset:instance.currentPreset};
+      return {bypassError,processedDifference,originalDelay,originalDecay,laptop,restored};
     }""")
 
 
@@ -77,8 +92,12 @@ def main():
                 page.goto(f"http://127.0.0.1:{port}/spatial-audio/", wait_until="domcontentloaded")
                 if page.locator("h1").count() != 1:
                     failures.append("Expected exactly one h1.")
-                if page.locator(".sample").count() != 4:
-                    failures.append("Expected four spatial scenes.")
+                if page.locator(".sample").count() != 5:
+                    failures.append("Expected five spatial scenes, including Barber.")
+                if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed") != "true":
+                    failures.append("Original loudspeaker preset must be selected by default.")
+                if page.locator('[data-preset="laptop"]').get_attribute("aria-pressed") != "false":
+                    failures.append("Laptop must not start selected.")
                 if page.locator("#lcc-switch").get_attribute("aria-checked") != "false":
                     failures.append("LCC did not begin Off.")
                 if page.locator("#lcc-switch").is_disabled():
@@ -95,6 +114,12 @@ def main():
                         failures.append(f"Worklet bypass changed original signal: {probe}")
                     if probe["processedDifference"] < 0.001:
                         failures.append(f"Worklet On mode made no audible-sample change: {probe}")
+                    if probe["originalDelay"] != 32 or abs(probe["originalDecay"]-0.74989420933)>1e-8:
+                        failures.append(f"Original LCC default was changed: {probe}")
+                    if probe["laptop"]["preset"]!="laptop" or probe["laptop"]["delay"]!=113 or abs(probe["laptop"]["decay"]-.68)>1e-8 or probe["laptop"]["frames"]!=6:
+                        failures.append(f"Laptop preset did not change delay history and attenuation at 48 kHz: {probe}")
+                    if probe["restored"]["preset"]!="loudspeakers" or probe["restored"]["delay"]!=32 or abs(probe["restored"]["decay"]-.74989420933)>1e-8 or probe["restored"]["frames"]!=2:
+                        failures.append(f"Returning to original preset failed: {probe}")
                     page.locator("#lcc-switch").click()
                     if page.locator("#lcc-switch").get_attribute("aria-checked") != "true":
                         failures.append("LCC could not be enabled before sound played.")
@@ -105,6 +130,18 @@ def main():
                     moved_position = page.locator("#source-dot").get_attribute("style")
                     if first_position == moved_position:
                         failures.append("Spatial source marker does not follow the moving scene.")
+                    page.locator('[data-preset="laptop"]').click()
+                    if page.locator('[data-preset="laptop"]').get_attribute("aria-pressed") != "true":
+                        failures.append("Laptop preset did not select while audio was playing.")
+                    if "113 µs" not in page.locator("#preset-active").inner_text():
+                        failures.append("Laptop preset readout was not updated.")
+                    if page.locator("#lcc-switch").get_attribute("aria-checked") != "true":
+                        failures.append("Changing preset disabled LCC instead of retaining its On state.")
+                    page.locator('[data-preset="loudspeakers"]').click()
+                    if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed") != "true":
+                        failures.append("Original loudspeaker preset could not be restored.")
+                    if "32 µs" not in page.locator("#preset-active").inner_text():
+                        failures.append("Original delay not shown after preset restoration.")
                     page.locator("#lcc-switch").click()
                     if page.locator("#lcc-switch").get_attribute("aria-checked") != "false":
                         failures.append("LCC Off did not follow active On.")
@@ -114,7 +151,7 @@ def main():
                     page.locator("#play").click()
                     if "Play" not in page.locator("#play").inner_text():
                         failures.append("Pause button did not return to Play.")
-                    for kind in ["dinosaur","flyby","helicopter","orbit"]:
+                    for kind in ["dinosaur","flyby","helicopter","barber","orbit"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         if page.locator(f'[data-sound="{kind}"]').get_attribute("aria-pressed") != "true":
                             failures.append(f"Selecting {kind} did not update selection.")
@@ -140,7 +177,7 @@ def main():
         print("ERROR:", failure)
     if failures:
         return 1
-    print("Spatial audio browser smoke passed: four HRTF scenes, DSP bypass-versus-LCC, moving source marker, switching during playback, desktop and mobile.")
+    print("Spatial audio browser smoke passed: five HRTF scenes, exact DSP preset parameters and return, continuous LCC switching during playback, desktop and mobile.")
     return 0
 
 
