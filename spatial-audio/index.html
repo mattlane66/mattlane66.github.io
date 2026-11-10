@@ -158,7 +158,7 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 <button type="button" class="sample" data-sound="barber" aria-pressed="false"><span class="number">05 / CLOSE</span><span class="name">Barber</span></button>
 <button type="button" class="sample" data-sound="rumba" aria-pressed="false"><span class="number">06 / MUSIC</span><span class="name">Binaural rumba</span></button>
 <button type="button" class="sample" data-sound="pool" aria-pressed="false"><span class="number">07 / SFX</span><span class="name">Pool hall</span></button>
-<button type="button" class="sample" data-sound="matchsticks" aria-pressed="false"><span class="number">08 / CLOSE</span><span class="name">Matchsticks</span></button>
+<button type="button" class="sample" data-sound="telephone" aria-pressed="false"><span class="number">08 / CLOSE</span><span class="name">Telephone</span></button>
 </div>
 <div class="deck">
 <div class="headline"><div><span class="label" id="sample-number">01 / 08</span><h2 id="sample-title">Close orbit</h2><p class="description" id="sample-description">A mechanical object circles your head, brushing past each ear and rushing behind you.</p></div><div class="type" id="sample-type">3D / HRTF scene</div></div>
@@ -206,10 +206,10 @@ const catalog={
     file:'https://upload.wikimedia.org/wikipedia/commons/5/5d/Pool_Sounds.ogg',
     credit:'“Pool Sounds” by Dsw4, dedicated to the public domain. Original recording at Wikimedia Commons.',
     link:'https://commons.wikimedia.org/wiki/File:Pool_Sounds.ogg'},
-  matchsticks:{title:'Matchsticks',desc:'Real, close-up binaural sound captured with a dummy-head recording technique.',duration:0,type:'Recorded binaurally · close-up',
-    file:'https://3d3a.princeton.edu/sites/g/files/toruqf931/files/2023-04/Binaural_Match_Sticks.wav',
-    credit:'“Binaural Match Sticks,” listed as public domain by Princeton University’s 3D3A Lab. Original recording from the lab.',
-    link:'https://3d3a.princeton.edu/binaural-audio-samples'}
+  telephone:{title:'Telephone',desc:'Real binaural recording of telephone dialing and a close-up earpiece ring.',duration:40,type:'Recorded binaurally · close-up',
+    file:'https://upload.wikimedia.org/wikipedia/commons/1/1c/Telephone.ogg',
+    credit:'“Telephone” by Dsw4, dedicated to the public domain. Original binaural recording at Wikimedia Commons.',
+    link:'https://commons.wikimedia.org/wiki/File:Telephone.ogg'}
 };
 const elements={
   tabs:[...document.querySelectorAll('.sample')],play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
