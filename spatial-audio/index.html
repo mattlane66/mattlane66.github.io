@@ -136,6 +136,7 @@
         </div>
         <div class="status-wrap">
           <p class="status" id="status" role="status" aria-live="polite"><strong>Not connected.</strong> Connect an audio source to enable the switch.</p>
+          <button class="btn" id="resume" type="button" hidden style="margin-top:12px;min-height:36px;">Enable sound</button>
           <button class="stop" id="stop" type="button" hidden>Disconnect audio</button>
         </div>
       </div>
@@ -161,7 +162,7 @@
       connectVirtual: $('connect-virtual'), input: $('virtual-input'),
       output: $('speaker-output'), routingHelp: $('routing-help'),
       toggle: $('lcc-switch'), state: $('switch-state'),
-      status: $('status'), stop: $('stop')
+      status: $('status'), stop: $('stop'), resume: $('resume')
     };
     let captureStream = null, context = null, processor = null;
     let activeMode = null, enabled = false, connecting = false;
@@ -179,6 +180,7 @@
       controls.toggle.setAttribute('aria-checked', String(enabled));
       controls.state.textContent = enabled ? 'On' : 'Off';
       controls.stop.hidden = !activeMode;
+      controls.resume.hidden = !activeMode || !context || context.state !== 'suspended';
       if (processor) processor.port.postMessage({type:'enable',value:enabled});
     }
     function stopStream(stream) {
@@ -222,7 +224,7 @@
         node.connect(volume);
         volume.connect(ctx.destination);
         // The capture action is a user gesture; on compatible browsers it may permit resume.
-        if (ctx.state === 'suspended') void ctx.resume().catch(() => {});
+        if (ctx.state === 'suspended') void ctx.resume().then(() => { if (context === ctx) reflect(); }).catch(() => {});
         context = ctx; processor = node; captureStream = stream;
         activeMode = mode; enabled = false;
         const channels = stream.getAudioTracks()[0].getSettings().channelCount;
@@ -339,6 +341,10 @@
       reflect();
       status(enabled ? 'LCC is On for the connected audio stream.' : 'LCC is Off. Original stereo is playing.');
       if (context && context.state === 'suspended') void context.resume().catch(() => {});
+    });
+    controls.resume.addEventListener('click',() => {
+      if (!context || !activeMode) return;
+      void context.resume().then(() => { reflect(); status('Audio output enabled. LCC remains ' + (enabled ? 'On.' : 'Off.')); }).catch(() => status('Audio could not start. Check output settings and browser permissions.'));
     });
     controls.stop.addEventListener('click',() => { void disconnect(); });
     window.addEventListener('pagehide',() => { stopStream(captureStream); if (context) void context.close().catch(() => {}); });
