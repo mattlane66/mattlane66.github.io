@@ -149,7 +149,7 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 <h1>Spatial audio.</h1>
 <p class="intro">Binaural audio over closely spaced loudspeakers—not headphones. Hear sounds moving around you and compare LCC as you listen.</p>
 <section class="experience" aria-label="Spatial audio sound library">
-<div class="library-head"><span class="label">Listen to the difference</span><span class="label">8 sounds · 5 scenes + 3 recordings</span></div>
+<div class="library-head"><span class="label">Listen to the difference</span><span class="label">12 spatial listening tests</span></div>
 <div class="samples" role="group" aria-label="Choose a sound">
 <button type="button" class="sample" data-sound="orbit" aria-pressed="true"><span class="number">01 / 360°</span><span class="name">Close orbit</span></button>
 <button type="button" class="sample" data-sound="dinosaur" aria-pressed="false"><span class="number">02 / REAR</span><span class="name">Dinosaur</span></button>
@@ -159,9 +159,13 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 <button type="button" class="sample" data-sound="rumba" aria-pressed="false"><span class="number">06 / MUSIC</span><span class="name">Binaural rumba</span></button>
 <button type="button" class="sample" data-sound="pool" aria-pressed="false"><span class="number">07 / SFX</span><span class="name">Pool hall</span></button>
 <button type="button" class="sample" data-sound="skyball" aria-pressed="false"><span class="number">08 / MOTION</span><span class="name">Bouncing balls</span></button>
+<button type="button" class="sample" data-sound="clock360" aria-pressed="false"><span class="number">09 / 360°</span><span class="name">Clock test</span></button>
+<button type="button" class="sample" data-sound="fall" aria-pressed="false"><span class="number">10 / HEIGHT</span><span class="name">Object drop</span></button>
+<button type="button" class="sample" data-sound="train" aria-pressed="false"><span class="number">11 / MOTION</span><span class="name">Passing train</span></button>
+<button type="button" class="sample" data-sound="carriage3d" aria-pressed="false"><span class="number">12 / 3D MIC</span><span class="name">Vienna carriage</span></button>
 </div>
 <div class="deck">
-<div class="headline"><div><span class="label" id="sample-number">01 / 08</span><h2 id="sample-title">Close orbit</h2><p class="description" id="sample-description">A mechanical object circles your head, brushing past each ear and rushing behind you.</p></div><div class="type" id="sample-type">3D / HRTF scene</div></div>
+<div class="headline"><div><span class="label" id="sample-number">01 / 12</span><h2 id="sample-title">Close orbit</h2><p class="description" id="sample-description">A mechanical object circles your head, brushing past each ear and rushing behind you.</p></div><div class="type" id="sample-type">3D / HRTF scene</div></div>
 <div class="soundstage" aria-hidden="true"><div class="sound-map"><span class="map-label map-front">IN FRONT</span><span class="map-label map-rear">BEHIND YOU</span><span class="map-label map-left">LEFT</span><span class="map-label map-right">RIGHT</span><span class="map-center">YOU</span><span class="source-dot" id="source-dot"></span></div><div class="map-readout"><span class="label">Source position</span><strong id="source-position">In front</strong><span id="stage-explanation">The dry sound is positioned by an HRTF before LCC processing.</span></div></div>
 <div class="transport">
 <div class="play-group"><button id="play" class="play" type="button">▶ Play sound</button><span class="hint" id="play-hint">Play at moderate volume. Toggle LCC without restarting the sound.</span></div>
@@ -209,7 +213,25 @@ const catalog={
   skyball:{title:'Bouncing balls',desc:'Two bouncing balls move around an indoor room in a real in-ear binaural recording.',duration:16,type:'Recorded binaurally · moving objects',
     file:'https://upload.wikimedia.org/wikipedia/commons/e/e9/Skyball.ogg',
     credit:'“Skyball” by Bcjordan, licensed CC BY-SA 3.0. A real in-ear binaural recording of two Skyballs bouncing indoors. Original at Wikimedia Commons; audio is processed through LCC.',
-    link:'https://commons.wikimedia.org/wiki/File:Skyball.ogg'}
+    link:'https://commons.wikimedia.org/wiki/File:Skyball.ogg'},
+  clock360:{title:'360° clock test',desc:'Twelve separate broadband sound bursts step clockwise around you, including directly behind your head. Look at the map to check each position.',duration:18,type:'Spatial localization test · HRTF',
+    credit:'An original clock-position test generated in your browser. Inspired by spatial-localization tests; not a copy of the Freesound Binaural Clock Test.',
+    link:'https://freesound.org/people/clucs/sounds/428573/'},
+  fall:{title:'Object falling past you',desc:'A real metallic object drop, repeated three times, is spatialized from above your head to below it.',duration:16,type:'Recorded foley + moving HRTF',
+    file:'https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/METLImpt_CanDrop_OS_01.ogg',
+    playback:'object',objectSound:'drop',
+    credit:'Real metal-can drop from “Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0. A dry recorded sample moved through a browser HRTF; not an original dummy-head recording.',
+    link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'},
+  train:{title:'Train rushing past',desc:'A recorded commuter-train passby moves across a wide virtual soundstage, from behind-left to ahead-right.',duration:27.4,type:'Recorded train + moving HRTF',
+    file:'https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/TRNElec_TrainPassby_OS_01.ogg',
+    playback:'object',objectSound:'train',
+    credit:'Train-pass recording from “Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0; its mono sound is placed in 3D with the browser HRTF.',
+    link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'},
+  carriage3d:{title:'Vienna · 3D microphone',desc:'A horse-drawn carriage arrives and parks in Vienna. Recorded through a RØDE NT-SF1 ambisonic microphone and rendered to binaural stereo.',duration:10.65,type:'Real 3D microphone · binaural render',
+    file:'https://upload.wikimedia.org/wikipedia/commons/a/a8/2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg',
+    fallback:'https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a8/2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg/2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg.mp3',
+    credit:'“2023-Mai-20 ... Fiaker anhalten einparken” by Matthias A. Bertsch (DrTrumpet), CC BY-SA 4.0. Recorded with RØDE NT-SF1, converted from Ambisonic B-format to binaural stereo, played directly into LCC.',
+    link:'https://commons.wikimedia.org/wiki/File:2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg'}
 };
 const elements={
   tabs:[...document.querySelectorAll('.sample')],play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
