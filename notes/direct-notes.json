@@ -1,5 +1,19 @@
 [
   {
+    "id": "what-belongs-together-20261111",
+    "date": "2026-11-11",
+    "title": "What Belongs Together",
+    "permalink": "what-belongs-together",
+    "category": "Products & systems",
+    "excerpt": "Four relationships between problems and opportunities—and what they tell us about scope, leverage, coordination, and team boundaries.",
+    "body": "Not everything that is related needs to be solved together.\n\nThe relationships between opportunities and problems help determine what to compare, what to group, what can be reused, and what must be built together.\n\n![Four relationships: comparability means compare sibling opportunities; linkage means group related problems; a shared solution means reuse one solution across opportunities; a coupled bet means coordinate interdependent parts.](/assets/notes/what-belongs-together.svg)\n\n*Four relationships, four different decisions.*\n\nComparable opportunities should be evaluated against one another. Linked problems should be understood through their common cause or context. Shared solutions create leverage by serving more than one opportunity. Coupled bets require coordinated execution because separating their parts would weaken or prevent the intended outcome.\n\nThe mistake is treating every connection as a reason to combine things.\n\nThese distinctions also matter when organizing teams. Larger clusters of related, interdependent opportunities can suggest natural boundaries for small teams responsible for coherent problem domains.\n\nRather than organizing primarily by function and managing the resulting dependencies through elaborate stakeholder matrices, we can let the structure of the work inform the structure of the organization. Coordination remains necessary, but more decisions can happen within the teams closest to the problems.\n\n**Good design requires knowing what to separate, what to connect, and what must move together.**",
+    "related_note_ids": [
+      "shaping-a-buildable-path-20261019",
+      "beauty-of-fit-20261018",
+      "opportunity-scoping-questions-20261002"
+    ]
+  },
+  {
     "id": "three-fits-of-product-design-20261111",
     "date": "2026-11-11",
     "title": "The Three Fits of Product Design",
