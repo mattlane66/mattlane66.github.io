@@ -28,6 +28,13 @@ body.archive-view main.wrap{display:none}body.archive-view .archive{display:bloc
 .zoom-dialog{padding:0;border:1px solid var(--line);background:var(--paper);width:min(98vw,1780px);max-width:98vw;max-height:96vh;height:96vh;box-shadow:0 10px 80px #0003}.zoom-dialog::backdrop{background:#16161dcf}.zoom-head{position:sticky;top:0;z-index:2;background:var(--paper);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;min-height:55px}.zoom-head span{font:700 13px/1.4 var(--ui)}.zoom-head div{display:flex;align-items:center;gap:8px}.zoom-head button{padding:7px 12px;border:1px solid var(--ink);background:transparent;color:var(--ink);font:650 12px/1.2 var(--ui);cursor:pointer}.zoom-head button.active{background:var(--ink);color:white}.zoom-scroll{width:100%;height:calc(100% - 55px);overflow:auto;padding:16px;background:#f6f4ee;text-align:center}.zoom-scroll img{display:block;width:100%;height:auto;max-width:1680px;margin:0 auto;box-shadow:0 0 0 1px #ddd}.zoom-scroll img.actual{width:1680px;max-width:none}
 @media(max-width:700px){.wrap{width:calc(100% - 34px)}main{padding-top:53px}h1{margin-bottom:27px}.dek{margin-bottom:30px}.prose{font-size:18px;line-height:1.63}.figure{margin-top:55px}.principle{padding-left:19px}.cards{grid-template-columns:1fr}.card{grid-column:1;min-height:235px}.rightnav{gap:10px}.back{display:none}.previewlabel{font-size:9px}.previewtools{bottom:9px;right:9px}.caption{flex-direction:column;gap:5px}.figure-top{align-items:start;flex-direction:column;gap:3px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.map-button{transition:none}}
+</style><style id="generated-related-style">
+.related-thinking{border-top:1px solid var(--line,#cfccc1);margin-top:42px;padding-top:22px;max-width:760px}
+.related-thinking h2{font-family:Inter,Arial,sans-serif;font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted,#666);margin:0 0 16px;font-weight:750}
+.related-thinking ul{list-style:none!important;display:grid;gap:12px;padding:0!important;margin:0!important}
+.related-thinking li{padding:0!important;margin:0!important}
+.related-thinking a{color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.related-thinking a:hover{color:var(--blue,#173dff)}
 </style></head>
 <body data-note-category="judgment">
 <header class="sitehead"><div class="wrap nav"><a class="brand" href="/notes/">Matt Lane · Notes</a><div class="rightnav"><a class="back" href="/notes/">← All notes</a></div></div></header>
@@ -49,7 +56,7 @@ body.archive-view main.wrap{display:none}body.archive-view .archive{display:bloc
 <button class="map-button" type="button" id="zoomBtn" aria-label="Expand complete Human Judgment and AI Problem-Solving Map"><img src="/assets/notes/human-judgment-ai-problem-solving-map.png" alt="Human judgment categories and AI-assisted reasoning tools connected by colored lines. The diagram connects values, choosing the problem and objective, reframing, tradeoffs, boundaries, and commitment to methods for structuring, exploring, understanding, and acting." width="1680" height="1324"></button>
 <figcaption class="caption"><span>A map of reasoning operations that AI can help perform, and the judgments that should remain human-owned.</span><button class="expand" id="zoomLink" type="button">Expand image ↗</button></figcaption></figure>
 
-</main>
+<aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul><li><a target="_top" href="/notes/n/what-good-reasoning-requires/">What Good Reasoning Requires</a></li><li><a target="_top" href="/notes/n/changing-the-question-changes-the-solution/">Changing the Question Changes the Solution</a></li><li><a target="_top" href="/notes/n/the-essential-guide-to-building-software-with-ai/">The Essential Guide to Building Software with AI</a></li></ul></aside></main>
 <footer><div class="wrap">© 2026 Matt Lane</div></footer>
 <dialog class="zoom-dialog" id="zoomDialog"><div class="zoom-head"><span>Human Judgment + AI Problem-Solving Map</span><div><button type="button" id="fit" class="active">Fit</button><button type="button" id="actual">100%</button><button type="button" id="closeZoom" aria-label="Close map">Close ✕</button></div></div><div class="zoom-scroll" id="zoomScroll"><img src="/assets/notes/human-judgment-ai-problem-solving-map.png" width="1680" height="1324" alt="Full-resolution Human Judgment and AI Problem-Solving Map" id="zoomImg"></div></dialog>
 <script>
