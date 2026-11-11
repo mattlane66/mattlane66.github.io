@@ -1,5 +1,20 @@
 [
   {
+    "id": "from-possibility-to-experience-20261111",
+    "date": "2026-11-11",
+    "permalink": "from-possibility-to-experience",
+    "title": "From possibility to experience",
+    "category": "Products & systems",
+    "excerpt": "The cost of changing an idea increases as it becomes real. Framing, shaping, building, and finishing require different judgments as commitment rises.",
+    "body": "The cost of changing an idea increases as it becomes real.\n\nEarly on, almost anything is possible. The work is to narrow that possibility without prematurely committing to a solution.\n\nFraming establishes the problem and the outcome worth pursuing. Shaping explores possible solutions, exposes unknowns, and makes the tradeoffs necessary to choose a direction.\n\nOnly then does it make sense to commit significant time and resources.\n\n![Five-phase diagram from wishing and framing through shaping, building, and finishing, with rising bet value at risk](/assets/from-possibility-to-finished-experience.png)\n\n*Wishing → framing → shaping → building → finishing. As the work becomes concrete, the value at risk increases.*\n\nBuilding turns that commitment into working software. Finishing turns working software into a coherent experience. They are not the same thing.\n\nThe process is not strictly linear. Discovery continues throughout. But the nature of the decisions changes as more is invested.\n\n**The principle is to reduce consequential uncertainty before increasing commitment, while preserving enough flexibility to learn from the work itself.**\n\nThe goal isn't simply to build something. It's to arrive at something worth having built.",
+    "related_note_ids": [
+      "shaping-a-buildable-path-20261019",
+      "appetite-agent-budgeting-20261002",
+      "from-fit-to-evidence-20261110"
+    ],
+    "custom_html": true
+  },
+  {
     "id": "three-fits-of-product-design-20261111",
     "date": "2026-11-11",
     "title": "The Three Fits of Product Design",
