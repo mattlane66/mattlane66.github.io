@@ -1,5 +1,47 @@
 [
   {
+    "id": "judgment-is-not-a-step-20261111",
+    "date": "2026-11-11",
+    "permalink": "judgment-is-not-a-step",
+    "title": "Judgment Is Not a Step",
+    "category": "Judgment & knowledge",
+    "excerpt": "From delegating tasks to delegating reasoning, without losing the competence or responsibility to judge what follows.",
+    "body": "I’ve been paying attention to how my reasoning changes when I work with AI.\n\nThe shift isn’t simply from doing tasks myself to delegating them. It’s from thinking in tasks to thinking in reasoning operations.\n\nAI can help perform those operations—decomposing a problem, constraining the search space, generating and testing alternatives, hypothesizing causes, updating from new evidence, or identifying the bottleneck.\n\nBut there’s a prerequisite to delegating reasoning well. I need enough competence in the reasoning move itself to know when it applies, what good execution looks like, and where it can fail.\n\nOtherwise I haven’t only delegated the reasoning. I’ve delegated my ability to judge whether the reasoning is sound.\n\nThat changes my role. I no longer need to perform every reasoning step alone, but I do need to choose the reasoning architecture, supply context, interrogate assumptions, evaluate the result, and decide what follows.\n\nSome judgments sit above that architecture entirely: what matters, which problems are worth attention, which outcomes are worth pursuing, what tradeoffs are acceptable, and what must not be sacrificed.\n\nAI can help examine those questions. It cannot relieve me of responsibility for answering them.\n\nThere is another risk too: the competence required to evaluate reasoning can erode if it is never exercised. For important reasoning skills, that means sometimes forming a view before consulting the model, explaining the reasoning afterward, and periodically working unaided.\n\n**Otherwise we risk retaining the authority to evaluate while losing the competence to evaluate well.**\n\nThe aim of delegation should be to reduce unnecessary cognitive labor without creating cognitive dependency.\n\nThe map below is my attempt to describe that shift: from using AI to perform tasks, to reasoning with AI, to deliberately allocating cognitive work while retaining responsibility for judgment.\n\nThe interesting future is not one in which humans reason less. It is one in which we become more deliberate about which intelligence does what, which capabilities we must preserve, and who remains responsible for why.\n\n![Human Judgment and AI Problem-Solving Map](/assets/notes/human-judgment-ai-problem-solving-map.png)\n\n*Human Judgment + AI Problem-Solving Map — A map of reasoning operations that AI can help perform, and the judgments that should remain human-owned.*",
+    "custom_html": true,
+    "related_note_ids": [
+      "what-good-reasoning-requires-20261103",
+      "changing-the-question-changes-the-solution-20261106",
+      "essential-guide-building-software-with-ai-20261103"
+    ]
+  },
+  {
+    "id": "from-possibility-to-experience-20261111",
+    "date": "2026-11-11",
+    "permalink": "from-possibility-to-experience",
+    "title": "From possibility to experience",
+    "category": "Products & systems",
+    "excerpt": "The cost of changing an idea increases as it becomes real. Framing, shaping, building, and finishing require different judgments as commitment rises.",
+    "body": "The cost of changing an idea increases as it becomes real.\n\nEarly on, almost anything is possible. The work is to narrow that possibility without prematurely committing to a solution.\n\nFraming establishes the problem and the outcome worth pursuing. Shaping explores possible solutions, exposes unknowns, and makes the tradeoffs necessary to choose a direction.\n\nOnly then does it make sense to commit significant time and resources.\n\n![Five-phase diagram from wishing and framing through shaping, building, and finishing, with rising bet value at risk](/assets/from-possibility-to-finished-experience.png)\n\n*Wishing → framing → shaping → building → finishing. As the work becomes concrete, the value at risk increases.*\n\nBuilding turns that commitment into working software. Finishing turns working software into a coherent experience. They are not the same thing.\n\nThe process is not strictly linear. Discovery continues throughout. But the nature of the decisions changes as more is invested.\n\n**The principle is to reduce consequential uncertainty before increasing commitment, while preserving enough flexibility to learn from the work itself.**\n\nThe goal isn't simply to build something. It's to arrive at something worth having built.",
+    "related_note_ids": [
+      "shaping-a-buildable-path-20261019",
+      "appetite-agent-budgeting-20261002",
+      "from-fit-to-evidence-20261110"
+    ],
+    "custom_html": true
+  },
+  {
+    "id": "three-fits-of-product-design-20261111",
+    "date": "2026-11-11",
+    "title": "The Three Fits of Product Design",
+    "permalink": "three-fits-of-product-design",
+    "body": "**What reality rewards. What we decide matters. What the solution embodies.**\n\n![Three relationships to maintain: reality, selection, and solution, with realized fit tested against reality.](/assets/notes/three-fits-product-design.svg)\n\nEvery product must reconcile three things.\n\n**Market criteria** describe what people actually value, adopt, reject, and pay for.\n\n**Selected criteria** are the few conditions we judge important enough to design around.\n\n**Embedded criteria** are what the resulting product actually embodies.\n\nThese create three different tests of fit.\n\nDid we choose the right things to value? Did we resolve those choices coherently in the design? And does what we built create value in reality?\n\nA product can be beautifully designed around the wrong criteria. It can pursue the right criteria but embody them poorly. Or it can appear coherent in theory and fail when people encounter it.\n\nEach failure calls for a different correction.\n\nThe aim is not to satisfy the greatest number of criteria. It is to identify the smallest sufficient set, make those choices reinforce one another, and test whether the result earns its place in the world.",
+    "category": "Products & systems",
+    "related_note_ids": [
+      "from-fit-to-evidence-20261110",
+      "beauty-of-fit-20261018"
+    ]
+  },
+  {
     "id": "rational-agency-science-20261110",
     "date": "2026-11-10",
     "permalink": "rational-agency-science",
