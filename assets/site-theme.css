@@ -121,3 +121,11 @@ body:has(#grid) .note .foot{font-size:11px;line-height:1.4}
   :is(body[data-note-category] .body, .dbody .content) table{font-size:0.79em}
   :is(body[data-note-category] .body, .dbody .content) :is(th,td){padding:9px 8px}
 }
+
+/* Integrate the Fit Check raster diagram with the Notes paper surface.
+   Multiply removes the white matte visually on both the standalone note
+   and the archive dialog, while preserving the full-resolution linked asset. */
+:is(body[data-note-category] .body, #dbody .content)
+a[href="/assets/notes/fit-check-rotation-original.webp"] img{
+  mix-blend-mode:multiply;
+}
