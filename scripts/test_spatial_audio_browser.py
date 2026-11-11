@@ -52,6 +52,17 @@ def stereo_wav():
     return raw.getvalue()
 
 
+def mono_wav():
+    rate=24000
+    raw=io.BytesIO()
+    with wave.open(raw,"wb") as f:
+        f.setnchannels(1)
+        f.setsampwidth(2)
+        f.setframerate(rate)
+        f.writeframes(b"".join(struct.pack("<h",int(9000*math.sin(2*math.pi*360*i/rate))) for i in range(rate)))
+    return raw.getvalue()
+
+
 def probe_worklet(page):
     return page.evaluate("""async () => {
       const src = await (await fetch('./lcc-worklet.js')).text();
@@ -108,7 +119,11 @@ def check_live_media(browser, base_url):
         for kind, url in [
             ("rumba", "https://upload.wikimedia.org/wikipedia/commons/3/35/One_Man_Rumba_binaural_audio_demonstration.ogg"),
             ("pool", "https://upload.wikimedia.org/wikipedia/commons/5/5d/Pool_Sounds.ogg"),
-            ("skyball", "https://upload.wikimedia.org/wikipedia/commons/e/e9/Skyball.ogg")
+            ("skyball", "https://upload.wikimedia.org/wikipedia/commons/e/e9/Skyball.ogg"),
+            ("fall", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/METLImpt_CanDrop_OS_01.ogg"),
+            ("train", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/TRNElec_TrainPassby_OS_01.ogg"),
+            ("carriage3d", "https://upload.wikimedia.org/wikipedia/commons/a/a8/2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg"),
+            ("carriage3d_mp3", "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a8/2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg/2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg.mp3")
         ]:
             try:
                 check=page.evaluate("""async (url) => {
@@ -126,10 +141,11 @@ def check_live_media(browser, base_url):
                       }finally{await ac.close();}
                     }finally{clearTimeout(timeout);}
                 }""",url)
-                if check["channels"]==2 and check["duration"]>0.5:
-                    print(f"LIVE MEDIA VERIFIED: {kind} stereo={check['channels']} duration={check['duration']:.1f}s bytes={check['bytes']}")
+                expected=1 if kind in ("fall","train") else 2
+                if check["channels"]==expected and check["duration"]>0.5:
+                    print(f"LIVE MEDIA VERIFIED: {kind} channels={check['channels']} duration={check['duration']:.1f}s bytes={check['bytes']}")
                 else:
-                    print(f"WARNING: live binaural media {kind} not valid stereo: {check}")
+                    print(f"WARNING: live media {kind} has unexpected channels/length: {check}")
             except Exception as exc:
                 print(f"WARNING: live binaural media {kind} unavailable in CI browser: {str(exc)[:250]}")
     finally:
@@ -143,6 +159,7 @@ def main():
     threading.Thread(target=server.serve_forever,daemon=True).start()
     failures=[]
     fixture=stereo_wav()
+    mono_fixture=mono_wav()
     try:
         with sync_playwright() as playwright:
             browser=playwright.chromium.launch(headless=True,args=["--autoplay-policy=no-user-gesture-required"])
@@ -160,11 +177,15 @@ def main():
                     route.fulfill(status=200,content_type="audio/wav",body=fixture,
                         headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
                 page.route("https://upload.wikimedia.org/**",audio_route)
+                def mono_route(route):
+                    route.fulfill(status=200,content_type="audio/wav",body=mono_fixture,
+                        headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
+                page.route("https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/**",mono_route)
                 errors=[]
                 page.on("pageerror",lambda err:errors.append(str(err)))
                 page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
                 if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
-                if page.locator(".sample").count()!=8:failures.append("Expected 8 scenes/recordings")
+                if page.locator(".sample").count()!=12:failures.append("Expected 12 sound selections")
                 if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed")!="true":
                     failures.append("Original preset is not selected on load")
                 if page.locator("#lcc-switch").get_attribute("aria-checked")!="false":
@@ -211,12 +232,22 @@ def main():
                     if page.locator("#lcc-switch").get_attribute("aria-checked")!="true":
                         failures.append("LCC switch reset when changing presets")
                     page.locator("#play").click()
-                    for kind in ["dinosaur","flyby","helicopter","barber"]:
+                    for kind in ["dinosaur","flyby","helicopter","barber","clock360"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         page.locator("#play").click()
                         page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
                         page.locator("#play").click()
-                    for kind in ["rumba","pool","skyball"]:
+                    for kind in ["fall","train"]:
+                        page.locator(f'[data-sound="{kind}"]').click()
+                        before=page.evaluate("window.__lccAudit.panners")
+                        if not page.locator("#source-dot").is_visible():
+                            failures.append(f"Recorded object {kind} lacks moving source indicator")
+                        page.locator("#play").click()
+                        page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
+                        if page.evaluate("window.__lccAudit.panners")<=before:
+                            failures.append(f"Recorded mono object {kind} did not use PannerNode/HRTF")
+                        page.locator("#play").click()
+                    for kind in ["rumba","pool","skyball","carriage3d"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         before=page.evaluate("window.__lccAudit.panners")
                         if page.locator("#source-dot").is_visible():
@@ -249,7 +280,7 @@ def main():
         server.server_close()
     for failure in failures:print("ERROR:",failure)
     if failures:return 1
-    print("LCC audit passed: 8 samples, stereo bypass, real wet/preset DSP difference, original parameter restoration, no re-HRTF of binaural recordings, desktop/mobile.")
+    print("LCC audit passed: 12 samples, stereo recordings bypass HRTF, mono recorded objects use HRTF, moving clock/drop/train, DSP presets, desktop/mobile.")
     return 0
 
 
