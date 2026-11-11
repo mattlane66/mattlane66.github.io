@@ -108,7 +108,7 @@ def check_live_media(browser, base_url):
         for kind, url in [
             ("rumba", "https://upload.wikimedia.org/wikipedia/commons/3/35/One_Man_Rumba_binaural_audio_demonstration.ogg"),
             ("pool", "https://upload.wikimedia.org/wikipedia/commons/5/5d/Pool_Sounds.ogg"),
-            ("telephone", "https://upload.wikimedia.org/wikipedia/commons/1/1c/Telephone.ogg")
+            ("skyball", "https://upload.wikimedia.org/wikipedia/commons/e/e9/Skyball.ogg")
         ]:
             try:
                 check=page.evaluate("""async (url) => {
@@ -216,7 +216,7 @@ def main():
                         page.locator("#play").click()
                         page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
                         page.locator("#play").click()
-                    for kind in ["rumba","pool","telephone"]:
+                    for kind in ["rumba","pool","skyball"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         before=page.evaluate("window.__lccAudit.panners")
                         if page.locator("#source-dot").is_visible():
