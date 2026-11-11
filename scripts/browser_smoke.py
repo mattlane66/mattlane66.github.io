@@ -447,10 +447,15 @@ def main() -> int:
                             page.evaluate("""() => openNote(NOTES.find(n => String(n.id) === 'requirements-are-design-work-20261021'))""")
                             related = page.locator("#dbody .related-thinking a")
                             related.first.wait_for(timeout=15_000)
-                            if related.count() < 1 or "shaping" not in related.first.inner_text().lower():
-                                failures.append(f"{viewport_name} /notes/: related links absent or unexpectedly ordered")
+                            # A new editorial relationship can outrank older links.
+                            # Verify both relevant destinations remain discoverable
+                            # and that navigating to the established note still works.
+                            shaping_link = related.filter(has_text="Shaping Is Finding a Buildable Path")
+                            new_link = related.filter(has_text="The Space Before the Shape")
+                            if shaping_link.count() != 1 or new_link.count() != 1:
+                                failures.append(f"{viewport_name} /notes/: expected related links missing or duplicated")
                             else:
-                                related.first.click()
+                                shaping_link.click()
                                 page.wait_for_function(
                                     "() => document.getElementById('dtitle').textContent === 'Shaping Is Finding a Buildable Path'",
                                     timeout=10_000,
