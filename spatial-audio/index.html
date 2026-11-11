@@ -247,10 +247,22 @@ const buffers={};
 const recordingCache={};
 function report(msg){elements.status.textContent=msg;}
 function ftime(n){const a=Math.floor(Math.max(0,n));return Math.floor(a/60)+':'+String(a%60).padStart(2,'0');}
-function duration(){const c=catalog[selected];return c.file?(recordingCache[selected]?.duration||c.duration):c.duration;}
+function duration(){const c=catalog[selected];return c.file&&c.playback!=='object'?(recordingCache[selected]?.duration||c.duration):c.duration;}
 function elapsed(){return playing&&ctx ? (offset+ctx.currentTime-startTime)%Math.max(0.1,duration()):offset;}
 function pos(kind,t,index=0){
  const tau=Math.PI*2,phase=index*0.12;
+ if(kind==='clock360'){
+   const step=Math.floor(Math.max(0,t)/1.5)%12,a=step*tau/12;
+   return{x:Math.sin(a)*2.1,y:step>=9?.8:0,z:-Math.cos(a)*2.1,scale:2.7};
+ }
+ if(kind==='fall'){
+   const phase=t%5.1,d=Math.max(0,Math.min(1,(phase-1.05)/1.15));
+   return{x:.4+Math.sin(t*1.2)*.1,y:3.1-4.6*d,z:.65,scale:4.2};
+ }
+ if(kind==='train'){
+   const u=Math.max(0,Math.min(1,t/27.4));
+   return{x:-15+30*u,y:.2,z:1.55+9*Math.abs(2*u-1),scale:16};
+ }
  if(kind==='orbit'){
    // Vary radius 0.38-3.5m. The closest source passes the listener's
    // ears on every lap; its HRTF remains generic, not a measured near-field HRTF.
@@ -284,7 +296,7 @@ function pos(kind,t,index=0){
  return{x:Math.sin(a)*radius,y:1.25+3.8*(.5+.5*Math.sin(t*tau/14)),z:-Math.cos(a)*radius,scale:6.5};
 }
 function paint(t){
- if(catalog[selected].file){
+ if(catalog[selected].file&&catalog[selected].playback!=='object'){
    elements.dot.style.display='none';
    elements.position.textContent='Captured binaurally';
    return;
@@ -346,7 +358,12 @@ function createSound(kind){
   const t=i/sr,n=noise();low=.88*low+.12*n;air=.996*air+.004*n;
   const bright=n-low;
   let v=0;
-  if(kind==='orbit'){
+  if(kind==='clock360'){
+    const within=t%1.5;
+    const onset=Math.max(0,within-.2),mark=within>=.2&&within<.56;
+    const env=mark?Math.sin(Math.PI*Math.min(1,onset/.36))**2:0;
+    v=env*(.19*Math.sin(2*Math.PI*650*t)+.26*bright+.15*low);
+  }else if(kind==='orbit'){
     const a=t*Math.PI*2/4.65,near=Math.pow(Math.abs(Math.sin(a)),8);
     const hz=195+108*Math.sin(a+.9)+22*Math.sin(t*12);
     phase+=2*Math.PI*hz/sr;phase2+=2*Math.PI*hz*1.505/sr;
@@ -395,20 +412,51 @@ function createSound(kind){
  }
  return buffer;
 }
-async function loadBinauralRecording(kind){
+async function loadExternalRecording(kind){
  if(recordingCache[kind])return recordingCache[kind];
  const c=catalog[kind];
- if(!c?.file)throw new Error('Not a recorded scene.');
- const controller=new AbortController();
- const timeout=setTimeout(()=>controller.abort(),15000);
- try{
-  const response=await fetch(c.file,{mode:'cors',signal:controller.signal,credentials:'omit'});
-  if(!response.ok)throw new Error('HTTP '+response.status);
-  const decoded=await ctx.decodeAudioData(await response.arrayBuffer());
-  if(decoded.numberOfChannels!==2)throw new Error('The recording is not a stereo binaural file.');
-  recordingCache[kind]=decoded;
-  return decoded;
- }finally{clearTimeout(timeout);}
+ if(!c?.file)throw new Error('This scene has no external recording.');
+ let lastError=null;
+ const sources=[c.file,c.fallback].filter(Boolean);
+ for(const [i,url] of sources.entries()){
+   const controller=new AbortController();
+   const timeout=setTimeout(()=>controller.abort(),i?10000:12000);
+   try{
+     const response=await fetch(url,{mode:'cors',signal:controller.signal,credentials:'omit'});
+     if(!response.ok)throw new Error('HTTP '+response.status);
+     const decoded=await ctx.decodeAudioData(await response.arrayBuffer());
+     if(c.playback==='object'){
+       // Dry mono objects are spatialized once with PannerNode.
+       if(decoded.numberOfChannels===1){
+         recordingCache[kind]=decoded;return decoded;
+       }
+       if(decoded.numberOfChannels===2){
+         const mono=ctx.createBuffer(1,decoded.length,decoded.sampleRate);
+         const dst=mono.getChannelData(0);
+         const l=decoded.getChannelData(0),r=decoded.getChannelData(1);
+         for(let n=0;n<dst.length;n++)dst[n]=(l[n]+r[n])*.5;
+         recordingCache[kind]=mono;return mono;
+       }
+       throw new Error('Object sound has more than two channels.');
+     }
+     if(decoded.numberOfChannels!==2)throw new Error('Expected a binaural stereo recording.');
+     recordingCache[kind]=decoded;
+     return decoded;
+   }catch(err){lastError=err;}
+   finally{clearTimeout(timeout);}
+ }
+ throw lastError||new Error('Recording unavailable.');
+}
+function buildDropScene(input){
+ const out=ctx.createBuffer(1,Math.ceil(catalog.fall.duration*ctx.sampleRate),ctx.sampleRate);
+ const data=out.getChannelData(0),src=input.getChannelData(0);
+ const at=[1.1,6.2,11.3];
+ // AudioContext decode resamples the input to the context sample rate.
+ for(const time of at){
+   const start=Math.floor(time*ctx.sampleRate);
+   for(let i=0;i<src.length&&start+i<data.length;i++)data[start+i]+=.80*src[i];
+ }
+ return out;
 }
 function scheduleSpatialAudio(layer,index){
  const duration=catalog[selected].duration;
@@ -462,22 +510,26 @@ function halt(){
 }
 async function play(){
  if(playing){offset=elapsed();halt();report('Paused. LCC '+(enabled?'On':'Off')+'.');return;}
- const mine=++token,kind=selected;
+ const mine=++token,kind=selected,c=catalog[kind];
  elements.play.disabled=true;elements.play.textContent='Loading…';
  try{
   await graph();
   if(ctx.state==='suspended')await ctx.resume();
   if(mine!==token)return;
-  if(catalog[kind].file){
-    // A real binaural recording is already stereo: DO NOT apply PannerNode
-    // or any second HRTF to its two interaural channels.
-    const audio=await loadBinauralRecording(kind);
+  if(c.file){
+    const audio=await loadExternalRecording(kind);
     if(mine!==token)return;
-    const src=ctx.createBufferSource();
-    src.buffer=audio;src.loop=true;
-    src.connect(bus);
-    src.start(0,offset%audio.duration);
-    sources.push(src);
+    if(c.playback==='object'){
+      // Recorded mono SFX are moved through one HRTF, then into LCC.
+      const sourceBuffer=kind==='fall'?buildDropScene(audio):audio;
+      attachSound(sourceBuffer,pannerFor());
+    }else{
+      // A real binaural render is already stereo and must bypass PannerNode.
+      const src=ctx.createBufferSource();
+      src.buffer=audio;src.loop=true;src.connect(bus);
+      src.start(0,offset%audio.duration);
+      sources.push(src);
+    }
   }else{
     if(!buffers[kind])buffers[kind]=createSound(kind);
     if(mine!==token)return;
@@ -485,10 +537,10 @@ async function play(){
   }
   startTime=ctx.currentTime;
   setPlaying(true);
-  report('Playing '+catalog[kind].title+'. LCC '+(enabled?'On':'Off')+'. Toggle LCC or change speaker preset without restarting.');
+  report('Playing '+c.title+'. LCC '+(enabled?'On':'Off')+'. Compare the presets without restarting.');
  }catch(error){
   const reason=error?.name==='AbortError'?'download timed out':(error?.message||String(error));
-  report('Cannot play '+catalog[kind].title+': '+reason+'. Try another sound or retry.');
+  report('Cannot play '+c.title+': '+reason+'. Try another sound or retry.');
   halt();
  }finally{
   if(mine===token){
@@ -501,15 +553,17 @@ function show(){
  const c=catalog[selected],keys=Object.keys(catalog);
  elements.tabs.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sound===selected)));
  elements.title.textContent=c.title;elements.desc.textContent=c.desc;
- elements.num.textContent=String(keys.indexOf(selected)+1).padStart(2,'0')+' / 08';
+ elements.num.textContent=String(keys.indexOf(selected)+1).padStart(2,'0')+' / '+String(keys.length).padStart(2,'0');
  elements.type.textContent=c.type;elements.credit.textContent=c.credit;
  elements.link.href=c.link||'https://github.com/mattlane66/lcc';
- elements.link.textContent=c.link?'Recording and license ↗':'About the LCC algorithm ↗';
+ elements.link.textContent=selected==='clock360'?'Original inspiration ↗':c.playback==='object'?'Recorded source and license ↗':c.link?'Recording and license ↗':'About the LCC algorithm ↗';
  elements.timer.textContent='0:00 / '+(duration()?ftime(duration()):'—');elements.progress.value=0;
- elements.hint.textContent=c.file?'A genuine binaural stereo recording; no second HRTF. Compare with LCC Off/On.':'Compare LCC Off and On while the source moves.';
- elements.explanation.textContent=c.file
-  ? 'Recorded binaural stereo goes directly into the LCC processor—without a second HRTF.'
-  : 'The dry sound is positioned by an HRTF before LCC processing.';
+ elements.hint.textContent=c.playback==='object'?'Real recorded object, positioned by HRTF. Compare LCC during playback.':c.file?'A real binaural stereo recording; no second HRTF. Compare LCC Off/On.':'Compare LCC while the source moves.';
+ elements.explanation.textContent=c.playback==='object'
+  ? 'Real mono recording, moved through the browser HRTF, then into LCC.'
+  : c.file
+    ? 'Recorded or rendered binaural stereo goes directly into LCC—without a second HRTF.'
+    : 'The dry sound is positioned by an HRTF before LCC processing.';
  paint(0);
 }
 function selectPreset(which){
