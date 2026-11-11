@@ -45,16 +45,18 @@ h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:
 <body data-note-category="products">
 <header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
 <main class="wrap"><div class="meta">2026-11-03 · <span class="category-name">Products &amp; systems</span></div><h1>How to Start Building Products with AI</h1><article class="body"><p>You don't need to know how to code. You need to understand what you're trying to accomplish, why it matters, and what a successful result looks like.</p>
-<p>Start with an AI coding tool, such as Codex, Claude Code, or Gemini CLI, and a project folder. You'll establish four files:</p>
+<p>Start with Codex or Claude Code and a project folder. The downloadable AI Product Starter Kit gives you six files:</p>
 <ol>
-<li><strong>Agent instructions</strong> (<code>AGENTS.md</code>, <code>CLAUDE.md</code>, or <code>GEMINI.md</code> — use whichever your tool reads) — How the AI should work with you: communicate, make decisions, ask permission, test its work, and report problems. Tell it to read the product context, current status, and relevant feature brief before starting work.</li>
-<li><strong><code>PRODUCT.md</code></strong> — Who the product serves, what problem it solves, what outcome you want, and what matters most.</li>
-<li><strong><code>docs/CURRENT.md</code></strong> — What's being worked on, what actually works, what's unresolved, and what's next.</li>
-<li><strong><code>docs/features/&lt;name&gt;.md</code></strong> — What you're building next, how it should work, what's included or excluded, and how you'll know it's done.</li>
+<li><strong><code>AGENTS.md</code></strong> — The shared working agreement: how the AI communicates, what it can do, when it needs permission, how it verifies its work, and when a new thread needs a complete handoff prompt.</li>
+<li><strong><code>CLAUDE.md</code></strong> — Imports that agreement for Claude Code. Codex reads <code>AGENTS.md</code> directly.</li>
+<li><strong><code>PRODUCT.md</code></strong> — Who the product serves, what problem it solves, the outcome you want, and the boundaries that matter.</li>
+<li><strong><code>START-HERE.md</code></strong> — Setup guidance and a copy-ready prompt for your first conversation.</li>
+<li><strong><code>docs/CURRENT.md</code></strong> — Decisions and authorizations, what actually works, supporting evidence, unresolved questions, and what's next.</li>
+<li><strong><code>docs/features/_TEMPLATE.md</code></strong> — The starting point for a feature brief (<code>docs/features/&lt;name&gt;.md</code>): what you're building next, what's included or excluded, and how you'll judge the result. The template itself approves nothing.</li>
 </ol>
-<p><strong>You don't have to write these yourself.</strong> Ask the AI to interview you, examine anything already built, and draft the first three files for your review.</p>
+<p><strong>You don't have to write these yourself.</strong> The working agreement and templates are already supplied. Ask the AI to interview you, examine anything already built, and help complete <code>PRODUCT.md</code> and <code>docs/CURRENT.md</code> for your review.</p>
 <p>Once you've agreed on the problem and desired outcome, ask the AI to help you explore possible solutions. Decide what matters, how much effort the work is worth, and which approach best fits.</p>
-<p>Then choose the smallest complete, useful part to build. Have the AI document its intended behavior, boundaries, and acceptance criteria in the feature brief. <strong>Review and approve the approach before building begins.</strong></p>
+<p>Then choose the smallest complete, useful part to build. Have the AI document its intended behavior, boundaries, and acceptance criteria in a feature brief. <strong>Approve the brief and authorize its implementation before building begins.</strong> These can be one explicit decision; neither authorizes later features or publication.</p>
 <p>Then work in short cycles:</p>
 <p><strong>Build → Test → Demonstrate → Accept or Improve → Repeat.</strong></p>
 <p>Accept the work only after you've seen it working yourself, not merely because the AI says its tests passed.</p>
@@ -66,6 +68,7 @@ h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:
 <p><a href="/assets/downloads/ai-product-starter-codex-claude.zip">Download the AI Product Starter Kit — Codex + Claude Code</a></p>
 <p>A ready-to-use project folder with agent instructions, product and progress templates, a feature brief template, and a first-session prompt.</p>
 <p>Download it, open the folder in Codex or Claude Code, and follow <code>START-HERE.md</code>. The AI will help you establish the product before building it.</p>
+<p>The kit has been tested through real Codex sessions. Claude Code can import the same working agreement, but its full workflow has not received the same behavioral testing.</p>
 <p>If you already have an approved plan, the agent follows its priorities, sequence, and boundaries rather than inventing a replacement. After meaningful work, it reports what was verified and recommends whether to continue the thread, start a new one with a copy-ready prompt, or stop and reassess.</p>
 <hr>
 <p><em>For a more structured approach to understanding problems, exploring solutions, evaluating tradeoffs, and planning what to build, see <a href="https://github.com/mattlane66/planning-skills-for-agents-and-humans">Planning Skills for Agents and Humans</a>.</em></p></article><aside class="related-thinking" aria-label="Related thinking"><h2>Related thinking</h2><ul><li><a href="/notes/n/the-essential-guide-to-building-software-with-ai/">The Essential Guide to Building Software with AI</a></li><li><a href="/notes/n/shaping-is-finding-a-buildable-path-shaping-a-buildable-path-20261019/">Shaping Is Finding a Buildable Path</a></li><li><a href="/notes/n/product-judgment-is-the-learned-ability-to-make-good-decisions-under-amb-product-judgment-agentic-era-20261002/">Product Judgment in the Agentic Era</a></li></ul></aside></main>
