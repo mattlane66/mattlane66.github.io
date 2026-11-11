@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 208" role="img" aria-labelledby="criteria-title criteria-desc">
+<title id="criteria-title">Three fits of product design</title>
+<desc id="criteria-desc">Reality, selection and solution each have to align. The realized result is tested against reality.</desc>
+<defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="none" stroke="#1e4fa3" stroke-width="1.2"/></marker></defs>
+<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif" text-anchor="middle">
+<rect x="20" y="22" width="192" height="110" rx="12" fill="#f6f8fb" stroke="#a7bbd6" stroke-width="1.5"/>
+<rect x="264" y="22" width="192" height="110" rx="12" fill="#f6f8fb" stroke="#4382d0" stroke-width="1.5"/>
+<rect x="508" y="22" width="192" height="110" rx="12" fill="#f6f8fb" stroke="#8badab" stroke-width="1.5"/>
+<g fill="#111b34" font-size="20" font-weight="650"><text x="116" y="69">REALITY</text><text x="360" y="69">SELECTION</text><text x="604" y="69">SOLUTION</text></g>
+<g fill="#4a5d79" font-size="15"><text x="116" y="96">What matters</text><text x="360" y="96">What we choose</text><text x="604" y="96">What we make</text></g>
+<path d="M223 78 H252 M247 72 L253 78 L247 84 M229 72 L223 78 L229 84 M467 78 H496 M491 72 L497 78 L491 84 M473 72 L467 78 L473 84" fill="none" stroke="#1e4fa3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M116 137 C131 188 588 188 604 137" fill="none" stroke="#1e4fa3" stroke-opacity=".65" stroke-width="1.8" stroke-dasharray="4 5" stroke-linecap="round"/>
+<rect x="296" y="170" width="128" height="26" rx="13" fill="white"/>
+<text x="360" y="188" font-size="12" font-weight="650" letter-spacing=".65" fill="#1e4fa3">REALIZED FIT</text>
+</g></svg>
