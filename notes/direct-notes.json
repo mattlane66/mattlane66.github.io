@@ -1,5 +1,18 @@
 [
   {
+    "id": "three-fits-of-product-design-20261111",
+    "date": "2026-11-11",
+    "title": "The Three Fits of Product Design",
+    "permalink": "three-fits-of-product-design",
+    "body": "**What reality rewards. What we decide matters. What the solution embodies.**\n\n![Three relationships to maintain: reality, selection, and solution, with realized fit tested against reality.](/assets/notes/three-fits-product-design.svg)\n\nEvery product must reconcile three things.\n\n**Market criteria** describe what people actually value, adopt, reject, and pay for.\n\n**Selected criteria** are the few conditions we judge important enough to design around.\n\n**Embedded criteria** are what the resulting product actually embodies.\n\nThese create three different tests of fit.\n\nDid we choose the right things to value? Did we resolve those choices coherently in the design? And does what we built create value in reality?\n\nA product can be beautifully designed around the wrong criteria. It can pursue the right criteria but embody them poorly. Or it can appear coherent in theory and fail when people encounter it.\n\nEach failure calls for a different correction.\n\nThe aim is not to satisfy the greatest number of criteria. It is to identify the smallest sufficient set, make those choices reinforce one another, and test whether the result earns its place in the world.",
+    "category": "Products & systems",
+    "related_note_ids": [
+      "from-fit-to-evidence-20261110",
+      "requirements-are-design-work-20261021",
+      "beauty-of-fit-20261018"
+    ]
+  },
+  {
     "id": "rational-agency-science-20261110",
     "date": "2026-11-10",
     "permalink": "rational-agency-science",
