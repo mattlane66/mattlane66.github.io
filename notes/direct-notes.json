@@ -1,5 +1,20 @@
 [
   {
+    "id": "judgment-is-not-a-step-20261111",
+    "date": "2026-11-11",
+    "permalink": "judgment-is-not-a-step",
+    "title": "Judgment Is Not a Step",
+    "category": "Judgment & knowledge",
+    "excerpt": "From delegating tasks to delegating reasoning, without losing the competence or responsibility to judge what follows.",
+    "body": "I’ve been paying attention to how my reasoning changes when I work with AI.\n\nThe shift isn’t simply from doing tasks myself to delegating them. It’s from thinking in tasks to thinking in reasoning operations.\n\nAI can help perform those operations—decomposing a problem, constraining the search space, generating and testing alternatives, hypothesizing causes, updating from new evidence, or identifying the bottleneck.\n\nBut there’s a prerequisite to delegating reasoning well. I need enough competence in the reasoning move itself to know when it applies, what good execution looks like, and where it can fail.\n\nOtherwise I haven’t only delegated the reasoning. I’ve delegated my ability to judge whether the reasoning is sound.\n\nThat changes my role. I no longer need to perform every reasoning step alone, but I do need to choose the reasoning architecture, supply context, interrogate assumptions, evaluate the result, and decide what follows.\n\nSome judgments sit above that architecture entirely: what matters, which problems are worth attention, which outcomes are worth pursuing, what tradeoffs are acceptable, and what must not be sacrificed.\n\nAI can help examine those questions. It cannot relieve me of responsibility for answering them.\n\nThere is another risk too: the competence required to evaluate reasoning can erode if it is never exercised. For important reasoning skills, that means sometimes forming a view before consulting the model, explaining the reasoning afterward, and periodically working unaided.\n\n**Otherwise we risk retaining the authority to evaluate while losing the competence to evaluate well.**\n\nThe aim of delegation should be to reduce unnecessary cognitive labor without creating cognitive dependency.\n\nThe map below is my attempt to describe that shift: from using AI to perform tasks, to reasoning with AI, to deliberately allocating cognitive work while retaining responsibility for judgment.\n\nThe interesting future is not one in which humans reason less. It is one in which we become more deliberate about which intelligence does what, which capabilities we must preserve, and who remains responsible for why.\n\n![Human Judgment and AI Problem-Solving Map](/assets/notes/human-judgment-ai-problem-solving-map.png)\n\n*Human Judgment + AI Problem-Solving Map — A map of reasoning operations that AI can help perform, and the judgments that should remain human-owned.*",
+    "custom_html": true,
+    "related_note_ids": [
+      "what-good-reasoning-requires-20261103",
+      "changing-the-question-changes-the-solution-20261106",
+      "essential-guide-building-software-with-ai-20261103"
+    ]
+  },
+  {
     "id": "from-possibility-to-experience-20261111",
     "date": "2026-11-11",
     "permalink": "from-possibility-to-experience",
