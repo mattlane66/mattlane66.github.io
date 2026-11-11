@@ -1,5 +1,18 @@
 [
   {
+    "id": "tracing-poor-fit-20261111",
+    "date": "2026-11-11",
+    "permalink": "tracing-poor-fit",
+    "title": "Tracing poor fit",
+    "category": "Products & systems",
+    "excerpt": "Tracing real behavior, including workarounds and nonconsumption, to discover where a design fails to fit its context.",
+    "body": "A design can work as intended and still fail the person using it.\n\nThe problem may not be a broken feature. It may be a mismatch between how something was designed to work and the circumstances in which it is actually used.\n\nTracing is a way to find those mismatches.\n\nStart by understanding why the activity matters. What is the person trying to accomplish? What do they do today? What did they do before, why did they change, and what did they expect would improve?\n\n[![TRACE diagram: detailed observation, record every step, flag problems and workarounds, then isolate the problems worth focusing on.](/assets/notes/tracing-poor-fit-trace.svg)](/assets/notes/tracing-poor-fit-trace.svg)\n\n*TRACE: from a real use case to the problems worth focusing on.*\n\nThen follow a real attempt from beginning to end. Record what happened, including what happened outside the product: switching tools, searching for information, asking for help, repeating work, or abandoning the task.\n\n**Pay particular attention to workarounds.**\n\nA workaround is evidence that someone is adapting the system to their circumstances. Understanding what they're trying to preserve, avoid, or accomplish can reveal what the existing design fails to accommodate.\n\nEven doing nothing can be worth tracing. Someone who repeatedly postpones making a budget may be managing the problem through avoidance, memory, and other compensating behaviors. Those behaviors are part of the experience, too.\n\n**But a trace does not tell you what to build.**\n\nIt gives you evidence of where the current form may not fit. You still have to understand the causes, distinguish consequential problems from incidental friction, and decide which changes would improve the whole.\n\nThe purpose isn't to find every problem. It's to find where a change would matter.",
+    "related_note_ids": [
+      "director-navigator-loop-20261002",
+      "beauty-of-fit-20261018"
+    ]
+  },
+  {
     "id": "the-space-before-the-shape-20261111",
     "date": "2026-11-11",
     "permalink": "the-space-before-the-shape",
