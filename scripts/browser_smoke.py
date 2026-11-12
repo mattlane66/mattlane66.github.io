@@ -234,11 +234,10 @@ def main() -> int:
                                     )
                                     if label == "complete":
                                         rectangles = probe.evaluate("""() => {
-                                            const mask = document.querySelector('#hero-exact-finish-mask');
-                                            return mask ? [...mask.querySelectorAll('rect')].map(r => ({
-                                                x:+r.getAttribute('x'),y:+r.getAttribute('y'),
-                                                w:+r.getAttribute('width'),h:+r.getAttribute('height')
-                                            })) : [];
+                                            const canvas = document.querySelector(
+                                                '.hero-map.is-assembling canvas.hero-assembly'
+                                            );
+                                            return canvas ? JSON.parse(canvas.dataset.regions || '[]') : [];
                                         }""")
                                     if shots_dir.is_dir():
                                         probe.locator(".hero-map").screenshot(
@@ -264,23 +263,40 @@ def main() -> int:
                                                     f"{viewport_name} /: hero has {hits} regions "
                                                     f"at ({mx:.0f},{my:.0f}); expected exactly one"
                                                 )
+                                # At the complete frame, all 14 tiles must show the
+                                # exact JPEG pixels rather than dark compositing boxes.
                                 final_state = probe.evaluate("""() => {
-                                    const mask = document.querySelector('#hero-exact-finish-mask');
-                                    const ink = document.getElementById('hero-assembly-ink');
-                                    const svg = document.querySelector('.hero-assembly');
-                                    const rects = mask ? [...mask.querySelectorAll('rect')] : [];
-                                    return {
-                                        ready: !!svg && !!ink,
-                                        tiles: rects.length,
-                                        finished: rects.length > 0 && rects.every(
-                                            r => Number(getComputedStyle(r).opacity) >= .999
-                                        )
-                                    };
+                                    const canvas = document.querySelector(
+                                        '.hero-map.is-assembling canvas.hero-assembly'
+                                    );
+                                    const source = document.querySelector('.hero-map > img');
+                                    if (!canvas || !source) return {ready:false};
+                                    const reference = document.createElement('canvas');
+                                    reference.width = canvas.width;
+                                    reference.height = canvas.height;
+                                    const ref = reference.getContext('2d', {willReadFrequently:true});
+                                    ref.drawImage(source,0,0,canvas.width,canvas.height);
+                                    const expected=ref.getImageData(0,0,canvas.width,canvas.height).data;
+                                    const got=canvas.getContext('2d').getImageData(
+                                        0,0,canvas.width,canvas.height).data;
+                                    let wrong=0,samples=0;
+                                    for(let y=12;y<canvas.height-12;y+=27){
+                                        for(let x=12;x<canvas.width-12;x+=27){
+                                            const k=(y*canvas.width+x)*4;
+                                            if(Math.max(
+                                                Math.abs(expected[k]-got[k]),
+                                                Math.abs(expected[k+1]-got[k+1]),
+                                                Math.abs(expected[k+2]-got[k+2])
+                                            )>12)wrong++;
+                                            samples++;
+                                        }
+                                    }
+                                    return {ready:true,samples,wrong};
                                 }""")
-                                if not final_state["ready"] or not final_state["finished"]:
+                                if not final_state["ready"] or final_state.get("wrong", 1) > 0:
                                     failures.append(
-                                        f"{viewport_name} /: hero did not reach a complete, "
-                                        f"pixel-faithful state: {final_state}"
+                                        f"{viewport_name} /: hero final canvas differs from source JPEG: "
+                                        f"{final_state}"
                                     )
                                 if hero_errors:
                                     failures.append(
