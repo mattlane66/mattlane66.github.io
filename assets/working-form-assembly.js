@@ -121,6 +121,7 @@
     }
     try{
       canvas.className='hero-assembly';
+      canvas.dataset.regions=JSON.stringify(tiles.map(({x,y,w,h})=>({x,y,w,h})));
       canvas.setAttribute('aria-hidden','true');
       resize(); // Do not conceal the image until a complete first frame exists.
       mount.appendChild(canvas);
