@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Browser audit for the LCC demo: real DSP, two presets, generated and binaural recordings.
+"""Browser audit for four selected recorded moving sources and two LCC presets.
 
-Mocked stereo WAV responses make deterministic browser checks independent of third-party
-hosts. An additional non-blocking real-source check attempts actual external CORS+decode
-to report whether public binaural recordings are reachable from Chromium in CI.
+Mocked dry mono PCM tests keep browser checks deterministic. External-source
+checks separately verify that the original mono files can be fetched and decoded.
 """
 from __future__ import annotations
 
@@ -117,13 +116,10 @@ def check_live_media(browser, base_url):
     try:
         page.goto(base_url, wait_until="domcontentloaded")
         for kind, url in [
-            ("rumba", "https://upload.wikimedia.org/wikipedia/commons/3/35/One_Man_Rumba_binaural_audio_demonstration.ogg"),
-            ("pool", "https://upload.wikimedia.org/wikipedia/commons/5/5d/Pool_Sounds.ogg"),
-            ("skyball", "https://upload.wikimedia.org/wikipedia/commons/e/e9/Skyball.ogg"),
-            ("fall", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/METLImpt_CanDrop_OS_01.ogg"),
-            ("train", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/TRNElec_TrainPassby_OS_01.ogg"),
-            ("carriage3d", "https://upload.wikimedia.org/wikipedia/commons/a/a8/2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg"),
-            ("carriage3d_mp3", "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a8/2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg/2023-Mai-20_15h52min_Wien_Stephansplatz_Ecke_Schulerstra%C3%9Fe_Rotenturmgasse_Fiaker_anhalten_einparken.ogg.mp3")
+            ("engine", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/VEHCar_CarEngineHigh_LOOP_01.ogg"),
+            ("swoosh", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/SWSH_Swoosh_OS_01.ogg"),
+            ("creature", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/CREAMnstr_CreatureCreepy_OS_01.ogg"),
+            ("train", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/TRNElec_TrainPassby_OS_01.ogg")
         ]:
             try:
                 check=page.evaluate("""async (url) => {
@@ -141,8 +137,8 @@ def check_live_media(browser, base_url):
                       }finally{await ac.close();}
                     }finally{clearTimeout(timeout);}
                 }""",url)
-                expected=1 if kind in ("fall","train") else 2
-                if check["channels"]==expected and check["duration"]>0.5:
+                expected=1
+                if check["channels"]==expected and check["duration"]>0.35:
                     print(f"LIVE MEDIA VERIFIED: {kind} channels={check['channels']} duration={check['duration']:.1f}s bytes={check['bytes']}")
                 else:
                     print(f"WARNING: live media {kind} has unexpected channels/length: {check}")
@@ -176,7 +172,6 @@ def main():
                 def audio_route(route):
                     route.fulfill(status=200,content_type="audio/wav",body=fixture,
                         headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
-                page.route("https://upload.wikimedia.org/**",audio_route)
                 def mono_route(route):
                     route.fulfill(status=200,content_type="audio/wav",body=mono_fixture,
                         headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
@@ -185,7 +180,7 @@ def main():
                 page.on("pageerror",lambda err:errors.append(str(err)))
                 page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
                 if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
-                if page.locator(".sample").count()!=12:failures.append("Expected 12 sound selections")
+                if page.locator(".sample").count()!=4:failures.append("Expected 4 curated moving sources")
                 if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed")!="true":
                     failures.append("Original preset is not selected on load")
                 if page.locator("#lcc-switch").get_attribute("aria-checked")!="false":
@@ -232,12 +227,12 @@ def main():
                     if page.locator("#lcc-switch").get_attribute("aria-checked")!="true":
                         failures.append("LCC switch reset when changing presets")
                     page.locator("#play").click()
-                    for kind in ["dinosaur","flyby","helicopter","barber","clock360"]:
+                    for kind in ["swoosh","creature","train"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         page.locator("#play").click()
                         page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
                         page.locator("#play").click()
-                    for kind in ["fall","train"]:
+                    for kind in ["engine","swoosh","creature","train"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         before=page.evaluate("window.__lccAudit.panners")
                         if not page.locator("#source-dot").is_visible():
@@ -247,24 +242,26 @@ def main():
                         if page.evaluate("window.__lccAudit.panners")<=before:
                             failures.append(f"Recorded mono object {kind} did not use PannerNode/HRTF")
                         page.locator("#play").click()
-                    for kind in ["rumba","pool","skyball","carriage3d"]:
+                    # Every candidate must move a real recorded mono source through HRTF.
+                    for kind in ["engine","swoosh","creature","train"]:
                         page.locator(f'[data-sound="{kind}"]').click()
+                        if "Recorded source and license" not in page.locator("#source-link").inner_text():
+                            failures.append(f"Source/attribution link missing for {kind}")
+                        if "HRTF" not in page.locator("#stage-explanation").inner_text():
+                            failures.append(f"No HRTF source explanation for {kind}")
                         before=page.evaluate("window.__lccAudit.panners")
-                        if page.locator("#source-dot").is_visible():
-                            failures.append(f"Recording {kind} wrongly displays simulated direction dot")
-                        if "without a second HRTF" not in page.locator("#stage-explanation").inner_text():
-                            failures.append(f"Recording {kind} missing stereo routing explanation")
                         page.locator("#play").click()
                         page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
-                        after=page.evaluate("window.__lccAudit.panners")
-                        if before!=after:
-                            failures.append(f"Recording {kind} was incorrectly reprocessed by a PannerNode")
-                        if "Recording and license" not in page.locator("#source-link").inner_text():
-                            failures.append(f"Recording {kind} missing license link")
+                        if page.evaluate("window.__lccAudit.panners")<=before:
+                            failures.append(f"Recorded {kind} missing directional HRTF node")
+                        first=page.locator("#source-dot").get_attribute("style")
+                        page.wait_for_timeout(300)
+                        if first==page.locator("#source-dot").get_attribute("style"):
+                            failures.append(f"Recorded {kind} shows no moving source dot")
                         page.locator("#lcc-switch").click()
                         page.locator("#lcc-switch").click()
                         page.locator("#play").click()
-                    # The recorded source remains paused and can restart without downloading again.
+                    # Pause/resume keeps the source usable and avoids re-download.
                     page.locator("#play").click()
                     page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=10000)
                     page.locator("#play").click()
@@ -280,7 +277,7 @@ def main():
         server.server_close()
     for failure in failures:print("ERROR:",failure)
     if failures:return 1
-    print("LCC audit passed: 12 samples, stereo recordings bypass HRTF, mono recorded objects use HRTF, moving clock/drop/train, DSP presets, desktop/mobile.")
+    print("LCC audit passed: 4 recorded moving spatial scenes, live HRTF source paths and LCC presets, desktop/mobile.")
     return 0
 
 
