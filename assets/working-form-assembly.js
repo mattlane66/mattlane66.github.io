@@ -110,6 +110,10 @@
       c.setLineDash([]);
       for(const t of tiles)crop(ink,t.x,t.y,t.w,t.h,smooth((position-t.ink)/.2));
       for(const t of tiles)crop(fallback,t.x,t.y,t.w,t.h,smooth((position-t.a)/.16));
+      // After every reveal tile is complete, one native bitmap draw removes
+      // subpixel seams between individually scaled canvas tiles. There is no
+      // full-image fade or switch: the diagram is already entirely revealed.
+      if(position>=6.62)c.drawImage(fallback,0,0,W,H);
       c.restore();
     }
     function resize(){
