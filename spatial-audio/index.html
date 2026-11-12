@@ -177,7 +177,7 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
   </div>
   <p class="preset-note" id="preset-note">The original 32 µs algorithm default is preserved. Speaker distances describe a suggested setup, not a verified calibration for that preset.</p>
 </div>
-<p id="status" class="status" role="status" aria-live="polite">Close orbit is ready. Play, then compare LCC Off and On while the same object circles you.</p>
+<p id="status" class="status" role="status" aria-live="polite">Engine orbit is ready. Play, then compare LCC Off and On as it moves around you.</p>
 </section>
 <div class="source-credit" id="source-credit"><p id="credit-text">Recorded engine sound from the Oculus Audio Pack 01, positioned using HRTF before LCC.</p><a id="source-link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">About the LCC algorithm ↗</a></div>
 <section class="beyond" aria-label="Mini computer idea"><span class="label">Beyond the browser</span><h2>Imagine LCC in a miniature home-theater computer.</h2><p>A small dedicated device could bring binaural sound over ordinary stereo loudspeakers to a living room—an LCC On/Off switch for movie nights, games, and music, without opening a webpage.</p></section>
@@ -216,7 +216,6 @@ const elements={
 let selected='engine',ctx=null,worklet=null,bus=null,playing=false,enabled=false,frame=0;
 let preset='loudspeakers';
 let sources=[],panners=[],startTime=0,offset=0,token=0;
-const buffers={};
 const recordingCache={};
 function report(msg){elements.status.textContent=msg;}
 function ftime(n){const a=Math.floor(Math.max(0,n));return Math.floor(a/60)+':'+String(a%60).padStart(2,'0');}
@@ -352,7 +351,7 @@ function buildObjectScene(kind,input){
 function scheduleSpatialAudio(layer,index){
  const duration=catalog[selected].duration;
  const begin=ctx.currentTime;
- const amount=Math.ceil(duration*8/.06);
+ const amount=Math.ceil(duration*3/.06);
  for(let i=0;i<=amount;i++){
   const at=begin+i*.06;
   const t=(offset+i*.06)%duration;
@@ -407,25 +406,11 @@ async function play(){
   await graph();
   if(ctx.state==='suspended')await ctx.resume();
   if(mine!==token)return;
-  if(c.file){
-    const audio=await loadExternalRecording(kind);
-    if(mine!==token)return;
-    if(c.playback==='object'){
-      // Recorded mono SFX are moved through one HRTF, then into LCC.
-      const sourceBuffer=buildObjectScene(kind,audio);
-      attachSound(sourceBuffer,pannerFor());
-    }else{
-      // A real binaural render is already stereo and must bypass PannerNode.
-      const src=ctx.createBufferSource();
-      src.buffer=audio;src.loop=true;src.connect(bus);
-      src.start(0,offset%audio.duration);
-      sources.push(src);
-    }
-  }else{
-    if(!buffers[kind])buffers[kind]=createSound(kind);
-    if(mine!==token)return;
-    attachSound(buffers[kind],pannerFor());
-  }
+  // Every curated source is an independently recorded mono effect. Apply a
+  // single HRTF to its intentional motion, then compare LCC on/off.
+  const audio=await loadExternalRecording(kind);
+  if(mine!==token)return;
+  attachSound(buildObjectScene(kind,audio),pannerFor());
   startTime=ctx.currentTime;
   setPlaying(true);
   report('Playing '+c.title+'. LCC '+(enabled?'On':'Off')+'. Compare the presets without restarting.');
