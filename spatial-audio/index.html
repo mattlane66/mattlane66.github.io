@@ -231,7 +231,7 @@ function pos(kind,t,index=0){
  }
  if(kind==='swoosh'){
    const hits=[1.8,5.2,8.6,12],nearest=hits.reduce((best,x)=>Math.abs(t-x)<Math.abs(t-best)?x:best,hits[0]);
-   const n=hits.indexOf(nearest),direction=n%2?1:-1,v=Math.max(-1,Math.min(1,(t-nearest)/.85));
+   const n=hits.indexOf(nearest),direction=n%2?1:-1,v=Math.max(-1,Math.min(1,(t-nearest)/1.8));
    return{x:direction*v*4.3,y:.18+.28*(1-Math.abs(v)),z:.34+2.0*Math.abs(v),scale:5.1};
  }
  if(kind==='creature'){
