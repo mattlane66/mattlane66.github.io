@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff8e7">
+<meta name="description" content="Hear an engine orbit around you using binaural HRTF sound over loudspeakers. Compare original LCC and laptop presets with one-click On/Off.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Spatial Audio — Matt Lane</title>
+<style>
+:root{color-scheme:light;--paper:#fff8e7;--ink:#16161d;--muted:#68665e;--blue:#173dff;--orange:#d85b37;--line:#cec9be;--panel:#fffdfa}
+*,*:before,*:after{box-sizing:border-box}
+html{min-width:320px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit}a{color:inherit}
+:is(a,button):focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+.wrap{width:min(1130px,calc(100% - 40px));margin:auto}
+header{border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:15px;min-height:64px}
+.brand{text-decoration:none;font-size:14px;font-weight:750;letter-spacing:-.025em}
+.back{font-size:13px;color:var(--muted);text-decoration:none}
+.back:hover,footer a:hover{color:var(--blue)}
+main{padding:clamp(54px,8.4vw,92px) 0 80px}
+.kicker,.label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:760;line-height:1.55}
+.kicker{color:var(--orange)}.label{color:var(--muted)}
+h1{font-size:clamp(66px,9.5vw,123px);line-height:.94;letter-spacing:-.089em;margin:19px 0 25px;font-weight:760}
+.intro{font-size:clamp(18px,2vw,23px);line-height:1.42;letter-spacing:-.023em;max-width:675px;margin:0 0 43px}
+.experience{max-width:845px}
+.library-head{display:flex;justify-content:space-between;align-items:baseline;gap:18px;margin-bottom:15px}
+.samples{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--ink);background:var(--panel)}
+.sample{border:0;border-right:1px solid var(--line);background:transparent;color:var(--ink);padding:20px 14px 21px;text-align:left;min-height:118px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;gap:16px;transition:background .15s,color .15s}
+.sample:last-child{border-right:0}
+.sample:hover:not([aria-pressed=true]){background:#f3efe6}
+.sample[aria-pressed=true]{background:var(--ink);color:white}
+.sample .number{font-size:11px;color:var(--muted);font-weight:700}
+.sample[aria-pressed=true] .number{color:#c4c2da}
+.sample .name{font-size:clamp(14px,1.6vw,18px);font-weight:740;letter-spacing:-.045em}
+.deck{border:1px solid var(--ink);background:var(--panel);padding:28px 30px}
+.headline{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+h2{font-size:clamp(27px,3.5vw,37px);line-height:1.05;letter-spacing:-.057em;margin:8px 0 8px}
+.description{margin:0;max-width:620px;color:var(--muted);font-size:14px;line-height:1.56}
+.type{color:var(--muted);font-size:11px;letter-spacing:.07em;font-weight:740;text-transform:uppercase;white-space:nowrap;margin-top:13px}
+.soundstage{position:relative;height:145px;display:flex;justify-content:space-between;align-items:center;gap:25px;margin:22px 0 22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:15px 14px}
+.speaker{width:48px;height:66px;background:var(--ink);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.speaker:after{content:'';width:24px;height:24px;border:2px solid #9b9ba7;border-radius:50%;box-shadow:inset 0 0 0 5px #292934}
+.stage-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0}
+.stage-center .room{color:var(--muted);font-size:11px;letter-spacing:.10em;text-transform:uppercase;font-weight:700}
+.stage-track{position:relative;width:min(100%,350px);height:56px;display:flex;align-items:center;justify-content:space-between}
+.stage-track:before{content:'';position:absolute;left:0;right:0;top:50%;border-top:1px dashed var(--line)}
+.dot{width:11px;height:11px;background:var(--blue);border-radius:50%;position:relative;z-index:1;box-shadow:0 0 0 5px rgba(23,61,255,.07)}
+.dot.centre{width:15px;height:15px}
+.stage-track[data-motion=moving] .dot.centre{animation:move 4s ease-in-out infinite alternate}
+@keyframes move{0%{transform:translateX(-55px)}100%{transform:translateX(55px)}}
+.transport{display:flex;gap:15px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.play{border:1px solid var(--ink);background:var(--ink);color:#fff;font-size:15px;font-weight:760;min-width:142px;padding:15px 19px;cursor:pointer;text-align:center}
+.play:hover{background:var(--blue);border-color:var(--blue)}
+.play:disabled{opacity:.6;cursor:wait}
+.play-group{display:flex;gap:15px;align-items:center;flex-wrap:wrap}
+.hint{color:var(--muted);font-size:12px;line-height:1.4;max-width:260px}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.timer{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.progress{appearance:none;display:block;height:4px;min-width:135px;width:170px;background:#d9d4ca;overflow:hidden}
+.progress::-webkit-progress-bar{background:#d9d4ca}
+.progress::-webkit-progress-value{background:var(--blue)}
+.progress::-moz-progress-bar{background:var(--blue)}
+.compare{display:flex;align-items:center;justify-content:space-between;gap:20px;border:1px solid var(--ink);border-top:0;background:#f2eee5;padding:22px 30px}
+.compare h3{font-size:27px;font-weight:750;letter-spacing:-.055em;margin:0 0 5px}
+.compare p{font-size:13px;color:var(--muted);margin:0;line-height:1.45}
+.switch{display:flex;gap:12px;align-items:center;background:transparent;border:0;padding:10px 0 10px 13px;cursor:pointer;flex-shrink:0}
+.switch-state{font-weight:760;font-size:13px;min-width:26px}
+.track{position:relative;width:66px;height:38px;border-radius:25px;background:#aca9a1;transition:background .15s}
+.thumb{position:absolute;left:5px;top:5px;width:28px;height:28px;background:white;border-radius:50%;box-shadow:0 1px 4px #0002;transition:transform .15s}
+.switch[aria-checked=true] .track{background:var(--blue)}
+.switch[aria-checked=true] .thumb{transform:translateX(28px)}
+.status{border:1px solid var(--line);border-top:0;padding:14px 30px;min-height:54px;color:var(--muted);font-size:13px;line-height:1.5}
+.source-credit{margin-top:22px;border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:13px;flex-wrap:wrap;max-width:845px}
+.source-credit p{margin:0;font-size:12px;color:var(--muted);line-height:1.55;max-width:620px}
+.source-credit a{font-size:12px;text-decoration:underline;text-underline-offset:3px}
+details{max-width:845px;border-top:1px solid var(--line);margin-top:25px;padding:19px 0 8px}
+summary{font-size:13px;font-weight:700;cursor:pointer}
+details p,details li{font-size:13px;line-height:1.6;color:var(--muted)}
+.listening{max-width:845px;margin-top:18px;padding-top:19px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:start;gap:15px;flex-wrap:wrap}
+.listening p{margin:0;font-size:13px;line-height:1.55;color:var(--muted);max-width:620px}
+.listening a{font-size:13px;text-decoration:underline;text-underline-offset:3px}
+footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color:var(--muted);line-height:1.55}
+@media(max-width:690px){
+.wrap{width:calc(100% - 32px)}.nav{min-height:57px}main{padding:58px 0 65px}.intro{margin-bottom:33px}
+.samples{grid-template-columns:repeat(3,minmax(0,1fr))}.sample{min-height:92px;padding:14px 7px 14px;gap:10px}.sample .name{font-size:clamp(10px,2.5vw,14px);overflow-wrap:anywhere}.sample .number{font-size:10px}
+.deck{padding:23px 18px}.compare{padding:18px}.status{padding:13px 18px}.soundstage{height:120px;margin:18px 0}.speaker{width:29px;height:48px}.speaker:after{width:15px;height:15px;box-shadow:inset 0 0 0 3px #292934}
+.progress{width:100px;min-width:70px}.transport{align-items:start}.meta{margin-left:auto}.hint{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+
+/* Top-down stage: the dot represents the source's actual HRTF coordinates. */
+.samples{grid-template-columns:repeat(3,minmax(0,1fr))}
+.soundstage{height:252px;justify-content:center;gap:clamp(25px,6vw,72px);padding:14px 22px}
+.sound-map{position:relative;width:210px;height:210px;border:1px dashed #aaa69a;border-radius:50%;flex-shrink:0;background:radial-gradient(circle,#e7e4de 0 2px,transparent 3px),radial-gradient(circle,#fffdfa 0 46%,#f3efe6 47% 47.5%,transparent 48%);}
+.sound-map:after{content:'';position:absolute;top:50%;left:9%;right:9%;border-top:1px solid #ded9d0;transform:translateY(-50%);pointer-events:none}
+.sound-map:before{content:'';position:absolute;left:50%;top:9%;bottom:9%;border-left:1px solid #ded9d0;transform:translateX(-50%);pointer-events:none}
+.map-label{position:absolute;color:var(--muted);letter-spacing:.09em;font-size:9px;font-weight:750;white-space:nowrap;z-index:2}
+.map-front{top:-1px;left:50%;transform:translateX(-50%);background:var(--panel);padding:0 6px}
+.map-rear{bottom:-1px;left:50%;transform:translateX(-50%);background:var(--panel);padding:0 6px}
+.map-left{left:-24px;top:50%;transform:translateY(-50%) rotate(-90deg);background:var(--panel);padding:0 5px}
+.map-right{right:-27px;top:50%;transform:translateY(-50%) rotate(90deg);background:var(--panel);padding:0 5px}
+.map-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--ink);font-size:10px;font-weight:760;letter-spacing:.05em;color:white;z-index:3}
+.source-dot{position:absolute;width:18px;height:18px;border-radius:50%;background:var(--blue);left:50%;top:15%;transform:translate(-50%,-50%);box-shadow:0 0 0 6px rgba(23,61,255,.14);z-index:4;transition:left .08s linear,top .08s linear}
+.map-readout{max-width:230px;display:flex;flex-direction:column;gap:10px}
+.map-readout strong{font-size:clamp(21px,3vw,31px);line-height:1.1;letter-spacing:-.05em}
+.map-readout span:last-child{font-size:12px;line-height:1.55;color:var(--muted)}
+@media(max-width:690px){
+ .samples{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .soundstage{height:218px;gap:22px;padding:12px 6px}
+ .sound-map{width:162px;height:162px}
+ .map-readout{max-width:126px;gap:7px}
+ .map-readout strong{font-size:19px}
+ .map-readout span:last-child{font-size:11px}
+}
+@media(max-width:370px){.sound-map{width:135px;height:135px}.map-readout{max-width:105px}}
+
+
+.presets{background:var(--panel);border:1px solid var(--ink);border-top:0;padding:22px 30px 23px}
+.preset-heading{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.preset-heading h3{font-size:21px;letter-spacing:-.048em;margin:3px 0 0}
+.preset-active{font-size:11px;color:var(--blue);font-weight:760}
+.preset-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.preset{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);background:#fffdf8;color:var(--ink);text-align:left;padding:15px;cursor:pointer;min-width:0}
+.preset[aria-pressed=true]{border:2px solid var(--blue);padding:14px;background:#f5f5ff}
+.preset:hover:not([aria-pressed=true]){background:#f6f0e5;border-color:var(--ink)}
+.preset strong{font-size:14px;letter-spacing:-.025em}.preset span,.preset small{font-size:12px;line-height:1.4;color:var(--muted)}
+.preset small{font-weight:700;color:#35353b}
+.preset-note{font-size:12px;color:var(--muted);line-height:1.55;margin:14px 0 0}
+.beyond{max-width:845px;margin-top:36px;padding-top:22px;border-top:1px solid var(--line)}
+.beyond h2{font-size:clamp(23px,3vw,30px);margin:7px 0 12px}.beyond p{max-width:745px;font-size:14px;line-height:1.6;color:var(--muted)}
+.beyond .small-links{display:flex;flex-wrap:wrap;gap:8px 22px;padding-top:5px}
+.beyond .small-links a{font-size:13px;text-underline-offset:3px}
+.signal{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:17px 0;padding:14px;background:#f4efe4;border:1px solid var(--line)}
+.signal span{font-size:12px;font-weight:700}.signal b{font-size:13px;color:var(--blue);font-weight:600}
+@media(max-width:690px){.presets{padding:18px}.preset-options{grid-template-columns:1fr}.signal{gap:7px}.sample .name{font-size:clamp(10px,2.4vw,13px)}}
+
+.sample:nth-child(4n){border-right:0}
+.sample:nth-child(n+5){border-top:1px solid var(--line)}
+@media(max-width:690px){.sample{min-height:87px}.sample .name{font-size:clamp(11px,2.5vw,14px)}}
+
+
+.own-audio{max-width:845px;margin-top:25px;padding:18px 0 8px;border-top:1px solid var(--line)}
+.own-audio summary{font-size:14px;font-weight:750;cursor:pointer}
+.own-audio p{max-width:680px;color:var(--muted);font-size:13px;line-height:1.6;margin:12px 0}
+.own-audio-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:14px 0}
+.own-audio input{max-width:100%;font-size:13px}
+.reset-file{background:var(--ink);color:white;border:1px solid var(--ink);padding:12px 15px;font-weight:700;cursor:pointer}
+.reset-file:disabled{opacity:.42;cursor:default}
+.compare{padding:17px 27px}
+.compare h3{font-size:30px}
+.switch{min-height:56px}
+@media(max-width:690px){.library-head{flex-wrap:wrap}.own-audio-actions{align-items:start;flex-direction:column}.play{font-size:16px}}
+
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><a class="brand" href="https://mattlane66.github.io/">Matt Lane <span aria-hidden="true">·</span> Experiments</a><a class="back" href="https://mattlane66.github.io/#projects">← Side projects</a></div></header>
+<main class="wrap">
+<div class="kicker">An experiment in listening</div>
+<h1>Spatial audio.</h1>
+<p class="intro">Press Play. Hear the engine move around you. Switch LCC On and Off while it plays.</p>
+<section class="experience" aria-label="Spatial audio sound library">
+<div class="library-head"><span class="label">One sound. One comparison.</span><span class="label">No setup or other tabs required</span></div>
+<div class="deck">
+<div class="headline"><div><span class="label" id="sample-number">360° MOTION</span><h2 id="sample-title">Engine orbit</h2><p class="description" id="sample-description">A real engine loops around you, passing close by both ears and behind your head.</p></div><div class="type" id="sample-type">3D / HRTF scene</div></div>
+<div class="soundstage" aria-hidden="true"><div class="sound-map"><span class="map-label map-front">IN FRONT</span><span class="map-label map-rear">BEHIND YOU</span><span class="map-label map-left">LEFT</span><span class="map-label map-right">RIGHT</span><span class="map-center">YOU</span><span class="source-dot" id="source-dot"></span></div><div class="map-readout"><span class="label">Source position</span><strong id="source-position">In front</strong><span id="stage-explanation">The dry sound is positioned by an HRTF before LCC processing.</span></div></div>
+<div class="transport">
+<div class="play-group"><button id="play" class="play" type="button">▶ Play demo</button><span class="hint" id="play-hint">Use two closely spaced speakers. Start at a comfortable volume.</span></div>
+<div class="meta"><progress id="progress" class="progress" value="0" max="100" aria-label="Sound playback progress"></progress><span class="timer" id="timer">0:00 / 0:14</span></div>
+</div>
+</div>
+<div class="compare"><div><h3 id="lcc-label">LCC</h3><p>Switch On and Off while the sound plays</p></div><button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="status" aria-checked="false"><span class="switch-state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button></div>
+<div class="presets">
+  <div class="preset-heading"><div><span class="label">Listening arrangement</span><h3>Choose your speakers</h3></div><span class="preset-active" id="preset-active">Original LCC · 32 µs</span></div>
+  <div class="preset-options" role="group" aria-label="LCC loudspeaker geometry preset">
+    <button id="preset-loudspeakers" class="preset" type="button" data-preset="loudspeakers" aria-pressed="true">
+      <strong>Closely spaced loudspeakers</strong><span>2–3 ft apart · about 6 ft from your head</span><small>Original LCC: 32 µs delay · −2.5 dB decay</small>
+    </button>
+    <button id="preset-laptop" class="preset" type="button" data-preset="laptop" aria-pressed="false">
+      <strong>Laptop speakers</strong><span>~25 cm apart · ~55 cm from your head</span><small>Estimated: 113 µs delay · −3.4 dB decay</small>
+    </button>
+  </div>
+  <p class="preset-note" id="preset-note">The original 32 µs algorithm default is preserved. Speaker distances describe a suggested setup, not a verified calibration for that preset.</p>
+</div>
+<p id="status" class="status" role="status" aria-live="polite">Ready to play. Turn LCC On and Off to hear the difference.</p>
+</section>
+<div class="source-credit" id="source-credit"><p id="credit-text">Recorded engine sound from the Oculus Audio Pack 01, positioned using HRTF before LCC.</p><a id="source-link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">About the LCC algorithm ↗</a></div>
+<details class="own-audio" aria-label="Optional local stereo audio">
+<summary>Have your own binaural recording? Try it here.</summary>
+<p>Choose a stereo WAV, MP3, or OGG file. It plays through the same LCC switch and speaker settings. Your file remains in your browser.</p>
+<div class="own-audio-actions"><input type="file" id="stereo-file" aria-label="Choose stereo audio file" accept=".wav,.mp3,.ogg,.oga,audio/wav,audio/mpeg,audio/ogg" aria-describedby="file-status"/><button type="button" id="reset-file" class="reset-file" disabled>Back to Engine Orbit</button></div>
+<p id="file-status" role="status" aria-live="polite">Optional. Engine Orbit is ready to play above.</p>
+<p class="own-audio-note">Use stereo audio you have permission to use. No file uploads, screen sharing or special browser permissions.</p>
+</details>
+<section class="beyond" aria-label="Mini computer idea"><span class="label">Beyond the browser</span><h2>Imagine LCC in a miniature home-theater computer.</h2><p>A small dedicated device could bring binaural sound over ordinary stereo loudspeakers to a living room—an LCC On/Off switch for movie nights, games, and music, without opening a webpage.</p></section>
+<div class="listening"><p><strong>For loudspeakers only—not headphones.</strong> Sit centered in front of a narrow stereo pair. Use a room-filling but comfortable volume; these scenes contain sharp transients and powerful bass.</p><a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">LCC setup and algorithm ↗</a></div>
+</main>
+<footer><div class="wrap">Compare the same source binaural stereo, with and without LCC, without restarting playback.</div></footer>
+<script>
+(() => {
+'use strict';
+const $=id=>document.getElementById(id);
+const catalog={
+  engine:{title:'Engine orbit',desc:'A recorded high-RPM engine circles your head, brushing both ears and rushing behind you repeatedly.',duration:14,type:'Recorded engine · moving HRTF',
+    file:'./engine-orbit.ogg',playback:'object',objectSound:'engine',
+    credit:'“Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0. Recorded high-RPM engine, moved via HRTF before LCC.',
+    link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'},
+  local:{title:'Your binaural stereo',desc:'Play your own two-channel binaural stereo recording through LCC.',duration:0,type:'Your recording · direct LCC',credit:'Your locally selected audio file stays on your device.'}
+};
+const elements={
+  play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
+  title:$('sample-title'),desc:$('sample-description'),num:$('sample-number'),type:$('sample-type'),
+  credit:$('credit-text'),link:$('source-link'),progress:$('progress'),timer:$('timer'),
+  dot:$('source-dot'),position:$('source-position'),explanation:$('stage-explanation'),status:$('status'),hint:$('play-hint'),
+  presets:[...document.querySelectorAll('[data-preset]')],presetActive:$('preset-active'),presetNote:$('preset-note'),
+  localFile:$('stereo-file'),resetFile:$('reset-file'),fileStatus:$('file-status')
+};
+let selected='engine',ctx=null,worklet=null,bus=null,outputAnalyser=null,playing=false,enabled=false,frame=0;
+let localBuffer=null,localName='',fileToken=0;
+
+let preset='loudspeakers';
+let sources=[],panners=[],startTime=0,offset=0,token=0;
+const recordingCache={};
+function report(msg){elements.status.textContent=msg;}
+function ftime(n){const a=Math.floor(Math.max(0,n));return Math.floor(a/60)+':'+String(a%60).padStart(2,'0');}
+function duration(){return selected==='local'?(localBuffer?.duration||0):catalog.engine.duration;}
+function elapsed(){return playing&&ctx?(offset+ctx.currentTime-startTime)%Math.max(.1,duration()):offset;}
+function pos(kind,t,index=0){
+ // Preserve the successful engine-orbit trajectory and physical parameters.
+ const tau=Math.PI*2;
+ const a=t*tau/4.6+index*.04;
+ const close=Math.pow(Math.abs(Math.sin(a)),9);
+ const radius=3.1-2.65*close;
+ return{x:Math.sin(a)*radius,y:.14,z:-Math.cos(a)*radius,scale:3.8};
+}
+function paint(t){
+ if(selected==='local'){
+   elements.dot.style.display='none';
+   elements.position.textContent='Binaural stereo file';
+   return;
+ }
+ if(catalog[selected].file&&catalog[selected].playback!=='object'){
+   elements.dot.style.display='none';
+   elements.position.textContent='Captured binaurally';
+   return;
+ }
+ elements.dot.style.display='';
+ const p=pos(selected,t);
+ const x=Math.max(12,Math.min(88,50+38*p.x/p.scale));
+ const y=Math.max(12,Math.min(88,50+38*p.z/p.scale));
+ elements.dot.style.left=x+'%';elements.dot.style.top=y+'%';
+ const horizontal=Math.abs(p.x)>Math.abs(p.z)*.68?(p.x>0?'Right':'Left'):'';
+ const depth=p.z>0.75?'Behind':p.z<-.75?'In front':'Beside';
+ elements.position.textContent=horizontal?(depth+' · '+horizontal):depth;
+}
+function tick(){
+ const t=elapsed(),dur=duration();
+ elements.timer.textContent=ftime(t)+' / '+(dur?ftime(dur):'—');
+ elements.progress.value=dur?100*t/dur:0;
+ paint(t);
+ // Source motion is scheduled in the audio thread, not tied to visible
+ // frame updates. This keeps moving sound alive in a background tab.
+ if(playing)frame=requestAnimationFrame(tick);
+}
+function reflect(){
+ elements.state.textContent=enabled?'On':'Off';
+ elements.toggle.setAttribute('aria-checked',String(enabled));
+ if(worklet)worklet.port.postMessage({type:'enable',value:enabled});
+}
+function setPlaying(v){
+ playing=v;elements.play.textContent=v?'❚❚ Pause':'▶ Play sound';
+ elements.play.setAttribute('aria-label',v?'Pause sound':'Play sound');
+ cancelAnimationFrame(frame);tick();
+}
+async function graph(){
+ if(ctx)return;
+ const A=window.AudioContext||window.webkitAudioContext;
+ if(!A||!window.AudioWorkletNode)throw Error('This browser does not support the audio processor.');
+ const c=new A({latencyHint:'playback'});
+ // Unlock Web Audio during the original Play click, before the async worklet
+ // download. Safari can otherwise refuse resume after user activation expires.
+ void c.resume().catch(()=>{});
+ try{
+  await c.audioWorklet.addModule('./lcc-worklet.js');
+  const w=new AudioWorkletNode(c,'lcc-processor',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2],channelCount:2,channelCountMode:'explicit',channelInterpretation:'discrete'});
+  const gain=c.createGain();gain.gain.value=.46;
+  const input=c.createGain();
+  input.gain.value=.72;
+  const analyser=c.createAnalyser();analyser.fftSize=2048;
+  input.connect(w);w.connect(gain);gain.connect(analyser);analyser.connect(c.destination);
+  ctx=c;worklet=w;bus=input;outputAnalyser=analyser;
+  window.__lccOutputAnalyser=analyser;
+  w.port.postMessage({type:'preset',value:preset});
+  reflect();
+ }catch(error){try{await c.close();}catch(_){ }throw error;}
+}
+async function loadExternalRecording(kind){
+ if(recordingCache[kind])return recordingCache[kind];
+ const c=catalog[kind];
+ if(!c?.file)throw new Error('This scene has no external recording.');
+ let lastError=null;
+ const sources=[c.file,c.fallback].filter(Boolean);
+ for(const [i,url] of sources.entries()){
+   const controller=new AbortController();
+   const timeout=setTimeout(()=>controller.abort(),i?10000:12000);
+   try{
+     const response=await fetch(url,{mode:'cors',signal:controller.signal,credentials:'omit'});
+     if(!response.ok)throw new Error('HTTP '+response.status);
+     const decoded=await ctx.decodeAudioData(await response.arrayBuffer());
+     // A downloaded and decoded audio file can still contain near-silence.
+     // Reject it rather than presenting a silent scene as if it were playing.
+     if(decoded.numberOfChannels!==1)throw new Error('Engine source must be mono.');
+     const samples=decoded.getChannelData(0);
+     let peak=0,energy=0;
+     for(let n=0;n<samples.length;n++){
+       const v=samples[n];
+       peak=Math.max(peak,Math.abs(v));
+       energy+=v*v;
+     }
+     const rms=Math.sqrt(energy/Math.max(1,samples.length));
+     if(peak<.01||rms<.001)throw new Error('Audio source is unexpectedly quiet.');
+     if(c.playback==='object'){
+       // Dry mono objects are spatialized once with PannerNode.
+       if(decoded.numberOfChannels===1){
+         recordingCache[kind]=decoded;return decoded;
+       }
+       if(decoded.numberOfChannels===2){
+         const mono=ctx.createBuffer(1,decoded.length,decoded.sampleRate);
+         const dst=mono.getChannelData(0);
+         const l=decoded.getChannelData(0),r=decoded.getChannelData(1);
+         for(let n=0;n<dst.length;n++)dst[n]=(l[n]+r[n])*.5;
+         recordingCache[kind]=mono;return mono;
+       }
+       throw new Error('Object sound has more than two channels.');
+     }
+     if(decoded.numberOfChannels!==2)throw new Error('Expected a binaural stereo recording.');
+     recordingCache[kind]=decoded;
+     return decoded;
+   }catch(err){lastError=err;}
+   finally{clearTimeout(timeout);}
+ }
+ throw lastError||new Error('Recording unavailable.');
+}
+function scheduleSpatialAudio(layer,index){
+ const duration=catalog[selected].duration;
+ const begin=ctx.currentTime;
+ const amount=Math.ceil(duration*3/.06);
+ for(let i=0;i<=amount;i++){
+  const at=begin+i*.06;
+  const t=(offset+i*.06)%duration;
+  const p=pos(selected,t,index);
+  const d=Math.hypot(p.x,p.y,p.z),shadow=p.z>0?.68:1;
+  const cutoff=Math.max(1400,Math.min(14000,14000/(1+d*.25)*shadow));
+  for(const [param,value] of [
+    [layer.p.positionX,p.x],[layer.p.positionY,p.y],
+    [layer.p.positionZ,p.z],[layer.filter.frequency,cutoff]]){
+   if(i===0)param.setValueAtTime(value,at);
+   else param.linearRampToValueAtTime(value,at);
+  }
+ }
+}
+function pannerFor(index=0){
+ const p=ctx.createPanner();
+ p.panningModel='HRTF';p.distanceModel='inverse';
+ p.refDistance=.85;p.maxDistance=30;p.rolloffFactor=1.12;
+ p.coneInnerAngle=360;p.coneOuterAngle=360;
+ const at=pos(selected,offset,index);
+ p.positionX.value=at.x;p.positionY.value=at.y;p.positionZ.value=at.z;
+ p.connect(bus);
+ const filter=ctx.createBiquadFilter();
+ filter.type='lowpass';filter.frequency.value=9500;filter.Q.value=.5;
+ const layer={p,filter};
+ scheduleSpatialAudio(layer,index);
+ panners.push(layer);
+ return layer;
+}
+function attachSound(buffer,spatial,opts={}){
+ const s=ctx.createBufferSource();s.buffer=buffer;s.loop=true;
+ s.playbackRate.value=opts.rate||1;
+ const g=ctx.createGain();g.gain.value=opts.gain===undefined?1:opts.gain;
+ s.connect(g);g.connect(spatial.filter);spatial.filter.connect(spatial.p);
+ s.start(0,(offset*(opts.rate||1))%buffer.duration);
+ sources.push(s);
+ return {source:s,gain:g};
+}
+function silence(){
+ sources.forEach(s=>{try{s.stop();}catch(_){ }try{s.disconnect();}catch(_){ }});
+ panners.forEach(layer=>{try{layer.filter.disconnect();}catch(_){ }try{layer.p.disconnect();}catch(_){ }});
+ sources=[];panners=[];
+}
+function halt(){
+ silence();setPlaying(false);
+}
+async function play(){
+ if(playing){offset=elapsed();halt();report('Paused. LCC '+(enabled?'On':'Off')+'.');return;}
+ const mine=++token,kind=selected,c=catalog[kind];
+ elements.play.disabled=true;elements.play.textContent='Loading…';
+ try{
+  await graph();
+  if(ctx.state==='suspended')await ctx.resume();
+  if(mine!==token)return;
+  if(kind==='local'){
+    if(!localBuffer)throw Error('Choose a stereo audio file first.');
+    // A binaural recording is already two-channel: no PannerNode/HRTF.
+    const src=ctx.createBufferSource();
+    src.buffer=localBuffer;src.loop=true;src.connect(bus);
+    src.start(0,offset%localBuffer.duration);
+    sources.push(src);
+  }else{
+    // The built-in dry mono Engine Orbit needs one HRTF before LCC.
+    const audio=await loadExternalRecording(kind);
+    if(mine!==token)return;
+    attachSound(audio,pannerFor());
+  }
+  startTime=ctx.currentTime;
+  setPlaying(true);
+  report('Playing '+c.title+'. LCC '+(enabled?'On':'Off')+'. Compare the presets without restarting.');
+ }catch(error){
+  const reason=error?.name==='AbortError'?'download timed out':(error?.message||String(error));
+  report('Cannot play '+c.title+': '+reason+'. Try another sound or retry.');
+  halt();
+ }finally{
+  if(mine===token){
+    elements.play.disabled=false;
+    if(!playing)elements.play.textContent='▶ Play demo';
+  }
+ }
+}
+function show(){
+ const c=catalog[selected];
+ elements.title.textContent=selected==='local'?(localName||c.title):c.title;
+ elements.desc.textContent=c.desc;
+ elements.num.textContent=selected==='local'?'YOUR AUDIO':'360° MOTION';
+ elements.type.textContent=c.type;elements.credit.textContent=c.credit;
+ elements.link.style.display=selected==='local'?'none':'';
+ elements.link.href=c.link||'https://github.com/mattlane66/lcc';
+ elements.link.textContent='Recorded source and license ↗';
+ elements.timer.textContent='0:00 / '+(duration()?ftime(duration()):'—');elements.progress.value=0;
+ elements.hint.textContent=selected==='local'
+    ? 'Your stereo audio plays through LCC. Toggle On and Off without stopping the sound.'
+    : 'Press Play, then switch LCC On and Off to hear the difference.';
+ elements.explanation.textContent=selected==='local'
+    ? 'Your two-channel audio goes directly into LCC, with no second HRTF.'
+    : 'Recorded engine audio moves around you through HRTF before LCC.';
+ paint(0);
+}
+function selectPreset(which){
+ if(which!=='loudspeakers'&&which!=='laptop')return;
+ preset=which;
+ elements.presets.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.preset===preset)));
+ elements.presetActive.textContent=which==='laptop'?'Laptop · 113 µs':'Original LCC · 32 µs';
+ elements.presetNote.textContent=which==='laptop'
+   ? 'Laptop estimate: 25 cm speaker spacing and 55 cm head distance, 113 µs / 0.68 decay. This is a model-based starting point—not verified calibration.'
+   : 'The original 32 µs / 0.7499 decay is preserved. The 2–3 ft speaker separation at ~6 ft is a suggested setup, not a calibration implied by the default.';
+ if(worklet)worklet.port.postMessage({type:'preset',value:which});
+ report('Selected '+(which==='laptop'?'Laptop':'Original loudspeaker')+' preset. '+(playing?'Audio continues without restarting.':'Press Play to listen.'));
+}
+async function loadLocalStereo(){
+ const file=elements.localFile.files?.[0];
+ if(!file)return;
+ const mine=++fileToken;
+ if(file.size>100*1024*1024){
+   elements.fileStatus.textContent='File is larger than the 100 MB browser limit. Choose a smaller stereo audio file.';
+   elements.localFile.value='';
+   return;
+ }
+ elements.fileStatus.textContent='Checking '+file.name+' locally…';
+ try{
+   await graph();
+   const bytes=await file.arrayBuffer();
+   const decoded=await ctx.decodeAudioData(bytes);
+   if(mine!==fileToken)return;
+   if(decoded.numberOfChannels!==2)throw Error('The decoded file is not stereo (2 channels).');
+   if(decoded.duration<.2)throw Error('Audio clip is too short.');
+   const left=decoded.getChannelData(0),right=decoded.getChannelData(1);
+   let peak=0,energy=0;
+   for(let i=0;i<left.length;i++){
+     peak=Math.max(peak,Math.abs(left[i]),Math.abs(right[i]));
+     energy+=(left[i]*left[i]+right[i]*right[i])*.5;
+   }
+   if(peak<.001||Math.sqrt(energy/left.length)<.0001)throw Error('File appears to contain silence.');
+
+   ++token;offset=0;halt();
+   localBuffer=decoded;localName=file.name;selected='local';
+   elements.resetFile.disabled=false;
+   show();
+   elements.fileStatus.textContent='Ready: '+file.name+' ('+ftime(decoded.duration)+'). Stereo channels preserved; nothing uploaded.';
+   report('Your local stereo is ready. Press Play and compare LCC Off/On.');
+ }catch(error){
+   if(mine!==fileToken)return;
+   elements.fileStatus.textContent='Could not use file: '+(error?.message||'format unsupported')+'. Choose a stereo WAV, MP3 or OGG.';
+   elements.localFile.value='';
+ }
+}
+elements.localFile.addEventListener('change',()=>{void loadLocalStereo();});
+elements.resetFile.addEventListener('click',()=>{
+ ++fileToken;++token;offset=0;halt();
+ selected='engine';localBuffer=null;localName='';elements.localFile.value='';
+ elements.resetFile.disabled=true;show();
+ elements.fileStatus.textContent='Engine Orbit restored. Choose another stereo file to audition.';
+ report('Engine Orbit is ready. Press Play to compare LCC Off/On.');
+});
+elements.presets.forEach(b=>b.addEventListener('click',()=>selectPreset(b.dataset.preset)));
+elements.play.addEventListener('click',()=>{void play();});
+elements.toggle.addEventListener('click',()=>{
+ enabled=!enabled;reflect();
+ report((enabled?'LCC On.':'LCC Off.')+(playing?' The spatial scene continues uninterrupted.':' Press Play to hear the scene.'));
+});
+window.addEventListener('pagehide',()=>{token++;halt();if(ctx)void ctx.close().catch(()=>{});});
+show();selectPreset('loudspeakers');reflect();
+})();
+</script>
+</body>
+</html>

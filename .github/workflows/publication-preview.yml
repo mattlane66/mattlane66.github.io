@@ -51,6 +51,7 @@ jobs:
         run: |
           python scripts/preview_content.py --base "$BASE_SHA"
           python scripts/browser_smoke.py
+          python scripts/test_spatial_audio_browser.py
       - name: Commit generated static pages to the review branch
         if: github.event_name == 'pull_request'
         env:
