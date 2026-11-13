@@ -117,9 +117,8 @@ def check_live_media(browser, base_url):
         page.goto(base_url, wait_until="domcontentloaded")
         for kind, url in [
             ("engine", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/VEHCar_CarEngineHigh_LOOP_01.ogg"),
-            ("swoosh", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/SWSH_Swoosh_OS_01.ogg"),
-            ("creature", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/CREAMnstr_CreatureCreepy_OS_01.ogg"),
-            ("train", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/TRNElec_TrainPassby_OS_01.ogg")
+            ("saw", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/TOOLPowr_CircularSaw_OS_01.ogg"),
+            ("rotor", "https://upload.wikimedia.org/wikipedia/commons/b/b8/Helicopter_over_quiet_n.ogg")
         ]:
             try:
                 check=page.evaluate("""async (url) => {
@@ -176,11 +175,12 @@ def main():
                     route.fulfill(status=200,content_type="audio/wav",body=mono_fixture,
                         headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
                 page.route("https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/**",mono_route)
+                page.route("https://upload.wikimedia.org/wikipedia/commons/**",mono_route)
                 errors=[]
                 page.on("pageerror",lambda err:errors.append(str(err)))
                 page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
                 if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
-                if page.locator(".sample").count()!=4:failures.append("Expected 4 curated moving sources")
+                if page.locator(".sample").count()!=3:failures.append("Expected Engine reference + 2 new sustained moving sources")
                 if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed")!="true":
                     failures.append("Original preset is not selected on load")
                 if page.locator("#lcc-switch").get_attribute("aria-checked")!="false":
@@ -227,12 +227,12 @@ def main():
                     if page.locator("#lcc-switch").get_attribute("aria-checked")!="true":
                         failures.append("LCC switch reset when changing presets")
                     page.locator("#play").click()
-                    for kind in ["swoosh","creature","train"]:
+                    for kind in ["saw","rotor"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         page.locator("#play").click()
                         page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
                         page.locator("#play").click()
-                    for kind in ["engine","swoosh","creature","train"]:
+                    for kind in ["engine","saw","rotor"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         before=page.evaluate("window.__lccAudit.panners")
                         if not page.locator("#source-dot").is_visible():
@@ -243,7 +243,7 @@ def main():
                             failures.append(f"Recorded mono object {kind} did not use PannerNode/HRTF")
                         page.locator("#play").click()
                     # Every candidate must move a real recorded mono source through HRTF.
-                    for kind in ["engine","swoosh","creature","train"]:
+                    for kind in ["engine","saw","rotor"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         if "Recorded source and license" not in page.locator("#source-link").inner_text():
                             failures.append(f"Source/attribution link missing for {kind}")
@@ -277,7 +277,7 @@ def main():
         server.server_close()
     for failure in failures:print("ERROR:",failure)
     if failures:return 1
-    print("LCC audit passed: 4 recorded moving spatial scenes, live HRTF source paths and LCC presets, desktop/mobile.")
+    print("LCC audition passed: Engine Orbit reference plus Saw and Rotor challengers; real audio, HRTF routing, DSP presets, desktop/mobile.")
     return 0
 
 
