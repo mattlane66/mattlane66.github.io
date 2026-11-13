@@ -85,14 +85,14 @@ details p,details li{font-size:13px;line-height:1.6;color:var(--muted)}
 footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color:var(--muted);line-height:1.55}
 @media(max-width:690px){
 .wrap{width:calc(100% - 32px)}.nav{min-height:57px}main{padding:58px 0 65px}.intro{margin-bottom:33px}
-.samples{grid-template-columns:repeat(4,minmax(0,1fr))}.sample{min-height:92px;padding:14px 7px 14px;gap:10px}.sample .name{font-size:clamp(10px,2.5vw,14px);overflow-wrap:anywhere}.sample .number{font-size:10px}
+.samples{grid-template-columns:repeat(3,minmax(0,1fr))}.sample{min-height:92px;padding:14px 7px 14px;gap:10px}.sample .name{font-size:clamp(10px,2.5vw,14px);overflow-wrap:anywhere}.sample .number{font-size:10px}
 .deck{padding:23px 18px}.compare{padding:18px}.status{padding:13px 18px}.soundstage{height:120px;margin:18px 0}.speaker{width:29px;height:48px}.speaker:after{width:15px;height:15px;box-shadow:inset 0 0 0 3px #292934}
 .progress{width:100px;min-width:70px}.transport{align-items:start}.meta{margin-left:auto}.hint{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
 
 /* Top-down stage: the dot represents the source's actual HRTF coordinates. */
-.samples{grid-template-columns:repeat(4,minmax(0,1fr))}
+.samples{grid-template-columns:repeat(3,minmax(0,1fr))}
 .soundstage{height:252px;justify-content:center;gap:clamp(25px,6vw,72px);padding:14px 22px}
 .sound-map{position:relative;width:210px;height:210px;border:1px dashed #aaa69a;border-radius:50%;flex-shrink:0;background:radial-gradient(circle,#e7e4de 0 2px,transparent 3px),radial-gradient(circle,#fffdfa 0 46%,#f3efe6 47% 47.5%,transparent 48%);}
 .sound-map:after{content:'';position:absolute;top:50%;left:9%;right:9%;border-top:1px solid #ded9d0;transform:translateY(-50%);pointer-events:none}
@@ -108,7 +108,7 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 .map-readout strong{font-size:clamp(21px,3vw,31px);line-height:1.1;letter-spacing:-.05em}
 .map-readout span:last-child{font-size:12px;line-height:1.55;color:var(--muted)}
 @media(max-width:690px){
- .samples{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .samples{grid-template-columns:repeat(3,minmax(0,1fr))}
  .soundstage{height:218px;gap:22px;padding:12px 6px}
  .sound-map{width:162px;height:162px}
  .map-readout{max-width:126px;gap:7px}
@@ -149,15 +149,14 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 <h1>Spatial audio.</h1>
 <p class="intro">Binaural audio over closely spaced loudspeakers—not headphones. Hear sounds moving around you and compare LCC as you listen.</p>
 <section class="experience" aria-label="Spatial audio sound library">
-<div class="library-head"><span class="label">Listen to the difference</span><span class="label">4 moving sound demonstrations</span></div>
-<div class="samples" role="group" aria-label="Choose a sound">
-<button type="button" class="sample" data-sound="engine" aria-pressed="true"><span class="number">01 / 360°</span><span class="name">Engine orbit</span></button>
-<button type="button" class="sample" data-sound="swoosh" aria-pressed="false"><span class="number">02 / FLYBY</span><span class="name">Near misses</span></button>
-<button type="button" class="sample" data-sound="creature" aria-pressed="false"><span class="number">03 / BEHIND</span><span class="name">Creature</span></button>
-<button type="button" class="sample" data-sound="train" aria-pressed="false"><span class="number">04 / PASS</span><span class="name">Passing train</span></button>
+<div class="library-head"><span class="label">Listen to the difference</span><span class="label">Engine Orbit · two new challengers</span></div>
+<div class="samples" role="group" aria-label="Choose a moving spatial sound">
+<button type="button" class="sample" data-sound="engine" aria-pressed="true"><span class="number">01 / REFERENCE</span><span class="name">Engine orbit</span></button>
+<button type="button" class="sample" data-sound="saw" aria-pressed="false"><span class="number">02 / NEW</span><span class="name">Saw orbit</span></button>
+<button type="button" class="sample" data-sound="rotor" aria-pressed="false"><span class="number">03 / NEW</span><span class="name">Rotor overhead</span></button>
 </div>
 <div class="deck">
-<div class="headline"><div><span class="label" id="sample-number">01 / 04</span><h2 id="sample-title">Engine orbit</h2><p class="description" id="sample-description">A real engine loops around you, passing close by both ears and behind your head.</p></div><div class="type" id="sample-type">3D / HRTF scene</div></div>
+<div class="headline"><div><span class="label" id="sample-number">01 / 03</span><h2 id="sample-title">Engine orbit</h2><p class="description" id="sample-description">A real engine loops around you, passing close by both ears and behind your head.</p></div><div class="type" id="sample-type">3D / HRTF scene</div></div>
 <div class="soundstage" aria-hidden="true"><div class="sound-map"><span class="map-label map-front">IN FRONT</span><span class="map-label map-rear">BEHIND YOU</span><span class="map-label map-left">LEFT</span><span class="map-label map-right">RIGHT</span><span class="map-center">YOU</span><span class="source-dot" id="source-dot"></span></div><div class="map-readout"><span class="label">Source position</span><strong id="source-position">In front</strong><span id="stage-explanation">The dry sound is positioned by an HRTF before LCC processing.</span></div></div>
 <div class="transport">
 <div class="play-group"><button id="play" class="play" type="button">▶ Play sound</button><span class="hint" id="play-hint">Play at moderate volume. Toggle LCC without restarting the sound.</span></div>
@@ -177,7 +176,7 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
   </div>
   <p class="preset-note" id="preset-note">The original 32 µs algorithm default is preserved. Speaker distances describe a suggested setup, not a verified calibration for that preset.</p>
 </div>
-<p id="status" class="status" role="status" aria-live="polite">Engine orbit is ready. Play, then compare LCC Off and On as it moves around you.</p>
+<p id="status" class="status" role="status" aria-live="polite">Engine orbit is the reference. Try the other two sources to test whether they achieve the same spatial effect.</p>
 </section>
 <div class="source-credit" id="source-credit"><p id="credit-text">Recorded engine sound from the Oculus Audio Pack 01, positioned using HRTF before LCC.</p><a id="source-link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">About the LCC algorithm ↗</a></div>
 <section class="beyond" aria-label="Mini computer idea"><span class="label">Beyond the browser</span><h2>Imagine LCC in a miniature home-theater computer.</h2><p>A small dedicated device could bring binaural sound over ordinary stereo loudspeakers to a living room—an LCC On/Off switch for movie nights, games, and music, without opening a webpage.</p></section>
@@ -189,22 +188,18 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 'use strict';
 const $=id=>document.getElementById(id);
 const catalog={
-  engine:{title:'Engine orbit',desc:'An actual high-RPM car engine circles your head, rushing past both ears and behind you repeatedly.',duration:14,type:'Recorded engine · moving HRTF',
+  engine:{title:'Engine orbit',desc:'A recorded high-RPM engine circles your head, brushing both ears and rushing behind you repeatedly.',duration:14,type:'Recorded engine · moving HRTF',
     file:'https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/VEHCar_CarEngineHigh_LOOP_01.ogg',playback:'object',objectSound:'engine',
-    credit:'Real high-RPM engine loop from “Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0. Motion is created by the browser HRTF before LCC.',
+    credit:'“Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0. Recorded high-RPM engine, moved via HRTF before LCC.',
     link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'},
-  swoosh:{title:'Near misses',desc:'Four recorded high-speed swooshes cross inches from your ears, alternately sweeping in opposite directions.',duration:14,type:'Recorded swooshes · moving HRTF',
-    file:'https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/SWSH_Swoosh_OS_01.ogg',playback:'object',objectSound:'swoosh',
-    credit:'Recorded swoosh effects from “Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0, placed in four alternating close passes through HRTF.',
+  saw:{title:'Saw orbit',desc:'A real circular saw carves a tight orbit around the listener, crossing close to the left and right ear.',duration:13.46,type:'Recorded power tool · moving HRTF',
+    file:'https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/TOOLPowr_CircularSaw_OS_01.ogg',playback:'object',objectSound:'saw',
+    credit:'“Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0. Recorded circular saw sound, moved via HRTF before LCC.',
     link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'},
-  creature:{title:'Creature behind you',desc:'Real creature vocalizations approach behind your shoulders, cross from one side to the other, and retreat.',duration:16,type:'Recorded creature · rear movement',
-    file:'https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/CREAMnstr_CreatureCreepy_OS_01.ogg',playback:'object',objectSound:'creature',
-    credit:'Recorded creature vocalizations from “Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0; spatial movement is rendered by the browser HRTF.',
-    link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'},
-  train:{title:'Train rushing past',desc:'A real commuter train approaches from behind-left, races across a wide stage, and recedes to the right.',duration:27.387,type:'Recorded train · moving HRTF',
-    file:'https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/TRNElec_TrainPassby_OS_01.ogg',playback:'object',objectSound:'train',
-    credit:'Recorded commuter train passby from “Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0; mono source spatialized once with HRTF before LCC.',
-    link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'}
+  rotor:{title:'Rotor overhead',desc:'A real helicopter rotor travels in a wide circle, coming close above your head and fading behind you.',duration:18,type:'Recorded helicopter · overhead HRTF',
+    file:'https://upload.wikimedia.org/wikipedia/commons/b/b8/Helicopter_over_quiet_n.ogg',playback:'object',objectSound:'rotor',
+    credit:'“Helicopter over quiet neighbourhood – 2” recorded by ezwa, public domain (PDSounds/Wikimedia Commons). Mono source positioned via HRTF before LCC.',
+    link:'https://commons.wikimedia.org/wiki/File:Helicopter_over_quiet_n.ogg'}
 };
 const elements={
   tabs:[...document.querySelectorAll('.sample')],play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
@@ -224,25 +219,24 @@ function elapsed(){return playing&&ctx ? (offset+ctx.currentTime-startTime)%Math
 function pos(kind,t,index=0){
  const tau=Math.PI*2;
  if(kind==='engine'){
+   // Preserve the original winning engine-orbit trajectory exactly.
    const a=t*tau/4.6+index*.04;
    const close=Math.pow(Math.abs(Math.sin(a)),9);
    const radius=3.1-2.65*close;
    return{x:Math.sin(a)*radius,y:.14,z:-Math.cos(a)*radius,scale:3.8};
  }
- if(kind==='swoosh'){
-   const hits=[1.8,5.2,8.6,12],nearest=hits.reduce((best,x)=>Math.abs(t-x)<Math.abs(t-best)?x:best,hits[0]);
-   const n=hits.indexOf(nearest),direction=n%2?1:-1,v=Math.max(-1,Math.min(1,(t-nearest)/1.8));
-   return{x:direction*v*4.3,y:.18+.28*(1-Math.abs(v)),z:.34+2.0*Math.abs(v),scale:5.1};
+ if(kind==='saw'){
+   // The same continuous 360-degree motion, but alternating near/far laps.
+   const a=t*tau/4.45+index*.04;
+   const near=Math.pow(Math.abs(Math.sin(a)),8);
+   const radius=3.0-2.57*near;
+   return{x:Math.sin(a)*radius,y:.22,z:-Math.cos(a)*radius,scale:3.7};
  }
- if(kind==='creature'){
-   const path=[[-3.7,7],[-2.3,3.6],[-.5,1.4],[.42,.67],[1.3,1.1],[2.7,4],[.45,.8],[-1.8,2.5],[-3.7,7]];
-   const i=Math.min(path.length-2,Math.floor(t/2)),u=Math.max(0,Math.min(1,(t-i*2)/2));
-   const e=u*u*(3-2*u);
-   return{x:path[i][0]+(path[i+1][0]-path[i][0])*e,y:.3,z:path[i][1]+(path[i+1][1]-path[i][1])*e,scale:8};
- }
- const u=Math.max(0,Math.min(1,t/27.387));
- const ease=u*u*(3-2*u);
- return{x:-13+26*ease,y:.15,z:.62+7.4*Math.pow(Math.abs(2*u-1),1.1),scale:15};
+ // A sustained 360-degree orbit at varying elevation for the recorded rotor.
+ const a=t*tau/6+index*.04;
+ const near=Math.pow(Math.abs(Math.sin(a)),7);
+ const radius=4.1-3.4*near;
+ return{x:Math.sin(a)*radius,y:1.15+2.5*(.5+.5*Math.sin(a+.9)),z:-Math.cos(a)*radius,scale:5.2};
 }
 function paint(t){
  if(catalog[selected].file&&catalog[selected].playback!=='object'){
@@ -330,24 +324,6 @@ async function loadExternalRecording(kind){
  }
  throw lastError||new Error('Recording unavailable.');
 }
-function buildObjectScene(kind,input){
- if(kind!=='swoosh'&&kind!=='creature')return input;
- const length=Math.ceil(catalog[kind].duration*ctx.sampleRate);
- const output=ctx.createBuffer(1,length,ctx.sampleRate);
- const dst=output.getChannelData(0),source=input.getChannelData(0);
- const events=kind==='swoosh'?[1.52,4.92,8.32,11.72]:[.75,3.9,7.15,11.15];
- for(const [index,start] of events.entries()){
-   const from=Math.floor(start*ctx.sampleRate);
-   // Gentle fades avoid cuts; recorded attack and spectral detail remain intact.
-   for(let i=0;i<source.length&&from+i<dst.length;i++){
-     const x=i/source.length;
-     const fade=Math.min(1,x*42,(1-x)*28);
-     const amount=kind==='swoosh'?(index%2?.82:.95):(.7+.09*index);
-     dst[from+i]+=(source[i]||0)*Math.max(0,fade)*amount;
-   }
- }
- return output;
-}
 function scheduleSpatialAudio(layer,index){
  const duration=catalog[selected].duration;
  const begin=ctx.currentTime;
@@ -410,7 +386,7 @@ async function play(){
   // single HRTF to its intentional motion, then compare LCC on/off.
   const audio=await loadExternalRecording(kind);
   if(mine!==token)return;
-  attachSound(buildObjectScene(kind,audio),pannerFor());
+  attachSound(audio,pannerFor());
   startTime=ctx.currentTime;
   setPlaying(true);
   report('Playing '+c.title+'. LCC '+(enabled?'On':'Off')+'. Compare the presets without restarting.');
