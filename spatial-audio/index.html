@@ -231,22 +231,25 @@ const catalog={
   engine:{title:'Engine orbit',desc:'A recorded high-RPM engine circles your head, brushing both ears and rushing behind you repeatedly.',duration:14,type:'Recorded engine · moving HRTF',
     file:'https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/VEHCar_CarEngineHigh_LOOP_01.ogg',playback:'object',objectSound:'engine',
     credit:'“Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0. Recorded high-RPM engine, moved via HRTF before LCC.',
-    link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'}
+    link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'},
+  local:{title:'Your binaural stereo',desc:'Test your own two-channel binaural recording, with and without LCC on the same loudspeakers.',duration:0,type:'Your recording · direct LCC',credit:'A locally selected audio file. Not uploaded or shared with this site.'}
 };
 const elements={
   play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
   title:$('sample-title'),desc:$('sample-description'),num:$('sample-number'),type:$('sample-type'),
   credit:$('credit-text'),link:$('source-link'),progress:$('progress'),timer:$('timer'),
   dot:$('source-dot'),position:$('source-position'),explanation:$('stage-explanation'),status:$('status'),hint:$('play-hint'),
-  presets:[...document.querySelectorAll('[data-preset]')],presetActive:$('preset-active'),presetNote:$('preset-note')
+  presets:[...document.querySelectorAll('[data-preset]')],presetActive:$('preset-active'),presetNote:$('preset-note'),
+  localFile:$('stereo-file'),resetFile:$('reset-file'),fileStatus:$('file-status')
 };
 let selected='engine',ctx=null,worklet=null,bus=null,playing=false,enabled=false,frame=0;
+let localBuffer=null,localName='',fileToken=0;
 let preset='loudspeakers';
 let sources=[],panners=[],startTime=0,offset=0,token=0;
 const recordingCache={};
 function report(msg){elements.status.textContent=msg;}
 function ftime(n){const a=Math.floor(Math.max(0,n));return Math.floor(a/60)+':'+String(a%60).padStart(2,'0');}
-function duration(){const c=catalog[selected];return c.file&&c.playback!=='object'?(recordingCache[selected]?.duration||c.duration):c.duration;}
+function duration(){return selected==='local'?(localBuffer?.duration||0):catalog[selected].duration;}
 function elapsed(){return playing&&ctx ? (offset+ctx.currentTime-startTime)%Math.max(0.1,duration()):offset;}
 function pos(kind,t,index=0){
  // Preserve the successful engine-orbit trajectory and physical parameters.
@@ -257,6 +260,11 @@ function pos(kind,t,index=0){
  return{x:Math.sin(a)*radius,y:.14,z:-Math.cos(a)*radius,scale:3.8};
 }
 function paint(t){
+ if(selected==='local'){
+   elements.dot.style.display='none';
+   elements.position.textContent='Binaural stereo file';
+   return;
+ }
  if(catalog[selected].file&&catalog[selected].playback!=='object'){
    elements.dot.style.display='none';
    elements.position.textContent='Captured binaurally';
@@ -412,11 +420,19 @@ async function play(){
   await graph();
   if(ctx.state==='suspended')await ctx.resume();
   if(mine!==token)return;
-  // Every curated source is an independently recorded mono effect. Apply a
-  // single HRTF to its intentional motion, then compare LCC on/off.
-  const audio=await loadExternalRecording(kind);
-  if(mine!==token)return;
-  attachSound(audio,pannerFor());
+  if(kind==='local'){
+    if(!localBuffer)throw Error('Choose a stereo audio file first.');
+    // A binaural recording is already two-channel: no PannerNode/HRTF.
+    const src=ctx.createBufferSource();
+    src.buffer=localBuffer;src.loop=true;src.connect(bus);
+    src.start(0,offset%localBuffer.duration);
+    sources.push(src);
+  }else{
+    // The built-in dry mono Engine Orbit needs one HRTF before LCC.
+    const audio=await loadExternalRecording(kind);
+    if(mine!==token)return;
+    attachSound(audio,pannerFor());
+  }
   startTime=ctx.currentTime;
   setPlaying(true);
   report('Playing '+c.title+'. LCC '+(enabled?'On':'Off')+'. Compare the presets without restarting.');
@@ -433,14 +449,20 @@ async function play(){
 }
 function show(){
  const c=catalog[selected];
- elements.title.textContent=c.title;elements.desc.textContent=c.desc;
- elements.num.textContent='360° MOTION';
+ elements.title.textContent=selected==='local'?(localName||c.title):c.title;
+ elements.desc.textContent=c.desc;
+ elements.num.textContent=selected==='local'?'YOUR AUDIO':'360° MOTION';
  elements.type.textContent=c.type;elements.credit.textContent=c.credit;
+ elements.link.style.display=selected==='local'?'none':'';
  elements.link.href=c.link||'https://github.com/mattlane66/lcc';
  elements.link.textContent='Recorded source and license ↗';
  elements.timer.textContent='0:00 / '+(duration()?ftime(duration()):'—');elements.progress.value=0;
- elements.hint.textContent='A real recorded sound moves through HRTF. Switch LCC or speaker presets during playback.';
- elements.explanation.textContent='Recorded mono sound is deliberately moved around you using HRTF before LCC.';
+ elements.hint.textContent=selected==='local'
+  ? 'Your binaural stereo goes straight through LCC, without another HRTF. Switch On/Off as it plays.'
+  : 'A real recorded sound moves through HRTF. Switch LCC or speaker presets during playback.';
+ elements.explanation.textContent=selected==='local'
+  ? 'Your two-channel audio goes straight into LCC. The moving-dot diagram applies only to Engine Orbit.'
+  : 'Recorded mono sound is deliberately moved around you using HRTF before LCC.';
  paint(0);
 }
 function selectPreset(which){
@@ -454,6 +476,50 @@ function selectPreset(which){
  if(worklet)worklet.port.postMessage({type:'preset',value:which});
  report('Selected '+(which==='laptop'?'Laptop':'Original loudspeaker')+' preset. '+(playing?'Audio continues without restarting.':'Press Play to listen.'));
 }
+async function loadLocalStereo(){
+ const file=elements.localFile.files?.[0];
+ if(!file)return;
+ const mine=++fileToken;
+ if(file.size>100*1024*1024){
+   elements.fileStatus.textContent='File is larger than the 100 MB browser limit. Choose a smaller stereo audio file.';
+   elements.localFile.value='';
+   return;
+ }
+ elements.fileStatus.textContent='Checking '+file.name+' locally…';
+ try{
+   await graph();
+   const bytes=await file.arrayBuffer();
+   const decoded=await ctx.decodeAudioData(bytes);
+   if(mine!==fileToken)return;
+   if(decoded.numberOfChannels!==2)throw Error('The decoded file is not stereo (2 channels).');
+   if(decoded.duration<.2)throw Error('Audio clip is too short.');
+   const left=decoded.getChannelData(0),right=decoded.getChannelData(1);
+   let peak=0,energy=0;
+   for(let i=0;i<left.length;i++){
+     peak=Math.max(peak,Math.abs(left[i]),Math.abs(right[i]));
+     energy+=(left[i]*left[i]+right[i]*right[i])*.5;
+   }
+   if(peak<.001||Math.sqrt(energy/left.length)<.0001)throw Error('File appears to contain silence.');
+   ++token;offset=0;halt();
+   localBuffer=decoded;localName=file.name;selected='local';
+   elements.resetFile.disabled=false;
+   show();
+   elements.fileStatus.textContent='Ready: '+file.name+' ('+ftime(decoded.duration)+'). Stereo channels preserved; nothing uploaded.';
+   report('Your local stereo is ready. Press Play and compare LCC Off/On.');
+ }catch(error){
+   if(mine!==fileToken)return;
+   elements.fileStatus.textContent='Could not use file: '+(error?.message||'format unsupported')+'. Choose a stereo WAV, MP3 or OGG.';
+   elements.localFile.value='';
+ }
+}
+elements.localFile.addEventListener('change',()=>{void loadLocalStereo();});
+elements.resetFile.addEventListener('click',()=>{
+ ++fileToken;++token;offset=0;halt();
+ selected='engine';localBuffer=null;localName='';elements.localFile.value='';
+ elements.resetFile.disabled=true;show();
+ elements.fileStatus.textContent='Engine Orbit restored. Choose another stereo file to audition.';
+ report('Engine Orbit is ready. Press Play to compare LCC Off/On.');
+});
 elements.presets.forEach(b=>b.addEventListener('click',()=>selectPreset(b.dataset.preset)));
 elements.play.addEventListener('click',()=>{void play();});
 elements.toggle.addEventListener('click',()=>{
