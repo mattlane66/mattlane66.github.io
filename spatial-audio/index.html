@@ -141,33 +141,18 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 .sample:nth-child(n+5){border-top:1px solid var(--line)}
 @media(max-width:690px){.sample{min-height:87px}.sample .name{font-size:clamp(11px,2.5vw,14px)}}
 
-.demo-auditions,.own-audio{max-width:845px;margin:34px 0 0;padding-top:24px;border-top:1px solid var(--line)}
-.audition-heading h2,.own-audio h2{font-size:clamp(24px,3.5vw,32px);letter-spacing:-.055em;margin:7px 0 9px}
-.audition-heading p,.own-audio>p{font-size:13px;line-height:1.6;max-width:720px;margin:0 0 15px;color:var(--muted)}
-.audition-group{margin-top:19px}
-.audition-group h3{font-size:13px;letter-spacing:.025em;margin:0 0 10px}
-.audition-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.audition-grid a{display:flex;flex-direction:column;gap:6px;min-width:0;border:1px solid var(--line);padding:13px 15px;text-decoration:none;background:#fffdf8;color:var(--ink);transition:background .12s,border-color .12s}
-.audition-grid a:hover,.audition-grid a:focus-visible{background:#f5f1e8;border-color:var(--ink)}
-.audition-name{font-size:14px;font-weight:750;letter-spacing:-.03em}
-.audition-info{font-size:11px;line-height:1.5;color:var(--muted)}
-.audition-disclaimer,.own-audio .own-audio-note{font-size:12px!important;margin-top:14px!important}
-.own-audio-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:15px 0 10px}
-.file-picker,.reset-file{display:inline-block;border:1px solid var(--ink);border-radius:0;background:var(--ink);color:#fff;padding:12px 15px;font-weight:700;font:inherit;font-size:13px;cursor:pointer}
-.file-picker:hover,.file-picker:focus-within{background:var(--blue)}
-.reset-file{background:transparent;color:var(--ink)}.reset-file:disabled{opacity:.45;cursor:default}
-#stereo-file{max-width:230px;font-size:12px}
-#file-status{margin:0!important;font-size:12px!important}
-@media(max-width:690px){.audition-grid{grid-template-columns:1fr}.own-audio-actions{align-items:start;flex-direction:column}#stereo-file{max-width:100%}}
 
-
-.tab-routing{border:1px solid var(--ink);padding:16px;margin:17px 0 22px;background:var(--panel)}
-.tab-routing-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.tab-routing-controls button{border:1px solid var(--ink);padding:12px 15px;font-weight:750;font-size:13px;cursor:pointer;background:var(--ink);color:#fff}
-.tab-routing-controls #stop-tab{background:transparent;color:var(--ink)}
-.tab-routing-controls button:disabled{opacity:.45;cursor:default}
-.capture-status{font-size:12px!important;line-height:1.55;margin:12px 0 0!important;color:var(--muted)}
-@media(max-width:690px){.tab-routing-controls{align-items:stretch;flex-direction:column}.tab-routing-controls button{text-align:left}}
+.own-audio{max-width:845px;margin-top:25px;padding:18px 0 8px;border-top:1px solid var(--line)}
+.own-audio summary{font-size:14px;font-weight:750;cursor:pointer}
+.own-audio p{max-width:680px;color:var(--muted);font-size:13px;line-height:1.6;margin:12px 0}
+.own-audio-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:14px 0}
+.own-audio input{max-width:100%;font-size:13px}
+.reset-file{background:var(--ink);color:white;border:1px solid var(--ink);padding:12px 15px;font-weight:700;cursor:pointer}
+.reset-file:disabled{opacity:.42;cursor:default}
+.compare{padding:17px 27px}
+.compare h3{font-size:30px}
+.switch{min-height:56px}
+@media(max-width:690px){.library-head{flex-wrap:wrap}.own-audio-actions{align-items:start;flex-direction:column}.play{font-size:16px}}
 
 </style>
 </head>
@@ -176,18 +161,18 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 <main class="wrap">
 <div class="kicker">An experiment in listening</div>
 <h1>Spatial audio.</h1>
-<p class="intro">Binaural audio over closely spaced loudspeakers—not headphones. Hear sounds moving around you and compare LCC as you listen.</p>
+<p class="intro">Press Play. Hear the engine move around you. Switch LCC On and Off while it plays.</p>
 <section class="experience" aria-label="Spatial audio sound library">
-<div class="library-head"><span class="label">Listen to the difference</span><span class="label">Continuous 360° movement</span></div>
+<div class="library-head"><span class="label">One sound. One comparison.</span><span class="label">No setup or other tabs required</span></div>
 <div class="deck">
 <div class="headline"><div><span class="label" id="sample-number">360° MOTION</span><h2 id="sample-title">Engine orbit</h2><p class="description" id="sample-description">A real engine loops around you, passing close by both ears and behind your head.</p></div><div class="type" id="sample-type">3D / HRTF scene</div></div>
 <div class="soundstage" aria-hidden="true"><div class="sound-map"><span class="map-label map-front">IN FRONT</span><span class="map-label map-rear">BEHIND YOU</span><span class="map-label map-left">LEFT</span><span class="map-label map-right">RIGHT</span><span class="map-center">YOU</span><span class="source-dot" id="source-dot"></span></div><div class="map-readout"><span class="label">Source position</span><strong id="source-position">In front</strong><span id="stage-explanation">The dry sound is positioned by an HRTF before LCC processing.</span></div></div>
 <div class="transport">
-<div class="play-group"><button id="play" class="play" type="button">▶ Play sound</button><span class="hint" id="play-hint">Play at moderate volume. Toggle LCC without restarting the sound.</span></div>
+<div class="play-group"><button id="play" class="play" type="button">▶ Play demo</button><span class="hint" id="play-hint">Use two closely spaced speakers. Start at a comfortable volume.</span></div>
 <div class="meta"><progress id="progress" class="progress" value="0" max="100" aria-label="Sound playback progress"></progress><span class="timer" id="timer">0:00 / 0:14</span></div>
 </div>
 </div>
-<div class="compare"><div><h3 id="lcc-label">LCC</h3><p>Localization Cue Correction · original / processed</p></div><button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="status" aria-checked="false"><span class="switch-state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button></div>
+<div class="compare"><div><h3 id="lcc-label">LCC</h3><p>Switch On and Off while the sound plays</p></div><button class="switch" id="lcc-switch" type="button" role="switch" aria-labelledby="lcc-label" aria-describedby="status" aria-checked="false"><span class="switch-state" id="switch-state">Off</span><span class="track" aria-hidden="true"><span class="thumb"></span></span></button></div>
 <div class="presets">
   <div class="preset-heading"><div><span class="label">Listening arrangement</span><h3>Choose your speakers</h3></div><span class="preset-active" id="preset-active">Original LCC · 32 µs</span></div>
   <div class="preset-options" role="group" aria-label="LCC loudspeaker geometry preset">
@@ -200,38 +185,16 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
   </div>
   <p class="preset-note" id="preset-note">The original 32 µs algorithm default is preserved. Speaker distances describe a suggested setup, not a verified calibration for that preset.</p>
 </div>
-<p id="status" class="status" role="status" aria-live="polite">Engine Orbit is ready. You can also route a supported trailer tab into LCC or choose a local binaural stereo file.</p>
+<p id="status" class="status" role="status" aria-live="polite">Ready to play. Turn LCC On and Off to hear the difference.</p>
 </section>
 <div class="source-credit" id="source-credit"><p id="credit-text">Recorded engine sound from the Oculus Audio Pack 01, positioned using HRTF before LCC.</p><a id="source-link" href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">About the LCC algorithm ↗</a></div>
-<section class="demo-auditions" aria-label="Dolby and THX trailer auditions">
-  <div class="audition-heading"><span class="label">Reference recordings</span><h2>Dolby &amp; THX cinematic sound</h2>
-    <p><strong>Play a trailer through LCC:</strong> Open its official link in a separate tab and start the video. Return here, choose <strong>Connect tab audio to LCC</strong>, and select the playing trailer tab with <strong>Share tab audio</strong> enabled. The sound is processed live in your browser without recording or uploading it.</p>
-    <div class="tab-routing" aria-label="Route an external trailer through LCC">
-      <div class="tab-routing-controls"><button id="route-tab" type="button">Connect tab audio to LCC</button><button id="stop-tab" type="button" disabled>Disconnect trailer</button></div>
-      <p class="capture-status" id="capture-status" role="status" aria-live="polite">Not connected. Chrome or Edge on desktop recommended; choose the trailer tab and share its audio.</p>
-    </div>
-  </div>
-  <div class="audition-group"><h3>THX</h3><div class="audition-grid">
-    <a href="https://www.thx.com/deep-note-trailer/" target="_blank" rel="noopener noreferrer"><span class="audition-name">Genesis <span aria-hidden="true">↗</span></span><span class="audition-info">Official THX · headphone-binaural spatial mix · 60s</span></a>
-    <a href="https://www.thx.com/deepnote/" target="_blank" rel="noopener noreferrer"><span class="audition-name">Spark (2026) <span aria-hidden="true">↗</span></span><span class="audition-info">Official THX Deep Note collection · Eclipsa Audio</span></a>
-  </div></div>
-  <div class="audition-group"><h3>Dolby</h3><div class="audition-grid">
-    <a href="https://www.youtube.com/watch?v=kvAfmYNtugQ" target="_blank" rel="noopener noreferrer"><span class="audition-name">Amaze <span aria-hidden="true">↗</span></span><span class="audition-info">Official Dolby trailer · rainforest / height</span></a>
-    <a href="https://www.youtube.com/watch?v=77fAMqoYPPM" target="_blank" rel="noopener noreferrer"><span class="audition-name">Spheres <span aria-hidden="true">↗</span></span><span class="audition-info">Official Dolby trailer · spatial soundscape</span></a>
-    <a href="https://www.youtube.com/watch?v=HZS5a3cm7zU" target="_blank" rel="noopener noreferrer"><span class="audition-name">Unfold <span aria-hidden="true">↗</span></span><span class="audition-info">Official Dolby Atmos trailer · moving audio</span></a>
-    <a href="https://www.youtube.com/watch?v=91BUM3WhCfo" target="_blank" rel="noopener noreferrer"><span class="audition-name">World of Sound <span aria-hidden="true">↗</span></span><span class="audition-info">Official Dolby Atmos demonstration</span></a>
-    <a href="https://biojensen.dk/dolby-demo-disc" target="_blank" rel="noopener noreferrer"><span class="audition-name">Audiosphere <span aria-hidden="true">↗</span></span><span class="audition-info">Catalog entry only · verified official online player not found</span></a>
-    <a href="https://biojensen.dk/dolby-demo-disc" target="_blank" rel="noopener noreferrer"><span class="audition-name">Shattered <span aria-hidden="true">↗</span></span><span class="audition-info">Catalog entry only · verified official online player not found</span></a>
-  </div></div>
-  <p class="audition-disclaimer">Tab audio is routed through LCC only if the browser grants an audio track and the stream is capturable. This cannot bypass DRM, and tab sharing might not be supported on Safari or mobile. A stereo video stream is not automatically a binaural render of Dolby Atmos or Eclipsa. If the original tab audio is not suppressed, it may mix with LCC playback and invalidate the comparison.</p>
-</section>
-<section class="own-audio" aria-label="Test your own binaural recording through LCC">
-  <span class="label">Compare through LCC</span><h2>Test a stereo recording you can use.</h2>
-  <p>Choose a <strong>binaural stereo</strong> WAV, MP3, or OGG from your computer. Its two channels go straight through the same LCC processor, with the same two presets and On/Off switch above. The file stays in your browser and is not uploaded.</p>
-  <div class="own-audio-actions"><label class="file-picker" for="stereo-file">Choose stereo audio file</label><input type="file" id="stereo-file" accept=".wav,.mp3,.ogg,.oga,audio/wav,audio/mpeg,audio/ogg" aria-describedby="stereo-help file-status"/><button type="button" id="reset-file" class="reset-file" disabled>Return to Engine Orbit</button></div>
-  <p id="file-status" role="status" aria-live="polite">Engine Orbit is loaded. Choose a file above to test your own audio.</p>
-  <p id="stereo-help" class="own-audio-note">Use only recordings you're entitled to use. Raw Atmos, Dolby TrueHD, Eclipsa, multichannel, and DRM-protected files are not supported. Supported browsers may route authorized trailer-tab audio live using the controls above; this is separate from loading a local stereo file.</p>
-</section>
+<details class="own-audio" aria-label="Optional local stereo audio">
+<summary>Have your own binaural recording? Try it here.</summary>
+<p>Choose a stereo WAV, MP3, or OGG file. It plays through the same LCC switch and speaker settings. Your file remains in your browser.</p>
+<div class="own-audio-actions"><input type="file" id="stereo-file" aria-label="Choose stereo audio file" accept=".wav,.mp3,.ogg,.oga,audio/wav,audio/mpeg,audio/ogg" aria-describedby="file-status"/><button type="button" id="reset-file" class="reset-file" disabled>Back to Engine Orbit</button></div>
+<p id="file-status" role="status" aria-live="polite">Optional. Engine Orbit is ready to play above.</p>
+<p class="own-audio-note">Use stereo audio you have permission to use. No file uploads, screen sharing or special browser permissions.</p>
+</details>
 <section class="beyond" aria-label="Mini computer idea"><span class="label">Beyond the browser</span><h2>Imagine LCC in a miniature home-theater computer.</h2><p>A small dedicated device could bring binaural sound over ordinary stereo loudspeakers to a living room—an LCC On/Off switch for movie nights, games, and music, without opening a webpage.</p></section>
 <div class="listening"><p><strong>For loudspeakers only—not headphones.</strong> Sit centered in front of a narrow stereo pair. Use a room-filling but comfortable volume; these scenes contain sharp transients and powerful bass.</p><a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">LCC setup and algorithm ↗</a></div>
 </main>
@@ -242,11 +205,10 @@ footer{border-top:1px solid var(--line);padding:23px 0 34px;font-size:12px;color
 const $=id=>document.getElementById(id);
 const catalog={
   engine:{title:'Engine orbit',desc:'A recorded high-RPM engine circles your head, brushing both ears and rushing behind you repeatedly.',duration:14,type:'Recorded engine · moving HRTF',
-    file:'https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/VEHCar_CarEngineHigh_LOOP_01.ogg',playback:'object',objectSound:'engine',
+    file:'./engine-orbit.ogg',playback:'object',objectSound:'engine',
     credit:'“Oculus Audio Pack 01” by Oculus VR, LLC, CC BY 4.0. Recorded high-RPM engine, moved via HRTF before LCC.',
     link:'https://github.com/facebookincubator/Meta-open-sound/blob/main/corpora/oculus-audio-pack/ATTRIBUTION.md'},
-  local:{title:'Your binaural stereo',desc:'Test your own two-channel binaural recording, with and without LCC on the same loudspeakers.',duration:0,type:'Your recording · direct LCC',credit:'A locally selected audio file. Not uploaded or shared with this site.'},
-  tab:{title:'Live trailer tab audio',desc:'Stereo audio from a browser tab you explicitly selected. LCC processes that live stream; it is not recorded or downloaded.',duration:0,type:'Live captured stereo · direct LCC',credit:'Sound remains on its official playback website. No trailer audio is stored or redistributed by this page.'}
+  local:{title:'Your binaural stereo',desc:'Play your own two-channel binaural stereo recording through LCC.',duration:0,type:'Your recording · direct LCC',credit:'Your locally selected audio file stays on your device.'}
 };
 const elements={
   play:$('play'),toggle:$('lcc-switch'),state:$('switch-state'),
@@ -254,22 +216,18 @@ const elements={
   credit:$('credit-text'),link:$('source-link'),progress:$('progress'),timer:$('timer'),
   dot:$('source-dot'),position:$('source-position'),explanation:$('stage-explanation'),status:$('status'),hint:$('play-hint'),
   presets:[...document.querySelectorAll('[data-preset]')],presetActive:$('preset-active'),presetNote:$('preset-note'),
-  localFile:$('stereo-file'),resetFile:$('reset-file'),fileStatus:$('file-status'),
-  routeTab:$('route-tab'),stopTab:$('stop-tab'),captureStatus:$('capture-status')
+  localFile:$('stereo-file'),resetFile:$('reset-file'),fileStatus:$('file-status')
 };
-let selected='engine',ctx=null,worklet=null,bus=null,playing=false,enabled=false,frame=0;
+let selected='engine',ctx=null,worklet=null,bus=null,outputAnalyser=null,playing=false,enabled=false,frame=0;
 let localBuffer=null,localName='',fileToken=0;
-let captureStream=null,captureSource=null,captureAnalyser=null,captureMonitor=null,captureRequest=0,captureName='Live trailer audio';
+
 let preset='loudspeakers';
 let sources=[],panners=[],startTime=0,offset=0,token=0;
 const recordingCache={};
 function report(msg){elements.status.textContent=msg;}
 function ftime(n){const a=Math.floor(Math.max(0,n));return Math.floor(a/60)+':'+String(a%60).padStart(2,'0');}
-function duration(){return selected==='tab'?0:selected==='local'?(localBuffer?.duration||0):catalog[selected].duration;}
-function elapsed(){
- if(selected==='tab')return playing&&ctx ? Math.max(0,ctx.currentTime-startTime) : offset;
- return playing&&ctx ? (offset+ctx.currentTime-startTime)%Math.max(0.1,duration()):offset;
-}
+function duration(){return selected==='local'?(localBuffer?.duration||0):catalog.engine.duration;}
+function elapsed(){return playing&&ctx?(offset+ctx.currentTime-startTime)%Math.max(.1,duration()):offset;}
 function pos(kind,t,index=0){
  // Preserve the successful engine-orbit trajectory and physical parameters.
  const tau=Math.PI*2;
@@ -279,9 +237,9 @@ function pos(kind,t,index=0){
  return{x:Math.sin(a)*radius,y:.14,z:-Math.cos(a)*radius,scale:3.8};
 }
 function paint(t){
- if(selected==='local'||selected==='tab'){
+ if(selected==='local'){
    elements.dot.style.display='none';
-   elements.position.textContent=selected==='tab'?'Live tab stereo':'Binaural stereo file';
+   elements.position.textContent='Binaural stereo file';
    return;
  }
  if(catalog[selected].file&&catalog[selected].playback!=='object'){
@@ -328,8 +286,10 @@ async function graph(){
   const gain=c.createGain();gain.gain.value=.46;
   const input=c.createGain();
   input.gain.value=.72;
-  input.connect(w);w.connect(gain);gain.connect(c.destination);
-  ctx=c;worklet=w;bus=input;
+  const analyser=c.createAnalyser();analyser.fftSize=2048;
+  input.connect(w);w.connect(gain);gain.connect(analyser);analyser.connect(c.destination);
+  ctx=c;worklet=w;bus=input;outputAnalyser=analyser;
+  window.__lccOutputAnalyser=analyser;
   w.port.postMessage({type:'preset',value:preset});
   reflect();
  }catch(error){try{await c.close();}catch(_){ }throw error;}
@@ -432,22 +392,6 @@ function halt(){
  silence();setPlaying(false);
 }
 async function play(){
- if(selected==='tab'){
-   if(!captureStream||!captureAnalyser||!captureStream.getAudioTracks().some(t=>t.readyState==='live')){
-     report('No live trailer audio is available. Connect a playing trailer tab again.');
-     return;
-   }
-   if(playing){
-     offset=elapsed();captureAnalyser.disconnect();setPlaying(false);
-     report('LCC playback muted. The source trailer continues playing in its original tab.');
-   }else{
-     try{if(ctx.state==='suspended')await ctx.resume();captureAnalyser.connect(bus);}
-     catch(error){report('Could not resume captured tab audio: '+(error?.message||error));return;}
-     startTime=ctx.currentTime-offset;setPlaying(true);
-     report('Live trailer audio is routed through LCC again.');
-   }
-   return;
- }
  if(playing){offset=elapsed();halt();report('Paused. LCC '+(enabled?'On':'Off')+'.');return;}
  const mine=++token,kind=selected,c=catalog[kind];
  elements.play.disabled=true;elements.play.textContent='Loading…';
@@ -478,30 +422,26 @@ async function play(){
  }finally{
   if(mine===token){
     elements.play.disabled=false;
-    if(!playing)elements.play.textContent='▶ Play sound';
+    if(!playing)elements.play.textContent='▶ Play demo';
   }
  }
 }
 function show(){
  const c=catalog[selected];
- elements.title.textContent=selected==='local'?(localName||c.title):selected==='tab'?captureName:c.title;
+ elements.title.textContent=selected==='local'?(localName||c.title):c.title;
  elements.desc.textContent=c.desc;
- elements.num.textContent=selected==='tab'?'LIVE TAB AUDIO':selected==='local'?'YOUR AUDIO':'360° MOTION';
+ elements.num.textContent=selected==='local'?'YOUR AUDIO':'360° MOTION';
  elements.type.textContent=c.type;elements.credit.textContent=c.credit;
- elements.link.style.display=selected==='local'||selected==='tab'?'none':'';
+ elements.link.style.display=selected==='local'?'none':'';
  elements.link.href=c.link||'https://github.com/mattlane66/lcc';
  elements.link.textContent='Recorded source and license ↗';
  elements.timer.textContent='0:00 / '+(duration()?ftime(duration()):'—');elements.progress.value=0;
- elements.hint.textContent=selected==='tab'
-  ? 'Your shared tab’s audio goes directly into LCC without another HRTF. Switch LCC as it plays.'
-  : selected==='local'
-    ? 'Your binaural stereo goes straight through LCC, without another HRTF. Switch On/Off as it plays.'
-    : 'A real recorded sound moves through HRTF. Switch LCC or speaker presets during playback.';
- elements.explanation.textContent=selected==='tab'
-  ? 'The audio from the tab you selected is processed live through LCC. Video stays in the other tab.'
-  : selected==='local'
-    ? 'Your two-channel audio goes straight into LCC. The moving-dot diagram applies only to Engine Orbit.'
-    : 'Recorded mono sound is deliberately moved around you using HRTF before LCC.';
+ elements.hint.textContent=selected==='local'
+    ? 'Your stereo audio plays through LCC. Toggle On and Off without stopping the sound.'
+    : 'Press Play, then switch LCC On and Off to hear the difference.';
+ elements.explanation.textContent=selected==='local'
+    ? 'Your two-channel audio goes directly into LCC, with no second HRTF.'
+    : 'Recorded engine audio moves around you through HRTF before LCC.';
  paint(0);
 }
 function selectPreset(which){
@@ -539,7 +479,7 @@ async function loadLocalStereo(){
      energy+=(left[i]*left[i]+right[i]*right[i])*.5;
    }
    if(peak<.001||Math.sqrt(energy/left.length)<.0001)throw Error('File appears to contain silence.');
-   if(captureStream)disconnectTabAudio('Trailer capture stopped. Local stereo selected.',false);
+
    ++token;offset=0;halt();
    localBuffer=decoded;localName=file.name;selected='local';
    elements.resetFile.disabled=false;
@@ -552,107 +492,6 @@ async function loadLocalStereo(){
    elements.localFile.value='';
  }
 }
-function releaseTabAudio(){
- if(captureMonitor!==null){clearInterval(captureMonitor);captureMonitor=null;}
- if(captureAnalyser){try{captureAnalyser.disconnect();}catch(_){ }captureAnalyser=null;}
- if(captureSource){try{captureSource.disconnect();}catch(_){ }captureSource=null;}
- const old=captureStream;captureStream=null;
- if(old)old.getTracks().forEach(track=>{try{track.stop();}catch(_){ }});
- elements.stopTab.disabled=true;
-}
-function disconnectTabAudio(reason='Trailer audio disconnected.',restoreEngine=true){
- ++captureRequest;
- const wasTab=selected==='tab';
- releaseTabAudio();
- if(wasTab){
-  ++token;offset=0;halt();
-  if(restoreEngine){selected='engine';show();}
- }
- elements.routeTab.disabled=false;
- elements.captureStatus.textContent=reason;
- if(wasTab&&restoreEngine)report('Engine Orbit restored. You can connect another playing trailer tab.');
-}
-function monitorTabAudio(stream,analyser,suppressed){
- let detected=false;
- const started=performance.now();
- const array=new Float32Array(analyser.fftSize);
- const note=suppressed
-  ? 'Tab audio received and original tab playback suppressed: LCC is the listening path.'
-  : 'Tab audio received, but original tab playback suppression is not confirmed. If you hear unprocessed sound too, the LCC comparison is unreliable; try Chrome/Edge or a local stereo file.';
- captureMonitor=setInterval(()=>{
-   if(captureStream!==stream){clearInterval(captureMonitor);captureMonitor=null;return;}
-   analyser.getFloatTimeDomainData(array);
-   let peak=0;
-   for(let i=0;i<array.length;i++)peak=Math.max(peak,Math.abs(array[i]));
-   if(peak>.001){
-     if(!detected){detected=true;elements.captureStatus.textContent=note;}
-   }else if(!detected&&performance.now()-started>4000){
-     elements.captureStatus.textContent='Tab connected, but no audible signal detected yet. Check the trailer is playing, "Share tab audio" is enabled, and the service allows capture.';
-   }
- },280);
-}
-async function beginTabAudio(){
- // The capture permission request MUST run directly inside a click handler,
- // before any await, because the browser requires a transient user gesture.
- if(!navigator.mediaDevices?.getDisplayMedia){
-   elements.captureStatus.textContent='This browser cannot share a tab’s audio. Try desktop Chrome/Edge or the local stereo-file option.';
-   return;
- }
- const mine=++captureRequest;
- elements.routeTab.disabled=true;
- elements.captureStatus.textContent='Select the playing trailer tab and enable “Share tab audio” in the browser prompt.';
- let stream=null;
- try{
-   const promise=navigator.mediaDevices.getDisplayMedia({
-     video:{displaySurface:'browser'},
-     audio:{suppressLocalAudioPlayback:true,echoCancellation:false,noiseSuppression:false,autoGainControl:false},
-     preferCurrentTab:false,selfBrowserSurface:'exclude',surfaceSwitching:'exclude',systemAudio:'exclude'
-   });
-   stream=await promise;
-   if(mine!==captureRequest){stream.getTracks().forEach(t=>t.stop());return;}
-   const video=stream.getVideoTracks()[0];
-   if(!video||video.getSettings().displaySurface!=='browser')
-     throw Error('Choose a browser TAB, not a window or full screen.');
-   const tracks=stream.getAudioTracks();
-   if(!tracks.length||tracks.every(t=>t.readyState!=='live'))
-     throw Error('The selected tab has no shared audio. Choose the trailer tab and enable “Share tab audio”.');
-   await graph();
-   if(ctx.state==='suspended')await ctx.resume();
-   if(mine!==captureRequest){stream.getTracks().forEach(t=>t.stop());return;}
-   const source=ctx.createMediaStreamSource(stream);
-   const analyser=ctx.createAnalyser();analyser.fftSize=2048;
-   source.connect(analyser);
-   if(captureStream)releaseTabAudio();
-   ++token;offset=0;halt();
-   selected='tab';captureName='Live trailer audio';
-   // The player can only have one active source. The prior local file
-   // is no longer selected once a live trailer is connected.
-   localBuffer=null;localName='';elements.localFile.value='';elements.resetFile.disabled=true;
-   captureStream=stream;captureSource=source;captureAnalyser=analyser;
-   analyser.connect(bus);
-   const current=stream;
-   for(const t of stream.getTracks()){
-     t.addEventListener('ended',()=>{
-       if(captureStream===current)disconnectTabAudio('The shared tab has stopped.',true);
-     },{once:true});
-   }
-   show();startTime=ctx.currentTime;setPlaying(true);
-   elements.stopTab.disabled=false;
-   elements.captureStatus.textContent='Tab connected. Looking for audio…';
-   const suppressed=tracks.every(t=>t.getSettings().suppressLocalAudioPlayback===true);
-   monitorTabAudio(stream,analyser,suppressed);
-   report('Live tab audio connected to LCC. Toggle LCC On/Off or change the speaker preset without restarting the trailer.');
- }catch(error){
-   if(stream&&stream!==captureStream)stream.getTracks().forEach(t=>{try{t.stop();}catch(_){ }});
-   if(mine===captureRequest){
-     elements.captureStatus.textContent='Could not connect tab audio: '+(error?.message||String(error))+'. Try desktop Chrome/Edge with the trailer playing.';
-   }
- }finally{
-   if(mine===captureRequest)elements.routeTab.disabled=false;
- }
-}
-elements.routeTab.addEventListener('click',()=>{void beginTabAudio();});
-elements.stopTab.addEventListener('click',()=>{disconnectTabAudio('Trailer audio disconnected. Engine Orbit restored.',true);});
 elements.localFile.addEventListener('change',()=>{void loadLocalStereo();});
 elements.resetFile.addEventListener('click',()=>{
  ++fileToken;++token;offset=0;halt();
@@ -667,7 +506,7 @@ elements.toggle.addEventListener('click',()=>{
  enabled=!enabled;reflect();
  report((enabled?'LCC On.':'LCC Off.')+(playing?' The spatial scene continues uninterrupted.':' Press Play to hear the scene.'));
 });
-window.addEventListener('pagehide',()=>{++captureRequest;releaseTabAudio();token++;halt();if(ctx)void ctx.close().catch(()=>{});});
+window.addEventListener('pagehide',()=>{token++;halt();if(ctx)void ctx.close().catch(()=>{});});
 show();selectPreset('loudspeakers');reflect();
 })();
 </script>
