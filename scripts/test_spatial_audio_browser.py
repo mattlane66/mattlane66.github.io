@@ -236,36 +236,28 @@ def main():
                     if page.locator("#lcc-switch").get_attribute("aria-checked")!="true":
                         failures.append("LCC switch reset when changing presets")
                     page.locator("#play").click()
-                    for kind in ["engine"]:
-                        page.locator(f'[data-sound="{kind}"]').click()
-                        before=page.evaluate("window.__lccAudit.panners")
-                        if not page.locator("#source-dot").is_visible():
-                            failures.append(f"Recorded object {kind} lacks moving source indicator")
-                        page.locator("#play").click()
-                        page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
-                        if page.evaluate("window.__lccAudit.panners")<=before:
-                            failures.append(f"Recorded mono object {kind} did not use PannerNode/HRTF")
-                        page.locator("#play").click()
-                    # Every candidate must move a real recorded mono source through HRTF.
-                    for kind in ["engine"]:
-                        page.locator(f'[data-sound="{kind}"]').click()
-                        if "Recorded source and license" not in page.locator("#source-link").inner_text():
-                            failures.append(f"Source/attribution link missing for {kind}")
-                        if "HRTF" not in page.locator("#stage-explanation").inner_text():
-                            failures.append(f"No HRTF source explanation for {kind}")
-                        before=page.evaluate("window.__lccAudit.panners")
-                        page.locator("#play").click()
-                        page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
-                        if page.evaluate("window.__lccAudit.panners")<=before:
-                            failures.append(f"Recorded {kind} missing directional HRTF node")
-                        first=page.locator("#source-dot").get_attribute("style")
-                        page.wait_for_timeout(300)
-                        if first==page.locator("#source-dot").get_attribute("style"):
-                            failures.append(f"Recorded {kind} shows no moving source dot")
-                        page.locator("#lcc-switch").click()
-                        page.locator("#lcc-switch").click()
-                        page.locator("#play").click()
-                    # Pause/resume keeps the source usable and avoids re-download.
+                    # Only Engine Orbit remains. No deleted sample-picker controls.
+                    if page.locator(".sample").count():
+                        failures.append("Deleted samples remain available")
+                    if page.locator("#source-link").count()!=1 or "Recorded source and license" not in page.locator("#source-link").inner_text():
+                        failures.append("Engine source/attribution link missing")
+                    if "HRTF" not in page.locator("#stage-explanation").inner_text():
+                        failures.append("Engine HRTF explanation missing")
+                    before=page.evaluate("window.__lccAudit.panners")
+                    page.locator("#play").click()
+                    page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
+                    if page.evaluate("window.__lccAudit.panners")<=before:
+                        failures.append("Engine source did not connect to spatial HRTF panner")
+                    first=page.locator("#source-dot").get_attribute("style")
+                    page.wait_for_timeout(330)
+                    if first==page.locator("#source-dot").get_attribute("style"):
+                        failures.append("Engine source does not visibly move")
+                    page.locator("#lcc-switch").click()
+                    page.locator("#lcc-switch").click()
+                    page.locator("#play").click()
+                    if "Play" not in page.locator("#play").inner_text():
+                        failures.append("Engine did not pause")
+                    # Resume still works, including cached audio.
                     page.locator("#play").click()
                     page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=10000)
                     page.locator("#play").click()
