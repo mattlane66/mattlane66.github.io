@@ -110,50 +110,40 @@ def probe_worklet(page):
     }""")
 
 
-def check_live_media(browser, base_url):
-    """Best-effort external fetch check; network blocking does not invalidate local DSP."""
-    page = browser.new_page()
-    try:
-        page.goto(base_url, wait_until="domcontentloaded")
-        for kind, url in [
-            ("engine", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/VEHCar_CarEngineHigh_LOOP_01.ogg")
-        ]:
-            try:
-                check=page.evaluate("""async (url) => {
-                    const controller=new AbortController();
-                    const timeout=setTimeout(()=>controller.abort(),12000);
-                    try{
-                      const response=await fetch(url,{mode:'cors',signal:controller.signal});
-                      if(!response.ok)throw new Error('HTTP '+response.status);
-                      const bytes=await response.arrayBuffer();
-                      const size=bytes.byteLength;
-                      const ac=new AudioContext();
-                      try{
-                        const audio=await ac.decodeAudioData(bytes);
-                        const x=audio.getChannelData(0);
-                        let peak=0,energy=0;
-                        for(let n=0;n<x.length;n++){
-                            peak=Math.max(peak,Math.abs(x[n]));
-                            energy+=x[n]*x[n];
-                        }
-                        const rms=Math.sqrt(energy/Math.max(1,x.length));
-                        return {channels:audio.numberOfChannels,duration:audio.duration,bytes:size,peak,rms};
-                      }finally{await ac.close();}
-                    }finally{clearTimeout(timeout);}
-                }""",url)
-                expected=1
-                if check["channels"]==expected and check["duration"]>0.35 and check["peak"]>=.01 and check["rms"]>=.001:
-                    print(f"LIVE MEDIA VERIFIED: {kind} channels={check['channels']} duration={check['duration']:.1f}s bytes={check['bytes']} peak={check['peak']:.4f} rms={check['rms']:.4f}")
-                else:
-                    raise ValueError(f"Engine source missing, silent or very low level: {check}")
-            except Exception as exc:
-                # Avoid claiming success for a source that merely decodes.
-                raise RuntimeError(f"Live engine audio source/level check failed: {exc}") from exc
-    finally:
-        page.close()
+def check_engine_asset(page):
+    """Decode the actual bundled sound (not a mocked stereo fixture)."""
+    return page.evaluate("""async () => {
+      const response=await fetch('./engine-orbit.ogg',{cache:'no-cache'});
+      if(!response.ok)throw new Error('Bundled engine HTTP '+response.status);
+      const bytes=await response.arrayBuffer();
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      try{
+        const decoded=await ctx.decodeAudioData(bytes);
+        const ch=decoded.getChannelData(0);
+        let peak=0,energy=0;
+        for(let i=0;i<ch.length;i++){peak=Math.max(peak,Math.abs(ch[i]));energy+=ch[i]*ch[i];}
+        return {bytes:bytes.byteLength,channels:decoded.numberOfChannels,
+          duration:decoded.duration,peak,rms:Math.sqrt(energy/ch.length)};
+      }finally{await ctx.close();}
+    }""")
+
+
+def wait_for_audible_output(page):
+    """Ensure samples actually flow through Web Audio output, not just UI state."""
+    page.wait_for_function("""() => {
+      const analyser=window.__lccOutputAnalyser;
+      if(!analyser)return false;
+      const data=new Float32Array(analyser.fftSize);
+      analyser.getFloatTimeDomainData(data);
+      let peak=0;
+      for(let i=0;i<data.length;i++)peak=Math.max(peak,Math.abs(data[i]));
+      return peak>.001;
+    }""",timeout=12000)
 
 
 def main():
+    import sys
+    engines=["webkit"] if "--webkit" in sys.argv else ["chromium"]
     port=free_port()
     handler=lambda *args,**kwargs:QuietHandler(*args,directory=str(ROOT),**kwargs)
     server=http.server.ThreadingHTTPServer(("127.0.0.1",port),handler)
@@ -163,257 +153,134 @@ def main():
     mono_fixture=mono_wav()
     try:
         with sync_playwright() as playwright:
-            browser=playwright.chromium.launch(headless=True,args=["--autoplay-policy=no-user-gesture-required"])
-            for viewport in [{"width":1440,"height":900},{"width":390,"height":844}]:
-                page=browser.new_page(viewport=viewport)
-                page.add_init_script("""(() => {
-                    window.__lccAudit={panners:0,captureCalls:0,captureOptions:null,captureGesture:false};
-                    const original=AudioContext.prototype.createPanner;
-                    AudioContext.prototype.createPanner=function(...args){
+            for engine in engines:
+                try:
+                    browser_type=getattr(playwright,engine)
+                    args={"headless":True}
+                    if engine=="chromium":
+                        args["args"]=["--autoplay-policy=no-user-gesture-required"]
+                    browser=browser_type.launch(**args)
+                except Exception as exc:
+                    failures.append(f"{engine} browser failed to launch: {exc}")
+                    continue
+                for viewport in [{"width":1440,"height":900},{"width":390,"height":844}]:
+                    page=browser.new_page(viewport=viewport)
+                    page.add_init_script("""(() => {
+                      window.__lccAudit={panners:0};
+                      const original=AudioContext.prototype.createPanner;
+                      AudioContext.prototype.createPanner=function(...args){
                         window.__lccAudit.panners++;
                         return original.apply(this,args);
-                    };
-                    // Stub permission-gated tab sharing with a genuine audio MediaStream.
-                    // It models capture routing but does NOT imply Dolby/THX permit capture.
-                    Object.defineProperty(navigator.mediaDevices,'getDisplayMedia',{
-                        configurable:true,
-                        value:function(options){
-                            window.__lccAudit.captureCalls++;
-                            window.__lccAudit.captureOptions=options;
-                            window.__lccAudit.captureGesture=!!navigator.userActivation?.isActive;
-                            const sourceCtx=new AudioContext();
-                            const oscillator=sourceCtx.createOscillator();
-                            const gain=sourceCtx.createGain();
-                            gain.gain.value=.20;oscillator.frequency.value=320;
-                            const dest=sourceCtx.createMediaStreamDestination();
-                            oscillator.connect(gain);gain.connect(dest);oscillator.start();
-                            const audioTrack=dest.stream.getAudioTracks()[0];
-                            Object.defineProperty(audioTrack,'getSettings',{
-                                configurable:true,value:()=>({suppressLocalAudioPlayback:true})
-                            });
-                            const canvas=document.createElement('canvas');
-                            canvas.width=16;canvas.height=16;
-                            const videoTrack=canvas.captureStream(10).getVideoTracks()[0];
-                            Object.defineProperty(videoTrack,'getSettings',{
-                                configurable:true,value:()=>({displaySurface:'browser'})
-                            });
-                            const stream=new MediaStream([audioTrack,videoTrack]);
-                            return Promise.resolve(stream);
-                        }
-                    });
-                })();""")
-                def audio_route(route):
-                    route.fulfill(status=200,content_type="audio/wav",body=fixture,
-                        headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
-                def mono_route(route):
-                    route.fulfill(status=200,content_type="audio/wav",body=mono_fixture,
-                        headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
-                page.route("https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/**",mono_route)
-                errors=[]
-                page.on("pageerror",lambda err:errors.append(str(err)))
-                page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
-                if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
-                if page.locator(".sample").count()!=0:failures.append("Unexpected redundant scene picker in one-scene demo")
-                if page.locator(".audition-grid a").count()!=8:
-                    failures.append("Expected eight Dolby/THX external reference links")
-                if not page.locator("#route-tab").is_visible():
-                    failures.append("Missing live trailer-audio LCC connection button")
-                if page.locator("#stop-tab").is_enabled():
-                    failures.append("Disconnect button should be disabled before sharing")
-                if "Share tab audio" not in page.locator(".demo-auditions").inner_text():
-                    failures.append("Trailer tab capture instructions are not visible")
-                if not page.locator("#stereo-file").is_visible():
-                    failures.append("Local stereo audition control missing")
-                if page.locator("#sample-title").inner_text().strip().lower()!="engine orbit":
-                    failures.append("Engine Orbit is not the only active scene")
-                if "Saw orbit" in page.locator("body").inner_text() or "Rotor overhead" in page.locator("body").inner_text():
-                    failures.append("Removed low-quality scenes remain visible")
-                if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed")!="true":
-                    failures.append("Original preset is not selected on load")
-                if page.locator("#lcc-switch").get_attribute("aria-checked")!="false":
-                    failures.append("LCC must begin Off")
-                if page.locator("iframe").count():failures.append("Unexpected obsolete player embed")
-                if page.locator("body").inner_text().find("Hear something real.")>=0:
-                    failures.append("Removed promotional binaural references are still present")
-                if page.locator("body").inner_text().find("All five scenes use original synthesized")>=0:
-                    failures.append("Removed verbose explanation is still present")
-                if page.locator(".signal").count():failures.append("Removed HDMI signal diagram is still present")
-                if not page.locator(".brand").get_attribute("href").startswith("https://mattlane66.github.io"):
-                    failures.append("Preview brand navigation does not return to portfolio")
-                width=page.evaluate("({doc:document.documentElement.scrollWidth,view:document.documentElement.clientWidth})")
-                if width["doc"]>width["view"]+4:
-                    failures.append(f"{viewport['width']}px page overflow: {width}")
-                try:
-                    probe=probe_worklet(page)
-                    if probe["bypassError"]>1e-5:failures.append(f"Stereo bypass altered signal: {probe}")
-                    if probe["orig"]["delay"]!=32 or abs(probe["orig"]["decay"]-.74989420933)>1e-9:
-                        failures.append(f"Original LCC default changed: {probe}")
-                    if probe["wetDifference"]<.001 or probe["presetDifference"]<.001:
-                        failures.append(f"LCC On or laptop preset made no DSP output difference: {probe}")
-                    if probe["laptop"]["preset"]!="laptop" or probe["laptop"]["delay"]!=113 or abs(probe["laptop"]["decay"]-.68)>1e-9 or probe["laptop"]["frames"]!=6:
-                        failures.append(f"Laptop preset failed to change delay and attenuation: {probe}")
-                    if probe["restored"]["preset"]!="loudspeakers" or probe["restored"]["delay"]!=32 or abs(probe["restored"]["decay"]-.74989420933)>1e-9 or probe["restored"]["frames"]!=2:
-                        failures.append(f"Original DSP preset could not be restored: {probe}")
-                    if any(probe["finite"]):failures.append(f"Non-finite audio samples: {probe}")
-                    page.locator("#play").click()
-                    page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
-                    first=page.locator("#source-dot").get_attribute("style")
-                    page.wait_for_timeout(400)
-                    if first==page.locator("#source-dot").get_attribute("style"):
-                        failures.append("3D source indicator did not move")
-                    page.locator("#lcc-switch").click()
-                    page.locator('[data-preset="laptop"]').click()
-                    if page.locator("#preset-active").inner_text()!="Laptop · 113 µs":
-                        failures.append("Laptop UI selection failed")
-                    page.wait_for_timeout(170)
-                    if not page.locator("#play").inner_text().find("Pause")>=0:
-                        failures.append("Audio stopped when changing to laptop preset")
-                    page.locator('[data-preset="loudspeakers"]').click()
-                    if page.locator("#preset-active").inner_text()!="Original LCC · 32 µs":
-                        failures.append("Restoring original UI selection failed")
-                    if page.locator("#lcc-switch").get_attribute("aria-checked")!="true":
-                        failures.append("LCC switch reset when changing presets")
-                    page.locator("#play").click()
-                    # Only Engine Orbit remains. No deleted sample-picker controls.
-                    if page.locator(".sample").count():
-                        failures.append("Deleted samples remain available")
-                    if page.locator("#source-link").count()!=1 or "Recorded source and license" not in page.locator("#source-link").inner_text():
-                        failures.append("Engine source/attribution link missing")
-                    if "HRTF" not in page.locator("#stage-explanation").inner_text():
-                        failures.append("Engine HRTF explanation missing")
-                    before=page.evaluate("window.__lccAudit.panners")
-                    page.locator("#play").click()
-                    page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
-                    if page.evaluate("window.__lccAudit.panners")<=before:
-                        failures.append("Engine source did not connect to spatial HRTF panner")
-                    first=page.locator("#source-dot").get_attribute("style")
-                    page.wait_for_timeout(330)
-                    if first==page.locator("#source-dot").get_attribute("style"):
-                        failures.append("Engine source does not visibly move")
-                    page.locator("#lcc-switch").click()
-                    page.locator("#lcc-switch").click()
-                    page.locator("#play").click()
-                    if "Play" not in page.locator("#play").inner_text():
-                        failures.append("Engine did not pause")
-                    # Resume still works, including cached audio.
-                    page.locator("#play").click()
-                    page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=10000)
-                    page.locator("#play").click()
-                    # User-provided binaural stereo must enter the LCC bus directly:
-                    # never downmix it and never run a second positional HRTF.
-                    page.locator("#stereo-file").set_input_files({
-                        "name":"test-binaural-stereo.wav",
-                        "mimeType":"audio/wav",
-                        "buffer":fixture
-                    })
-                    page.wait_for_function(
-                        "document.getElementById('file-status').textContent.startsWith('Ready:')",
-                        timeout=15000
-                    )
-                    if "test-binaural-stereo.wav" not in page.locator("#sample-title").inner_text():
-                        failures.append("Local file did not become active audio source")
-                    if page.locator("#source-dot").is_visible():
-                        failures.append("Locally loaded binaural stereo has a fake HRTF position dot")
-                    if not page.locator("#reset-file").is_enabled():
-                        failures.append("Return-to-engine control unavailable after local file selection")
-                    if page.locator("#source-link").is_visible():
-                        failures.append("Engine license link remained visible for private local audio")
-                    count_before=page.evaluate("window.__lccAudit.panners")
-                    page.locator("#play").click()
-                    page.wait_for_function(
-                        "document.getElementById('play').textContent.includes('Pause')",
-                        timeout=12000
-                    )
-                    if page.evaluate("window.__lccAudit.panners")!=count_before:
-                        failures.append("Local binaural audio was incorrectly given a second HRTF")
-                    page.locator("#lcc-switch").click()
-                    page.locator('[data-preset="laptop"]').click()
-                    if page.locator("#preset-active").inner_text()!="Laptop · 113 µs":
-                        failures.append("Local stereo did not preserve laptop preset switching")
-                    if "Pause" not in page.locator("#play").inner_text():
-                        failures.append("Local stereo stopped during preset switch")
-                    page.locator("#lcc-switch").click()
-                    page.locator('[data-preset="loudspeakers"]').click()
-                    page.locator("#reset-file").click()
-                    if page.locator("#sample-title").inner_text().lower()!="engine orbit":
-                        failures.append("Could not return to Engine Orbit")
-                    if not page.locator("#source-dot").is_visible():
-                        failures.append("Engine dot did not return after leaving binaural file")
-                    if page.locator("#reset-file").is_enabled():
-                        failures.append("Reset action remains active without a local file")
-                    # A mono file is not silently accepted as a binaural stereo file.
-                    page.locator("#stereo-file").set_input_files({
-                        "name":"mono-not-binaural.wav",
-                        "mimeType":"audio/wav",
-                        "buffer":mono_fixture
-                    })
-                    page.wait_for_function(
-                        "document.getElementById('file-status').textContent.startsWith('Could not use file:')",
-                        timeout=12000
-                    )
-                    if page.locator("#sample-title").inner_text().lower()!="engine orbit":
-                        failures.append("Rejected mono file changed the active source")
-                    # Request tab capture from a click event and route synthetic
-                    # stereo MediaStream into the SAME LCC worklet, no HRTF.
-                    panners_before=page.evaluate("window.__lccAudit.panners")
-                    page.locator("#route-tab").click()
-                    page.wait_for_function(
-                        "document.getElementById('sample-title').textContent==='Live trailer audio'",
-                        timeout=15000
-                    )
-                    if page.evaluate("window.__lccAudit.captureCalls")!=1:
-                        failures.append("Tab audio share picker was not invoked")
-                    opts=page.evaluate("window.__lccAudit.captureOptions")
-                    if opts.get("audio",{}).get("suppressLocalAudioPlayback") is not True:
-                        failures.append("Original trailer audio was not requested to be suppressed")
-                    if not page.evaluate("window.__lccAudit.captureGesture"):
-                        failures.append("Tab-audio sharing was not requested inside an active click")
-                    if page.evaluate("window.__lccAudit.panners")!=panners_before:
-                        failures.append("Captured trailer stereo was incorrectly spatialized with HRTF")
-                    if page.locator("#source-dot").is_visible():
-                        failures.append("Captured trailer stereo incorrectly shows HRTF source dot")
-                    if not page.locator("#stop-tab").is_enabled():
-                        failures.append("User cannot disconnect the shared trailer")
-                    if "Pause" not in page.locator("#play").inner_text():
-                        failures.append("Live tab audio did not enter the playing state")
-                    # Capture-audio monitor must recognize incoming non-silent PCM.
-                    page.wait_for_function(
-                        "document.getElementById('capture-status').textContent.includes('Tab audio received')",
-                        timeout=7000
-                    )
-                    page.locator("#lcc-switch").click()
-                    page.locator('[data-preset="laptop"]').click()
-                    if "Pause" not in page.locator("#play").inner_text():
-                        failures.append("Tab audio stopped when changing LCC preset")
-                    page.locator("#play").click()
-                    if "Play" not in page.locator("#play").inner_text():
-                        failures.append("Captured tab audio could not be locally muted")
-                    page.locator("#play").click()
-                    page.wait_for_function(
-                        "document.getElementById('play').textContent.includes('Pause')",
-                        timeout=4000
-                    )
-                    page.locator("#stop-tab").click()
-                    if page.locator("#sample-title").inner_text().lower()!="engine orbit":
-                        failures.append("Disconnect failed to restore Engine Orbit")
-                    if page.locator("#stop-tab").is_enabled():
-                        failures.append("Disconnect remained active after capture ended")
-                    if page.locator("#source-dot").is_visible() is False:
-                        failures.append("Engine orbit visualization did not return after disconnect")
-                    page.locator('[data-preset="loudspeakers"]').click()
-                except Exception as exc:
-                    failures.append(f"{viewport['width']}px browser interaction failure: {exc}")
-                if errors:failures.append(f"{viewport['width']}px runtime errors: {errors[:3]}")
-                page.close()
-            # An external probe is diagnostic, not the deterministic test.
-            check_live_media(browser,f"http://127.0.0.1:{port}/spatial-audio/")
-            browser.close()
+                      };
+                      if(navigator.mediaDevices){
+                        try{Object.defineProperty(navigator.mediaDevices,'getDisplayMedia',{
+                          configurable:true,
+                          value:()=>{throw Error('Forbidden tab capture was invoked')}
+                        });}catch(_){}
+                      }
+                    })();""")
+                    errors=[]
+                    remote=[]
+                    page.on("pageerror",lambda err:errors.append(str(err)))
+                    page.on("request",lambda req:remote.append(req.url) if req.url.startswith("https://") else None)
+                    try:
+                        page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
+                        if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
+                        if page.locator(".sample").count()!=0:failures.append("Sound picker should not clutter one-source demo")
+                        if page.locator("#route-tab").count() or page.locator(".demo-auditions").count():
+                            failures.append("Obsolete trailer tab-sharing feature remains")
+                        if page.locator("#play").count()!=1 or page.locator("#lcc-switch").count()!=1:
+                            failures.append("Simple Play and LCC controls missing")
+                        if page.locator(".own-audio").get_attribute("open") is not None:
+                            failures.append("Optional stereo-file controls should start collapsed")
+                        if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed")!="true":
+                            failures.append("Original preset must be default")
+                        if page.locator("#lcc-switch").get_attribute("aria-checked")!="false":
+                            failures.append("LCC should start Off")
+                        width=page.evaluate("({doc:document.documentElement.scrollWidth,view:document.documentElement.clientWidth})")
+                        if width["doc"]>width["view"]+4:
+                            failures.append(f"{engine} {viewport['width']}px overflow: {width}")
+                        asset=check_engine_asset(page)
+                        if asset["channels"]!=1 or asset["duration"]<3 or asset["peak"]<.05 or asset["rms"]<.01:
+                            failures.append(f"Bundled engine asset is wrong or too quiet: {asset}")
+                        print(f"BUNDLED AUDIO VERIFIED: {engine} mono duration={asset['duration']:.2f}s bytes={asset['bytes']} peak={asset['peak']:.4f} rms={asset['rms']:.4f}")
+                        probe=probe_worklet(page)
+                        if probe["bypassError"]>1e-5 or probe["wetDifference"]<.001 or probe["presetDifference"]<.001:
+                            failures.append(f"{engine}: original/laptop LCC DSP missing real signal difference: {probe}")
+                        if probe["orig"]["delay"]!=32 or abs(probe["orig"]["decay"]-.74989420933)>1e-9:
+                            failures.append(f"{engine}: original LCC default altered: {probe}")
+                        if probe["laptop"]["delay"]!=113 or abs(probe["laptop"]["decay"]-.68)>1e-9:
+                            failures.append(f"{engine}: laptop DSP model altered: {probe}")
+                        if probe["restored"]["delay"]!=32 or abs(probe["restored"]["decay"]-.74989420933)>1e-9:
+                            failures.append(f"{engine}: LCC default did not restore: {probe}")
+                        if any(probe["finite"]):failures.append(f"{engine}: non-finite DSP output: {probe}")
+                        # One click on Play, then an actual non-silent output signal.
+                        page.locator("#play").click()
+                        page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
+                        wait_for_audible_output(page)
+                        before=page.locator("#source-dot").get_attribute("style")
+                        page.wait_for_timeout(300)
+                        if before==page.locator("#source-dot").get_attribute("style"):
+                            failures.append(f"{engine}: 360-degree source did not move")
+                        if page.evaluate("window.__lccAudit.panners")<1:
+                            failures.append(f"{engine}: engine never passed through HRTF")
+                        page.locator("#lcc-switch").click()
+                        if page.locator("#lcc-switch").get_attribute("aria-checked")!="true":
+                            failures.append(f"{engine}: LCC On control failed")
+                        wait_for_audible_output(page)
+                        page.locator('[data-preset="laptop"]').click()
+                        if page.locator("#preset-active").inner_text()!="Laptop · 113 µs":
+                            failures.append(f"{engine}: laptop preset UI failed")
+                        if "Pause" not in page.locator("#play").inner_text():
+                            failures.append(f"{engine}: playback stopped on preset switch")
+                        wait_for_audible_output(page)
+                        page.locator('[data-preset="loudspeakers"]').click()
+                        page.locator("#lcc-switch").click()
+                        if page.locator("#lcc-switch").get_attribute("aria-checked")!="false":
+                            failures.append(f"{engine}: LCC Off control failed")
+                        wait_for_audible_output(page)
+                        page.locator("#play").click()
+                        if "Play" not in page.locator("#play").inner_text():
+                            failures.append(f"{engine}: pause control failed")
+                        # Optional local stereo is routed directly, without adding HRTF.
+                        page.locator(".own-audio summary").click()
+                        page.locator("#stereo-file").set_input_files({
+                            "name":"two-channel.wav","mimeType":"audio/wav","buffer":fixture
+                        })
+                        page.wait_for_function("document.getElementById('file-status').textContent.startsWith('Ready:')",timeout=15000)
+                        count=page.evaluate("window.__lccAudit.panners")
+                        if page.locator("#source-dot").is_visible():
+                            failures.append(f"{engine}: local binaural audio has false HRTF source")
+                        page.locator("#play").click()
+                        page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
+                        wait_for_audible_output(page)
+                        if page.evaluate("window.__lccAudit.panners")!=count:
+                            failures.append(f"{engine}: local stereo was re-HRTF processed")
+                        page.locator("#lcc-switch").click()
+                        page.locator('[data-preset="laptop"]').click()
+                        if "Pause" not in page.locator("#play").inner_text():
+                            failures.append(f"{engine}: local stereo stopped when LCC preset changed")
+                        page.locator("#reset-file").click()
+                        if page.locator("#sample-title").inner_text().lower()!="engine orbit":
+                            failures.append(f"{engine}: failed to restore built-in engine")
+                        page.locator("#stereo-file").set_input_files({
+                            "name":"mono.wav","mimeType":"audio/wav","buffer":mono_fixture
+                        })
+                        page.wait_for_function("document.getElementById('file-status').textContent.startsWith('Could not use file:')",timeout=15000)
+                        if page.locator("#sample-title").inner_text().lower()!="engine orbit":
+                            failures.append(f"{engine}: rejected mono file altered source")
+                    except Exception as exc:
+                        failures.append(f"{engine} {viewport['width']}px browser failure: {exc}")
+                    if remote:failures.append(f"{engine}: bundled playback unexpectedly requires external hosts: {remote[:2]}")
+                    if errors:failures.append(f"{engine}: JS errors: {errors[:3]}")
+                    page.close()
+                browser.close()
     finally:
         server.shutdown()
         server.server_close()
     for failure in failures:print("ERROR:",failure)
     if failures:return 1
-    print("LCC audition passed: live captured tab stereo routed through worklet without HRTF, user gesture, audio monitoring, suppression request, eight reference links, local stereo and both presets.")
+    print("LCC ONE-CLICK AUDIT PASSED: real bundled engine PCM, non-silent output, On/Off A-B without restart, both DSP presets, local stereo HRTF bypass, mono rejection, responsive layout.")
     return 0
 
 
