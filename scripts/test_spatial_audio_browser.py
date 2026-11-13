@@ -186,6 +186,12 @@ def main():
                 page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
                 if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
                 if page.locator(".sample").count()!=0:failures.append("Unexpected redundant scene picker in one-scene demo")
+                if page.locator(".audition-grid a").count()!=8:
+                    failures.append("Expected eight Dolby/THX external reference links")
+                if "not tracks routed through LCC" not in page.locator(".demo-auditions").inner_text():
+                    failures.append("External trailers must not be represented as LCC-processable")
+                if not page.locator("#stereo-file").is_visible():
+                    failures.append("Local stereo audition control missing")
                 if page.locator("#sample-title").inner_text().strip().lower()!="engine orbit":
                     failures.append("Engine Orbit is not the only active scene")
                 if "Saw orbit" in page.locator("body").inner_text() or "Rotor overhead" in page.locator("body").inner_text():
@@ -261,6 +267,60 @@ def main():
                     page.locator("#play").click()
                     page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=10000)
                     page.locator("#play").click()
+                    # User-provided binaural stereo must enter the LCC bus directly:
+                    # never downmix it and never run a second positional HRTF.
+                    page.locator("#stereo-file").set_input_files({
+                        "name":"test-binaural-stereo.wav",
+                        "mimeType":"audio/wav",
+                        "buffer":fixture
+                    })
+                    page.wait_for_function(
+                        "document.getElementById('file-status').textContent.startsWith('Ready:')",
+                        timeout=15000
+                    )
+                    if "test-binaural-stereo.wav" not in page.locator("#sample-title").inner_text():
+                        failures.append("Local file did not become active audio source")
+                    if page.locator("#source-dot").is_visible():
+                        failures.append("Locally loaded binaural stereo has a fake HRTF position dot")
+                    if not page.locator("#reset-file").is_enabled():
+                        failures.append("Return-to-engine control unavailable after local file selection")
+                    if page.locator("#source-link").is_visible():
+                        failures.append("Engine license link remained visible for private local audio")
+                    count_before=page.evaluate("window.__lccAudit.panners")
+                    page.locator("#play").click()
+                    page.wait_for_function(
+                        "document.getElementById('play').textContent.includes('Pause')",
+                        timeout=12000
+                    )
+                    if page.evaluate("window.__lccAudit.panners")!=count_before:
+                        failures.append("Local binaural audio was incorrectly given a second HRTF")
+                    page.locator("#lcc-switch").click()
+                    page.locator('[data-preset="laptop"]').click()
+                    if page.locator("#preset-active").inner_text()!="Laptop · 113 µs":
+                        failures.append("Local stereo did not preserve laptop preset switching")
+                    if "Pause" not in page.locator("#play").inner_text():
+                        failures.append("Local stereo stopped during preset switch")
+                    page.locator("#lcc-switch").click()
+                    page.locator('[data-preset="loudspeakers"]').click()
+                    page.locator("#reset-file").click()
+                    if page.locator("#sample-title").inner_text().lower()!="engine orbit":
+                        failures.append("Could not return to Engine Orbit")
+                    if not page.locator("#source-dot").is_visible():
+                        failures.append("Engine dot did not return after leaving binaural file")
+                    if page.locator("#reset-file").is_enabled():
+                        failures.append("Reset action remains active without a local file")
+                    # A mono file is not silently accepted as a binaural stereo file.
+                    page.locator("#stereo-file").set_input_files({
+                        "name":"mono-not-binaural.wav",
+                        "mimeType":"audio/wav",
+                        "buffer":mono_fixture
+                    })
+                    page.wait_for_function(
+                        "document.getElementById('file-status').textContent.startsWith('Could not use file:')",
+                        timeout=12000
+                    )
+                    if page.locator("#sample-title").inner_text().lower()!="engine orbit":
+                        failures.append("Rejected mono file changed the active source")
                 except Exception as exc:
                     failures.append(f"{viewport['width']}px browser interaction failure: {exc}")
                 if errors:failures.append(f"{viewport['width']}px runtime errors: {errors[:3]}")
@@ -273,7 +333,7 @@ def main():
         server.server_close()
     for failure in failures:print("ERROR:",failure)
     if failures:return 1
-    print("LCC demo passed: Engine Orbit only, live source audio level, HRTF routing, both DSP presets and desktop/mobile.")
+    print("LCC audition passed: eight studio reference links, local binaural stereo bypasses HRTF, mono rejected, original/laptop DSP presets and responsive playback.")
     return 0
 
 
