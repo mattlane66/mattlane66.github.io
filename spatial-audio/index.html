@@ -259,7 +259,7 @@ const elements={
 };
 let selected='engine',ctx=null,worklet=null,bus=null,playing=false,enabled=false,frame=0;
 let localBuffer=null,localName='',fileToken=0;
-let captureStream=null,captureSource=null,captureRequest=0,captureName='Trailer tab audio';
+let captureStream=null,captureSource=null,captureAnalyser=null,captureMonitor=null,captureRequest=0,captureName='Live trailer audio';
 let preset='loudspeakers';
 let sources=[],panners=[],startTime=0,offset=0,token=0;
 const recordingCache={};
@@ -432,6 +432,22 @@ function halt(){
  silence();setPlaying(false);
 }
 async function play(){
+ if(selected==='tab'){
+   if(!captureStream||!captureAnalyser||!captureStream.getAudioTracks().some(t=>t.readyState==='live')){
+     report('No live trailer audio is available. Connect a playing trailer tab again.');
+     return;
+   }
+   if(playing){
+     offset=elapsed();captureAnalyser.disconnect();setPlaying(false);
+     report('LCC playback muted. The source trailer continues playing in its original tab.');
+   }else{
+     try{if(ctx.state==='suspended')await ctx.resume();captureAnalyser.connect(bus);}
+     catch(error){report('Could not resume captured tab audio: '+(error?.message||error));return;}
+     startTime=ctx.currentTime-offset;setPlaying(true);
+     report('Live trailer audio is routed through LCC again.');
+   }
+   return;
+ }
  if(playing){offset=elapsed();halt();report('Paused. LCC '+(enabled?'On':'Off')+'.');return;}
  const mine=++token,kind=selected,c=catalog[kind];
  elements.play.disabled=true;elements.play.textContent='Loading…';
@@ -468,20 +484,24 @@ async function play(){
 }
 function show(){
  const c=catalog[selected];
- elements.title.textContent=selected==='local'?(localName||c.title):c.title;
+ elements.title.textContent=selected==='local'?(localName||c.title):selected==='tab'?captureName:c.title;
  elements.desc.textContent=c.desc;
- elements.num.textContent=selected==='local'?'YOUR AUDIO':'360° MOTION';
+ elements.num.textContent=selected==='tab'?'LIVE TAB AUDIO':selected==='local'?'YOUR AUDIO':'360° MOTION';
  elements.type.textContent=c.type;elements.credit.textContent=c.credit;
- elements.link.style.display=selected==='local'?'none':'';
+ elements.link.style.display=selected==='local'||selected==='tab'?'none':'';
  elements.link.href=c.link||'https://github.com/mattlane66/lcc';
  elements.link.textContent='Recorded source and license ↗';
  elements.timer.textContent='0:00 / '+(duration()?ftime(duration()):'—');elements.progress.value=0;
- elements.hint.textContent=selected==='local'
-  ? 'Your binaural stereo goes straight through LCC, without another HRTF. Switch On/Off as it plays.'
-  : 'A real recorded sound moves through HRTF. Switch LCC or speaker presets during playback.';
- elements.explanation.textContent=selected==='local'
-  ? 'Your two-channel audio goes straight into LCC. The moving-dot diagram applies only to Engine Orbit.'
-  : 'Recorded mono sound is deliberately moved around you using HRTF before LCC.';
+ elements.hint.textContent=selected==='tab'
+  ? 'Your shared tab’s audio goes directly into LCC without another HRTF. Switch LCC as it plays.'
+  : selected==='local'
+    ? 'Your binaural stereo goes straight through LCC, without another HRTF. Switch On/Off as it plays.'
+    : 'A real recorded sound moves through HRTF. Switch LCC or speaker presets during playback.';
+ elements.explanation.textContent=selected==='tab'
+  ? 'The audio from the tab you selected is processed live through LCC. Video stays in the other tab.'
+  : selected==='local'
+    ? 'Your two-channel audio goes straight into LCC. The moving-dot diagram applies only to Engine Orbit.'
+    : 'Recorded mono sound is deliberately moved around you using HRTF before LCC.';
  paint(0);
 }
 function selectPreset(which){
@@ -519,6 +539,7 @@ async function loadLocalStereo(){
      energy+=(left[i]*left[i]+right[i]*right[i])*.5;
    }
    if(peak<.001||Math.sqrt(energy/left.length)<.0001)throw Error('File appears to contain silence.');
+   if(captureStream)disconnectTabAudio('Trailer capture stopped. Local stereo selected.',false);
    ++token;offset=0;halt();
    localBuffer=decoded;localName=file.name;selected='local';
    elements.resetFile.disabled=false;
@@ -531,6 +552,104 @@ async function loadLocalStereo(){
    elements.localFile.value='';
  }
 }
+function releaseTabAudio(){
+ if(captureMonitor!==null){clearInterval(captureMonitor);captureMonitor=null;}
+ if(captureAnalyser){try{captureAnalyser.disconnect();}catch(_){ }captureAnalyser=null;}
+ if(captureSource){try{captureSource.disconnect();}catch(_){ }captureSource=null;}
+ const old=captureStream;captureStream=null;
+ if(old)old.getTracks().forEach(track=>{try{track.stop();}catch(_){ }});
+ elements.stopTab.disabled=true;
+}
+function disconnectTabAudio(reason='Trailer audio disconnected.',restoreEngine=true){
+ ++captureRequest;
+ const wasTab=selected==='tab';
+ releaseTabAudio();
+ if(wasTab){
+  ++token;offset=0;halt();
+  if(restoreEngine){selected='engine';show();}
+ }
+ elements.routeTab.disabled=false;
+ elements.captureStatus.textContent=reason;
+ if(wasTab&&restoreEngine)report('Engine Orbit restored. You can connect another playing trailer tab.');
+}
+function monitorTabAudio(stream,analyser,suppressed){
+ let detected=false;
+ const started=performance.now();
+ const array=new Float32Array(analyser.fftSize);
+ const note=suppressed
+  ? 'Tab audio received and original tab playback suppressed: LCC is the listening path.'
+  : 'Tab audio received, but original tab playback suppression is not confirmed. If you hear unprocessed sound too, the LCC comparison is unreliable; try Chrome/Edge or a local stereo file.';
+ captureMonitor=setInterval(()=>{
+   if(captureStream!==stream){clearInterval(captureMonitor);captureMonitor=null;return;}
+   analyser.getFloatTimeDomainData(array);
+   let peak=0;
+   for(let i=0;i<array.length;i++)peak=Math.max(peak,Math.abs(array[i]));
+   if(peak>.001){
+     if(!detected){detected=true;elements.captureStatus.textContent=note;}
+   }else if(!detected&&performance.now()-started>4000){
+     elements.captureStatus.textContent='Tab connected, but no audible signal detected yet. Check the trailer is playing, "Share tab audio" is enabled, and the service allows capture.';
+   }
+ },280);
+}
+async function beginTabAudio(){
+ // The capture permission request MUST run directly inside a click handler,
+ // before any await, because the browser requires a transient user gesture.
+ if(!navigator.mediaDevices?.getDisplayMedia){
+   elements.captureStatus.textContent='This browser cannot share a tab’s audio. Try desktop Chrome/Edge or the local stereo-file option.';
+   return;
+ }
+ const mine=++captureRequest;
+ elements.routeTab.disabled=true;
+ elements.captureStatus.textContent='Select the playing trailer tab and enable “Share tab audio” in the browser prompt.';
+ let stream=null;
+ try{
+   const promise=navigator.mediaDevices.getDisplayMedia({
+     video:{displaySurface:'browser'},
+     audio:{suppressLocalAudioPlayback:true,echoCancellation:false,noiseSuppression:false,autoGainControl:false},
+     preferCurrentTab:false,selfBrowserSurface:'exclude',surfaceSwitching:'exclude',systemAudio:'exclude'
+   });
+   stream=await promise;
+   if(mine!==captureRequest){stream.getTracks().forEach(t=>t.stop());return;}
+   const video=stream.getVideoTracks()[0];
+   if(!video||video.getSettings().displaySurface!=='browser')
+     throw Error('Choose a browser TAB, not a window or full screen.');
+   const tracks=stream.getAudioTracks();
+   if(!tracks.length||tracks.every(t=>t.readyState!=='live'))
+     throw Error('The selected tab has no shared audio. Choose the trailer tab and enable “Share tab audio”.');
+   await graph();
+   if(ctx.state==='suspended')await ctx.resume();
+   if(mine!==captureRequest){stream.getTracks().forEach(t=>t.stop());return;}
+   const source=ctx.createMediaStreamSource(stream);
+   const analyser=ctx.createAnalyser();analyser.fftSize=2048;
+   source.connect(analyser);
+   if(captureStream)releaseTabAudio();
+   ++token;offset=0;halt();
+   selected='tab';captureName='Live trailer audio';
+   captureStream=stream;captureSource=source;captureAnalyser=analyser;
+   analyser.connect(bus);
+   const current=stream;
+   for(const t of stream.getTracks()){
+     t.addEventListener('ended',()=>{
+       if(captureStream===current)disconnectTabAudio('The shared tab has stopped.',true);
+     },{once:true});
+   }
+   show();startTime=ctx.currentTime;setPlaying(true);
+   elements.stopTab.disabled=false;
+   elements.captureStatus.textContent='Tab connected. Looking for audio…';
+   const suppressed=tracks.every(t=>t.getSettings().suppressLocalAudioPlayback===true);
+   monitorTabAudio(stream,analyser,suppressed);
+   report('Live tab audio connected to LCC. Toggle LCC On/Off or change the speaker preset without restarting the trailer.');
+ }catch(error){
+   if(stream&&stream!==captureStream)stream.getTracks().forEach(t=>{try{t.stop();}catch(_){ }});
+   if(mine===captureRequest){
+     elements.captureStatus.textContent='Could not connect tab audio: '+(error?.message||String(error))+'. Try desktop Chrome/Edge with the trailer playing.';
+   }
+ }finally{
+   if(mine===captureRequest)elements.routeTab.disabled=false;
+ }
+}
+elements.routeTab.addEventListener('click',()=>{void beginTabAudio();});
+elements.stopTab.addEventListener('click',()=>{disconnectTabAudio('Trailer audio disconnected. Engine Orbit restored.',true);});
 elements.localFile.addEventListener('change',()=>{void loadLocalStereo();});
 elements.resetFile.addEventListener('click',()=>{
  ++fileToken;++token;offset=0;halt();
@@ -545,7 +664,7 @@ elements.toggle.addEventListener('click',()=>{
  enabled=!enabled;reflect();
  report((enabled?'LCC On.':'LCC Off.')+(playing?' The spatial scene continues uninterrupted.':' Press Play to hear the scene.'));
 });
-window.addEventListener('pagehide',()=>{token++;halt();if(ctx)void ctx.close().catch(()=>{});});
+window.addEventListener('pagehide',()=>{++captureRequest;releaseTabAudio();token++;halt();if(ctx)void ctx.close().catch(()=>{});});
 show();selectPreset('loudspeakers');reflect();
 })();
 </script>
