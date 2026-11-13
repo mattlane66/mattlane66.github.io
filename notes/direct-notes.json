@@ -1,5 +1,18 @@
 [
   {
+    "id": "coordination-is-a-problem-of-fit-20261113",
+    "date": "2026-11-13",
+    "title": "Coordination is a problem of fit",
+    "permalink": "coordination-is-a-problem-of-fit",
+    "category": "Products & systems",
+    "excerpt": "The goal isn't to make everyone coordinate more. It's to let people work independently without losing coherence.",
+    "body": "The more independently people work, the harder it becomes to ensure their contributions fit together.\n\nWe tend to solve this with more communication: meetings, updates, documentation, and approvals. But knowing what others are doing isn't the same as making the work coherent.\n\nA better approach starts with a shared understanding of what we're trying to achieve, what already exists, and what an acceptable solution must satisfy.\n\nFrom there:\n\n- **Coordinate intentions, not tasks.** Understand what people are trying to achieve and why.\n- **Check fit in both directions.** Does the proposed solution satisfy the requirements? Does every part of the solution serve a requirement?\n- **Find relationships between efforts.** Look for duplication, dependencies, contradictions, and opportunities to combine work.\n- **Reconcile early.** Resolve incompatibilities while work is taking shape, not after it's finished.\n- **Involve people selectively.** Bring others in when their judgment, authority, or collaboration is needed.\n- **Verify the whole.** Individually correct contributions can still produce a result that doesn't work together.\n\nThe goal isn't to make everyone coordinate more.\n\nIt's to let people work independently without losing coherence.\n\n**Fit isn't established once. It has to be maintained as things change.**",
+    "related_note_ids": [
+      "what-belongs-together-20261111",
+      "the-space-before-the-shape-20261111"
+    ]
+  },
+  {
     "id": "a-field-guide-to-explaining-things-20261112",
     "date": "2026-11-12",
     "title": "A Field Guide to Explaining Things",
