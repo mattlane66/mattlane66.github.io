@@ -625,6 +625,9 @@ async function beginTabAudio(){
    if(captureStream)releaseTabAudio();
    ++token;offset=0;halt();
    selected='tab';captureName='Live trailer audio';
+   // The player can only have one active source. The prior local file
+   // is no longer selected once a live trailer is connected.
+   localBuffer=null;localName='';elements.localFile.value='';elements.resetFile.disabled=true;
    captureStream=stream;captureSource=source;captureAnalyser=analyser;
    analyser.connect(bus);
    const current=stream;
