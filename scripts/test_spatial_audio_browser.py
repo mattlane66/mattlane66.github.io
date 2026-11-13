@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Browser audit for four selected recorded moving sources and two LCC presets.
+"""Browser audit for the single retained Engine Orbit scene and two LCC presets.
 
-Mocked dry mono PCM tests keep browser checks deterministic. External-source
-checks separately verify that the original mono files can be fetched and decoded.
+Mocked mono audio checks the actual HRTF and DSP paths; a separate browser
+probe checks the live recording's duration, channel count, peak and RMS level.
 """
 from __future__ import annotations
 
@@ -116,9 +116,7 @@ def check_live_media(browser, base_url):
     try:
         page.goto(base_url, wait_until="domcontentloaded")
         for kind, url in [
-            ("engine", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/VEHCar_CarEngineHigh_LOOP_01.ogg"),
-            ("saw", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/TOOLPowr_CircularSaw_OS_01.ogg"),
-            ("rotor", "https://upload.wikimedia.org/wikipedia/commons/b/b8/Helicopter_over_quiet_n.ogg")
+            ("engine", "https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/main/corpora/oculus-audio-pack/ogg/VEHCar_CarEngineHigh_LOOP_01.ogg")
         ]:
             try:
                 check=page.evaluate("""async (url) => {
@@ -132,17 +130,25 @@ def check_live_media(browser, base_url):
                       const ac=new AudioContext();
                       try{
                         const audio=await ac.decodeAudioData(bytes);
-                        return {channels:audio.numberOfChannels,duration:audio.duration,bytes:size};
+                        const x=audio.getChannelData(0);
+                        let peak=0,energy=0;
+                        for(let n=0;n<x.length;n++){
+                            peak=Math.max(peak,Math.abs(x[n]));
+                            energy+=x[n]*x[n];
+                        }
+                        const rms=Math.sqrt(energy/Math.max(1,x.length));
+                        return {channels:audio.numberOfChannels,duration:audio.duration,bytes:size,peak,rms};
                       }finally{await ac.close();}
                     }finally{clearTimeout(timeout);}
                 }""",url)
                 expected=1
-                if check["channels"]==expected and check["duration"]>0.35:
-                    print(f"LIVE MEDIA VERIFIED: {kind} channels={check['channels']} duration={check['duration']:.1f}s bytes={check['bytes']}")
+                if check["channels"]==expected and check["duration"]>0.35 and check["peak"]>=.01 and check["rms"]>=.001:
+                    print(f"LIVE MEDIA VERIFIED: {kind} channels={check['channels']} duration={check['duration']:.1f}s bytes={check['bytes']} peak={check['peak']:.4f} rms={check['rms']:.4f}")
                 else:
-                    print(f"WARNING: live media {kind} has unexpected channels/length: {check}")
+                    raise ValueError(f"Engine source missing, silent or very low level: {check}")
             except Exception as exc:
-                print(f"WARNING: live binaural media {kind} unavailable in CI browser: {str(exc)[:250]}")
+                # Avoid claiming success for a source that merely decodes.
+                raise RuntimeError(f"Live engine audio source/level check failed: {exc}") from exc
     finally:
         page.close()
 
@@ -175,12 +181,15 @@ def main():
                     route.fulfill(status=200,content_type="audio/wav",body=mono_fixture,
                         headers={"Access-Control-Allow-Origin":"*","Cache-Control":"no-store"})
                 page.route("https://raw.githubusercontent.com/facebookincubator/Meta-open-sound/**",mono_route)
-                page.route("https://upload.wikimedia.org/wikipedia/commons/**",mono_route)
                 errors=[]
                 page.on("pageerror",lambda err:errors.append(str(err)))
                 page.goto(f"http://127.0.0.1:{port}/spatial-audio/",wait_until="domcontentloaded")
                 if page.locator("h1").count()!=1:failures.append("Expected exactly one h1")
-                if page.locator(".sample").count()!=3:failures.append("Expected Engine reference + 2 new sustained moving sources")
+                if page.locator(".sample").count()!=0:failures.append("Unexpected redundant scene picker in one-scene demo")
+                if page.locator("#sample-title").inner_text().strip().lower()!="engine orbit":
+                    failures.append("Engine Orbit is not the only active scene")
+                if "Saw orbit" in page.locator("body").inner_text() or "Rotor overhead" in page.locator("body").inner_text():
+                    failures.append("Removed low-quality scenes remain visible")
                 if page.locator('[data-preset="loudspeakers"]').get_attribute("aria-pressed")!="true":
                     failures.append("Original preset is not selected on load")
                 if page.locator("#lcc-switch").get_attribute("aria-checked")!="false":
@@ -227,12 +236,7 @@ def main():
                     if page.locator("#lcc-switch").get_attribute("aria-checked")!="true":
                         failures.append("LCC switch reset when changing presets")
                     page.locator("#play").click()
-                    for kind in ["saw","rotor"]:
-                        page.locator(f'[data-sound="{kind}"]').click()
-                        page.locator("#play").click()
-                        page.wait_for_function("document.getElementById('play').textContent.includes('Pause')",timeout=15000)
-                        page.locator("#play").click()
-                    for kind in ["engine","saw","rotor"]:
+                    for kind in ["engine"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         before=page.evaluate("window.__lccAudit.panners")
                         if not page.locator("#source-dot").is_visible():
@@ -243,7 +247,7 @@ def main():
                             failures.append(f"Recorded mono object {kind} did not use PannerNode/HRTF")
                         page.locator("#play").click()
                     # Every candidate must move a real recorded mono source through HRTF.
-                    for kind in ["engine","saw","rotor"]:
+                    for kind in ["engine"]:
                         page.locator(f'[data-sound="{kind}"]').click()
                         if "Recorded source and license" not in page.locator("#source-link").inner_text():
                             failures.append(f"Source/attribution link missing for {kind}")
@@ -277,7 +281,7 @@ def main():
         server.server_close()
     for failure in failures:print("ERROR:",failure)
     if failures:return 1
-    print("LCC audition passed: Engine Orbit reference plus Saw and Rotor challengers; real audio, HRTF routing, DSP presets, desktop/mobile.")
+    print("LCC demo passed: Engine Orbit only, live source audio level, HRTF routing, both DSP presets and desktop/mobile.")
     return 0
 
 
