@@ -280,6 +280,9 @@ async function graph(){
  const A=window.AudioContext||window.webkitAudioContext;
  if(!A||!window.AudioWorkletNode)throw Error('This browser does not support the audio processor.');
  const c=new A({latencyHint:'playback'});
+ // Unlock Web Audio during the original Play click, before the async worklet
+ // download. Safari can otherwise refuse resume after user activation expires.
+ void c.resume().catch(()=>{});
  try{
   await c.audioWorklet.addModule('./lcc-worklet.js');
   const w=new AudioWorkletNode(c,'lcc-processor',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2],channelCount:2,channelCountMode:'explicit',channelInterpretation:'discrete'});
