@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fff8e7">
-<meta name="description" content="Binaural audio over loudspeakers: compare LCC with cinematic sound design and real binaural percussion, games-room and close-up recordings.">
+<meta name="description" content="Hear an engine orbit around you using binaural HRTF sound over loudspeakers. Compare original LCC and laptop presets with one-click On/Off.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <title>Spatial Audio — Matt Lane</title>
 <style>
@@ -35,7 +35,7 @@ h1{font-size:clamp(66px,9.5vw,123px);line-height:.94;letter-spacing:-.089em;marg
 .sample .number{font-size:11px;color:var(--muted);font-weight:700}
 .sample[aria-pressed=true] .number{color:#c4c2da}
 .sample .name{font-size:clamp(14px,1.6vw,18px);font-weight:740;letter-spacing:-.045em}
-.deck{border:1px solid var(--ink);border-top:0;background:var(--panel);padding:28px 30px}
+.deck{border:1px solid var(--ink);background:var(--panel);padding:28px 30px}
 .headline{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
 h2{font-size:clamp(27px,3.5vw,37px);line-height:1.05;letter-spacing:-.057em;margin:8px 0 8px}
 .description{margin:0;max-width:620px;color:var(--muted);font-size:14px;line-height:1.56}
@@ -275,6 +275,18 @@ async function loadExternalRecording(kind){
      const response=await fetch(url,{mode:'cors',signal:controller.signal,credentials:'omit'});
      if(!response.ok)throw new Error('HTTP '+response.status);
      const decoded=await ctx.decodeAudioData(await response.arrayBuffer());
+     // A downloaded and decoded audio file can still contain near-silence.
+     // Reject it rather than presenting a silent scene as if it were playing.
+     if(decoded.numberOfChannels!==1)throw new Error('Engine source must be mono.');
+     const samples=decoded.getChannelData(0);
+     let peak=0,energy=0;
+     for(let n=0;n<samples.length;n++){
+       const v=samples[n];
+       peak=Math.max(peak,Math.abs(v));
+       energy+=v*v;
+     }
+     const rms=Math.sqrt(energy/Math.max(1,samples.length));
+     if(peak<.01||rms<.001)throw new Error('Audio source is unexpectedly quiet.');
      if(c.playback==='object'){
        // Dry mono objects are spatialized once with PannerNode.
        if(decoded.numberOfChannels===1){
