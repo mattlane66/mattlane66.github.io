@@ -1,5 +1,19 @@
 [
   {
+    "id": "look-where-things-meet-20261115",
+    "date": "2026-11-15",
+    "title": "Look Where Things Meet",
+    "permalink": "look-where-things-meet",
+    "category": "Products & systems",
+    "sourceCategory": "Design, software, and systems",
+    "also": "Judgment, decisions, and problem-solving",
+    "summary": "How to locate a design leverage point by tracing work backward to the requirement and comparing ways to change it.",
+    "excerpt": "A small change at a consequential interface can preserve what works while making a different experience possible. Learn to find where an arrangement enforces a requirement—and where to intervene.",
+    "body": "A traditional espresso machine takes prepared grounds in a filter basket inside its portafilter. A Nespresso capsule holds a measured dose of coffee, but doesn't fit that brewing arrangement. How could one machine offer both ways of making coffee?\n\n**Follow the work backward.** You grind, dose, and tamp because the machine expects coffee in a particular form. The basket is where that requirement becomes physical. It is worth examining—but it isn't yet the answer.\n\n**Compare where you could intervene.** The pump already provides pressurized water. The capsule already contains the coffee. Replacing the whole machine would sacrifice something that works. The basket, however, is removable and sits where the coffee meets the brewing system. A replacement might accommodate the capsule without changing the machine or the capsule.\n\n**Why the basket?** The pump and capsule already do their jobs. The removable basket controls how coffee meets the machine, so it is worth exploring. An adapter must still fit, seal, direct water, and produce acceptable coffee.\n\nThat is the leverage: a small change at a consequential interface might preserve the working parts while changing the preparation required. The same machine can offer traditional control or the convenience of a capsule.\n\n**The point isn't to find where things merely touch. It's to find where an arrangement enforces a requirement—and where changing it could create a better experience.**\n\n## How to find it elsewhere\n\n1. **Start with the desired experience.** What should someone be able to do, and under what conditions?\n2. **Trace the work backward.** Where must people prepare, translate, wait, coordinate, or follow a rule? What makes that necessary?\n3. **Find where the requirement is enforced.** Which interface, component, handoff, or rule determines what is possible?\n4. **Compare possible changes.** What must stay true? What existing capability could satisfy the requirement differently? What could connect, separate, adapt, or reorder without disturbing what works?\n5. **Test the whole experience.** What new choices appear? Does the change fit the real conditions, or does the difficulty move somewhere else?\n\n## Try it today\n\nNotice someone doing work to make things work together—or obeying a rule nobody has questioned. Trace the work to the requirement. Compare where you could intervene, then imagine what becomes possible.\n\n**The opportunity may not be to improve either thing. It may be to change what they can do together.**",
+    "custom_html": true,
+    "related_note_ids": []
+  },
+  {
     "id": "alterality-20261115",
     "date": "2026-11-15",
     "title": "Alterality",
