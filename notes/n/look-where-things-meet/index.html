@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff8e7">
+<link rel="icon" href="/favicon.svg?v=20260930" type="image/svg+xml">
+<title>Look Where Things Meet — Matt Lane</title>
+<meta name="description" content="How to discover a design opportunity by tracing work to the requirement that creates it, then choosing where to intervene.">
+<link rel="canonical" href="https://mattlane66.github.io/notes/n/look-where-things-meet/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Matt Lane">
+<meta property="og:url" content="https://mattlane66.github.io/notes/n/look-where-things-meet/">
+<meta property="og:title" content="Look Where Things Meet — Matt Lane">
+<meta property="og:description" content="How to discover a design opportunity by tracing work to the requirement that creates it, then choosing where to intervene.">
+<meta property="og:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
+<meta property="og:image:alt" content="Matt Lane product strategy and interaction map">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Look Where Things Meet — Matt Lane">
+<meta name="twitter:description" content="How to discover a design opportunity by tracing work to the requirement that creates it, then choosing where to intervene.">
+<meta name="twitter:image" content="https://mattlane66.github.io/assets/working-form-flow-crisp-v3.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","@id":"https://mattlane66.github.io/notes/n/look-where-things-meet/#article","headline":"Look Where Things Meet","description":"How to discover a design opportunity by tracing work to the requirement that creates it, then choosing where to intervene.","url":"https://mattlane66.github.io/notes/n/look-where-things-meet/","datePublished":"2026-11-15","author":{"@type":"Person","@id":"https://mattlane66.github.io/#person","name":"Matt Lane","url":"https://mattlane66.github.io/"},"mainEntityOfPage":"https://mattlane66.github.io/notes/n/look-where-things-meet/"}</script>
+<style>
+:root{--bg:#f2efe7;--paper:#fffefa;--ink:#10100f;--muted:#68675f;--line:#cfccc1;--blue:#173dff;--max:900px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}
+.top{border-bottom:1px solid var(--line)}.topin{height:58px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{font-weight:800;text-decoration:none;letter-spacing:-.02em}.back{font-size:12px;color:var(--muted);text-decoration:none}
+main{padding:clamp(58px,9vw,110px) 0 100px}.meta{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:0 0 34px}
+.body{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.68;max-width:760px;overflow-wrap:anywhere}
+.body p{margin:0 0 1.1em}.body ol,.body ul{padding-left:1.5em;margin:0 0 1.1em}.body li{padding-left:.1em;margin:.3em 0}.body li p{margin:.4em 0}.body li>ul,.body li>ol{margin:.35em 0}.body img{max-width:100%;height:auto}.body pre{overflow-x:auto;padding:1em;background:#efede7;font-size:.85em}.body code{overflow-wrap:anywhere}.discussion{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.discussion h2{font-size:18px;letter-spacing:-.02em}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--muted);font-size:12px}
+
+.related-thinking{border-top:1px solid var(--line,#cfccc1);margin-top:42px;padding-top:22px;max-width:760px}
+.related-thinking h2{font-family:Inter,Arial,sans-serif;font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted,#666);margin:0 0 16px;font-weight:750}
+.related-thinking ul{list-style:none!important;display:grid;gap:12px;padding:0!important;margin:0!important}
+.related-thinking li{padding:0!important;margin:0!important}
+.related-thinking a{color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.related-thinking a:hover{color:var(--blue,#173dff)}
+</style>
+<link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
+<style>
+/* Interactive note, retaining the site's editorial typography and palette. */
+.note-figure{margin:31px 0 36px;max-width:760px;border-top:1px solid var(--line);padding-top:19px}.figure-title{font:700 15px/1.4 var(--font-ui);margin:0 0 17px}
+.choice-grid{width:100%;border-top:1px solid var(--line);font:400 14px/1.45 var(--font-reading)}.choice-head,.choice-row{display:grid;grid-template-columns:1fr 1.4fr 1.5fr;gap:12px;align-items:start;padding:11px 0;border-bottom:1px solid var(--line)}.choice-head{font:500 11px/1.4 var(--font-data);color:var(--muted);padding:9px 0}.choice-row b{font:700 14px/1.45 var(--font-ui)}.choice-row.chosen{border-bottom:2px solid #268bd2;background:rgba(38,139,210,.06)}.choice-row.chosen>*:first-child{padding-left:7px}.choice-row [role=cell]:last-child{color:var(--muted)}.choice-row.chosen [role=cell]:last-child{color:var(--ink)}.figure-note{font:400 13px/1.55 var(--font-reading);color:var(--muted);margin:13px 0 0}
+.body h2{font:750 22px/1.22 var(--font-ui);letter-spacing:-.035em;margin:40px 0 14px}.body strong{font-weight:700}
+.practice{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;max-width:760px}.apply{border:1px solid var(--ink);background:var(--ink);color:var(--paper);font:700 12px/1.3 var(--font-ui);padding:11px 16px;cursor:pointer}.apply:hover{background:var(--blue);border-color:var(--blue)}.practice-note{font:400 12px/1.4 var(--font-data);color:var(--muted)}
+.lexicon{margin-top:34px;max-width:760px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.lexicon summary{list-style:none;display:flex;gap:16px;align-items:center;padding:18px 0;cursor:pointer;font:700 14px/1.4 var(--font-ui)}.lexicon summary::-webkit-details-marker{display:none}.lexicon summary:after{content:"+";font:400 22px/1 var(--font-ui);color:var(--muted);margin-left:auto}.lexicon[open] summary:after{content:"−"}.lexicon-help{font:400 11px/1.4 var(--font-data);color:var(--muted);margin-left:2px}.lexicon-grid{margin:0;padding:0 0 22px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:26px}.lexicon-grid>div{border-top:1px solid var(--line);padding:11px 0 12px}.lexicon-grid dt{font:700 13px/1.45 var(--font-ui);margin:0 0 3px}.lexicon-grid dd{font:400 14px/1.52 var(--font-reading);color:var(--muted);margin:0}
+dialog.worksheet-modal{border:1px solid var(--ink);padding:0;width:min(735px,calc(100% - 30px));max-height:91dvh;background:var(--paper);color:var(--ink);box-shadow:8px 8px 0 rgba(22,22,29,.2)}dialog.worksheet-modal::backdrop{background:rgba(22,22,29,.57)}.dialog-header{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--line);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px;z-index:1}.dialog-header h2{font:800 22px/1.1 var(--font-ui);letter-spacing:-.04em;margin:0}.close{border:1px solid var(--line);background:transparent;color:var(--ink);width:34px;height:34px;font-size:24px;line-height:1;cursor:pointer}.dialog-body{padding:22px 22px 26px}.intro{font:400 16px/1.55 var(--font-reading);margin:0 0 20px;max-width:56ch}.sample{border:1px solid var(--line);background:transparent;color:var(--blue);padding:7px 11px;font:600 12px/1.4 var(--font-ui);margin-bottom:20px;cursor:pointer}
+.problem-label,.ws-item label{display:block;font:700 13px/1.5 var(--font-ui);margin-bottom:7px}.problem,.answer{width:100%;border:1px solid var(--line);background:var(--white);color:var(--ink);padding:11px;resize:vertical;font:400 15px/1.4 var(--font-reading)}.problem{min-height:72px}.answer{min-height:62px}.worksheet{margin-top:20px}.ws-item{border-top:1px solid var(--line);padding:16px 0;display:grid;grid-template-columns:33px 1fr;gap:9px}.ws-item:last-child{border-bottom:1px solid var(--line)}.ws-no{font:400 11px/1.5 var(--font-data);color:var(--muted)}.ws-hint{font:400 13px/1.5 var(--font-reading);color:var(--muted);margin:0 0 10px}
+.modal-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.copy{font:700 12px/1.3 var(--font-ui);border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:11px 14px;cursor:pointer}.copy.secondary{background:transparent;color:var(--ink)}.copy:hover{background:var(--blue);color:var(--paper);border-color:var(--blue)}.feedback{font:400 12px/1.4 var(--font-data);color:var(--muted);min-height:18px;margin-top:10px}.privacy{font:400 12px/1.5 var(--font-reading);color:var(--muted);margin:8px 0 0}
+.map-result{display:none;border-top:1px solid var(--line);margin-top:25px;padding-top:21px}.map-result.open{display:block;scroll-margin-top:85px}.map-result h3{font:750 17px/1.25 var(--font-ui);margin:0 0 6px}.map-result .disclaimer{font:400 12px/1.5 var(--font-reading);color:var(--muted);margin:0 0 18px}.map-goal{font:400 13px/1.55 var(--font-reading);border-bottom:1px solid var(--line);padding-bottom:12px;margin:0 0 14px}.map-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.map-step{border-top:2px solid var(--line);padding-top:8px;overflow-wrap:anywhere}.map-step.focus{border-color:#268bd2}.map-step strong{display:block;font:700 12px/1.3 var(--font-ui);margin-bottom:7px}.map-step p{font:400 13px/1.5 var(--font-reading);white-space:pre-wrap;margin:0}.map-constraint{font:400 12px/1.5 var(--font-reading);color:var(--muted);margin:14px 0 0}
+@media(max-width:650px){.body h2{font-size:20px}.map-steps{grid-template-columns:1fr}.dialog-header{padding:14px 17px}.dialog-body{padding:18px 17px}.dialog-header h2{font-size:19px}}
+@media(max-width:560px){.choice-head{display:none}.choice-row{grid-template-columns:minmax(82px,.8fr) minmax(0,1.3fr);gap:2px 12px;padding:12px 0}.choice-row [role=cell]:first-child{grid-row:1 / span 2}.choice-row [role=cell]:nth-child(2){grid-column:2;grid-row:1}.choice-row [role=cell]:nth-child(3){grid-column:2;grid-row:2;font-size:12px}.choice-row,.choice-row b{font-size:13px}.lexicon-grid{grid-template-columns:1fr}.lexicon-help{font-size:10px}}
+html.embed .top,html.embed footer{display:none}html.embed main{padding-top:28px}
+</style><script>if(new URLSearchParams(location.search).has("embed"))document.documentElement.classList.add("embed");</script>
+</head>
+<body data-note-category="products">
+<header class="top"><div class="wrap topin"><a class="brand" href="/notes/">Matt Lane · Notes</a><a class="back" href="/notes/">← All notes</a></div></header>
+<main class="wrap">
+<div class="meta">2026-11-15 · <span class="category-name">Products &amp; systems</span></div>
+<h1>Look Where Things Meet</h1>
+<article class="body">
+<p>A traditional espresso machine takes prepared grounds in a filter basket inside its portafilter. A Nespresso capsule holds a measured dose of coffee, but doesn't fit that brewing arrangement. How could one machine offer both ways of making coffee?</p>
+<p><strong>Follow the work backward.</strong> You grind, dose, and tamp because the machine expects coffee in a particular form. The basket is where that requirement becomes physical. It is worth examining—but it isn't yet the answer.</p>
+<p><strong>Compare where you could intervene.</strong> The pump already provides pressurized water. The capsule already contains the coffee. Replacing the whole machine would sacrifice something that works. The basket, however, is removable and sits where the coffee meets the brewing system. A replacement might accommodate the capsule without changing the machine or the capsule.</p>
+<figure class="note-figure" aria-labelledby="fig-title">
+<figcaption class="figure-title" id="fig-title">Why the basket?</figcaption>
+<div class="choice-grid" role="table" aria-label="Comparing possible places to intervene">
+<div class="choice-head" role="row"><span role="columnheader">Candidate</span><span role="columnheader">What it controls</span><span role="columnheader">Decision</span></div>
+<div class="choice-row" role="row"><b role="cell">Pump</b><span role="cell">Water and pressure</span><span role="cell">Keep: already works</span></div>
+<div class="choice-row" role="row"><b role="cell">Capsule</b><span role="cell">Pre-measured coffee</span><span role="cell">Keep: part of the desired experience</span></div>
+<div class="choice-row chosen" role="row"><b role="cell">Filter basket</b><span role="cell">How coffee fits the machine</span><span role="cell"><strong>Explore: replaceable, consequential</strong></span></div>
+<div class="choice-row" role="row"><b role="cell">Whole machine</b><span role="cell">Everything</span><span role="cell">Avoid if a smaller change fits</span></div>
+</div>
+<p class="figure-note">The highlighted choice is a hypothesis, not a guarantee. An adapter still needs to fit, seal, direct water through the capsule, and produce acceptable coffee.</p>
+</figure>
+<p>That is the leverage: a small change at a consequential interface might preserve the working parts while changing the preparation required. The same machine can offer traditional control or the convenience of a capsule.</p>
+<p><strong>The point isn't to find where things merely touch. It's to find where an arrangement enforces a requirement—and where changing it could create a better experience.</strong></p>
+<h2>How to find it elsewhere</h2>
+<ol>
+<li><strong>Start with the desired experience.</strong> What should someone be able to do, and under what conditions?</li>
+<li><strong>Trace the work backward.</strong> Where must people prepare, translate, wait, coordinate, or follow a rule? What makes that necessary?</li>
+<li><strong>Find where the requirement is enforced.</strong> Which interface, component, handoff, or rule determines what is possible?</li>
+<li><strong>Compare possible changes.</strong> What must stay true? What existing capability could satisfy the requirement differently? What could connect, separate, adapt, or reorder without disturbing what works?</li>
+<li><strong>Test the whole experience.</strong> What new choices appear? Does the change fit the real conditions, or does the difficulty move somewhere else?</li>
+</ol>
+<h2>Try it today</h2>
+<p>Notice someone doing work to make things work together—or obeying a rule nobody has questioned. Trace the work to the requirement. Compare where you could intervene, then imagine what becomes possible.</p>
+<p><strong>The opportunity may not be to improve either thing. It may be to change what they can do together.</strong></p>
+</article>
+<div class="practice"><button class="apply" id="openWorksheet" type="button">Apply to a problem</button><span class="practice-note">Optional · Five-question practice</span></div>
+<details class="lexicon"><summary>Language for the ideas <span class="lexicon-help">Optional · 12 terms</span></summary>
+<dl class="lexicon-grid">
+<div><dt>Interface</dt><dd>How two things meet or exchange something—materials, information, decisions, or actions.</dd></div>
+<div><dt>Boundary</dt><dd>Where one part, role, or responsibility ends and another begins.</dd></div>
+<div><dt>Dependency</dt><dd>Something that must happen or hold true before another thing can proceed.</dd></div>
+<div><dt>Coupling</dt><dd>How strongly two things affect or constrain one another. Sometimes coordination matters more than independence.</dd></div>
+<div><dt>Constraint</dt><dd>A condition a design must accommodate. Some are essential; others come from choices or conventions.</dd></div>
+<div><dt>Interoperability</dt><dd>The ability of separately designed things to work together.</dd></div>
+<div><dt>Adapter</dt><dd>A component or process that reconciles different interfaces without redesigning everything involved.</dd></div>
+<div><dt>Fit / misfit</dt><dd>How well an arrangement serves its real conditions—or where requirements conflict with it.</dd></div>
+<div><dt>Modularity / orthogonality</dt><dd>Keeping parts independent where possible, while designing together what must work together.</dd></div>
+<div><dt>Leverage point</dt><dd>A place where changing a relationship, rule, or flow can have wider consequences.</dd></div>
+<div><dt>Control factor</dt><dd>A condition or design variable you can choose or change in this effort.</dd></div>
+<div><dt>Selective coupling</dt><dd>Make the parts that must cooperate work together; leave unrelated parts independent.</dd></div>
+</dl></details>
+</main>
+<footer><div class="wrap">© 2026 Matt Lane</div></footer>
+<dialog class="worksheet-modal" id="worksheetModal" aria-labelledby="worksheetTitle">
+<div class="dialog-header"><h2 id="worksheetTitle">Apply to a problem</h2><button class="close" id="closeWorksheet" aria-label="Close worksheet" type="button">×</button></div>
+<div class="dialog-body">
+<p class="intro">Work backward from the experience, find what enforces the limitation, then compare possible places to intervene.</p>
+<button class="sample" id="tryExample" type="button">See a worked example: groceries by bicycle</button>
+<label class="problem-label" for="problem">Situation or problem</label><textarea class="problem" id="problem" placeholder="What is happening today?"></textarea>
+<div class="worksheet">
+<div class="ws-item"><span class="ws-no">01</span><div><label for="a1">Desired experience</label><p class="ws-hint">What should someone be able to do, and under what conditions?</p><textarea class="answer" id="a1"></textarea></div></div>
+<div class="ws-item"><span class="ws-no">02</span><div><label for="a2">Trace the work backward</label><p class="ws-hint">What work, constraint, or limitation occurs—and what makes it necessary?</p><textarea class="answer" id="a2"></textarea></div></div>
+<div class="ws-item"><span class="ws-no">03</span><div><label for="a3">Find the requirement</label><p class="ws-hint">Where is it enforced? What must be preserved?</p><textarea class="answer" id="a3"></textarea></div></div>
+<div class="ws-item"><span class="ws-no">04</span><div><label for="a4">Compare possible changes</label><p class="ws-hint">Which existing capability could meet the requirement another way? Compare where to intervene and what can remain intact.</p><textarea class="answer" id="a4"></textarea></div></div>
+<div class="ws-item"><span class="ws-no">05</span><div><label for="a5">Test what becomes possible</label><p class="ws-hint">Which new choices appear, what might get worse, and how would you test the fit?</p><textarea class="answer" id="a5"></textarea></div></div>
+</div>
+<div class="modal-actions"><button class="copy" id="viewMap" type="button">View relationship map</button><button class="copy secondary" id="copyWorksheet" type="button">Copy exercise</button><button class="copy secondary" id="copyAi" type="button">Copy AI prompt</button></div>
+<p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+<div class="map-result" id="mapResult" aria-live="polite"><h3>Your relationship map</h3><p class="disclaimer">A hypothesis to test, not a validated solution.</p><p class="map-goal" id="mapGoal"></p><div class="map-steps"><div class="map-step"><strong>Existing arrangement</strong><p id="mapBefore"></p></div><div class="map-step focus"><strong>Change a relationship</strong><p id="mapChange"></p></div><div class="map-step"><strong>New possibilities</strong><p id="mapAfter"></p></div></div><p class="map-constraint" id="mapConstraint"></p></div>
+<p class="privacy">Your answers stay in this page. Copying the AI prompt does not submit them to a service.</p></div></dialog>
+<script>
+(function(){
+const modal=document.getElementById('worksheetModal'),open=document.getElementById('openWorksheet'),close=document.getElementById('closeWorksheet'),problem=document.getElementById('problem'),feedback=document.getElementById('feedback');
+const q=[1,2,3,4,5].map(i=>document.getElementById('a'+i));
+const headings=['Desired experience and conditions','Work or limitation to explain','Where the requirement is enforced','Existing capabilities and alternative interventions','What becomes possible and how to test it'];
+open.addEventListener('click',()=>modal.showModal());close.addEventListener('click',()=>modal.close());modal.addEventListener('click',e=>{if(e.target===modal)modal.close()});
+function assign(id,value){document.getElementById(id).textContent=value.trim()||'Not yet described'}
+document.getElementById('viewMap').addEventListener('click',()=>{
+assign('mapGoal','Desired experience: '+(q[0].value.trim()||'Not yet described'));
+assign('mapBefore',q[1].value);assign('mapChange',q[3].value);assign('mapAfter',q[4].value);
+assign('mapConstraint','Where the requirement is enforced and what must hold: '+(q[2].value.trim()||'Not yet described'));
+const result=document.getElementById('mapResult');result.classList.add('open');result.scrollIntoView({behavior:'auto',block:'start'});
+});
+document.getElementById('tryExample').addEventListener('click',()=>{
+problem.value='Getting groceries home by bicycle without carrying unstable shopping bags.';
+const example=['Bring a useful amount of groceries home by bicycle, safely and without needing a car.','Loose grocery bags are difficult to attach securely to a bicycle, so the rider must improvise a way to carry them.','The bag-to-bicycle interface is where secure transport is required. Stability, load rating, and safe handling must be preserved.','Existing detachable bags and carriers show that secure storage can work without redesigning the bicycle. Compare a pannier, a removable crate, and a cargo bike before choosing the smallest suitable change.','A carrier could support shopping, riding, and unloading. Test mounting compatibility, loads, bicycle handling, and carrying comfort.'];
+q.forEach((el,i)=>el.value=example[i]);feedback.textContent='Example loaded. Edit any answer, then view its relationship map.';
+});
+function worksheet(){return 'LOOK WHERE THINGS MEET — A DESIGN EXERCISE\n\nSituation:\n'+(problem.value.trim()||'[Describe the situation]')+'\n\n'+q.map((el,i)=>(i+1)+'. '+headings[i]+'\n'+(el.value.trim()||'[Not answered]')).join('\n\n')}
+function aiPrompt(){return 'Apply this design-thinking method to the situation below. Do not invent observations or treat proposed benefits as established. Trace work or limitations backward to the exact interface, rule, component or handoff creating them. Distinguish constraints to preserve from assumptions. Identify existing capabilities that could satisfy requirements differently; compare at least three possible interventions and explain why the chosen leverage point is preferable. Describe new possible activities and test how they fit the whole experience.\n\n'+worksheet()}
+async function copyText(value){try{await navigator.clipboard.writeText(value);feedback.textContent='Copied.'}catch(e){feedback.textContent='Copy not available in this browser. You can select and copy your answers.'}}
+document.getElementById('copyWorksheet').addEventListener('click',()=>copyText(worksheet()));
+document.getElementById('copyAi').addEventListener('click',()=>copyText(aiPrompt()));
+})();
+</script>
+</body>
+</html>
