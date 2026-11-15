@@ -178,7 +178,7 @@ def build_notes() -> list[tuple[str,str]]:
     return urls
 
 def write_sitemap(note_urls: list[tuple[str,str]]) -> None:
-    core=[SITE+"/",SITE+"/about/",SITE+"/splice/",SITE+"/nyshex/",SITE+"/codeai/",SITE+"/fit-check/",SITE+"/planning-tools/",SITE+"/notes/"]
+    core=[SITE+"/",SITE+"/about/",SITE+"/splice/",SITE+"/nyshex/",SITE+"/codeai/",SITE+"/fit-check/",SITE+"/planning-tools/",SITE+"/spatial-audio/",SITE+"/notes/"]
     lines=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     lines += [f'  <url><loc>{u}</loc></url>' for u in core]
     lines += [f'  <url><loc>{u}</loc>'+(f'<lastmod>{d}</lastmod>' if d else '')+'</url>' for u,d in note_urls]
