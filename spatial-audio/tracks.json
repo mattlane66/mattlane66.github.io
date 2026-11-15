@@ -1,0 +1,20 @@
+[
+  {
+    "id": "battlefield-binaural",
+    "title": "Battlefield",
+    "src": "audio/battlefield-binaural.m4a",
+    "duration": 54.99
+  },
+  {
+    "id": "patch",
+    "title": "Patch",
+    "src": "audio/patch.m4a",
+    "duration": 35.34
+  },
+  {
+    "id": "gravity",
+    "title": "Gravity",
+    "src": "audio/gravity.m4a",
+    "duration": 40.58
+  }
+]

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff8e7">
+<meta name="description" content="Listen to stereo recordings with and without LCC (Localization Cue Correction) processing over closely spaced stereo loudspeakers.">
+<title>Spatial Audio · LCC Listening Lab</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:light;--paper:#fff8e7;--ink:#222320;--soft:#686c65;--orange:#c15e33;--orange-strong:#af4e26;--line:#ded8c7;--card:#fffdf6;--violet:#453665;--selected:#e9e7fc}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #4766ed;outline-offset:3px}
+.site-header{border-bottom:1px solid var(--line)}.site-header-inner{max-width:1180px;margin:auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{text-decoration:none;font-size:15px;font-weight:760;letter-spacing:-.035em}.back{text-decoration:none;color:var(--soft);font-size:13px}.back:hover{color:var(--orange)}
+.wrap{width:min(100% - 48px,1120px);margin:0 auto}.hero{padding:64px 0 38px;max-width:720px}.eyebrow{font-size:11px;letter-spacing:.16em;color:var(--orange);font-weight:780;text-transform:uppercase;margin:0 0 18px}.hero h1{font-size:clamp(42px,6vw,76px);line-height:1.02;letter-spacing:-.075em;font-weight:760;margin:0 0 20px}.intro{margin:0;max-width:640px;font-size:17px;color:#5d5e57;line-height:1.65}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:24px;align-items:start;padding-bottom:28px}
+.player{background:var(--card);border:1px solid var(--line);border-radius:23px;box-shadow:0 14px 45px rgba(59,42,15,.05);padding:clamp(22px,4vw,42px);min-height:422px}
+.player-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:38px}.micro-label{font-weight:760;text-transform:uppercase;letter-spacing:.13em;font-size:10px;color:var(--soft)}.track-num{font-size:12px;color:var(--soft);font-variant-numeric:tabular-nums}
+.art{width:84px;height:84px;border-radius:22px;background:radial-gradient(circle at 28% 18%,#ffdc9b,transparent 38%),radial-gradient(circle at 80% 70%,#bca3e5,transparent 48%),#d9d8cd;display:grid;place-items:center;margin-bottom:22px;overflow:hidden}
+.art svg{width:56px;height:56px;opacity:.7}.title{font-size:clamp(29px,4.4vw,47px);letter-spacing:-.055em;line-height:1.1;font-weight:760;margin:0 0 8px}.sub{font-size:13px;color:var(--soft);margin:0 0 32px}
+.transport{display:flex;gap:16px;align-items:center;margin:0 0 22px}.play{border:0;background:var(--ink);color:white;border-radius:50%;width:64px;height:64px;display:grid;place-items:center;flex-shrink:0;transition:transform .16s,background .16s}.play:hover{background:var(--orange);transform:scale(1.04)}.play:disabled{opacity:.55;cursor:wait;transform:none}.play svg{width:23px;height:23px;fill:currentColor}
+.timeline{flex:1;min-width:0}.time-row{display:flex;justify-content:space-between;font-size:12px;color:var(--soft);font-variant-numeric:tabular-nums;margin-bottom:10px}input[type=range]{accent-color:var(--orange);width:100%;cursor:pointer}.seek{display:block;height:5px;margin:0}
+.ab-label{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:26px;margin-bottom:12px}.ab-hint{font-size:12px;color:var(--soft)}.mode{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mode button{border:1px solid var(--line);background:#fffdf8;color:#66645d;border-radius:13px;padding:17px 10px;font-weight:750;font-size:16px;transition:all .15s}.mode button.active{color:#fff;background:var(--violet);border-color:var(--violet);box-shadow:0 3px 0 rgba(35,29,57,.12)}.mode button:not(.active):hover{border-color:#8875a2;color:var(--ink)}
+.status{min-height:44px;display:flex;gap:8px;align-items:center;font-size:12px;color:var(--soft);padding-top:17px}.led{width:7px;height:7px;background:#8e9986;border-radius:50%;display:inline-block;flex-shrink:0}.led.on{background:#6e56ac}.led.error{background:#ce543b}.footnote{font-size:12px;color:var(--soft);line-height:1.5;margin-top:10px}
+.collection{background:#fffaf0;border:1px solid var(--line);border-radius:21px;overflow:hidden}.collection-head{display:flex;justify-content:space-between;align-items:baseline;padding:21px 22px 18px;border-bottom:1px solid var(--line)}.collection h2{font-size:17px;letter-spacing:-.035em;margin:0}.collection-head span{font-size:12px;color:var(--soft)}.tracks{max-height:616px;overflow:auto;padding:8px}.track-button{display:flex;align-items:center;gap:12px;border:1px solid transparent;padding:13px;border-radius:12px;background:transparent;width:100%;text-align:left;min-width:0;color:var(--ink)}.track-button:hover{background:#f5eee3}.track-button.selected{background:var(--selected);border-color:#d7d0ef}.track-icon{height:32px;width:32px;flex-shrink:0;border-radius:9px;background:#ece5d7;display:grid;place-items:center;color:#7a7368}.selected .track-icon{background:#d6cfea;color:var(--violet)}.track-icon svg{width:15px;height:15px}.track-name{font-size:13px;font-weight:680;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.track-length{font-size:11px;color:var(--soft);font-variant-numeric:tabular-nums;flex-shrink:0}
+.info{border-top:1px solid var(--line);padding:31px 0 55px;display:flex;gap:36px;align-items:flex-start;justify-content:space-between}.info h2{font-size:16px;letter-spacing:-.03em;min-width:170px;margin:0}.info p{margin:0 0 10px;font-size:14px;color:var(--soft);max-width:740px;line-height:1.65}.info a{text-underline-offset:3px}.small{font-size:12px!important}
+footer{border-top:1px solid var(--line);padding:22px 0 38px;color:var(--soft);font-size:11px}
+@media(max-width:820px){.hero{padding:48px 0 26px}.lab{grid-template-columns:1fr}.collection{order:2}.tracks{max-height:360px}.player{min-height:auto}.info{display:block}.info h2{margin-bottom:12px}}
+@media(max-width:480px){.site-header-inner{padding:16px}.wrap{width:min(100% - 32px,1120px)}.hero h1{font-size:48px}.intro{font-size:15px}.player{padding:23px;border-radius:17px}.ab-hint{font-size:10px}.mode button{padding:14px 8px;font-size:15px}.art{width:68px;height:68px}.play{height:56px;width:56px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="site-header-inner"><a class="brand" href="https://mattlane66.github.io/">Matthew Lane</a><a class="back" href="https://mattlane66.github.io/">← Back to projects</a></div></header>
+<main class="wrap">
+<section class="hero"><p class="eyebrow">Spatial audio · Listening lab</p><h1>Hear the space.</h1><p class="intro">Play a recording. Switch LCC on and off while it plays. Hear what changes when stereo crosstalk is reduced.</p></section>
+<div class="lab">
+<section class="player" aria-label="Audio player"><div class="player-top"><span class="micro-label">Now playing</span><span class="track-num" id="trackNum">01 / 03</span></div>
+<div class="art" aria-hidden="true"><svg viewBox="0 0 70 70" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M7 35c8-19 14-19 22 0s14 19 22 0 14-19 19 0"/><path d="M7 46c8-19 14-19 22 0s14 19 22 0 14-19 19 0"/></svg></div>
+<h2 id="trackTitle" class="title">Battlefield</h2><p id="trackSub" class="sub">Stereo · 0:54</p>
+<div class="transport"><button class="play" type="button" id="play" aria-label="Play audio" title="Play or pause"><svg id="playIcon" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg></button><div class="timeline"><div class="time-row"><span id="elapsed">0:00</span><span id="total">0:00</span></div><input class="seek" id="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek playback"></div></div>
+<div class="ab-label"><span class="micro-label">Compare playback</span><span class="ab-hint">Switch without stopping</span></div>
+<div class="mode" role="group" aria-label="LCC audio mode"><button type="button" id="off" class="active" aria-pressed="true">LCC Off</button><button type="button" id="on" aria-pressed="false">LCC On</button></div>
+<div class="status" role="status" aria-live="polite"><span class="led" id="statusLed"></span><span id="statusText">Ready to play · Original stereo</span></div>
+<p class="footnote">Use stereo loudspeakers. LCC works best with closely spaced speakers and a centered listening position.</p>
+</section>
+<aside class="collection" aria-label="Audio recordings"><div class="collection-head"><h2>Recordings</h2><span id="count">3 tracks</span></div><div class="tracks" id="tracks" role="list"></div></aside>
+</div>
+<section class="info"><h2>What is LCC?</h2><div><p><strong>Localization Cue Correction</strong> is a lightweight stereo crosstalk-cancellation system. On loudspeakers, sound from the left speaker normally reaches both ears, and vice versa. LCC reduces this interference to preserve more of the left/right spatial cues in a recording.</p><p>Unlike binaural headphone playback, the intended result depends on speaker placement and where you sit. For the clearest comparison, keep the same volume, track, and listening position as you toggle.</p><p class="small">Algorithm by Robert LiKamWa and Matthew Lane, with guidance from Ralph Glasgal. <a href="https://github.com/mattlane66/lcc" target="_blank" rel="noopener noreferrer">View the open-source implementation</a>. Audio file titles are based on uploaded filenames; origin and usage rights have not been independently verified.</p></div></section>
+</main><footer><div class="wrap">LCC listening lab · LCC Listening Lab.</div></footer>
+<audio id="audio" preload="metadata" playsinline></audio>
+<script id="trackData" type="application/json">[{"id":"battlefield-binaural","title":"Battlefield","src":"audio/battlefield-binaural.m4a","duration":54.99},{"id":"patch","title":"Patch","src":"audio/patch.m4a","duration":35.34},{"id":"gravity","title":"Gravity","src":"audio/gravity.m4a","duration":40.58}]</script>
+<script src="player.js" defer></script>
+</body></html>
