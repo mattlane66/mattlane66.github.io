@@ -173,6 +173,40 @@ def main() -> int:
                                     path=str(output / shot), animations="disabled")
                                 pairs.append((device + " — maker " + label, shot, False))
                             page.locator("#maker-close").click()
+                        # The site's design-rationale dialog is normally hidden.
+                        # Capture and test its actual content and dismissal at both widths.
+                        if path == "index.html" and page.locator("#site-design-info-dialog").count():
+                            trigger = page.locator("#site-design-info-trigger")
+                            dialog = page.locator("#site-design-info-dialog")
+                            if not trigger.is_visible():
+                                failures.append(f"{device}: design explainer trigger is missing")
+                            else:
+                                trigger.click()
+                                dialog.wait_for(state="visible")
+                                section_count = dialog.locator(".design-info-section").count()
+                                if section_count != 5:
+                                    failures.append(f"{device}: design explainer expected 5 sections, found {section_count}")
+                                for label, selector in (
+                                    ("top", "#site-design-info-title"),
+                                    ("color", "#design-info-color"),
+                                    ("typography", "#design-info-typography"),
+                                    ("behavior", "#design-info-behavior"),
+                                    ("construction", "#design-info-construction"),
+                                ):
+                                    dialog.locator(selector).scroll_into_view_if_needed()
+                                    size = dialog.locator(".design-info-scroll").evaluate(
+                                        "el => ({client: el.clientWidth, scroll: el.scrollWidth})")
+                                    if size["scroll"] > size["client"] + 4:
+                                        failures.append(
+                                            f"{device}: design explainer horizontal overflow in {label}: {size}")
+                                    shot = png.replace(".png", f"-design-{label}.png")
+                                    dialog.screenshot(path=str(output / shot), animations="disabled")
+                                    pairs.append((device + " — design " + label, shot, False))
+                                page.keyboard.press("Escape")
+                                if dialog.is_visible():
+                                    failures.append(f"{device}: design explainer did not close with Escape")
+                                if page.evaluate("document.activeElement?.id") != "site-design-info-trigger":
+                                    failures.append(f"{device}: design explainer did not restore trigger focus")
                         # The Notes archive initially shows only its header; also
                         # capture its actual first cards so new Notes can be reviewed.
                         if path == "notes/index.html":
