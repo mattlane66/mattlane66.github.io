@@ -36,9 +36,14 @@ class LCCProcessor extends AudioWorkletProcessor {
     this.mix = 0;
     this.enabled = false;
     this.rampPerSample = 1 / Math.max(1, sampleRate * 0.03);
-    // Conservative shared headroom protects against peaks of the LCC matrix.
-    // The same gain is applied to ON and OFF to preserve their A/B level basis.
-    this.safetyGain = 0.55;
+    // The LCC feedback is bounded by 1 / (1 - decayGain) for a full-scale
+    // stereo input. Reserve shared headroom for that bound plus center gain.
+    // Apply the SAME attenuation to bypass and processed audio for a fair A/B.
+    const worstCaseWetGain = this.endGain * (
+      this.inputGain / (1 - this.decayGain) +
+      this.centerGain * this.inputGain * this.inputGain
+    );
+    this.safetyGain = 0.92 / Math.max(1, worstCaseWetGain);
     this.port.onmessage = ({data}) => {
       if (data && data.type === 'enable') this.enabled = !!data.value;
       if (data && data.type === 'reset') this.reset();
