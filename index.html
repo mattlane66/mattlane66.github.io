@@ -303,7 +303,8 @@ body.maker-modal-open{overflow:hidden}
 .hero-map.is-assembling>img{opacity:0}
 @media(prefers-reduced-motion:reduce){.hero-map.is-assembling>img{opacity:1}.hero-map .hero-assembly{display:none}}
 </style>
-<link rel="stylesheet" href="/assets/site-theme.css?v=20261012"><!-- homepage-rev:20261001-taste-note-v2 --></head><body><header class="top"><div class="shell topin"><a class="mark" href="#top">Matt Lane</a><nav class="nav"><a href="#cases">Case studies</a><a href="#projects">Side projects</a><a href="#tools">Thinking tools</a><a href="#writing">Writing</a><a href="./about/" target="_blank" rel="noopener noreferrer">About</a></nav></div></header>
+<link rel="stylesheet" href="/assets/site-theme.css?v=20261012">
+<link rel="stylesheet" href="/assets/site-design-info.css?v=20261115"><!-- homepage-rev:20261001-taste-note-v2 --></head><body><header class="top"><div class="shell topin"><a class="mark" href="#top">Matt Lane</a><nav class="nav"><a href="#cases">Case studies</a><a href="#projects">Side projects</a><a href="#tools">Thinking tools</a><a href="#writing">Writing</a><a href="./about/" target="_blank" rel="noopener noreferrer">About</a></nav></div></header>
 <main id="top" class="shell"><section class="hero"><div><div class="k">Product Strategist · Builder</div><h1>I direct<br>how products<br>take shape.</h1><p>I make judgments about the whole—experience, economics, distribution, and what compounds with use—then turn them into working form: capabilities, interactions, and structure.</p></div><div class="hero-visual"><div class="hero-map" data-assemble="working-form"><img src="./assets/working-form-flow-crisp-v3.jpg?v=20260929f" alt="Detailed product interaction and workflow map" width="1568" height="1003" fetchpriority="high" decoding="async"></div><p class="hero-caption">I decide what matters, what belongs, what gets in the way, and what needs to be obvious—then wire the system so humans and agents can make the right thing the right way.</p></div></div></section></main><div class="tape" role="group" aria-label="What deserves our attention? What shape should it take? What should we preserve as it takes shape?"><div class="track" aria-hidden="true"><div class="ticker-sequence"><span>What deserves our attention?</span><span>What shape should it take?</span><span>What should we preserve as it takes shape?</span></div><div class="ticker-sequence"><span>What deserves our attention?</span><span>What shape should it take?</span><span>What should we preserve as it takes shape?</span></div></div></div>
 <script>
 (function(){
@@ -785,6 +786,78 @@ body.maker-modal-open{overflow:hidden}
   });
 })();
 </script>
+
+
+<!-- Design decisions: a small editorial explainer, disclosed on demand. -->
+<button id="site-design-info-trigger" type="button" aria-label="Why I made this site look this way" aria-haspopup="dialog" aria-controls="site-design-info-dialog" title="Why I made it look this way"><span aria-hidden="true">i</span></button>
+<dialog id="site-design-info-dialog" aria-labelledby="site-design-info-title">
+  <div class="design-info-bar">
+    <span class="design-info-eyebrow">About this site / Design decisions</span>
+    <button type="button" class="design-info-close" aria-label="Close design explanation" autofocus>&times;</button>
+  </div>
+  <div class="design-info-scroll">
+    <h2 id="site-design-info-title">Why I made it<br>look this way.</h2>
+
+    <section class="design-info-section" aria-labelledby="design-info-layout">
+      <h3 id="design-info-layout">01 / Layout</h3>
+      <div class="design-info-copy">
+        <p>I organized the site around different ways of understanding my work. Case studies show decisions in context. Side projects show what I choose to make. Thinking tools let people use my methods. Writing makes the reasoning available for examination.</p>
+        <p>The homepage establishes a hierarchy through scale, spacing, alignment, and contrast. Repeated patterns make content easy to scan and compare. Each destination then uses the interface appropriate to its purpose: narrative for case studies, focused reading layouts for writing, and interactive environments for tools.</p>
+        <p>The goal is to make the structure understandable without having to explain it.</p>
+      </div>
+    </section>
+
+    <section class="design-info-section" aria-labelledby="design-info-color">
+      <h3 id="design-info-color">02 / Color</h3>
+      <div class="design-info-copy">
+        <p>I chose Cosmic Latte instead of pure white for a warmer, softer reading surface, paired with dark text for clear contrast.</p>
+        <p>Solarized was developed with carefully controlled luminance and color relationships, intended to support prolonged screen use with less visual strain. I use its colors to distinguish subjects and establish a consistent visual language without competing with the content.</p>
+        <p>Color should help people recognize and understand information, not merely decorate it.</p>
+        <div class="design-info-swatches" aria-label="Category accent colors">
+          <span><i style="--swatch:#2aa198" aria-hidden="true"></i>AI</span>
+          <span><i style="--swatch:#268bd2" aria-hidden="true"></i>Products</span>
+          <span><i style="--swatch:#6c71c4" aria-hidden="true"></i>Judgment</span>
+          <span><i style="--swatch:#d33682" aria-hidden="true"></i>Writing</span>
+          <span><i style="--swatch:#859900" aria-hidden="true"></i>Life</span>
+          <span><i style="--swatch:#cb4b16" aria-hidden="true"></i>Society</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="design-info-section" aria-labelledby="design-info-typography">
+      <h3 id="design-info-typography">03 / Typography</h3>
+      <div class="design-info-copy">
+        <p>I chose typefaces designed for clarity on digital screens.</p>
+        <p>Inter was developed for user interfaces, with proportions optimized for legibility at small sizes. It handles headings, navigation, and interface elements.</p>
+        <p>Atkinson Hyperlegible Next was designed to improve character recognition, particularly for people with low vision. It handles sustained reading. Its monospace companion handles metadata, dates, and code.</p>
+        <p>Each typeface has a distinct job. Together, they make the site easier to scan, navigate, and read.</p>
+        <div class="design-info-fonts" aria-label="The typefaces and their roles">
+          <div><b class="font-inter">Inter</b><small>Structure and navigation</small></div>
+          <div><b class="font-reading">Atkinson Hyperlegible Next</b><small>Reading</small></div>
+          <div><b class="font-mono">Atkinson Hyperlegible Mono</b><small>Metadata and code</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="design-info-section" aria-labelledby="design-info-behavior">
+      <h3 id="design-info-behavior">04 / Behavior</h3>
+      <div class="design-info-copy">
+        <p>Interaction should clarify what something is, what it does, or what becomes possible.</p>
+        <p>Movement reveals relationships and transitions. Hover states signal what's interactive. Dialogs reveal detail without losing context. Thinking tools make ideas testable rather than merely described.</p>
+        <p>I keep the rest still. Motion, feedback, and interaction should earn their place by improving understanding or control.</p>
+      </div>
+    </section>
+
+    <section class="design-info-section" aria-labelledby="design-info-construction">
+      <h3 id="design-info-construction">05 / Construction</h3>
+      <div class="design-info-copy">
+        <p>Plain HTML, CSS, and JavaScript. No framework or build pipeline.</p>
+        <p>I wanted the site to remain portable, inspectable, and easy to change. The implementation should be no more complicated than the experience requires.</p>
+      </div>
+    </section>
+  </div>
+</dialog>
+<script defer src="/assets/site-design-info.js?v=20261115"></script>
 
 <script defer src="./assets/working-form-assembly.js?v=20261112-canvas-render"></script>
 </body></html>
