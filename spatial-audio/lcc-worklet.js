@@ -3,23 +3,18 @@
  * lcc_rtaudio.cpp by Robert LiKamWa and Matthew Lane.
  * https://github.com/mattlane66/lcc/blob/master/lcc_rtaudio.cpp
  *
- * The loudspeaker preset uses the exact original numerical parameters.
- * The laptop preset is a previously modeled, uncalibrated nearfield geometry.
- * Both cores run continuously. Their outputs are aligned to the same sample
- * before a smooth preset crossfade. Bypass and LCC share that same latency
- * and fixed output gain, so A/B does not seek, decode twice, or restart.
+ * One fixed loudspeaker core uses the original algorithm parameters.
+ * Bypass and LCC use the same latency and output gain; switching neither
+ * reloads nor restarts playback.
  *
  * AudioWorklet input/output samples are Float32; recurrence state, the
- * fractional delay, preset blend, and output alignment use Float64.
+ * fractional delay and output alignment use Float64.
  */
 
-const LCC_PRESETS = Object.freeze({
-  loudspeakers: { delayUs: 32, decayGain: 0.74989420933 },
-  laptop: { delayUs: 113, decayGain: 0.68 },
-});
+const LCC_PRESET = Object.freeze({ delayUs: 32, decayGain: 0.74989420933 });
 
 class LCCCore {
-  constructor(preset, sharedFrames) {
+  constructor(preset) {
     this.inputGain = 0.70;
     this.centerGain = 0.70;
     this.endGain = 1.4285;
@@ -37,19 +32,15 @@ class LCCCore {
     this.prevR = new Float64Array(n);
     this.wetL = new Float64Array(n);
     this.wetR = new Float64Array(n);
-    this.padFrames = sharedFrames - n;
-    this.padL = new Float64Array(this.padFrames);
-    this.padR = new Float64Array(this.padFrames);
     this.reset();
   }
 
   reset() {
-    for (const key of ['inL','inR','preL','preR','prevL','prevR','wetL','wetR','padL','padR']) {
+    for (const key of ['inL','inR','preL','preR','prevL','prevR','wetL','wetR']) {
       this[key].fill(0);
     }
     this.fill = 0;
     this.read = this.frames;
-    this.padIndex = 0;
     this.outputL = 0;
     this.outputR = 0;
   }
@@ -98,69 +89,47 @@ class LCCCore {
       this.fill = 0;
       this.read = 0;
     }
-    // Align cores with different filter-block lengths before blending.
-    // Always pad the shorter core; do not phase-shift one preset against dry.
-    if (this.padFrames > 0) {
-      const p = this.padIndex;
-      this.outputL = this.padL[p];
-      this.outputR = this.padR[p];
-      this.padL[p] = wetL;
-      this.padR[p] = wetR;
-      this.padIndex = (p + 1) % this.padFrames;
-    } else {
-      this.outputL = wetL;
-      this.outputR = wetR;
-    }
+    this.outputL = wetL;
+    this.outputR = wetR;
   }
 }
 
 class LCCProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
-    const maxFrames = Math.max(
-      ...Object.values(LCC_PRESETS).map(p => Math.max(1, Math.ceil(p.delayUs * 1e-6 * sampleRate)))
-    );
-    this.cores = {
-      loudspeakers: new LCCCore(LCC_PRESETS.loudspeakers, maxFrames),
-      laptop: new LCCCore(LCC_PRESETS.laptop, maxFrames),
-    };
-    this.dryL = new Float64Array(maxFrames);
-    this.dryR = new Float64Array(maxFrames);
-    this.latencySamples = maxFrames;
+    this.core = new LCCCore(LCC_PRESET);
+    const frames = this.core.frames;
+    this.dryL = new Float64Array(frames);
+    this.dryR = new Float64Array(frames);
+    this.latencySamples = frames;
     this.dryIndex = 0;
     this.enabled = false;
     this.mix = 0;
-    this.preset = 'loudspeakers';
-    this.presetMix = 0;
-    // Both DSP cores run continuously: a short smooth fade avoids hard switching.
-    this.rampPerSample = 1 / Math.max(1, sampleRate * 0.008); // 8 ms LCC A/B
-    this.presetRampPerSample = 1 / Math.max(1, sampleRate * 0.012); // 12 ms preset
+    this.rampPerSample = 1 / Math.max(1, sampleRate * 0.008); // 8 ms A/B fade
 
     // Fixed, common gain (~-6.4 dB), retained from the prior tested build.
-    // Both presets and bypass share the SAME gain. Current lossless source
+    // Both bypass and LCC share the SAME gain. Current lossless source
     // tracks are checked for peaks at common browser rates before publication.
     this.safetyGain = 0.48;
     this.port.onmessage = ({data}) => {
       if (!data) return;
       if (data.type === 'enable') this.enabled = Boolean(data.value);
-      if (data.type === 'preset' && LCC_PRESETS[data.value]) this.preset = data.value;
       if (data.type === 'reset') this.reset();
     };
   }
 
   reset() {
-    this.cores.loudspeakers.reset();
-    this.cores.laptop.reset();
+    this.core.reset();
     this.dryL.fill(0);
     this.dryR.fill(0);
     this.dryIndex = 0;
   }
 
-  // Transparent below |0.98|: no limiter action on validated tracks.
+  // Transparent below |0.92|: no limiter action on validated tracks.
   // Exceptional input saturates smoothly without clipping the output device.
   peakGuard(value) {
-    const threshold = 0.98;
-    const range = 0.019;
+    const threshold = 0.92;
+    const range = 0.075;
     if (value > threshold) return threshold + range * Math.tanh((value - threshold) / range);
     if (value < -threshold) return -threshold - range * Math.tanh((-value - threshold) / range);
     return value;
@@ -172,8 +141,7 @@ class LCCProcessor extends AudioWorkletProcessor {
     if (!output[0]) return true;
     const sourceL = input[0], sourceR = input[1] || input[0];
     const outL = output[0], outR = output[1];
-    const speakers = this.cores.loudspeakers;
-    const laptop = this.cores.laptop;
+    const speakers = this.core;
     const n = outL.length;
 
     for (let i = 0; i < n; i++) {
@@ -187,16 +155,11 @@ class LCCProcessor extends AudioWorkletProcessor {
       this.dryIndex = (p + 1) % this.latencySamples;
 
       speakers.processSample(l, r);
-      laptop.processSample(l, r);
       const modeTarget = this.enabled ? 1 : 0;
-      const presetTarget = this.preset === 'laptop' ? 1 : 0;
       if (this.mix < modeTarget) this.mix = Math.min(modeTarget, this.mix + this.rampPerSample);
       else if (this.mix > modeTarget) this.mix = Math.max(modeTarget, this.mix - this.rampPerSample);
-      if (this.presetMix < presetTarget) this.presetMix = Math.min(presetTarget, this.presetMix + this.presetRampPerSample);
-      else if (this.presetMix > presetTarget) this.presetMix = Math.max(presetTarget, this.presetMix - this.presetRampPerSample);
-
-      const wetL = speakers.outputL * (1 - this.presetMix) + laptop.outputL * this.presetMix;
-      const wetR = speakers.outputR * (1 - this.presetMix) + laptop.outputR * this.presetMix;
+      const wetL = speakers.outputL;
+      const wetR = speakers.outputR;
       const a = this.mix;
       outL[i] = this.peakGuard(this.safetyGain * (dryL * (1 - a) + wetL * a));
       if (outR) outR[i] = this.peakGuard(this.safetyGain * (dryR * (1 - a) + wetR * a));

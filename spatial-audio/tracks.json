@@ -3,18 +3,21 @@
     "id": "battlefield-binaural",
     "title": "Battlefield",
     "src": "audio/battlefield.flac",
-    "duration": 54.99
+    "duration": 54.9848526077,
+    "cueIn": 19.50
   },
   {
     "id": "patch",
     "title": "Patch",
     "src": "audio/patch.flac",
-    "duration": 35.34
+    "duration": 35.3407709751,
+    "cueIn": 0
   },
   {
     "id": "gravity",
     "title": "Gravity",
     "src": "audio/gravity.flac",
-    "duration": 40.58
+    "duration": 40.5845578231,
+    "cueIn": 2.0739002268
   }
 ]

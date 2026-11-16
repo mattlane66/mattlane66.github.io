@@ -1,163 +1,274 @@
 'use strict';
+
+// Each short lossless recording is decoded once into an AudioBuffer. A single
+// AudioBufferSourceNode transports it at a known offset, avoiding the media
+// element's asynchronous seek/play races (especially with FLAC).
 const TRACKS = JSON.parse(document.getElementById('trackData').textContent);
-const audio = document.getElementById('audio');
-const elements = Object.fromEntries(['play','playIcon','trackTitle','trackSub','trackNum','elapsed','total','seek','off','on','loudspeakers','laptop','statusText','statusLed','tracks','count'].map(id=>[id,document.getElementById(id)]));
+const elements = Object.fromEntries([
+  'play','playIcon','trackTitle','trackSub','trackNum','elapsed',
+  'total','seek','off','on','statusText','statusLed','tracks','count'
+].map(id=>[id,document.getElementById(id)]));
+
 let selected = 0;
 let lccEnabled = false;
-let playbackPreset = 'loudspeakers';
+let context = null;
 let engine = null;
 let enginePromise = null;
-let lastError = null;
+let playing = false;
+let wantsPlayback = false;
+let active = null;
+let position = 0;
+let revision = 0;
 let scrubbing = false;
+let lastError = null;
+const buffers = new Map();
 
-function fmt(s) {
-  if (!Number.isFinite(s) || s < 0) return '0:00';
-  const v = Math.floor(s);
-  return `${Math.floor(v/60)}:${String(v%60).padStart(2,'0')}`;
+function fmt(seconds) {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+  const s = Math.floor(seconds);
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
 }
-function refreshList() {
-  elements.tracks.innerHTML = TRACKS.map((t,i)=>
-    `<div role="listitem"><button type="button" class="track-button ${i===selected?'selected':''}" data-index="${i}" aria-current="${i===selected?'true':'false'}"><span class="track-name">${t.title}</span><span class="track-length">${fmt(t.duration)}</span></button></div>`).join('');
+function trackDuration(i=selected) {
+  const track=TRACKS[i];
+  const buffer=buffers.get(track.id)?.value;
+  return Math.max(0,(buffer?.duration ?? track.duration)-(track.cueIn||0));
 }
-function setStatus(text, error=false) {
+function clampPosition(seconds) {
+  return Math.max(0,Math.min(trackDuration(),Number.isFinite(seconds)?seconds:0));
+}
+function actualPosition() {
+  if (!playing || !active || !context) return clampPosition(position);
+  return clampPosition(active.position + Math.max(0,context.currentTime-active.started));
+}
+function render() {
+  const isRunning=wantsPlayback;
+  elements.play.setAttribute('aria-label',isRunning?'Pause audio':'Play audio');
+  elements.play.setAttribute('title',isRunning?'Pause':'Play');
+  elements.playIcon.innerHTML=isRunning
+    ? '<path d="M6 4h4v16H6zm8 0h4v16h-4z"/>'
+    : '<path d="M7 4.5v15l13-7.5z"/>';
+  const duration=trackDuration();
+  const t=actualPosition();
+  elements.total.textContent=fmt(duration);
+  if(!scrubbing){
+    elements.elapsed.textContent=fmt(t);
+    elements.seek.value=duration>0?String(Math.round(1000*t/duration)):'0';
+  }
+}
+function setStatus(text,error=false){
   elements.statusText.textContent=text;
   elements.statusLed.className='led'+(error?' error':lccEnabled?' on':'');
 }
-function showMode() {
+function showMode(){
   elements.on.classList.toggle('active',lccEnabled);
   elements.off.classList.toggle('active',!lccEnabled);
   elements.on.setAttribute('aria-pressed',String(lccEnabled));
   elements.off.setAttribute('aria-pressed',String(!lccEnabled));
-  if (engine?.worklet) engine.worklet.port.postMessage({type:'enable',value:lccEnabled});
-  if (!lastError) setStatus(lccEnabled?'LCC processing on':'Original stereo · LCC off');
+  if(engine)engine.worklet.port.postMessage({type:'enable',value:lccEnabled});
+  if(!lastError)setStatus(lccEnabled?'LCC processing on':'Original stereo · LCC off');
 }
-function setMode(value) {
-  lccEnabled = Boolean(value);
-  showMode();
+function refreshList(){
+  elements.tracks.innerHTML=TRACKS.map((t,i)=>
+    `<div role="listitem"><button type="button" class="track-button ${i===selected?'selected':''}" data-index="${i}" aria-current="${i===selected?'true':'false'}"><span class="track-name">${t.title}</span><span class="track-length">${fmt(Math.max(0,t.duration-(t.cueIn||0)))}</span></button></div>`
+  ).join('');
 }
-function showPreset() {
-  for (const name of ['loudspeakers', 'laptop']) {
-    elements[name].classList.toggle('active', playbackPreset === name);
-    elements[name].setAttribute('aria-pressed', String(playbackPreset === name));
-  }
-  if (engine?.worklet) engine.worklet.port.postMessage({type:'preset', value:playbackPreset});
+
+function stopActive(){
+  const previous=active;
+  active=null;
+  playing=false;
+  if(!previous||!context)return;
+  const now=context.currentTime;
+  try{
+    previous.gain.gain.cancelScheduledValues(now);
+    previous.gain.gain.setValueAtTime(previous.gain.gain.value,now);
+    previous.gain.gain.linearRampToValueAtTime(0,now+0.006);
+  }catch(_error){/* A stale gain envelope must not block stopping. */}
+  try{previous.source.stop(now+0.009)}catch(_error){/* Already ended. */}
 }
-function setPreset(name) {
-  if (!['loudspeakers','laptop'].includes(name)) return;
-  playbackPreset = name;
-  showPreset();
-}
-function renderPlayback() {
-  const playing=!audio.paused&&!audio.ended;
-  elements.play.setAttribute('aria-label', playing?'Pause audio':'Play audio');
-  elements.play.setAttribute('title', playing?'Pause':'Play');
-  elements.playIcon.innerHTML = playing?'<path d="M6 4h4v16H6zm8 0h4v16h-4z"/>':'<path d="M7 4.5v15l13-7.5z"/>';
-  const duration=Number.isFinite(audio.duration)?audio.duration:TRACKS[selected].duration;
-  elements.total.textContent=fmt(duration);
-  elements.elapsed.textContent=fmt(audio.currentTime);
-  if(!scrubbing)elements.seek.value=duration>0?Math.floor(1000*audio.currentTime/duration):0;
-}
-function selectTrack(i) {
-  if (i<0||i>=TRACKS.length) return;
-  const wasPlaying=!audio.paused;
-  audio.pause();
-  selected=i;
-  lastError=null;
-  audio.src=TRACKS[i].src;
-  audio.load();
-  elements.trackTitle.textContent=TRACKS[i].title;
-  elements.trackNum.textContent=`${String(i+1).padStart(2,'0')} / ${String(TRACKS.length).padStart(2,'0')}`;
-  elements.trackSub.textContent=`Stereo · ${fmt(TRACKS[i].duration)}`;
-  elements.total.textContent=fmt(TRACKS[i].duration);
-  elements.elapsed.textContent='0:00';
-  elements.seek.value=0;
-  if(engine?.worklet)engine.worklet.port.postMessage({type:'reset'});
-  refreshList();renderPlayback();showMode();
-  if(wasPlaying)startPlayback();
-}
-async function initializeEngine() {
-  const AudioCtor=window.AudioContext||window.webkitAudioContext;
-  if(!AudioCtor||!window.AudioWorkletNode)throw new Error('This browser does not support AudioWorklet.');
-  const context=new AudioCtor();
-  if(!context.audioWorklet)throw new Error('This browser does not expose AudioWorklet.');
-  await context.audioWorklet.addModule('lcc-worklet.js?v=4');
-  const source=context.createMediaElementSource(audio);
-  const worklet=new AudioWorkletNode(context,'lcc-processor',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2]});
-  source.connect(worklet);
-  worklet.connect(context.destination);
-  worklet.port.onmessage=(event)=>{
-    if(event.data?.type==='error'){
-      lastError=event.data.message||'Audio processing error';
-      setStatus(lastError,true);
-    }
+function startSource(buffer,logicalPosition){
+  if(!engine)return;
+  const remaining=trackDuration()-logicalPosition;
+  if(remaining<=0){finishPlayback();return;}
+  const now=context.currentTime;
+  const source=context.createBufferSource();
+  const gain=context.createGain();
+  const at=now+0.002;
+  gain.gain.setValueAtTime(0,at);
+  gain.gain.linearRampToValueAtTime(1,at+0.006);
+  source.buffer=buffer;
+  source.connect(gain);
+  gain.connect(engine.worklet);
+  const cue=TRACKS[selected].cueIn||0;
+  const startOffset=cue+logicalPosition;
+  const item={source,gain,position:logicalPosition,started:at,selected};
+  source.onended=()=>{
+    source.disconnect();gain.disconnect();
+    if(active!==item)return;
+    active=null;
+    playing=false;
+    wantsPlayback=false;
+    position=trackDuration();
+    setStatus(lccEnabled?'LCC processing on':'Original stereo · LCC off');
+    render();
   };
-  worklet.port.postMessage({type:'enable',value:lccEnabled});
-  worklet.port.postMessage({type:'preset',value:playbackPreset});
-  engine={context,source,worklet};
-  window.__lccTest={context,worklet,get mode(){return lccEnabled},get selected(){return TRACKS[selected].id},get preset(){return playbackPreset}};
-  return engine;
+  active=item;
+  playing=true;
+  source.start(at,startOffset,remaining);
+  render();
+}
+function finishPlayback(){
+  wantsPlayback=false;
+  position=trackDuration();
+  stopActive();
+  render();
 }
 async function ensureEngine(){
   if(engine)return engine;
-  if(!enginePromise)enginePromise=initializeEngine().catch(e=>{enginePromise=null;throw e;});
+  if(enginePromise)return enginePromise;
+  const AudioCtor=window.AudioContext||window.webkitAudioContext;
+  if(!AudioCtor||!window.AudioWorkletNode)throw new Error('AudioWorklet is not supported by this browser.');
+  if(!context)context=new AudioCtor({latencyHint:'interactive'});
+  enginePromise=(async()=>{
+    await context.audioWorklet.addModule('lcc-worklet.js?v=5');
+    const worklet=new AudioWorkletNode(context,'lcc-processor',{
+      numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2]
+    });
+    worklet.connect(context.destination);
+    worklet.port.postMessage({type:'enable',value:lccEnabled});
+    engine={worklet};
+    return engine;
+  })();
+  enginePromise.catch(()=>{enginePromise=null;});
   return enginePromise;
 }
+function loadTrack(index){
+  const track=TRACKS[index];
+  if(buffers.has(track.id))return buffers.get(track.id).promise;
+  const record={value:null,promise:null};
+  record.promise=(async()=>{
+    await ensureEngine();
+    const response=await fetch(track.src);
+    if(!response.ok)throw new Error(`${track.title} could not load (HTTP ${response.status}).`);
+    const bytes=await response.arrayBuffer();
+    const buffer=await context.decodeAudioData(bytes);
+    if(buffer.numberOfChannels!==2)throw new Error(`${track.title} is not stereo.`);
+    record.value=buffer;
+    return buffer;
+  })().catch(error=>{buffers.delete(track.id);throw error;});
+  buffers.set(track.id,record);
+  return record.promise;
+}
 async function startPlayback(){
-  elements.play.disabled=true;
+  if(wantsPlayback&&playing)return;
+  wantsPlayback=true;
   lastError=null;
+  const token=++revision;
+  if(position>=trackDuration()-.005)position=0;
+  render();
+  setStatus('Loading audio…');
   try{
-    setStatus('Preparing audio…');
-    const e=await ensureEngine();
-    await e.context.resume();
-    if(e.context.state!=='running')throw new Error('Audio engine could not start. Tap Play again.');
-    await audio.play();
+    // Resume immediately within the click, before awaiting a fetch or decode.
+    const preparing=ensureEngine();
+    const resume=context?.resume();
+    const bufferPromise=loadTrack(selected);
+    await preparing;
+    if(resume)await resume;
+    const buffer=await bufferPromise;
+    if(!wantsPlayback||revision!==token)return;
+    if(context.state!=='running')await context.resume();
+    if(!wantsPlayback||revision!==token)return;
+    startSource(buffer,clampPosition(position));
     showMode();
-  }catch(e){
-    lastError=e?.message||'Cannot play this recording';
+  }catch(error){
+    if(revision!==token)return;
+    wantsPlayback=false;
+    playing=false;
+    lastError=error?.message||'Unable to play this recording';
     setStatus(`Playback unavailable · ${lastError}`,true);
-  }finally{
-    elements.play.disabled=false;
-    renderPlayback();
+    render();
   }
 }
-function togglePlayback(){
-  if(!audio.paused){audio.pause();renderPlayback();}
-  else startPlayback();
+function pausePlayback(){
+  if(!wantsPlayback)return;
+  revision++;
+  position=actualPosition();
+  wantsPlayback=false;
+  stopActive();
+  if(!lastError)setStatus(lccEnabled?'LCC processing on':'Original stereo · LCC off');
+  render();
 }
-elements.tracks.addEventListener('click',ev=>{
-  const btn=ev.target.closest('button[data-index]');
-  if(btn)selectTrack(Number(btn.dataset.index));
+function switchTrack(index){
+  if(!Number.isInteger(index)||index<0||index>=TRACKS.length||index===selected)return;
+  const resume=wantsPlayback;
+  revision++;
+  wantsPlayback=false;
+  stopActive();
+  selected=index;
+  position=0;
+  lastError=null;
+  elements.trackTitle.textContent=TRACKS[selected].title;
+  elements.trackSub.textContent=`Stereo · ${fmt(trackDuration())}`;
+  elements.trackNum.textContent=`${String(selected+1).padStart(2,'0')} / ${String(TRACKS.length).padStart(2,'0')}`;
+  refreshList();render();showMode();
+  if(resume)void startPlayback();
+  else void loadTrack(selected).catch(()=>{}); // predecode without autoplay
+}
+function seekTo(t){
+  const next=clampPosition(t);
+  // Input followed by change can describe the same slider position. Avoid
+  // stopping and rebuilding the source twice for that single user action.
+  if(Math.abs(next-actualPosition())<0.025){position=next;render();return;}
+  position=next;
+  if(playing&&active){
+    const buffer=buffers.get(TRACKS[selected].id)?.value;
+    stopActive();
+    if(buffer){
+      if(position<trackDuration()-.005)startSource(buffer,position);
+      else finishPlayback();
+    }
+  }
+  render();
+}
+function seekFromSlider(){
+  const t=Number(elements.seek.value)/1000*trackDuration();
+  elements.elapsed.textContent=fmt(t);
+  seekTo(t);
+}
+
+// All audio sequencing is driven by a single explicit playback intent.
+elements.play.addEventListener('click',()=>{
+  if(wantsPlayback)pausePlayback();
+  else void startPlayback();
 });
-elements.play.addEventListener('click',togglePlayback);
-elements.off.addEventListener('click',()=>setMode(false));
-elements.on.addEventListener('click',()=>setMode(true));
-elements.loudspeakers.addEventListener('click',()=>setPreset('loudspeakers'));
-elements.laptop.addEventListener('click',()=>setPreset('laptop'));
-elements.seek.addEventListener('input',()=>{
-  scrubbing=true;
-  const d=Number.isFinite(audio.duration)?audio.duration:TRACKS[selected].duration;
-  elements.elapsed.textContent=fmt(Number(elements.seek.value)*d/1000);
+elements.tracks.addEventListener('click',event=>{
+  const button=event.target.closest('button[data-index]');
+  if(button)switchTrack(Number(button.dataset.index));
 });
-elements.seek.addEventListener('change',()=>{
-  const d=Number.isFinite(audio.duration)?audio.duration:TRACKS[selected].duration;
-  if(d>0){audio.currentTime=Number(elements.seek.value)*d/1000;}
-  scrubbing=false;
-  if(engine?.worklet)engine.worklet.port.postMessage({type:'reset'});
-  renderPlayback();
-});
-audio.addEventListener('timeupdate',renderPlayback);
-audio.addEventListener('loadedmetadata',renderPlayback);
-audio.addEventListener('playing',renderPlayback);
-audio.addEventListener('pause',renderPlayback);
-audio.addEventListener('ended',()=>{renderPlayback();showMode()});
-audio.addEventListener('error',()=>{
-  if(audio.error){lastError='The audio file could not be loaded';setStatus(lastError,true);}
-});
+elements.off.addEventListener('click',()=>{lccEnabled=false;showMode()});
+elements.on.addEventListener('click',()=>{lccEnabled=true;showMode()});
+elements.seek.addEventListener('pointerdown',()=>{scrubbing=true});
+elements.seek.addEventListener('pointerup',()=>{scrubbing=false;render()});
+elements.seek.addEventListener('pointercancel',()=>{scrubbing=false;render()});
+elements.seek.addEventListener('input',seekFromSlider);
+elements.seek.addEventListener('change',()=>{seekFromSlider();scrubbing=false;render()});
 elements.count.textContent=`${TRACKS.length} tracks`;
-selectTrack(0);
-showPreset();
-// Preinitialize the worklet ahead of the first click when possible: Safari's
-// first user gesture can then synchronously resume the already-wired graph.
-if (window.isSecureContext || location.hostname==='localhost' || location.hostname==='127.0.0.1') {
-  ensureEngine().catch(e=>{lastError=e.message;setStatus(`Audio engine unavailable · ${e.message}`,true);});
+elements.trackTitle.textContent=TRACKS[0].title;
+elements.trackSub.textContent=`Stereo · ${fmt(trackDuration())}`;
+refreshList();showMode();render();
+
+// Preload the first short FLAC ahead of the initial Play click. No autoplay.
+// A failure is shown only after Play is explicitly requested.
+void loadTrack(0).catch(()=>{});
+function updateClock(){
+  if(playing&&!scrubbing)render();
+  requestAnimationFrame(updateClock);
 }
+requestAnimationFrame(updateClock);
+window.__lccTest={
+  get context(){return context},get selected(){return TRACKS[selected].id},
+  get mode(){return lccEnabled},get playing(){return playing},
+  get wantsPlayback(){return wantsPlayback},get position(){return actualPosition()},
+  get loading(){return wantsPlayback&&!playing},
+  get bufferReady(){return Boolean(buffers.get(TRACKS[selected].id)?.value)}
+};

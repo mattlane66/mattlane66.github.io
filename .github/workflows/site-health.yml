@@ -72,3 +72,5 @@ jobs:
           python -m playwright install chromium
       - name: Test desktop and phone rendering in Chromium
         run: python scripts/browser_smoke.py
+      - name: Test spatial audio playback and seeking in Chromium
+        run: python scripts/test_spatial_audio_player.py
