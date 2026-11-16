@@ -43,8 +43,8 @@ original C++ recurrence at those three rates; max absolute error was under
 a previously modeled starting point (approximately 25 cm speaker spacing,
 55 cm listener distance), **not** individually calibrated or validated for
 every laptop. Both processing states run continuously, and selecting a preset
-crossfades their time-aligned results over 50 ms without restarting the track.
-LCC On/Off crossfades over 30 ms, with shared -6.4 dB digital headroom
+crossfades their time-aligned results over 12 ms without restarting the track.
+LCC On/Off crossfades over 8 ms, with shared -6.4 dB digital headroom
 (0.48) for both processed and unprocessed signals.
 
 Playback is intended for two closely spaced, symmetrically positioned
@@ -62,3 +62,7 @@ independently verified.
 To test locally, run `python3 -m http.server 8000` from this folder,
 then open `http://localhost:8000`. An AudioWorklet requires a secure
 context (HTTPS or localhost).
+
+## Faster switching (November 2026)
+
+The 30 ms LCC On/Off and 50 ms speaker-preset fades have been reduced to **8 ms** and **12 ms**. The same per-sample linear crossfades are retained, so switching is not a hard cut. Both stereo DSP cores remain running and sample-aligned, with no source reload or new AudioContext. All filter parameters, floating-point state, fixed shared output gain, and peak guard are unchanged. Browser AudioWorklet messages can incur a further render-quantum scheduling delay.
