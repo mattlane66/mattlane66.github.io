@@ -1,9 +1,10 @@
 'use strict';
 const TRACKS = JSON.parse(document.getElementById('trackData').textContent);
 const audio = document.getElementById('audio');
-const elements = Object.fromEntries(['play','playIcon','trackTitle','trackSub','trackNum','elapsed','total','seek','off','on','statusText','statusLed','tracks','count'].map(id=>[id,document.getElementById(id)]));
+const elements = Object.fromEntries(['play','playIcon','trackTitle','trackSub','trackNum','elapsed','total','seek','off','on','loudspeakers','laptop','statusText','statusLed','tracks','count'].map(id=>[id,document.getElementById(id)]));
 let selected = 0;
 let lccEnabled = false;
+let playbackPreset = 'loudspeakers';
 let engine = null;
 let enginePromise = null;
 let lastError = null;
@@ -14,14 +15,9 @@ function fmt(s) {
   const v = Math.floor(s);
   return `${Math.floor(v/60)}:${String(v%60).padStart(2,'0')}`;
 }
-function icon(isSelected) {
-  return isSelected
-    ? '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M5 4h5v16H5zm9 0h5v16h-5z"/></svg>'
-    : '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-}
 function refreshList() {
   elements.tracks.innerHTML = TRACKS.map((t,i)=>
-    `<button role="listitem" type="button" class="track-button ${i===selected?'selected':''}" data-index="${i}" aria-current="${i===selected?'true':'false'}"><span class="track-icon">${icon(i===selected)}</span><span class="track-name">${t.title}</span><span class="track-length">${fmt(t.duration)}</span></button>`).join('');
+    `<div role="listitem"><button type="button" class="track-button ${i===selected?'selected':''}" data-index="${i}" aria-current="${i===selected?'true':'false'}"><span class="track-name">${t.title}</span><span class="track-length">${fmt(t.duration)}</span></button></div>`).join('');
 }
 function setStatus(text, error=false) {
   elements.statusText.textContent=text;
@@ -38,6 +34,18 @@ function showMode() {
 function setMode(value) {
   lccEnabled = Boolean(value);
   showMode();
+}
+function showPreset() {
+  for (const name of ['loudspeakers', 'laptop']) {
+    elements[name].classList.toggle('active', playbackPreset === name);
+    elements[name].setAttribute('aria-pressed', String(playbackPreset === name));
+  }
+  if (engine?.worklet) engine.worklet.port.postMessage({type:'preset', value:playbackPreset});
+}
+function setPreset(name) {
+  if (!['loudspeakers','laptop'].includes(name)) return;
+  playbackPreset = name;
+  showPreset();
 }
 function renderPlayback() {
   const playing=!audio.paused&&!audio.ended;
@@ -72,7 +80,7 @@ async function initializeEngine() {
   if(!AudioCtor||!window.AudioWorkletNode)throw new Error('This browser does not support AudioWorklet.');
   const context=new AudioCtor();
   if(!context.audioWorklet)throw new Error('This browser does not expose AudioWorklet.');
-  await context.audioWorklet.addModule('lcc-worklet.js?v=2');
+  await context.audioWorklet.addModule('lcc-worklet.js?v=3');
   const source=context.createMediaElementSource(audio);
   const worklet=new AudioWorkletNode(context,'lcc-processor',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2]});
   source.connect(worklet);
@@ -84,8 +92,9 @@ async function initializeEngine() {
     }
   };
   worklet.port.postMessage({type:'enable',value:lccEnabled});
+  worklet.port.postMessage({type:'preset',value:playbackPreset});
   engine={context,source,worklet};
-  window.__lccTest={context,worklet,get mode(){return lccEnabled},get selected(){return TRACKS[selected].id}};
+  window.__lccTest={context,worklet,get mode(){return lccEnabled},get selected(){return TRACKS[selected].id},get preset(){return playbackPreset}};
   return engine;
 }
 async function ensureEngine(){
@@ -122,6 +131,8 @@ elements.tracks.addEventListener('click',ev=>{
 elements.play.addEventListener('click',togglePlayback);
 elements.off.addEventListener('click',()=>setMode(false));
 elements.on.addEventListener('click',()=>setMode(true));
+elements.loudspeakers.addEventListener('click',()=>setPreset('loudspeakers'));
+elements.laptop.addEventListener('click',()=>setPreset('laptop'));
 elements.seek.addEventListener('input',()=>{
   scrubbing=true;
   const d=Number.isFinite(audio.duration)?audio.duration:TRACKS[selected].duration;
@@ -144,6 +155,7 @@ audio.addEventListener('error',()=>{
 });
 elements.count.textContent=`${TRACKS.length} tracks`;
 selectTrack(0);
+showPreset();
 // Preinitialize the worklet ahead of the first click when possible: Safari's
 // first user gesture can then synchronously resume the already-wired graph.
 if (window.isSecureContext || location.hostname==='localhost' || location.hostname==='127.0.0.1') {
