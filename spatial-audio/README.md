@@ -1,27 +1,64 @@
-# LCC — Three Recording Listening Lab
+# Spatial audio — LCC listening lab
 
-Static GitHub Pages page at https://mattlane66.github.io/spatial-audio/.
+Source repository: https://github.com/mattlane66/lcc  
+Website: https://mattlane66.github.io/spatial-audio/
+
+## Fidelity
+
+The three files are **lossless FLAC** encodings of the exact 16-bit, 44,100 Hz,
+two-channel PCM samples supplied as WAV files by the author. We compared
+the integer PCM samples after encoding and decoding against the original WAVs;
+all three were sample-for-sample identical. No AAC or other lossy recording is
+used by the published player.
+
+HTMLAudioElement decodes the source; AudioWorklet receives Float32 arrays
+from Web Audio, with the LCC recurrence, feedback, delay state and core
+alignment computed in Float64 arrays/JavaScript Number, and emits Float32
+samples. The browser or OS may resample audio if the device runs at a
+different rate. The sound heard at the speakers cannot be guaranteed bit-perfect
+relative to the digital source; LCC On intentionally changes the signal.
+
+All three lossless clips were evaluated at 44.1, 48 and 96 kHz, Off,
+Loudspeakers and Laptop. Max processed peak was 0.914141 (Battlefield,
+96 kHz, loudspeakers), below the 0.92 threshold of the emergency
+peak guard; it was inactive throughout the tested signals. No NaN or
+Infinity occurred, and the Off stream matched the original decoded samples
+(after shared gain of 0.48 and known delay) within Float32 rounding error.
+
+The two LCC cores were checked against an independent translation of the
+original C++ recurrence at those three rates; max absolute error was under
+1.5e-8 after the common output gain and latency.
+
+## Parameters
+
+| Parameter | Loudspeakers | Laptop |
+| --- | ---: | ---: |
+| Input gain | 0.70 | 0.70 |
+| Center gain | 0.70 | 0.70 |
+| End gain | 1.4285 | 1.4285 |
+| Crosstalk decay | 0.74989420933 | 0.68 |
+| Algorithm delay | 32 microseconds | 113 microseconds |
+
+**Loudspeakers** corresponds to the original C++ defaults. **Laptop** is
+a previously modeled starting point (approximately 25 cm speaker spacing,
+55 cm listener distance), **not** individually calibrated or validated for
+every laptop. Both processing states run continuously, and selecting a preset
+crossfades their time-aligned results over 50 ms without restarting the track.
+LCC On/Off crossfades over 30 ms, with shared -6.4 dB digital headroom
+(0.48) for both processed and unprocessed signals.
+
+Playback is intended for two closely spaced, symmetrically positioned
+loudspeakers with a centered listener, not headphones.
 
 ## Recordings
 
-- **Battlefield** — source: battlefieldBinaural.wav
-- **Patch** — source: patch(1).wav
-- **Gravity** — source: gravity(1).wav
+- Battlefield: source `battlefieldBinaural.wav`
+- Patch: source `patch(1).wav`
+- Gravity: source `gravity(1).wav`
 
-The audio files in `audio/` are 224 kb/s stereo AAC versions of user-supplied WAV files. This site intentionally avoids a backend.
+The recording provenance and public redistribution rights have not been
+independently verified.
 
-## Player
-
-The player uses one stereo HTMLAudioElement routed through the Web Audio API. The AudioWorklet runs the browser adaptation of LCC; the Off/On controls fade between the dry and LCC-processed signal without restarting playback.
-
-For local development, run `python3 -m http.server 8000` from this folder, then open http://localhost:8000/ (AudioWorklet requires a secure context such as localhost or HTTPS).
-
-The open-source research implementation is at https://github.com/mattlane66/lcc.
-
-Ensure you have rights to redistribute the source audio recordings before public use.
-
-## Output-level calibration (November 2026)
-
-The earlier worst-case fixed attenuation was approximately -13.8 dB, which made these three recordings unnecessarily quiet. The listening-lab output gain is now **0.48** (approximately -6.4 dB), a **+7.4 dB** increase. That shared gain is applied to both unprocessed and LCC-processed audio.
-
-We decoded each published AAC file and ran the actual browser LCC worklet at 44.1, 48, and 96 kHz. The highest processed sample peak was 0.887 (Battlefield at 96 kHz), below the 0.92 level where the protective peak guard begins. Thus the current three recordings are not affected by peak limiting. Unexpected full-scale material is smoothly constrained below 1.0 to avoid digital overflows. The gain has been calibrated for these **specific** recordings, not arbitrary future audio files; repeat the test before adding tracks.
+To test locally, run `python3 -m http.server 8000` from this folder,
+then open `http://localhost:8000`. An AudioWorklet requires a secure
+context (HTTPS or localhost).
