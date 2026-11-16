@@ -1,68 +1,37 @@
 # Spatial audio — LCC listening lab
 
-Source repository: https://github.com/mattlane66/lcc  
+Source algorithm: https://github.com/mattlane66/lcc
 Website: https://mattlane66.github.io/spatial-audio/
 
-## Fidelity
+## Playback
 
-The three files are **lossless FLAC** encodings of the exact 16-bit, 44,100 Hz,
-two-channel PCM samples supplied as WAV files by the author. We compared
-the integer PCM samples after encoding and decoding against the original WAVs;
-all three were sample-for-sample identical. No AAC or other lossy recording is
-used by the published player.
+The page uses the original **loudspeaker** LCC defaults exclusively. There are no speaker setup selectors. The three recordings are lossless stereo FLAC copies of the original 16-bit, 44.1 kHz WAV audio. Their sample data is unchanged; only the **playback cue-in** moves the start point past the recording's silent/very faint lead-in:
 
-HTMLAudioElement decodes the source; AudioWorklet receives Float32 arrays
-from Web Audio, with the LCC recurrence, feedback, delay state and core
-alignment computed in Float64 arrays/JavaScript Number, and emits Float32
-samples. The browser or OS may resample audio if the device runs at a
-different rate. The sound heard at the speakers cannot be guaranteed bit-perfect
-relative to the digital source; LCC On intentionally changes the signal.
+| Track | Source duration | Player starts at | Effective duration |
+| --- | ---: | ---: | ---: |
+| Battlefield | 54.985 s | 19.50 s | 35.485 s |
+| Patch | 35.341 s | 0 s | 35.341 s |
+| Gravity | 40.585 s | 2.0739 s | 38.511 s |
 
-All three lossless clips were evaluated at 44.1, 48 and 96 kHz, Off,
-Loudspeakers and Laptop. Max processed peak was 0.914141 (Battlefield,
-96 kHz, loudspeakers), below the 0.98 threshold of the emergency
-peak guard; it was inactive throughout the tested signals. No NaN or
-Infinity occurred, and the Off stream matched the original decoded samples
-(after shared gain of 0.48 and known delay) within Float32 rounding error.
+The original Battlefield contains ~15.07 s of absolute silence followed by a very quiet swell. Starting playback at 19.50 s leaves a short lead-in before the first strong audible event. The full lossless file is preserved in the repository; the cue is reversible via the `cueIn` value in the embedded track metadata and `tracks.json`.
 
-The two LCC cores were checked against an independent translation of the
-original C++ recurrence at those three rates; max absolute error was under
-1.5e-8 after the common output gain and latency.
+Short clips are fetched and decoded once into Web Audio `AudioBuffer` objects. `AudioBufferSourceNode` supports precise start/seek offsets. The player maintains explicit transport state so Play, Pause, seek, and track selection cannot race with pending loading operations. Seeking starts a new source from the selected audio sample rather than waiting for the browser media element's asynchronous `seeked` event. A six-millisecond input gain crossfade prevents clicks during discontinuities. The LCC core remains alive through playback and mode transitions.
 
-## Parameters
+## Processing parameters
 
-| Parameter | Loudspeakers | Laptop |
-| --- | ---: | ---: |
-| Input gain | 0.70 | 0.70 |
-| Center gain | 0.70 | 0.70 |
-| End gain | 1.4285 | 1.4285 |
-| Crosstalk decay | 0.74989420933 | 0.68 |
-| Algorithm delay | 32 microseconds | 113 microseconds |
+| Parameter | Value |
+| --- | ---: |
+| Input gain | 0.70 |
+| Center gain | 0.70 |
+| End gain | 1.4285 |
+| Crosstalk decay | 0.74989420933 |
+| Algorithm delay | 32 microseconds |
 
-**Loudspeakers** corresponds to the original C++ defaults. **Laptop** is
-a previously modeled starting point (approximately 25 cm speaker spacing,
-55 cm listener distance), **not** individually calibrated or validated for
-every laptop. Both processing states run continuously, and selecting a preset
-crossfades their time-aligned results over 12 ms without restarting the track.
-LCC On/Off crossfades over 8 ms, with shared -6.4 dB digital headroom
-(0.48) for both processed and unprocessed signals.
+These are the defaults from `lcc_rtaudio.cpp`. LCC On/Off uses an 8 ms fade. The shared output gain remains 0.48 (approximately −6.4 dB), unchanged. Web Audio input/output uses Float32 samples, while the feedback, interpolation, buffer state, and calculations in the worklet use Float64. The emergency output peak guard is transparent below 0.98; the earlier published recordings passed peak testing. Browser sample-rate conversion and final speaker acoustics are device-dependent; the playback is not guaranteed bit-perfect at the speaker outputs.
 
-Playback is intended for two closely spaced, symmetrically positioned
-loudspeakers with a centered listener, not headphones.
+## Regression checks
 
-## Recordings
+- `node --check spatial-audio/player.js` and `node --check spatial-audio/lcc-worklet.js`
+- `python scripts/test_spatial_audio_player.py` runs real headless Chromium on GitHub Actions, testing start, seeks, pause/resume, track changes, and LCC toggles on both desktop and mobile. 
 
-- Battlefield: source `battlefieldBinaural.wav`
-- Patch: source `patch(1).wav`
-- Gravity: source `gravity(1).wav`
-
-The recording provenance and public redistribution rights have not been
-independently verified.
-
-To test locally, run `python3 -m http.server 8000` from this folder,
-then open `http://localhost:8000`. An AudioWorklet requires a secure
-context (HTTPS or localhost).
-
-## Faster switching (November 2026)
-
-The 30 ms LCC On/Off and 50 ms speaker-preset fades have been reduced to **8 ms** and **12 ms**. The same per-sample linear crossfades are retained, so switching is not a hard cut. Both stereo DSP cores remain running and sample-aligned, with no source reload or new AudioContext. All filter parameters, floating-point state, fixed shared output gain, and peak guard are unchanged. Browser AudioWorklet messages can incur a further render-quantum scheduling delay.
+Audio distribution rights have not been independently verified. Headphones are not the intended loudspeaker configuration.
