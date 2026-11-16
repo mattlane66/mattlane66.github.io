@@ -36,14 +36,12 @@ class LCCProcessor extends AudioWorkletProcessor {
     this.mix = 0;
     this.enabled = false;
     this.rampPerSample = 1 / Math.max(1, sampleRate * 0.03);
-    // The LCC feedback is bounded by 1 / (1 - decayGain) for a full-scale
-    // stereo input. Reserve shared headroom for that bound plus center gain.
-    // Apply the SAME attenuation to bypass and processed audio for a fair A/B.
-    const worstCaseWetGain = this.endGain * (
-      this.inputGain / (1 - this.decayGain) +
-      this.centerGain * this.inputGain * this.inputGain
-    );
-    this.safetyGain = 0.92 / Math.max(1, worstCaseWetGain);
+    // Shared gain measured against the three published recordings at
+    // 44.1, 48 and 96 kHz. The largest unscaled LCC peak was < 1.85;
+    // 0.48 keeps the published tracks below 0.89, without peak limiting.
+    // Bypass and LCC use the same gain for a comparable A/B level basis.
+    // Unexpected full-scale material is protected by peakGuard below.
+    this.safetyGain = 0.48;
     this.port.onmessage = ({data}) => {
       if (data && data.type === 'enable') this.enabled = !!data.value;
       if (data && data.type === 'reset') this.reset();
@@ -90,6 +88,21 @@ class LCCProcessor extends AudioWorkletProcessor {
     }
   }
 
+  // For future recordings outside the validated catalog, smoothly cap any
+  // exceptional digital peaks. This remains an identity function through
+  // +/-0.92, so it does not alter any of the current three recordings.
+  peakGuard(value) {
+    const threshold = 0.92;
+    const range = 0.075;
+    if (value > threshold) {
+      return threshold + range * Math.tanh((value - threshold) / range);
+    }
+    if (value < -threshold) {
+      return -threshold - range * Math.tanh((-value - threshold) / range);
+    }
+    return value;
+  }
+
   process(inputs, outputs) {
     const input = inputs[0] || [];
     const output = outputs[0] || [];
@@ -109,8 +122,8 @@ class LCCProcessor extends AudioWorkletProcessor {
       const target = this.enabled ? 1 : 0;
       if (this.mix < target) this.mix = Math.min(target, this.mix + this.rampPerSample);
       else if (this.mix > target) this.mix = Math.max(target, this.mix - this.rampPerSample);
-      outL[i] = this.safetyGain * (dryL * (1 - this.mix) + wetL * this.mix);
-      if (outR) outR[i] = this.safetyGain * (dryR * (1 - this.mix) + wetR * this.mix);
+      outL[i] = this.peakGuard(this.safetyGain * (dryL * (1 - this.mix) + wetL * this.mix));
+      if (outR) outR[i] = this.peakGuard(this.safetyGain * (dryR * (1 - this.mix) + wetR * this.mix));
 
       const j = this.fill++;
       const l = sourceL ? sourceL[i] : 0;

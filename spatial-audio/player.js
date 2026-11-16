@@ -72,7 +72,7 @@ async function initializeEngine() {
   if(!AudioCtor||!window.AudioWorkletNode)throw new Error('This browser does not support AudioWorklet.');
   const context=new AudioCtor();
   if(!context.audioWorklet)throw new Error('This browser does not expose AudioWorklet.');
-  await context.audioWorklet.addModule('lcc-worklet.js');
+  await context.audioWorklet.addModule('lcc-worklet.js?v=2');
   const source=context.createMediaElementSource(audio);
   const worklet=new AudioWorkletNode(context,'lcc-processor',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2]});
   source.connect(worklet);
