@@ -155,11 +155,11 @@ class LCCProcessor extends AudioWorkletProcessor {
     this.dryIndex = 0;
   }
 
-  // Transparent below |0.92|: no limiter action on validated tracks.
+  // Transparent below |0.98|: no limiter action on validated tracks.
   // Exceptional input saturates smoothly without clipping the output device.
   peakGuard(value) {
-    const threshold = 0.92;
-    const range = 0.075;
+    const threshold = 0.98;
+    const range = 0.019;
     if (value > threshold) return threshold + range * Math.tanh((value - threshold) / range);
     if (value < -threshold) return -threshold - range * Math.tanh((-value - threshold) / range);
     return value;

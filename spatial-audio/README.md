@@ -20,7 +20,7 @@ relative to the digital source; LCC On intentionally changes the signal.
 
 All three lossless clips were evaluated at 44.1, 48 and 96 kHz, Off,
 Loudspeakers and Laptop. Max processed peak was 0.914141 (Battlefield,
-96 kHz, loudspeakers), below the 0.92 threshold of the emergency
+96 kHz, loudspeakers), below the 0.98 threshold of the emergency
 peak guard; it was inactive throughout the tested signals. No NaN or
 Infinity occurred, and the Off stream matched the original decoded samples
 (after shared gain of 0.48 and known delay) within Float32 rounding error.
