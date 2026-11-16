@@ -29,7 +29,6 @@ function showMode() {
   elements.on.setAttribute('aria-pressed',String(lccEnabled));
   elements.off.setAttribute('aria-pressed',String(!lccEnabled));
   if (engine?.worklet) engine.worklet.port.postMessage({type:'enable',value:lccEnabled});
-  worklet.port.postMessage({type:'preset',value:playbackPreset});
   if (!lastError) setStatus(lccEnabled?'LCC processing on':'Original stereo · LCC off');
 }
 function setMode(value) {
