@@ -132,8 +132,9 @@ class LCCProcessor extends AudioWorkletProcessor {
     this.mix = 0;
     this.preset = 'loudspeakers';
     this.presetMix = 0;
-    this.rampPerSample = 1 / Math.max(1, sampleRate * 0.03);
-    this.presetRampPerSample = 1 / Math.max(1, sampleRate * 0.05);
+    // Both DSP cores run continuously: a short smooth fade avoids hard switching.
+    this.rampPerSample = 1 / Math.max(1, sampleRate * 0.008); // 8 ms LCC A/B
+    this.presetRampPerSample = 1 / Math.max(1, sampleRate * 0.012); // 12 ms preset
 
     // Fixed, common gain (~-6.4 dB), retained from the prior tested build.
     // Both presets and bypass share the SAME gain. Current lossless source
