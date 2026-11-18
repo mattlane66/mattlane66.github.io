@@ -1,5 +1,18 @@
 [
   {
+    "id": "work-backward-from-outcome-20261118",
+    "date": "2026-11-18",
+    "title": "Work backward from the outcome, not forward from a task list.",
+    "permalink": "work-backward-from-the-outcome",
+    "body": "Start with the outcome you want. Then design the system that would produce it.\n\nThe design isn't a list of features or tasks. It's a diagram of the parts, their responsibilities, and how they connect. Property-based tests establish what must remain true of the system and help verify that the design works.\n\nTasks are overhead. Design decisions determine what ships. The clearer the design, the fewer tasks you need to manage.\n\nProject management should be roughly **80% design, 10% decision logs, and 10% tasks.**\n\nDecision logs preserve why the design is the way it is. Tasks coordinate the work that remains.\n\nNeither is a substitute for the design.",
+    "category": "Products & systems",
+    "related_note_ids": [
+      "shaping-a-buildable-path-20261019",
+      "coordination-is-a-problem-of-fit-20261113",
+      "from-possibility-to-experience-20261111"
+    ]
+  },
+  {
     "id": "hold-back-a-fifth-20261117",
     "date": "2026-11-17",
     "title": "To hold back a fifth of your work is not to lose a fifth of the reward; it is to lose everything.",
@@ -588,3 +601,4 @@
     "related_note_ids": []
   }
 ]
+
