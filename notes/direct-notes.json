@@ -1,5 +1,17 @@
 [
   {
+    "id": "philosophy-making-a-person-20261121",
+    "date": "2026-11-21",
+    "title": "Philosophy Is the Making of a Person",
+    "permalink": "philosophy-is-the-making-of-a-person",
+    "category": "Life & learning",
+    "summary": "Philosophy's value extends beyond immediate utility: it shapes what a person can understand, imagine, question, and become.",
+    "body": "Its value cannot be reduced to its immediate utility.\n\nIt develops not merely what a person can do, but what they can understand, imagine, question, and become.",
+    "related_note_ids": [
+      "education-beyond-the-given-20261121"
+    ]
+  },
+  {
     "id": "education-beyond-the-given-20261121",
     "date": "2026-11-21",
     "title": "Education Beyond the Given",
