@@ -1,5 +1,18 @@
 [
   {
+    "id": "from-procedure-design-to-knowledge-use-20261121",
+    "date": "2026-11-21",
+    "title": "From Procedure Design to Knowledge Use",
+    "permalink": "from-procedure-design-to-knowledge-use",
+    "category": "Judgment & knowledge",
+    "summary": "Knowledge use depends on knowing which concepts and operations a problem calls for.",
+    "body": "We externalized computation, then productized it. For most of computing’s history, using that capability meant designing procedures: specifying how a machine should perform an operation.\n\nLarge and small text models (L/STMs) change this. They learn from text rather than understanding language as humans do. That’s why I prefer to call them text models rather than language models.\n\nThese models make it possible to invoke and apply knowledge without explicitly programming every procedure.\n\nThe advantage is not better prompting. It is knowing what knowledge to reach for and when to use it.\n\nConsider a diagram of a complex system. Someone without the relevant domain knowledge might ask for more detail. Someone who understands the system might recognize that a particular part calls for Morse decomposition—a mathematical method for analyzing the structure of a dynamical system.\n\nThe difference is not how well they describe the desired result. It is whether they recognize the appropriate intellectual operation. Whether they possess the language and knowledge needed to invoke it.\n\nThe model can help perform that operation. But knowing when it applies, what assumptions it requires, and whether the result is sound still demands domain knowledge and judgment.\n\nThe work shifts from specifying how to do something to knowing what needs to be done, which knowledge applies, and whether the result is any good. I call this Knowledge-Use.\n\nAs the cost of executing intellectual operations falls, the value of domain knowledge and scrutiny becomes more apparent.",
+    "related_note_ids": [
+      "judgment-is-not-a-step-20261111",
+      "ai-language-defaults-20261002"
+    ]
+  },
+  {
     "id": "three-tests-artificial-minds-20261119",
     "date": "2026-11-19",
     "title": "The Three Tests of Artificial Minds",
