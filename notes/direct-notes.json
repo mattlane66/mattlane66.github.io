@@ -1,5 +1,19 @@
 [
   {
+    "id": "purpose-of-education-20261121",
+    "date": "2026-11-21",
+    "title": "The Purpose of Education",
+    "permalink": "the-purpose-of-education",
+    "category": "Life & learning",
+    "summary": "Education develops the knowledge to imagine possibilities and recognize which are worth pursuing.",
+    "body": "The purpose of education is not merely to teach people how to use intelligence. It is to develop people with the knowledge to imagine possibilities beyond those presented to them—and the understanding to recognize which are worth pursuing.",
+    "related_note_ids": [
+      "from-procedure-design-to-knowledge-use-20261121",
+      "six-practices-transformational-creativity-20261119",
+      "ai-language-defaults-20261002"
+    ]
+  },
+  {
     "id": "from-procedure-design-to-knowledge-use-20261121",
     "date": "2026-11-21",
     "title": "From Procedure Design to Knowledge Use",
