@@ -1,5 +1,18 @@
 [
   {
+    "id": "good-diagramming-practice-20261121",
+    "date": "2026-11-21",
+    "title": "Good Diagramming Practice",
+    "permalink": "good-diagramming-practice",
+    "category": "Products & systems",
+    "summary": "Show how parts work together while hiding internal detail that does not matter at the chosen level of explanation.",
+    "body": "Show how the parts work together, not how every part works internally.\n\nTreat the system as a graph of parts and relationships. Group related parts, preserve the connections between them, and abstract their internal details unless those details are necessary to understand the system.\n\nThe level of detail depends on what you're trying to explain. Something important at one level may be irrelevant at another.\n\n**The goal is to reveal the structure and behavior of the whole without exposing unnecessary details of its parts.**",
+    "related_note_ids": [
+      "shaping-a-buildable-path-20261019",
+      "requirements-are-design-work-20261021"
+    ]
+  },
+  {
     "id": "philosophy-making-a-person-20261121",
     "date": "2026-11-21",
     "title": "Philosophy Is the Making of a Person",
@@ -666,4 +679,3 @@
     "related_note_ids": []
   }
 ]
-
