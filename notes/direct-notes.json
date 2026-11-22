@@ -1,5 +1,18 @@
 [
   {
+    "id": "design-game-not-just-advantage-20261123",
+    "date": "2026-11-23",
+    "title": "Design the Game, Not Just the Advantage",
+    "permalink": "design-the-game-not-just-the-advantage",
+    "category": "Products & systems",
+    "summary": "Design a market position that competitors have reasons to preserve or participate in.",
+    "body": "Most businesses ask: How do we create something competitors can't copy?\n\nA better question might be: **What if competitors could copy us, but doing so would be against their own interests?**\n\nBlue Ocean Strategy helps identify a different way to compete. Its Four Actions Framework—eliminate, reduce, raise, create—changes the factors on which an industry competes.\n\nBut differentiation alone doesn't establish a durable advantage. Game theory adds the missing question: **What will competitors rationally do in response?**\n\nConsider a new research network that recruits buyers once and serves multiple noncompeting customers. Traditional agencies could imitate it, but doing so might undermine their profitable bespoke businesses. They may be better off specializing.\n\nBetter still, they might become customers of the network. Their continued success would then strengthen the entrant.\n\nThe opportunity is to design a business that benefits from what competitors are incentivized to do, rather than depending on them making mistakes.\n\n## An integrated method\n\n1. **Map the market.** Identify existing value curves, customer needs, and competitor economics.\n2. **Change the value curve.** Eliminate, reduce, raise, or create factors to deliver a different value-cost proposition.\n3. **Model the responses.** Would competitors imitate, attack, specialize, accommodate, or cooperate? Compare their incentives and payoffs.\n4. **Design the position.** Make favorable responses more attractive through economic tradeoffs, specialization, complementary incentives, or network effects.\n5. **Test and revise.** Validate customer value, profitability, and actual competitive behavior.\n\nWork backward from the competitive position you want to the incentives and design choices that could sustain it. Then test those assumptions against reality.\n\nCompetitors may still rationally choose to attack, even at the cost of cannibalizing their own businesses. The advantage must survive their credible alternatives, not just the responses we hope for.\n\n**Don't merely design an advantage. Design the incentives that sustain it.**\n\nThe strongest competitive position may not be one competitors cannot imitate, but one they are better off preserving—or participating in.",
+    "related_note_ids": [
+      "compounding-value-model-20261023",
+      "three-fits-of-product-design-20261111"
+    ]
+  },
+  {
     "id": "good-diagramming-practice-20261121",
     "date": "2026-11-21",
     "title": "Good Diagramming Practice",
@@ -679,3 +692,4 @@
     "related_note_ids": []
   }
 ]
+
