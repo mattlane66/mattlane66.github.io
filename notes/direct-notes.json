@@ -1,5 +1,17 @@
 [
   {
+    "id": "persistent-product-intent-model-20261123",
+    "date": "2026-11-23",
+    "title": "A Persistent Model of Product Intent",
+    "permalink": "a-persistent-model-of-product-intent",
+    "category": "Products & systems",
+    "summary": "A persistent product model establishes what must exist, why each part belongs, how parts interact, and what code changes must preserve.",
+    "body": "A product should be governed by a persistent model of **what must exist, why it must exist, how its parts work together, and what must remain true as the code changes.**\n\nThree components make that possible:\n\n1. **Fit Check and Reverse Fit Check** establish which requirements the design satisfies and why each part belongs.\n2. **Structural interaction schematics** establish how those parts connect, interact, and behave.\n3. **Design invariants** establish what agents must preserve when changing the implementation.",
+    "related_note_ids": [
+      "good-diagramming-practice-20261121"
+    ]
+  },
+  {
     "id": "design-game-not-just-advantage-20261123",
     "date": "2026-11-23",
     "title": "Design the Game, Not Just the Advantage",
@@ -692,4 +704,3 @@
     "related_note_ids": []
   }
 ]
-
