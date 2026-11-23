@@ -1,12 +1,89 @@
 [
   {
+    "id": "persistent-product-intent-model-20261123",
+    "date": "2026-11-23",
+    "title": "A Persistent Model of Product Intent",
+    "permalink": "a-persistent-model-of-product-intent",
+    "category": "Products & systems",
+    "summary": "A persistent product model establishes what must exist, why each part belongs, how parts interact, and what code changes must preserve.",
+    "body": "A product should be governed by a persistent model of **what must exist, why it must exist, how its parts work together, and what must remain true as the code changes.**\n\nThree components make that possible:\n\n1. **Fit Check and Reverse Fit Check** establish which requirements the design satisfies and why each part belongs.\n2. **Structural interaction schematics** establish how those parts connect, interact, and behave.\n3. **Design invariants** establish what agents must preserve when changing the implementation.",
+    "related_note_ids": [
+      "good-diagramming-practice-20261121"
+    ]
+  },
+  {
+    "id": "design-game-not-just-advantage-20261123",
+    "date": "2026-11-23",
+    "title": "Design the Game, Not Just the Advantage",
+    "permalink": "design-the-game-not-just-the-advantage",
+    "category": "Products & systems",
+    "summary": "Design a market position that competitors have reasons to preserve or participate in.",
+    "body": "Most businesses ask: How do we create something competitors can't copy?\n\nA better question might be: **What if competitors could copy us, but doing so would be against their own interests?**\n\nBlue Ocean Strategy helps identify a different way to compete. Its Four Actions Framework—eliminate, reduce, raise, create—changes the factors on which an industry competes.\n\nBut differentiation alone doesn't establish a durable advantage. Game theory adds the missing question: **What will competitors rationally do in response?**\n\nConsider a new research network that recruits buyers once and serves multiple noncompeting customers. Traditional agencies could imitate it, but doing so might undermine their profitable bespoke businesses. They may be better off specializing.\n\nBetter still, they might become customers of the network. Their continued success would then strengthen the entrant.\n\nThe opportunity is to design a business that benefits from what competitors are incentivized to do, rather than depending on them making mistakes.\n\n## An integrated method\n\n1. **Map the market.** Identify existing value curves, customer needs, and competitor economics.\n2. **Change the value curve.** Eliminate, reduce, raise, or create factors to deliver a different value-cost proposition.\n3. **Model the responses.** Would competitors imitate, attack, specialize, accommodate, or cooperate? Compare their incentives and payoffs.\n4. **Design the position.** Make favorable responses more attractive through economic tradeoffs, specialization, complementary incentives, or network effects.\n5. **Test and revise.** Validate customer value, profitability, and actual competitive behavior.\n\nWork backward from the competitive position you want to the incentives and design choices that could sustain it. Then test those assumptions against reality.\n\nCompetitors may still rationally choose to attack, even at the cost of cannibalizing their own businesses. The advantage must survive their credible alternatives, not just the responses we hope for.\n\n**Don't merely design an advantage. Design the incentives that sustain it.**\n\nThe strongest competitive position may not be one competitors cannot imitate, but one they are better off preserving—or participating in.",
+    "related_note_ids": [
+      "compounding-value-model-20261023",
+      "three-fits-of-product-design-20261111"
+    ]
+  },
+  {
+    "id": "good-diagramming-practice-20261121",
+    "date": "2026-11-21",
+    "title": "Good Diagramming Practice",
+    "permalink": "good-diagramming-practice",
+    "category": "Products & systems",
+    "summary": "Show how parts work together while hiding internal detail that does not matter at the chosen level of explanation.",
+    "body": "Show how the parts work together, not how every part works internally.\n\nTreat the system as a graph of parts and relationships. Group related parts, preserve the connections between them, and abstract their internal details unless those details are necessary to understand the system.\n\nThe level of detail depends on what you're trying to explain. Something important at one level may be irrelevant at another.\n\nThe goal is to reveal the structure and behavior of the whole without exposing unnecessary details of its parts.\n\nBut deciding what belongs in a system and deciding what belongs in its diagram are different judgments.\n\n**Every part should justify its existence. Every detail should justify its visibility.**",
+    "related_note_ids": [
+      "shaping-a-buildable-path-20261019",
+      "requirements-are-design-work-20261021"
+    ]
+  },
+  {
+    "id": "philosophy-making-a-person-20261121",
+    "date": "2026-11-21",
+    "title": "Philosophy Is the Making of a Person",
+    "permalink": "philosophy-is-the-making-of-a-person",
+    "category": "Life & learning",
+    "summary": "Philosophy's value extends beyond immediate utility: it shapes what a person can understand, imagine, question, and become.",
+    "body": "Its value cannot be reduced to its immediate utility.\n\nIt develops not merely what a person can do, but what they can understand, imagine, question, and become.",
+    "related_note_ids": [
+      "education-beyond-the-given-20261121"
+    ]
+  },
+  {
+    "id": "education-beyond-the-given-20261121",
+    "date": "2026-11-21",
+    "title": "Education Beyond the Given",
+    "permalink": "education-beyond-the-given",
+    "category": "Life & learning",
+    "summary": "Education develops the knowledge to imagine possibilities and recognize which are worth pursuing.",
+    "body": "The purpose of education is not merely to teach people how to use intelligence. It is to develop people with the knowledge to imagine possibilities beyond those presented to them—and the understanding to recognize which are worth pursuing.",
+    "related_note_ids": [
+      "from-procedure-design-to-knowledge-use-20261121",
+      "six-practices-transformational-creativity-20261119",
+      "ai-language-defaults-20261002"
+    ]
+  },
+  {
+    "id": "from-procedure-design-to-knowledge-use-20261121",
+    "date": "2026-11-21",
+    "title": "From Procedure Design to Knowledge Use",
+    "permalink": "from-procedure-design-to-knowledge-use",
+    "category": "Judgment & knowledge",
+    "summary": "Knowledge use depends on knowing which concepts and operations a problem calls for.",
+    "body": "We externalized computation, then productized it. For most of computing’s history, using that capability meant designing procedures: specifying how a machine should perform an operation.\n\nLarge and small text models (L/STMs) change this. They learn from text rather than understanding language as humans do. That’s why I prefer to call them text models rather than language models.\n\nThese models make it possible to invoke and apply knowledge without explicitly programming every procedure.\n\nThe advantage is not better prompting. It is knowing what knowledge to reach for and when to use it.\n\nConsider a diagram of a complex system. Someone without the relevant domain knowledge might ask for more detail. Someone who understands the system might recognize that a particular part calls for Morse decomposition—a mathematical method for analyzing the structure of a dynamical system.\n\nThe difference is not how well they describe the desired result. It is whether they recognize the appropriate intellectual operation. Whether they possess the language and knowledge needed to invoke it.\n\nThe model can help perform that operation. But knowing when it applies, what assumptions it requires, and whether the result is sound still demands domain knowledge and judgment.\n\nThe work shifts from specifying how to do something to knowing what needs to be done, which knowledge applies, and whether the result is any good. I call this Knowledge-Use.\n\nAs the cost of executing intellectual operations falls, the value of domain knowledge and scrutiny becomes more apparent.",
+    "related_note_ids": [
+      "judgment-is-not-a-step-20261111",
+      "ai-language-defaults-20261002"
+    ]
+  },
+  {
     "id": "three-tests-artificial-minds-20261119",
     "date": "2026-11-19",
     "title": "The Three Tests of Artificial Minds",
     "permalink": "three-tests-of-artificial-minds",
     "category": "AI & future work",
     "summary": "Three independent questions about AI creativity, agency, and moral status.",
-    "body": "Three questions, not a test of human imitation.\n\n**I. Creativity — Can it change what is conceivable?**\n\nCan it transform a conceptual framework to discover genuinely new, valuable possibilities?\n\n**II. Agency — Can it determine its own course?**\n\nCan it form, pursue, and revise purposes through reasoned judgment over time?\n\n**III. Moral Status — Can things matter for its own sake?**\n\nCan things go better or worse for it, independently of its usefulness to others?\n\nThese are independent questions, not steps toward personhood. Creativity does not establish agency, and neither establishes moral status. An entity need not be creative or autonomous to deserve moral consideration.\n\nMoral status is not accountability. An infant can deserve moral consideration without being responsible for its actions. A corporation can bear legal responsibilities without having experiences or welfare of its own. Whether an AI can be held responsible, and who answers when it cannot, is a separate question.\n\nAnswering convincingly is not enough. Each question requires evidence; whether a system has morally significant interests is especially difficult to establish.\n\nThe unit of assessment matters: a model, a running instance, or a persistent system with memory and tools. A model can adapt within a conversation without changing its parameters. Lasting memory, evolving commitments, and continuity across sessions depend on the system's architecture. Each test must specify what is being assessed.\n\n**Rights do not follow automatically from passing a test.** They require a further argument connecting moral standing to specific protections.",
+    "body": "As artificial intelligence becomes more capable, we need to distinguish what it can create, what it can decide, and what we might owe it.\n\nThese are three separate questions. An answer to one does not settle the others.\n\n**I. Creativity — Can it change what is conceivable?**\n\nCan it transform a conceptual framework to discover genuinely new, valuable possibilities?\n\n**II. Agency — Can it determine its own course?**\n\nCan it form, pursue, and revise purposes through reasoned judgment over time?\n\n**III. Moral Status — Can things matter for its own sake?**\n\nCan things go better or worse for it, independently of its usefulness to others?\n\nThese are independent questions, not steps toward personhood. Creativity does not establish agency, and neither establishes moral status. An entity need not be creative or autonomous to deserve moral consideration.\n\nMoral status is not accountability. An infant can deserve moral consideration without being responsible for its actions. A corporation can bear legal responsibilities without having experiences or welfare of its own. Whether an AI can be held responsible, and who answers when it cannot, is a separate question.\n\nAnswering convincingly is not enough. Each question requires evidence; whether a system has morally significant interests is especially difficult to establish.\n\nThe unit of assessment matters: a model, a running instance, or a persistent system with memory and tools. A model can adapt within a conversation without changing its parameters. Lasting memory, evolving commitments, and continuity across sessions depend on the system's architecture. Each test must specify what is being assessed.\n\n**Rights do not follow automatically from passing a test.** They require a further argument connecting moral standing to specific protections.",
     "related_note_ids": [
       "six-practices-transformational-creativity-20261119",
       "rational-agency-science-20261110"
