@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff8e7">
+<title>A Portfolio of Competing Bets · Matt Lane</title>
+<meta name="description" content="How to identify competing strategies, test business economics, underwrite ownership, and allocate venture capital under uncertainty.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://mattlane66.github.io/articles/a-portfolio-of-competing-bets/"><link rel="icon" href="/favicon.svg?v=20260930" type="image/svg+xml">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Matt Lane">
+<meta property="og:url" content="https://mattlane66.github.io/articles/a-portfolio-of-competing-bets/"><meta property="og:title" content="A Portfolio of Competing Bets">
+<meta property="og:description" content="How to invest when the winning business model is uncertain.">
+<style>
+:root{--paper:#fff8e7;--ink:#16161d;--muted:#586e75;--line:#cfc8b7;--blue:#0c5b82;--pad:clamp(18px,4vw,64px)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-underline-offset:3px}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,248,231,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topin{max-width:1500px;margin:auto;height:58px;padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;gap:24px}
+.mark{font-weight:800;letter-spacing:-.025em;color:var(--ink);text-decoration:none}
+.back{font-size:12px;font-weight:750;color:var(--muted);text-decoration:none}.back:hover{color:var(--blue)}
+.article{width:min(100% - 36px,900px);margin:0 auto;padding:clamp(54px,8vw,96px) 0 100px}
+.kicker{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:30px}
+.article h1{font-size:clamp(42px,7.5vw,82px);line-height:.96;letter-spacing:-.065em;margin:0 0 20px;text-wrap:balance}
+.article h1+p{font-size:clamp(20px,2.4vw,26px);line-height:1.35;color:var(--muted);margin-top:0}
+.article h2{font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-.045em;margin:72px 0 20px;scroll-margin-top:82px;text-wrap:balance}
+.article p,.article li{font-size:18px;line-height:1.7}.article p{margin:0 0 24px}
+.article ul{padding-left:1.4em;margin:0 0 28px}.article li{margin:8px 0}
+.endnav{margin-top:74px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;font-size:13px;font-weight:750}
+.dependency-map{margin:32px 0 38px;padding:22px;border:1px solid var(--line);background:rgba(255,255,255,.27)}
+.dependency-map figcaption{display:flex;flex-direction:column;gap:5px;margin-bottom:17px}
+.dependency-map figcaption strong{font-size:16px;line-height:1.35}
+.dependency-map figcaption span{font-size:12px;line-height:1.5;color:var(--muted)}
+.shared-exposure{border:1px solid var(--ink);padding:16px 18px;text-align:center;display:flex;flex-direction:column;gap:7px}
+.shared-exposure span,.strategy-branch span{font:700 10px/1.4 var(--font-data,monospace);letter-spacing:.07em;color:var(--muted)}
+.shared-exposure strong{font-size:17px;line-height:1.4;font-weight:700}
+.strategy-branches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px}
+.strategy-branch{min-width:0;padding:17px 18px;border:1px solid var(--line);border-top:3px solid var(--blue)}
+.strategy-branch strong{display:block;font-size:16px;line-height:1.35;margin:8px 0 12px}
+.strategy-branch ul{padding-left:17px;margin:0}
+.strategy-branch li{font-size:14px;line-height:1.5;margin:7px 0}
+@media(max-width:650px){.article{width:min(100% - 32px,900px);padding-top:46px}.article p,.article li{font-size:17px;line-height:1.68;overflow-wrap:break-word}.article h2{margin-top:54px}.article h1{overflow-wrap:break-word}.dependency-map{padding:15px}.strategy-branches{grid-template-columns:1fr}.strategy-branch li{font-size:14px}}
+</style><link rel="stylesheet" href="/assets/site-theme.css?v=20261012"></head>
+<body data-series="paradigms">
+<header class="top"><div class="topin"><a class="mark" href="/">Matt Lane</a><a class="back" href="/#writing">← Writing</a></div></header>
+<main class="article"><div class="kicker">Full article · Shifting Paradigms · November 23, 2026</div>
+<h1>A Portfolio of Competing Bets</h1>
+<p><em>How to invest when the winning business model is uncertain.</em></p>
+<p>A growing market does not necessarily produce an attractive investment.</p>
+<p>Several companies may compete to capture its value, each through a different business model. Some may become valuable businesses but poor investments. Others may appear different while depending on the same conditions for success.</p>
+<p>The investor must determine where value could accumulate, who can capture it, what ownership is worth, and how the investment affects the portfolio. Each bet is an investment in a particular company, led by a particular team, at a particular price, based on a hypothesis about how it will create and capture value.</p>
+<p>These judgments belong together.</p>
+<h2 id="understand-what-has-changed">1. Understand what has changed</h2>
+<p>Exceptional opportunities often begin when a constraint changes.</p>
+<p>New technology may make something possible or substantially cheaper. Regulation may open a market. New infrastructure or changing behavior may create demand that existing businesses cannot satisfy.</p>
+<p>The first task is to understand what the change makes possible, which constraints remain, and where economic value might accumulate.</p>
+<p>Consider longitudinal healthcare.</p>
+<p>Suppose patients, providers, insurers, and pharmaceutical companies could coordinate around more complete, permissioned patient information. The underlying system is the combination of participants, rules, information, workflows, and infrastructure that makes that coordination possible.</p>
+<p>Several businesses could emerge:</p>
+<ul>
+<li>A patient platform that maintains the relationship and permissioned records.</li>
+<li>A clinical platform embedded in providers' workflows.</li>
+<li>A payer platform that improves cost and coverage decisions.</li>
+<li>A research platform that produces evidence for pharmaceutical companies.</li>
+</ul>
+<p>Each offers a different way to create and capture value.</p>
+<p>A <a href="https://www.blueoceanstrategy.com/tools/strategy-canvas/">Blue Ocean Strategy canvas</a> makes those differences visible. It compares offerings according to the competitive factors they emphasize. Grouping those factors by system function shows where businesses pursue different routes to value.</p>
+<p>Game theory adds another question: <strong>What are competitors incentivized to do in response?</strong></p>
+<p>Would they imitate, attack, specialize, or cooperate? If imitation undermines their existing profits, competitors may be better off preserving the entrant's position or participating in it. A durable advantage need not depend on competitors being unable to copy the business. It may depend on copying being against their interests.</p>
+<p>As explored in <a href="https://mattlane66.github.io/notes/?rev=20261005a#note-design-game-not-just-advantage-20261123">Design the Game, Not Just the Advantage</a>, the goal is to design a position that benefits from competitors' incentives rather than depending on their mistakes. Those incentives must still be tested against credible alternative responses.</p>
+<p>The resulting strategies describe different hypotheses about how to create, capture, and sustain value. They do not establish profitability or the independence of investment outcomes. For that, we must also understand what each strategy depends on.</p>
+<p>And the best strategy may not yet have a company pursuing it.</p>
+<p>An investor can select an existing business or help create the one that ought to exist. Both begin with understanding the opportunity before accepting the market's current arrangement.</p>
+<h2 id="determine-who-can-realize-it">2. Determine who can realize it</h2>
+<p>An attractive strategy needs someone capable of executing it. A founder building patient trust and managing permissions faces different challenges from one integrating software into clinical workflows and securing provider adoption.</p>
+<p>Why does this founder understand the opportunity better than others? What has the team learned from direct experience? Can it recruit exceptional people, make difficult decisions, and adapt when its assumptions fail?</p>
+<p>At the earliest stages, signals of product-market fit—such as repeat use, paying customers, or organic recommendations—may be scarce. The business may not yet have sustainable compounding advantages or sound economics. Founder judgment and demonstrated learning ability consequently carry more weight.</p>
+<p>The investor needs an advantage too.</p>
+<p>What do we understand that others may be missing? Why would this founder choose our capital? Can we acquire meaningful ownership and contribute to the company's success?</p>
+<p>A correct investment thesis has limited economic value if the investor cannot secure the investment on attractive terms.</p>
+<p>This also requires knowing the limits of our understanding. A convincing thesis is not necessarily an informational advantage.</p>
+<p>The relevant judgment is whether we have sufficient evidence and understanding to justify taking a risk at a particular price.</p>
+<h2 id="connect-strategy-to-business-economics">3. Connect strategy to business economics</h2>
+<p>For each strategy, identify the two leading product metrics expected to have the greatest influence on its economics, along with a backstop metric that reveals whether progress is coming at an unacceptable cost.</p>
+<p>Two primary metrics impose discipline on where to focus attention, not a claim that every business has only two important drivers.</p>
+<p>For the patient-first healthcare business, the primary measures might be:</p>
+<p><strong>Usable, permissioned patient records:</strong> The number of sufficiently complete records authorized for valuable uses.</p>
+<p><strong>Continuing patient participation:</strong> The proportion of patients who remain engaged and contribute useful information.</p>
+<p>These measures could determine the quality and availability of longitudinal evidence. A backstop, such as cost per usable record, could expose whether acquiring and maintaining that evidence is becoming economically unsustainable.</p>
+<p>But that evidence creates revenue only if someone will pay for it.</p>
+<p>A pharmaceutical company might purchase recurring research access. Whether this becomes an attractive business depends on what the customer pays, the cost of acquiring and maintaining the records, and the cost of producing the research.</p>
+<p>The causal relationship is:</p>
+<p><strong>Strategic position → Product drivers → Customer behavior → Revenue and costs → Recurring gross profit</strong></p>
+<p>Each connection requires evidence.</p>
+<p>More records could increase customer value while also increasing operating costs. Better retention might improve research quality without increasing willingness to pay.</p>
+<p>A provider-first business would have different drivers, perhaps the number of active clinical deployments and sustained usage within them.</p>
+<p>The metrics must follow the business mechanism, not the other way around.</p>
+<p>Recurring gross profit connects product performance to economic performance. Company value also depends on growth, operating expenses, reinvestment, capital requirements, and how long its advantages can endure.</p>
+<p>A differentiated product becomes an economically superior business only when that differentiation produces an advantage in value capture, costs, growth, or durability.</p>
+<h2 id="underwrite-ownership-price-and-timing">4. Underwrite ownership, price, and timing</h2>
+<p>A superior business is not necessarily a superior investment.</p>
+<p>Investor returns depend on the price paid, ownership acquired, dilution, additional capital required, eventual proceeds, and time.</p>
+<p>Two measures make those consequences explicit:</p>
+<p><strong>MOIC</strong> measures proceeds relative to invested capital.</p>
+<p><strong>IRR</strong> measures the annualized return, accounting for the timing of investment cash flows.</p>
+<p>Both are outputs of investment scenarios, not independent forecasts. Those scenarios must consider failure, intermediate outcomes, and exceptional success, with uncertainty about their likelihoods made explicit.</p>
+<p>Fund size also matters.</p>
+<p>Consider a hypothetical $100 million venture fund that invests $4 million and retains 5% ownership at exit.</p>
+<p>If a $2 billion exit produces $2 billion in distributable equity proceeds and the fund receives 5%, its stake returns $100 million.</p>
+<p>That is 25 times the initial investment, assuming no further capital contributions. It is also an amount equal to the fund's committed capital, before fees, expenses, and other fund investments. The holding period would be needed to calculate IRR.</p>
+<p>This illustrates why ownership matters. An exceptional company may contribute little to a fund if the investor owns too little of it.</p>
+<p>Timing introduces another judgment.</p>
+<p>Investing early can provide more attractive ownership terms but requires accepting greater uncertainty. Waiting may produce better evidence while increasing the price or eliminating access.</p>
+<p>A company-creation investment, seed investment, growth investment, and purchase of an established business therefore require different evidence and underwriting.</p>
+<p>The earliest opportunity is not automatically the best one.</p>
+<p>The investor must compare the expected return from acting now with the value of learning more and the cost of waiting.</p>
+<h2 id="understand-how-the-bets-relate">5. Understand how the bets relate</h2>
+<p>An investor can believe an emerging system will become valuable without knowing which business model will capture the most value. A Blue Ocean Strategy canvas distinguishes the ways companies compete. A dependency map adds something different: the conditions each approach needs to succeed.</p>
+<figure class="dependency-map" aria-labelledby="dependency-map-title">
+<figcaption id="dependency-map-title"><strong>One market thesis. Different ways to capture its value.</strong><span>Illustrative dependencies, not observed company outcomes or measured return correlations.</span></figcaption>
+<div class="shared-exposure"><span>SHARED ENABLING CONDITION</span><strong>Reliable, legally usable longitudinal patient information</strong></div>
+<div class="strategy-branches">
+<div class="strategy-branch"><span>PATIENT-FIRST</span><strong>Own the patient relationship</strong><ul><li>Patient trust and permission management</li><li>Sustained participation</li><li>Research customers willing to pay</li></ul></div>
+<div class="strategy-branch"><span>PROVIDER-FIRST</span><strong>Serve the clinical workflow</strong><ul><li>Integration with clinical systems</li><li>Sustained clinician adoption</li><li>Provider procurement and renewal</li></ul></div>
+</div>
+</figure>
+<p>Both businesses may fail if the shared condition does not materialize. Yet one could succeed through patient participation and research demand, while the other succeeds through clinical adoption and provider spending.</p>
+<p><strong>Shared thesis risk</strong> concerns whether the underlying opportunity and its enabling conditions develop. <strong>Strategy-specific risk</strong> concerns whether a particular approach captures value if they do. These risks can interact: one strategy's success may reinforce or undermine another.</p>
+<p>Competitive incentives help explain those interactions. A provider-first company might purchase information or services from a patient-first platform rather than attempt to reproduce its patient relationships. Alternatively, it might seek exclusive control of the same information. Whether the businesses reinforce or threaten each other depends on their incentives and available alternatives, not merely their different value curves.</p>
+<p>An investor may deliberately accept a common exposure to the thesis while spreading capital across several attractive approaches to value capture. This reduces dependence on choosing a single winning strategy, not necessarily the risk that the underlying market thesis is wrong. Different value curves do not establish low return correlation.</p>
+<p>There is also a cost to spreading capital too widely. Venture returns are skewed, and investing in weaker opportunities can leave too little ownership in exceptional winners. One possible response is to make selective initial commitments, reserve capital, and reassess which strategies warrant follow-on investment as evidence accumulates. But further ownership is not guaranteed: allocation, rising valuations, and dilution can make additional investment unattractive. Each commitment must justify its own prospective return and portfolio contribution.</p>
+<p>Strategic differentiation can also reveal businesses competing indirectly rather than head-to-head. That may create opportunities to invest across approaches, but does not remove conflicts involving confidential information, governance, founder trust, or future financing.</p>
+<p><strong>The purpose is to choose which risks to share and which strategic uncertainties to diversify—not to collect different-looking investments.</strong></p>
+<h2 id="learn-where-information-changes-the-decision">6. Learn where information changes the decision</h2>
+<p>Every stage of the model depends on uncertain beliefs.</p>
+<p>The market may develop differently than expected. Product metrics may fail to predict customer demand. A founder may struggle to execute. An advantage may prove temporary.</p>
+<p>Investment judgments must change when the evidence changes.</p>
+<p>Donald Reinertsen's <em><a href="https://lpd2.com/sample-page/the-principles-of-flow/">The Principles of Product Development Flow</a></em> offers a useful economic discipline.</p>
+<p>His principles emphasize optimizing overall economics, understanding how variables interact, concentrating on influential leading indicators, obtaining information when its decision value exceeds its cost, and choosing when to act. They also address asymmetric payoffs and the value of exposures that offset one another.</p>
+<p>In this model, the two primary product metrics and their backstop provide a starting point for identifying those leading indicators. Their usefulness depends on how well they anticipate economic outcomes.</p>
+<p>Applying Reinertsen's principles to venture investing is a proposed extension, not a proven investment formula.</p>
+<p>For each investment, identify the <strong>next decisive learning</strong>.</p>
+<p>What assumption most influences the investment's prospective value? What evidence could change the decision? What would obtaining that evidence cost, and what might be lost by waiting?</p>
+<p>For the patient-first platform, demonstrating that a pharmaceutical customer will pay for useful longitudinal evidence may matter more than simply collecting additional records.</p>
+<p>The purpose of experimentation is to improve consequential decisions, not to produce the greatest number of tests.</p>
+<p>AI can lower the cost of building and testing alternatives, making it economical to investigate more hypotheses before committing substantial capital. It cannot guarantee access to follow-on ownership, nor eliminate the time required to observe retention, willingness to pay, trust, and durable economic performance.</p>
+<p>The founder's advantage increasingly depends on choosing the right questions, designing informative tests, interpreting evidence, and adapting appropriately.</p>
+<p>The investor must recognize that skill without mistaking activity for progress.</p>
+<p>The objective is <strong>economically useful learning</strong>.</p>
+<h2 id="allocate-capital-as-the-evidence-changes">7. Allocate capital as the evidence changes</h2>
+<p>The model connects six judgments:</p>
+<p><strong>Emerging opportunity → Competing strategies → Founder advantage → Product economics → Investment returns → Portfolio contribution</strong></p>
+<p>Learning connects them all.</p>
+<p>Evidence may change which strategy appears attractive, which founder can execute it, what ownership is worth, or how an investment affects the portfolio.</p>
+<p>Each capital decision should reflect those changes.</p>
+<p>Sometimes the best choice is to help create a company. Sometimes it is to invest before conventional evidence exists. Sometimes it is to wait, decline, or commit additional capital to a business already owned.</p>
+<p>The model should not produce one universal investment score. Different stages require different evidence, and no formula eliminates the need for judgment.</p>
+<p>Its purpose is to make those judgments explicit, connect them to economic consequences, and keep them open to revision.</p>
+<p>The governing question is:</p>
+<p><strong>Given what we know, what remains uncertain, and what we already own, which opportunity offers the best prospective use of our next dollar?</strong></p>
+<p>The model does not guarantee better investment performance. That remains an empirical question.</p>
+<p>It provides a way to understand alternative futures, identify or create the businesses that might profit from them, acquire ownership when the economics justify it, and distinguish conviction about the underlying opportunity from uncertainty about which strategy will capture its value.</p>
+<p><strong>Find different ways to win. Establish their economics. Learn what matters. Concentrate where conviction is justified, and diversify where uncertainty remains.</strong></p>
+<nav class="endnav"><a href="/#writing">← All writing</a><a href="/">Matt Lane ↑</a></nav>
+</main></body></html>
