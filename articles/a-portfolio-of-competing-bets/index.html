@@ -26,7 +26,19 @@ a{color:var(--blue);text-underline-offset:3px}
 .article p,.article li{font-size:18px;line-height:1.7}.article p{margin:0 0 24px}
 .article ul{padding-left:1.4em;margin:0 0 28px}.article li{margin:8px 0}
 .endnav{margin-top:74px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;font-size:13px;font-weight:750}
-@media(max-width:650px){.article{width:min(100% - 32px,900px);padding-top:46px}.article p,.article li{font-size:17px;line-height:1.68;overflow-wrap:break-word}.article h2{margin-top:54px}.article h1{overflow-wrap:break-word}}
+.dependency-map{margin:32px 0 38px;padding:22px;border:1px solid var(--line);background:rgba(255,255,255,.27)}
+.dependency-map figcaption{display:flex;flex-direction:column;gap:5px;margin-bottom:17px}
+.dependency-map figcaption strong{font-size:16px;line-height:1.35}
+.dependency-map figcaption span{font-size:12px;line-height:1.5;color:var(--muted)}
+.shared-exposure{border:1px solid var(--ink);padding:16px 18px;text-align:center;display:flex;flex-direction:column;gap:7px}
+.shared-exposure span,.strategy-branch span{font:700 10px/1.4 var(--font-data,monospace);letter-spacing:.07em;color:var(--muted)}
+.shared-exposure strong{font-size:17px;line-height:1.4;font-weight:700}
+.strategy-branches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px}
+.strategy-branch{min-width:0;padding:17px 18px;border:1px solid var(--line);border-top:3px solid var(--blue)}
+.strategy-branch strong{display:block;font-size:16px;line-height:1.35;margin:8px 0 12px}
+.strategy-branch ul{padding-left:17px;margin:0}
+.strategy-branch li{font-size:14px;line-height:1.5;margin:7px 0}
+@media(max-width:650px){.article{width:min(100% - 32px,900px);padding-top:46px}.article p,.article li{font-size:17px;line-height:1.68;overflow-wrap:break-word}.article h2{margin-top:54px}.article h1{overflow-wrap:break-word}.dependency-map{padding:15px}.strategy-branches{grid-template-columns:1fr}.strategy-branch li{font-size:14px}}
 </style><link rel="stylesheet" href="/assets/site-theme.css?v=20261012"></head>
 <body data-series="paradigms">
 <header class="top"><div class="topin"><a class="mark" href="/">Matt Lane</a><a class="back" href="/#writing">← Writing</a></div></header>
@@ -35,14 +47,14 @@ a{color:var(--blue);text-underline-offset:3px}
 <p><em>How to invest when the winning business model is uncertain.</em></p>
 <p>A growing market does not necessarily produce an attractive investment.</p>
 <p>Several companies may compete to capture its value, each through a different business model. Some may become valuable businesses but poor investments. Others may appear different while depending on the same conditions for success.</p>
-<p>The investor must determine where value could accumulate, who can capture it, what ownership is worth, and how the investment affects the portfolio.</p>
+<p>The investor must determine where value could accumulate, who can capture it, what ownership is worth, and how the investment affects the portfolio. Each bet is an investment in a particular company, led by a particular team, at a particular price, based on a hypothesis about how it will create and capture value.</p>
 <p>These judgments belong together.</p>
 <h2 id="understand-what-has-changed">1. Understand what has changed</h2>
 <p>Exceptional opportunities often begin when a constraint changes.</p>
 <p>New technology may make something possible or substantially cheaper. Regulation may open a market. New infrastructure or changing behavior may create demand that existing businesses cannot satisfy.</p>
 <p>The first task is to understand what the change makes possible, which constraints remain, and where economic value might accumulate.</p>
 <p>Consider longitudinal healthcare.</p>
-<p>Suppose patients, providers, insurers, and pharmaceutical companies could coordinate around more complete, permissioned patient information.</p>
+<p>Suppose patients, providers, insurers, and pharmaceutical companies could coordinate around more complete, permissioned patient information. The underlying system is the combination of participants, rules, information, workflows, and infrastructure that makes that coordination possible.</p>
 <p>Several businesses could emerge:</p>
 <ul>
 <li>A patient platform that maintains the relationship and permissioned records.</li>
@@ -56,7 +68,7 @@ a{color:var(--blue);text-underline-offset:3px}
 <p>And the best strategy may not yet have a company pursuing it.</p>
 <p>An investor can select an existing business or help create the one that ought to exist. Both begin with understanding the opportunity before accepting the market's current arrangement.</p>
 <h2 id="determine-who-can-realize-it">2. Determine who can realize it</h2>
-<p>An attractive strategy needs someone capable of executing it.</p>
+<p>An attractive strategy needs someone capable of executing it. A founder building patient trust and managing permissions faces different challenges from one integrating software into clinical workflows and securing provider adoption.</p>
 <p>Why does this founder understand the opportunity better than others? What has the team learned from direct experience? Can it recruit exceptional people, make difficult decisions, and adapt when its assumptions fail?</p>
 <p>At the earliest stages, there may be little evidence of product-market fit or sustainable economics. Founder judgment and demonstrated learning ability consequently carry more weight.</p>
 <p>The investor needs an advantage too.</p>
@@ -99,14 +111,21 @@ a{color:var(--blue);text-underline-offset:3px}
 <p>The earliest opportunity is not automatically the best one.</p>
 <p>The investor must compare the expected return from acting now with the value of learning more and the cost of waiting.</p>
 <h2 id="understand-how-the-bets-relate">5. Understand how the bets relate</h2>
-<p>An investor can believe an emerging system will become valuable without knowing which business model will capture the most value.</p>
-<p>A patient-first healthcare company and a provider-first company might emphasize different factors on a Blue Ocean Strategy canvas: patient relationships in one case, clinical workflows in the other. They may have different customers and revenue models while depending on the same enabling condition: reliable, legally usable longitudinal patient information.</p>
-<p>This is the canvas’s second role in the investment model. It shows different ways to compete within the same opportunity. <strong>Mapping each strategy’s dependencies alongside it</strong> shows which conditions are shared and which differ. The canvas alone does not demonstrate those dependencies.</p>
-<p>The distinction is between <strong>system risk</strong> and <strong>strategy risk</strong>. System risk concerns whether the underlying opportunity and its enabling conditions materialize. Strategy risk concerns which businesses can create and capture value if they do. The two can interact: one strategy’s success may reinforce or undermine another.</p>
-<p>An investor may deliberately accept a common exposure to the system while spreading capital across different hypotheses about value capture. If the system develops, several approaches may succeed, or one may dominate. If a shared condition fails, several investments may suffer together.</p>
-<p>Different value curves therefore do not establish low return correlation. Nor does holding multiple strategies necessarily improve portfolio returns. Each investment must justify its price, ownership, upside, and contribution to the portfolio. Venture returns are skewed; spreading capital across weaker opportunities can leave too little ownership in exceptional winners.</p>
-<p>Strategic differentiation may also reveal companies that compete indirectly rather than head-to-head. That can create more room to invest across approaches, but it does not eliminate conflicts involving confidential information, governance, founder trust, or future financing.</p>
-<p><strong>The objective is to choose which risks to concentrate in and which strategic uncertainties to diversify—not to pursue diversification for its own sake.</strong></p>
+<p>An investor can believe an emerging system will become valuable without knowing which business model will capture the most value. A Blue Ocean Strategy canvas distinguishes the ways companies compete. A dependency map adds something different: the conditions each approach needs to succeed.</p>
+<figure class="dependency-map" aria-labelledby="dependency-map-title">
+<figcaption id="dependency-map-title"><strong>One market thesis. Different ways to capture its value.</strong><span>Illustrative dependencies, not observed company outcomes or measured return correlations.</span></figcaption>
+<div class="shared-exposure"><span>SHARED ENABLING CONDITION</span><strong>Reliable, legally usable longitudinal patient information</strong></div>
+<div class="strategy-branches">
+<div class="strategy-branch"><span>PATIENT-FIRST</span><strong>Own the patient relationship</strong><ul><li>Patient trust and permission management</li><li>Sustained participation</li><li>Research customers willing to pay</li></ul></div>
+<div class="strategy-branch"><span>PROVIDER-FIRST</span><strong>Serve the clinical workflow</strong><ul><li>Integration with clinical systems</li><li>Sustained clinician adoption</li><li>Provider procurement and renewal</li></ul></div>
+</div>
+</figure>
+<p>Both businesses may fail if the shared condition does not materialize. Yet one could succeed through patient participation and research demand, while the other succeeds through clinical adoption and provider spending.</p>
+<p><strong>Shared thesis risk</strong> concerns whether the underlying opportunity and its enabling conditions develop. <strong>Strategy-specific risk</strong> concerns whether a particular approach captures value if they do. These risks can interact: one strategy’s success may reinforce or undermine another.</p>
+<p>An investor may deliberately accept a common exposure to the thesis while spreading capital across several attractive approaches to value capture. This reduces dependence on choosing a single winning strategy, not necessarily the risk that the underlying market thesis is wrong. Different value curves do not establish low return correlation.</p>
+<p>There is also a cost to spreading capital too widely. Venture returns are skewed, and investing in weaker opportunities can leave too little ownership in exceptional winners. One possible response is to make selective initial commitments, reserve capital, and reassess which strategies warrant follow-on investment as evidence accumulates. But further ownership is not guaranteed: allocation, rising valuations, and dilution can make additional investment unattractive. Each commitment must justify its own prospective return and portfolio contribution.</p>
+<p>Strategic differentiation can also reveal businesses competing indirectly rather than head-to-head. That may create opportunities to invest across approaches, but does not remove conflicts involving confidential information, governance, founder trust, or future financing.</p>
+<p><strong>The purpose is to choose which risks to share and which strategic uncertainties to diversify—not to collect different-looking investments.</strong></p>
 <h2 id="learn-where-information-changes-the-decision">6. Learn where information changes the decision</h2>
 <p>Every stage of the model depends on uncertain beliefs.</p>
 <p>The market may develop differently than expected. Product metrics may fail to predict customer demand. A founder may struggle to execute. An advantage may prove temporary.</p>
@@ -118,11 +137,9 @@ a{color:var(--blue);text-underline-offset:3px}
 <p>What assumption most influences the investment's prospective value? What evidence could change the decision? What would obtaining that evidence cost, and what might be lost by waiting?</p>
 <p>For the patient-first platform, demonstrating that a pharmaceutical customer will pay for useful longitudinal evidence may matter more than simply collecting additional records.</p>
 <p>The purpose of experimentation is to improve consequential decisions, not to produce the greatest number of tests.</p>
-<p>AI changes this calculation.</p>
-<p>Founders can increasingly build products and investigate alternatives with less time and capital. Investors can reasonably expect more evidence from that capability.</p>
-<p>But faster building is not necessarily faster learning. Retention, willingness to pay, trust, and durable economic performance still require observation.</p>
+<p>AI can lower the cost of building and testing alternatives, making it economical to investigate more hypotheses before committing substantial capital. It cannot guarantee access to follow-on ownership, nor eliminate the time required to observe retention, willingness to pay, trust, and durable economic performance.</p>
 <p>The founder's advantage increasingly depends on choosing the right questions, designing informative tests, interpreting evidence, and adapting appropriately.</p>
-<p>The investor must recognize that ability without confusing activity with progress.</p>
+<p>The investor must recognize that skill without mistaking activity for progress.</p>
 <p>The objective is <strong>economically useful learning</strong>.</p>
 <h2 id="allocate-capital-as-the-evidence-changes">7. Allocate capital as the evidence changes</h2>
 <p>The model connects six judgments:</p>
@@ -136,7 +153,7 @@ a{color:var(--blue);text-underline-offset:3px}
 <p>The governing question is:</p>
 <p><strong>Given what we know, what remains uncertain, and what we already own, which opportunity offers the best prospective use of our next dollar?</strong></p>
 <p>The model does not guarantee better investment performance. That remains an empirical question.</p>
-<p>It provides a way to understand alternative futures, identify or create the businesses that might profit from them, acquire ownership when the economics justify it, and construct a portfolio that distinguishes conviction about the underlying system from uncertainty about who captures its value.</p>
-<p><strong>Find different ways to win. Establish their economics. Own the opportunities worth owning. Choose deliberately which risks to share.</strong></p>
+<p>It provides a way to understand alternative futures, identify or create the businesses that might profit from them, acquire ownership when the economics justify it, and distinguish conviction about the underlying opportunity from uncertainty about which strategy will capture its value.</p>
+<p><strong>Find different ways to win. Establish their economics. Learn what matters. Concentrate where conviction is justified, and diversify where uncertainty remains.</strong></p>
 <nav class="endnav"><a href="/#writing">← All writing</a><a href="/">Matt Lane ↑</a></nav>
 </main></body></html>
