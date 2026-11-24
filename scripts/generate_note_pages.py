@@ -83,6 +83,29 @@ def render_body(value: str) -> str:
     return NOTE_MARKDOWN.render(strip_substack_urls(value).strip()).rstrip()
 
 
+def render_video(video: dict) -> str:
+    slug = video["slug"]
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
+        raise ValueError(f"Invalid Note video slug: {slug!r}")
+    media = f"/notes/media/{slug}"
+    for extension in (".mp4", ".vtt", ".jpg"):
+        if not (ROOT / (media.lstrip("/") + extension)).is_file():
+            raise FileNotFoundError(f"Missing Note video asset: {media}{extension}")
+    title = html.escape(video["title"])
+    caption = html.escape(video["caption"])
+    duration = int(video["duration_seconds"])
+    return f"""
+<figure style="margin:2rem 0 0">
+  <figcaption style="margin-bottom:0.8rem"><strong>{title} · {duration} seconds</strong><br>{caption}</figcaption>
+  <video controls playsinline preload="none" poster="{media}.jpg" aria-label="{title}"
+         width="1440" height="810" style="display:block;width:100%;height:auto;aspect-ratio:16/9">
+    <source src="{media}.mp4" type="video/mp4">
+    <track kind="captions" src="{media}.vtt" srclang="en" label="English">
+    <a href="{media}.mp4">Download the video</a>
+  </video>
+</figure>"""
+
+
 def note_content(title: str, body: str) -> tuple[str, str]:
     """Show a repeated opening once; preserve the remaining note verbatim.
 
@@ -425,6 +448,8 @@ def main() -> None:
         title, source_body = note_content(title, source_body)
         search_title = seo_title(title)
         body = render_body(source_body)
+        if "video" in n:
+            body += render_video(n["video"])
         discussion = render_body(str(n.get("discussion") or ""))
         category = html.escape(str(n.get("category") or ""))
         category_key = NOTE_CATEGORY_KEYS.get(str(n.get("category") or ""), "other")
