@@ -1,0 +1,126 @@
+WEBVTT
+
+00:00:00.230 --> 00:00:02.135
+How do we turn what we learn
+about people
+
+00:00:02.160 --> 00:00:03.800
+into a product that works?
+
+00:00:04.400 --> 00:00:06.820
+Each step requires a different
+kind of judgment.
+
+00:00:08.310 --> 00:00:10.360
+We start with three synthetic
+interviews.
+
+00:00:11.040 --> 00:00:13.060
+Researchers describe lost context,
+
+00:00:13.280 --> 00:00:14.530
+inconsistent codes,
+
+00:00:14.640 --> 00:00:17.360
+and findings that others
+cannot easily verify.
+
+00:00:18.310 --> 00:00:19.560
+We code the episodes.
+
+00:00:19.940 --> 00:00:22.900
+Ward clustering groups episodes
+two and three first.
+
+00:00:23.240 --> 00:00:25.600
+This reveals similarity,
+not requirements.
+
+00:00:26.080 --> 00:00:27.400
+Clustering is optional.
+
+00:00:28.310 --> 00:00:29.600
+We return to the evidence.
+
+00:00:30.200 --> 00:00:33.480
+One researcher wants every claim
+linked to its source.
+
+00:00:33.920 --> 00:00:36.740
+That helps us propose
+a requirement for the design.
+
+00:00:38.310 --> 00:00:39.855
+The Fit Check compares
+three designs
+
+00:00:39.880 --> 00:00:41.640
+against the same requirements.
+
+00:00:42.340 --> 00:00:43.590
+Two meet the essentials.
+
+00:00:44.100 --> 00:00:45.175
+We choose the evidence workspace
+
+00:00:45.200 --> 00:00:48.440
+for better reuse,
+despite its higher cost.
+
+00:00:49.310 --> 00:00:51.900
+Reverse Fit asks why
+each part belongs.
+
+00:00:52.420 --> 00:00:53.980
+We defer a weekly digest.
+
+00:00:54.560 --> 00:00:57.820
+It may be useful, but it exceeds
+this release's budget.
+
+00:00:59.310 --> 00:01:02.020
+The breadboard shows how
+the selected design works.
+
+00:01:02.260 --> 00:01:03.860
+A researcher codes an excerpt,
+
+00:01:04.060 --> 00:01:05.310
+the comparison updates,
+
+00:01:05.460 --> 00:01:07.340
+and a finding links
+to its evidence.
+
+00:01:07.740 --> 00:01:09.500
+Unsupported findings are blocked.
+
+00:01:10.310 --> 00:01:12.660
+Finally, we test
+three things separately.
+
+00:01:13.200 --> 00:01:14.415
+Does the link work?
+
+00:01:14.440 --> 00:01:16.280
+Does the evidence support
+the claim?
+
+00:01:16.560 --> 00:01:18.940
+And does the product
+actually improve the work?
+
+00:01:21.310 --> 00:01:23.440
+The goal is to keep
+the reasoning visible:
+
+00:01:23.880 --> 00:01:26.020
+what we observed,
+what we inferred,
+
+00:01:26.180 --> 00:01:27.855
+what we chose, how it works,
+
+00:01:27.880 --> 00:01:30.300
+and what reality tells us
+to change.
