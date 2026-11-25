@@ -142,7 +142,16 @@ def verify() -> list[str]:
             f"missing {sorted(article_slugs - set(linked_slugs))}"
         )
 
-    # A homepage-curated Note must exist, not merely contain a valid-looking hash.
+    # The homepage is a chronological preview, not a curated or starred selection.
+    preview = re.search(r'<div class="notes-panel">([\s\S]*?)<div class="notes-actions">', home)
+    preview_ids = re.findall(r'href="\./notes/[^"]*#note-([^"]+)"', preview.group(1)) if preview else []
+    expected_preview = sorted(
+        notes, key=lambda ident: (str(notes[ident].get("date", "")), ident), reverse=True
+    )[:7]
+    if preview_ids != expected_preview:
+        errors.append(f"Homepage Note previews: expected newest IDs {expected_preview}, got {preview_ids}")
+
+    # A homepage Note must exist, not merely contain a valid-looking hash.
     linked_note_ids = re.findall(r'href="\./notes/[^"]*#note-([^"]+)"', home)
     for ident in linked_note_ids:
         if ident not in notes:

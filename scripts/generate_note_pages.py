@@ -288,6 +288,29 @@ def patch_planning_tools() -> None:
     text = text[:style.start()] + block + text[style.start():]
     path.write_text(text, encoding="utf-8")
 
+def sync_home_note_previews(notes: list[dict]) -> None:
+    """Refresh only the seven homepage Note cards from the newest active Notes."""
+    path = ROOT / "index.html"
+    page = path.read_text(encoding="utf-8")
+    cards = []
+    for i, n in enumerate(notes[:7]):
+        category = str(n.get("category") or "")
+        wide = " wide" if i in (3, 6) else ""
+        ident = html.escape(str(n["id"]), quote=True)
+        cards.append(
+            f'<a target="_self" class="thought{wide}" data-category="{NOTE_CATEGORY_KEYS.get(category, "other")}" '
+            f'href="./notes/?rev=20261005a#note-{ident}"><span>{html.escape(category)}</span>'
+            f'<strong>{html.escape(feed_title(n))}</strong>'
+            f'<em>{html.escape(str(n.get("date") or ""))} →</em></a>'
+        )
+    pattern = r'(<div class="notes-panel">)[\s\S]*?(<div class="notes-actions">)'
+    updated, count = re.subn(pattern, lambda m: m.group(1) + "".join(cards) + m.group(2), page)
+    if count != 1:
+        raise RuntimeError(f"Expected exactly one homepage Notes preview, found {count}")
+    if updated != page:
+        path.write_text(updated, encoding="utf-8")
+
+
 def sync_home_note_count(total: int) -> None:
     """Keep the homepage CTA in sync with the canonical active Notes collection.
 
@@ -406,6 +429,7 @@ def main() -> None:
     text = render_static_archive(text, notes, favorite_ids)
     NOTES_HTML.write_text(text, encoding="utf-8")
     sync_home_note_count(len(notes))
+    sync_home_note_previews(notes)
 
     # Preserve authored interactive Notes while rebuilding generated pages.
     # Fail closed when a marked custom page is missing, rather than replacing
