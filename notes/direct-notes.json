@@ -1,5 +1,19 @@
 [
   {
+    "id": "four-technical-skills-worth-retaining-20261125",
+    "date": "2026-11-25",
+    "title": "Four technical skills worth retaining",
+    "permalink": "four-technical-skills-worth-retaining",
+    "category": "AI & future work",
+    "summary": "Four technical disciplines for directing intelligent systems, judging their results and learning from outcomes.",
+    "body": "As AI becomes more capable of designing and implementing systems, I would invest in four technical disciplines.\n\n**Formal specification.** Invariants, interface contracts, temporal logic, safety and liveness. Learn to express precisely what a system must do, what it must never do and under what conditions.\n\n**Formal verification.** Mathematical proofs, model checking and trusted computing bases. Learn to determine what has been proved, which assumptions the proof depends on and what remains unproven.\n\n**Empirical evaluation.** Experimental design, property-based testing, adversarial testing, statistical inference and monitoring. Learn to establish through testing and observation what cannot be established through proof alone.\n\n**Causal inference.** Causal graphs, counterfactual reasoning, controlled interventions and confounding variables. Learn to distinguish what contributed to an outcome from what merely accompanied it.\n\nEven if AI surpasses humans in all four disciplines, understanding them remains important for anyone responsible for directing its work, judging its results and deciding what to change.\n\nKnowing what must be true, how to establish whether it is true and what caused it to be true may prove more enduring than knowing how to implement it.",
+    "related_note_ids": [
+      "rational-agency-science-20261110",
+      "persistent-product-intent-model-20261123",
+      "from-fit-to-evidence-20261110"
+    ]
+  },
+  {
     "id": "what-intelligence-is-for-20261125",
     "date": "2026-11-25",
     "title": "What Intelligence Is For",
