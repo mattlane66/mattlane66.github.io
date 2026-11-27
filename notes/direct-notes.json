@@ -1,5 +1,20 @@
 [
   {
+    "id": "navigate-the-work-not-the-application-20261127",
+    "date": "2026-11-27",
+    "title": "Navigate the Work, Not the Application",
+    "permalink": "navigate-the-work-not-the-application",
+    "category": "Products & systems",
+    "summary": "A shared representation of the work lets agents direct human attention to problems and humans intervene without reconstructing the context.",
+    "body": "While debugging a system, I asked Claude to circle the places on a map where it thought something was wrong. The circles told me where to look. The map showed me how those places related to the rest of the system.\n\nWe see people circling agent output in red to give feedback. We need the reverse, too. I want an agent to do most of the work without me, but when it needs my judgment, I want to go straight to the part that needs it. I shouldn't have to reconstruct the system from a textual explanation before I can reason about the problem.\n\nConsider a travel application. Rather than navigating screens for flights, hotels and transportation to assemble an itinerary, suppose I ask an agent to assemble it. I select a hotel in the itinerary to compare alternatives, see how each affects travel time, or change the reservation. If the agent finds that I arrive after check-in closes, it marks the conflict where it occurs.\n\n**Instead of navigating the application to produce an artifact, I navigate the artifact to operate the application.** And the artifact itself tells me where to go.\n\nThe form of a question need not determine the form of its answer. Maps locate things and show relationships. Language can explain why. Tables help us compare alternatives. Sometimes moving something is clearer than describing the move.\n\nThe representation persists as the work changes. The agent can work across the whole system while I inspect the evidence, consider alternatives and intervene in a particular part. When I make a decision, the agent can carry its consequences through the rest of the system.\n\nIt matters whether a mark indicates a confirmed error, a suspected problem or a decision that needs my judgment. And the absence of a mark doesn't mean the rest has been checked.\n\nThe aim is to delegate work without surrendering the ability to reason about it.",
+    "custom_html": true,
+    "related_note_ids": [
+      "persistent-product-intent-model-20261123",
+      "good-diagramming-practice-20261121",
+      "judgment-is-not-a-step-20261111"
+    ]
+  },
+  {
     "id": "four-technical-skills-worth-retaining-20261125",
     "date": "2026-11-25",
     "title": "Four technical skills worth retaining",
